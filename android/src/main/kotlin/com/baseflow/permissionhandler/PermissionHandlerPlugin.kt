@@ -108,6 +108,10 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
                 val permissions = Codec.decodePermissionGroups(call.arguments)
                 requestPermissions(permissions)
             }
+            call.method == "shouldShowRequestPermissionRationale" -> {
+                val permission = Codec.decodePermissionGroup(call.arguments)
+                result.success(shouldShowRequestPermissionRationale(permission))
+            }
             call.method == "openAppSettings" -> {
                 val isOpen = openAppSettings()
                 result.success(isOpen)
@@ -146,6 +150,37 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
         }
 
         return PermissionStatus.GRANTED
+    }
+
+    private fun shouldShowRequestPermissionRationale(permission: PermissionGroup) : Boolean {
+        val activity = registrar.activity()
+        if(activity == null)
+        {
+            Log.d(mLogTag, "Unable to detect current Activity.")
+            return false
+        }
+
+        val names = getManifestNames(permission)
+
+        // if isn't an android specific group then go ahead and return false;
+        if (names == null)
+        {
+            Log.d(mLogTag, "No android specific permissions needed for: $permission")
+            return false
+        }
+
+        if (names.isEmpty())
+        {
+            Log.d(mLogTag,"No permissions found in manifest for: $permission no need to show request rationale")
+            return false
+        }
+
+        for(name in names)
+        {
+            return ActivityCompat.shouldShowRequestPermissionRationale(activity, name)
+        }
+
+        return false
     }
 
     private fun requestPermissions(permissions: Array<PermissionGroup>) {
@@ -242,8 +277,8 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             return false
         }
 
-        try {
-            var settingsIntent = Intent()
+        return try {
+            val settingsIntent = Intent()
             settingsIntent.action = android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
             settingsIntent.addCategory(Intent.CATEGORY_DEFAULT)
             settingsIntent.data = android.net.Uri.parse("package:" + context.packageName)
@@ -253,9 +288,9 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
 
             context.startActivity(settingsIntent)
 
-            return true
+            true
         } catch(ex: Exception) {
-            return false
+            false
         }
     }
 
