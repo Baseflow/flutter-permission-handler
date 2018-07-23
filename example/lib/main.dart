@@ -24,14 +24,19 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     PermissionStatus permissionStatus;
+
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       permissionStatus = await PermissionHandler.checkPermissionStatus(PermissionGroup.calendar);
 
       if(permissionStatus != PermissionStatus.granted){
-        var permissions = await PermissionHandler.requestPermissions([PermissionGroup.calendar]);
-        if(permissions.containsKey(PermissionGroup.calendar)) {
-          permissionStatus = permissions[PermissionGroup.calendar];
+        final shouldShowRationale = await PermissionHandler.shouldShowRequestPermissionRationale(PermissionGroup.calendar);
+        
+        if(shouldShowRationale) {
+          var permissions = await PermissionHandler.requestPermissions([PermissionGroup.calendar]);
+          if(permissions.containsKey(PermissionGroup.calendar)) {
+            permissionStatus = permissions[PermissionGroup.calendar];
+          }
         }
       }
     } on PlatformException {
@@ -56,7 +61,15 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: new Center(
-          child: new Text('Running on: $_permissionStatus\n'),
+          child: new Column(
+            children: <Widget>[
+              new Text('Running on: $_permissionStatus\n'),
+              new RaisedButton(
+                child: new Text("Open settings"),
+                onPressed: () async => await PermissionHandler.openAppSettings(),
+              ),
+            ],
+          ),
         ),
       ),
     );
