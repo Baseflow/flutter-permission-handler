@@ -11,7 +11,22 @@ class PermissionHandler {
 
   /// Returns a [Future] containing the current permission status for the supplied [PermissionGroup].
   static Future<PermissionStatus> checkPermissionStatus(PermissionGroup permission) async {
-    final status = await _channel.invokeMethod('checkPermissionStatus', Codec.encodePermissionGroup(permission));
+    final status = await _channel.invokeMethod(
+      'checkPermissionStatus', 
+      Codec.encodePermissionGroup(permission));
+    
     return Codec.decodePermissionStatus(status);
+  }
+
+  static Future<bool> openAppSettings() async =>
+    await _channel.invokeMethod("openAppSettings");
+
+  static Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(List<PermissionGroup> permissions) async {
+    final jsonData = Codec.encodePermissionGroups(permissions);
+    final status = await _channel.invokeMethod(
+      'requestPermissions', 
+      jsonData);
+    
+    return Codec.decodePermissionRequestResult(status);
   }
 }
