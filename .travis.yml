@@ -16,7 +16,7 @@ matrix:
         - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
         - flutter doctor
       script:
-        - flutter analyze
+        - flutter analyze .
     # Job 2) Check format and run tests
     - os: linux
       jdk: oraclejdk8
