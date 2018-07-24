@@ -22,8 +22,8 @@ class PermissionHandler {
   ///
   /// Returns [true] if the app settings page could be opened, otherwise [false] is returned.
   static Future<bool> openAppSettings() async {
-      final bool hasOpened = await _channel.invokeMethod('openAppSettings');
-      return hasOpened;
+    final bool hasOpened = await _channel.invokeMethod('openAppSettings');
+    return hasOpened;
   }
 
   /// Request the user for access to the supplied list of permissiongroups.
@@ -32,7 +32,8 @@ class PermissionHandler {
   static Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
       List<PermissionGroup> permissions) async {
     final String jsonData = Codec.encodePermissionGroups(permissions);
-    final dynamic status = await _channel.invokeMethod('requestPermissions', jsonData);
+    final dynamic status =
+        await _channel.invokeMethod('requestPermissions', jsonData);
 
     return Codec.decodePermissionRequestResult(status);
   }
@@ -42,10 +43,11 @@ class PermissionHandler {
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
   static Future<bool> shouldShowRequestPermissionRationale(
-          PermissionGroup permission) async {
-    final bool shouldShowRationale = await _channel.invokeMethod('shouldShowRequestPermissionRationale',
-          Codec.encodePermissionGroup(permission));
-    
+      PermissionGroup permission) async {
+    final bool shouldShowRationale = await _channel.invokeMethod(
+        'shouldShowRequestPermissionRationale',
+        Codec.encodePermissionGroup(permission));
+
     return shouldShowRationale;
   }
 }

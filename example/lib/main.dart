@@ -35,8 +35,9 @@ class _MyAppState extends State<MyApp> {
             .shouldShowRequestPermissionRationale(PermissionGroup.calendar);
 
         if (shouldShowRationale) {
-          final Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler
-              .requestPermissions(<PermissionGroup>[PermissionGroup.calendar]);
+          final Map<PermissionGroup, PermissionStatus> permissions =
+              await PermissionHandler.requestPermissions(
+                  <PermissionGroup>[PermissionGroup.calendar]);
           if (permissions.containsKey(PermissionGroup.calendar)) {
             permissionStatus = permissions[PermissionGroup.calendar];
           }
