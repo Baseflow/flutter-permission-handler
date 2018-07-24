@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-cd ..
 
 # Format Dart code
 printf 'Formatting Dart code\n'
