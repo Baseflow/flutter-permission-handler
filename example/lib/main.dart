@@ -27,14 +27,17 @@ class _MyAppState extends State<MyApp> {
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      permissionStatus = await PermissionHandler.checkPermissionStatus(PermissionGroup.calendar);
+      permissionStatus = await PermissionHandler
+          .checkPermissionStatus(PermissionGroup.calendar);
 
-      if(permissionStatus != PermissionStatus.granted){
-        final shouldShowRationale = await PermissionHandler.shouldShowRequestPermissionRationale(PermissionGroup.calendar);
-        
-        if(shouldShowRationale) {
-          var permissions = await PermissionHandler.requestPermissions([PermissionGroup.calendar]);
-          if(permissions.containsKey(PermissionGroup.calendar)) {
+      if (permissionStatus != PermissionStatus.granted) {
+        final shouldShowRationale = await PermissionHandler
+            .shouldShowRequestPermissionRationale(PermissionGroup.calendar);
+
+        if (shouldShowRationale) {
+          var permissions = await PermissionHandler
+              .requestPermissions([PermissionGroup.calendar]);
+          if (permissions.containsKey(PermissionGroup.calendar)) {
             permissionStatus = permissions[PermissionGroup.calendar];
           }
         }
@@ -66,7 +69,8 @@ class _MyAppState extends State<MyApp> {
               new Text('Running on: $_permissionStatus\n'),
               new RaisedButton(
                 child: new Text("Open settings"),
-                onPressed: () async => await PermissionHandler.openAppSettings(),
+                onPressed: () async =>
+                    await PermissionHandler.openAppSettings(),
               ),
             ],
           ),
