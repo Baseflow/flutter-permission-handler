@@ -1,21 +1,70 @@
-os:
-  - linux
-sudo: false
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - libstdc++6
-      - fonts-droid
-before_script:
-  - git clone https://github.com/flutter/flutter.git -b master --depth 1
-  - ./flutter/bin/flutter doctor
-script:
-  - ./flutter/bin/flutter test --coverage --coverage-path=lcov.info
-after_success: 
-  # Still have to setup account at codecov.io
-  #- bash <(curl -s https://codecov.io/bash)
+matrix:
+  include:
+    # Job 1) Run analyzer
+    - os: linux
+      sudo: false
+      addons:
+        apt:
+          # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
+          sources:
+            - ubuntu-toolchain-r-test # if we don't specify this, the libstdc++6 we get is the wrong version
+          packages:
+            - libstdc++6
+            - fonts-droid
+      before_script:
+        - git clone https://github.com/flutter/flutter.git
+        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+        - flutter doctor
+      script:
+        - flutter analyze
+    # Job 2) Check format and run tests
+    - os: linux
+      jdk: oraclejdk8
+      sudo: false
+      addons:
+        apt:
+          # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
+          sources:
+            - ubuntu-toolchain-r-test # if we don't specify this, the libstdc++6 we get is the wrong version
+            - llvm-toolchain-precise # for clang-format-5.0
+          packages:
+            - libstdc++6
+            - fonts-droid
+            - clang-format-5.0
+      before_script:
+        - git clone https://github.com/flutter/flutter.git
+        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+        - flutter doctor
+      script:
+        - ./scripts/format_code.sh
+    # Job 3) Build example APKs and run Java tests
+    - os: linux
+      jdk: oraclejdk8
+      sudo: false
+      addons:
+        apt:
+          # Flutter depends on /usr/lib/x86_64-linux-gnu/libstdc++.so.6 version GLIBCXX_3.4.18
+          sources:
+            - ubuntu-toolchain-r-test # if we don't specify this, the libstdc++6 we get is the wrong version
+          packages:
+            - lib32stdc++6 # https://github.com/flutter/flutter/issues/6207
+            - libstdc++6
+            - fonts-droid
+      before_script:
+        - ./script/before_build_apks.sh
+        - export ANDROID_HOME=`pwd`/android-sdk
+        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+      script:
+        - ./scripts/build.sh apk
+    # Job 4) Build example IPAs
+    - os: osx
+      language: generic
+      osx_image: xcode9.3
+      before_script:
+        - ./script/before_build_ipas.sh
+        - export PATH=`pwd`/flutter/bin:`pwd`/flutter/bin/cache/dart-sdk/bin:$PATH
+      script:
+        - ./scripts/build.sh ipa
 cache:
   directories:
     - $HOME/.pub-cache
