@@ -16,9 +16,10 @@ matrix:
             - fonts-droid
       before_script:
         - ./scripts/before_build_apks.sh
-        - export ANDROID_HOME=`$HOME/android-sdk
+        - export ANDROID_HOME=$HOME/android-sdk
         - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
       script:
+        - cd ./example
         - flutter build apk
     # Job 2) Build example IPAs
     - os: osx
@@ -30,6 +31,7 @@ matrix:
         - ./scripts/before_build_ipas.sh
         - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
       script:
+        - cd ./example
         - flutter build ios --no-codesign
 cache:
   directories:
