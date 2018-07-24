@@ -14,8 +14,8 @@ matrix:
             - libstdc++6
             - fonts-droid
       before_script:
-        - git clone https://github.com/flutter/flutter.git --depth 1 ../flutter
-        - export PATH=`pwd`/../flutter/bin:`pwd`/../flutter/bin/cache/dart-sdk/bin:$PATH
+        - git clone https://github.com/flutter/flutter.git --depth 1 $HOME/flutter
+        - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
         - flutter doctor
         - flutter packages get
       script:
@@ -35,8 +35,8 @@ matrix:
             - fonts-droid
             - clang-format-5.0
       before_script:
-        - git clone https://github.com/flutter/flutter.git --depth 1 ../flutter
-        - export PATH=`pwd`/../flutter/bin:`pwd`/../flutter/bin/cache/dart-sdk/bin:$PATH
+        - git clone https://github.com/flutter/flutter.git --depth 1 $HOME/flutter
+        - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
         - flutter doctor
       script:
         - ./scripts/format_code.sh
@@ -54,14 +54,13 @@ matrix:
             - libstdc++6
             - fonts-droid
       before_script:
-        - git clone https://github.com/flutter/flutter.git --depth 1 ../flutter
-        - export PATH=`pwd`/../flutter/bin:`pwd`/../flutter/bin/cache/dart-sdk/bin:$PATH
-        - export ANDROID_HOME=`pwd`/android-sdk
+        - git clone https://github.com/flutter/flutter.git --depth 1 $HOME/flutter
+        - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
         - wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip
-        - mkdir android-sdk
-        - unzip -qq sdk-tools-linux-3859397.zip -d android-sdk
-        - export ANDROID_HOME=`pwd`/android-sdk
-        - export PATH=`pwd`/android-sdk/tools/bin:$PATH
+        - mkdir $HOME/android-sdk
+        - unzip -qq sdk-tools-linux-3859397.zip -d $HOME/android-sdk
+        - export ANDROID_HOME=$HOME/android-sdk
+        - export PATH=$HOME/android-sdk/tools/bin:$PATH
         - mkdir -p /home/travis/.android # silence sdkmanager warning
         - echo 'count=0' > /home/travis/.android/repositories.cfg # silence sdkmanager warning
         - echo y | sdkmanager "tools"
@@ -73,8 +72,9 @@ matrix:
         - echo y | sdkmanager "patcher;v4"
         - sdkmanager --list
         - wget http://services.gradle.org/distributions/gradle-3.5-bin.zip
-        - unzip -qq gradle-3.5-bin.zip
-        - export GRADLE_HOME=$PWD/gradle-3.5
+        - mkdir $HOME/gradle-3.5
+        - unzip -qq gradle-3.5-bin.zip -d $HOME/gradle-3.5
+        - export GRADLE_HOME=$HOME/gradle-3.5
         - export PATH=$GRADLE_HOME/bin:$PATH
         - gradle -v
         - flutter doctor
@@ -90,8 +90,8 @@ matrix:
         - brew install libimobiledevice
         - brew install ideviceinstaller
         - brew install ios-deploy
-        - git clone https://github.com/flutter/flutter.git --depth 1 ../flutter
-        - export PATH=`pwd`/../flutter/bin:`pwd`/../flutter/bin/cache/dart-sdk/bin:$PATH
+        - git clone https://github.com/flutter/flutter.git --depth 1 $HOME/flutter
+        - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
       script:
         - flutter build ios --no-codesign
 cache:
