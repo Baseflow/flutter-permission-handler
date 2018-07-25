@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_enums.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -27,14 +27,18 @@ class _MyAppState extends State<MyApp> {
 
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
-      permissionStatus = await PermissionHandler.checkPermissionStatus(PermissionGroup.calendar);
+      permissionStatus = await PermissionHandler
+          .checkPermissionStatus(PermissionGroup.calendar);
 
-      if(permissionStatus != PermissionStatus.granted){
-        final shouldShowRationale = await PermissionHandler.shouldShowRequestPermissionRationale(PermissionGroup.calendar);
-        
-        if(shouldShowRationale) {
-          var permissions = await PermissionHandler.requestPermissions([PermissionGroup.calendar]);
-          if(permissions.containsKey(PermissionGroup.calendar)) {
+      if (permissionStatus != PermissionStatus.granted) {
+        final bool shouldShowRationale = await PermissionHandler
+            .shouldShowRequestPermissionRationale(PermissionGroup.calendar);
+
+        if (shouldShowRationale) {
+          final Map<PermissionGroup, PermissionStatus> permissions =
+              await PermissionHandler.requestPermissions(
+                  <PermissionGroup>[PermissionGroup.calendar]);
+          if (permissions.containsKey(PermissionGroup.calendar)) {
             permissionStatus = permissions[PermissionGroup.calendar];
           }
         }
@@ -46,7 +50,9 @@ class _MyAppState extends State<MyApp> {
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     setState(() {
       _permissionStatus = permissionStatus.toString();
@@ -65,8 +71,9 @@ class _MyAppState extends State<MyApp> {
             children: <Widget>[
               new Text('Running on: $_permissionStatus\n'),
               new RaisedButton(
-                child: new Text("Open settings"),
-                onPressed: () async => await PermissionHandler.openAppSettings(),
+                child: const Text('Open settings'),
+                onPressed: () async =>
+                    await PermissionHandler.openAppSettings(),
               ),
             ],
           ),
