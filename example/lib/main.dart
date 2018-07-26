@@ -28,8 +28,9 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     try {
       permissionStatus = await PermissionHandler
-          .checkPermissionStatus(PermissionGroup.calendar);
+          .checkPermissionStatus(PermissionGroup.locationWhenInUse);
 
+/*
       if (permissionStatus != PermissionStatus.granted) {
         final shouldShowRationale = await PermissionHandler
             .shouldShowRequestPermissionRationale(PermissionGroup.calendar);
@@ -42,6 +43,7 @@ class _MyAppState extends State<MyApp> {
           }
         }
       }
+*/
     } on PlatformException {
       permissionStatus = PermissionStatus.unknown;
     }

@@ -2,6 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>arm64</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleExecutable</key>
@@ -41,5 +45,29 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Can I haz location?</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Music!</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>bluetooth</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Calendars</string>
+	<key>NSCameraUsageDescription</key>
+	<string>camera</string>
+	<key>NSContactsUsageDescription</key>
+	<string>contacts</string>
+	<key>kTCCServiceMediaLibrary</key>
+	<string>media</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>microphone</string>
+	<key>NSMotionUsageDescription</key>
+	<string>motion</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>photos</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>reminders</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>speech</string>
 </dict>
 </plist>
