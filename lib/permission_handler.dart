@@ -12,7 +12,7 @@ class PermissionHandler {
   /// Returns a [Future] containing the current permission status for the supplied [PermissionGroup].
   static Future<PermissionStatus> checkPermissionStatus(
       PermissionGroup permission) async {
-    final status = await _channel.invokeMethod(
+    final dynamic status = await _channel.invokeMethod(
         'checkPermissionStatus', Codec.encodePermissionGroup(permission));
 
     return Codec.decodePermissionStatus(status);
@@ -21,16 +21,19 @@ class PermissionHandler {
   /// Open the App settings page.
   ///
   /// Returns [true] if the app settings page could be opened, otherwise [false] is returned.
-  static Future<bool> openAppSettings() async =>
-      await _channel.invokeMethod("openAppSettings");
+  static Future<bool> openAppSettings() async {
+    final bool hasOpened = await _channel.invokeMethod('openAppSettings');
+    return hasOpened;
+  }
 
   /// Request the user for access to the supplied list of permissiongroups.
   ///
   /// Returns a [Map] containing the status per requested permissiongroup.
   static Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
       List<PermissionGroup> permissions) async {
-    final jsonData = Codec.encodePermissionGroups(permissions);
-    final status = await _channel.invokeMethod('requestPermissions', jsonData);
+    final String jsonData = Codec.encodePermissionGroups(permissions);
+    final dynamic status =
+        await _channel.invokeMethod('requestPermissions', jsonData);
 
     return Codec.decodePermissionRequestResult(status);
   }
@@ -40,7 +43,11 @@ class PermissionHandler {
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
   static Future<bool> shouldShowRequestPermissionRationale(
-          PermissionGroup permission) async =>
-      await _channel.invokeMethod('shouldShowRequestPermissionRationale',
-          Codec.encodePermissionGroup(permission));
+      PermissionGroup permission) async {
+    final bool shouldShowRationale = await _channel.invokeMethod(
+        'shouldShowRequestPermissionRationale',
+        Codec.encodePermissionGroup(permission));
+
+    return shouldShowRationale;
+  }
 }
