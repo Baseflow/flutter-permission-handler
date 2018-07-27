@@ -21,6 +21,8 @@ public class SwiftPermissionHandlerPlugin: NSObject, FlutterPlugin {
             PermissionManager.checkPermissionStatus(
                 permission: Codec.decodePermissionGroup(from: call.arguments),
                 result: result)
+        } else if call.method == "openAppSettings" {
+            PermissionManager.openAppSettings(result: result)
         } else {
             result(FlutterMethodNotImplemented)
         }
