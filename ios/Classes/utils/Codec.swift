@@ -19,7 +19,8 @@ struct Codec {
         return PermissionGroup(rawValue: permissionString)!
     }
     
-    static func encodePermissionStatus(permissionStatus: PermissionStatus) -> String {
-        return permissionStatus.rawValue
+    static func encodePermissionStatus(permissionStatus: PermissionStatus) -> String? {
+        let status = "\"" + permissionStatus.rawValue + "\""
+        return status
     }
 }
