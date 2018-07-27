@@ -30,6 +30,7 @@ class _MyAppState extends State<MyApp> {
       permissionStatus = await PermissionHandler
           .checkPermissionStatus(PermissionGroup.calendar);
 
+/*
       if (permissionStatus != PermissionStatus.granted) {
         final bool shouldShowRationale = await PermissionHandler
             .shouldShowRequestPermissionRationale(PermissionGroup.calendar);
@@ -38,11 +39,13 @@ class _MyAppState extends State<MyApp> {
           final Map<PermissionGroup, PermissionStatus> permissions =
               await PermissionHandler.requestPermissions(
                   <PermissionGroup>[PermissionGroup.calendar]);
+
           if (permissions.containsKey(PermissionGroup.calendar)) {
             permissionStatus = permissions[PermissionGroup.calendar];
           }
         }
       }
+*/
     } on PlatformException {
       permissionStatus = PermissionStatus.unknown;
     }
