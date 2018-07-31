@@ -33,4 +33,5 @@
 *.sdf     binary
 
 *.java linguist-language=Dart
+*.kt linguist-language=Dart
 *.swift linguist-language=Dart
