@@ -13,14 +13,16 @@ master  | [![Build Status](https://travis-ci.com/BaseflowIT/flutter-permission-h
 
 * Check if a permission is granted.
 * Request permission for a specific feature.
+* Open app settings so the user can enable a permission.
+* Show a rationale for requesting permission (Android).
 
 ## Usage
 
-To use this plugin, add `permission-handler` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/). For example:
+To use this plugin, add `permission_handler` as a [dependency in your pubspec.yaml file](https://flutter.io/platform-plugins/). For example:
 
 ```yaml
 dependencies:
-  permission-handler: '^1.0.0'
+  permission_handler: '^1.0.0'
 ```
 
 > **NOTE:** There's a known issue with integrating plugins that use Swift into a Flutter project created with the Objective-C template. See issue [Flutter#16049](https://github.com/flutter/flutter/issues/16049) for help on integration.
@@ -51,13 +53,15 @@ import 'package:permission_handler/permission_handler.dart';
 bool isOpened = await PermissionHandler().openAppSettings();
 ```
 
-### Show a rationale for requesting permission
+### Show a rationale for requesting permission (Android only)
 
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
 bool isShown = await PermissionHandler().shouldShowRequestPermissionRationale(PermissionGroup.Contacts);
 ```
+
+This will always return `false` on iOS.
 
 ### List of available permissions
 
