@@ -13,6 +13,14 @@ class MyApp extends StatelessWidget {
         home: new Scaffold(
       appBar: new AppBar(
         title: const Text('Plugin example app'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () {
+              PermissionHandler.openAppSettings();
+            },
+          )
+        ],
       ),
       body: new Center(
         child: new ListView(
@@ -20,14 +28,14 @@ class MyApp extends StatelessWidget {
                 .where((PermissionGroup permission) {
                   if (Platform.isIOS) {
                     return permission != PermissionGroup.unknown &&
-                           permission != PermissionGroup.phone &&
-                           permission != PermissionGroup.sms &&
-                           permission != PermissionGroup.storage;
+                        permission != PermissionGroup.phone &&
+                        permission != PermissionGroup.sms &&
+                        permission != PermissionGroup.storage;
                   } else {
                     return permission != PermissionGroup.unknown &&
-                           permission != PermissionGroup.mediaLibrary &&
-                           permission != PermissionGroup.photos &&
-                           permission != PermissionGroup.reminders;
+                        permission != PermissionGroup.mediaLibrary &&
+                        permission != PermissionGroup.photos &&
+                        permission != PermissionGroup.reminders;
                   }
                 })
                 .map((PermissionGroup permission) =>
@@ -61,9 +69,12 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void _listenForPermissionStatus() async {
-    print(_permissionGroup.toString());
-    _permissionStatus =
+    final PermissionStatus status =
         await PermissionHandler.checkPermissionStatus(_permissionGroup);
+
+    setState(() {
+      _permissionStatus = status;
+    });
   }
 
   Color getPermissionColor() {
@@ -86,18 +97,18 @@ class _PermissionState extends State<PermissionWidget> {
         style: new TextStyle(color: getPermissionColor()),
       ),
       onTap: () async {
-        if (_permissionStatus == PermissionStatus.unknown) {
-          final List<PermissionGroup> permissions = <PermissionGroup>[
-            _permissionGroup
-          ];
-          final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
-              await PermissionHandler.requestPermissions(permissions);
-
-          setState(() {
-            _permissionStatus = permissionRequestResult[_permissionGroup];
-          });
-        }
+        requestPermission(_permissionGroup); 
       },
     );
+  }
+
+  void requestPermission(PermissionGroup permission) async {
+    final List<PermissionGroup> permissions = <PermissionGroup>[permission];
+    final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
+        await PermissionHandler.requestPermissions(permissions);
+
+    setState(() {
+      _permissionStatus = permissionRequestResult[permission];
+    });
   }
 }

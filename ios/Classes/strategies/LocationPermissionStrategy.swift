@@ -9,6 +9,7 @@ import CoreLocation
 import Foundation
 
 class LocationPermissionStrategy : NSObject, PermissionStrategy, CLLocationManagerDelegate {
+    private var _locationManager: CLLocationManager? = nil
     private var _permissionStatusHandler: PermissionStatusHandler? = nil
     private var _requestedPermission: PermissionGroup? = nil
     
@@ -40,26 +41,29 @@ class LocationPermissionStrategy : NSObject, PermissionStrategy, CLLocationManag
         
         _permissionStatusHandler = completionHandler
         _requestedPermission = permission
-        let locationManager = CLLocationManager.init()
-        locationManager.delegate = self
         
-        if(permission != PermissionGroup.location) {
-            if (Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription") != nil) {
-                locationManager.requestWhenInUseAuthorization()
-            } else if (Bundle.main.object(forInfoDictionaryKey: "NSLocationAlwaysUsageDescription") != nil) {
-                locationManager.requestAlwaysAuthorization();
+        if(_locationManager == nil) {
+            _locationManager = CLLocationManager()
+            _locationManager!.delegate = self
+        }
+        
+        if(permission == PermissionGroup.location) {
+            if (Bundle.main.object(forInfoDictionaryKey: "NSLocationAlwaysUsageDescription") != nil) {
+                _locationManager!.requestAlwaysAuthorization()
+            } else if (Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription") != nil) {
+                _locationManager!.requestWhenInUseAuthorization();
             } else {
                 NSException(name: NSExceptionName.internalInconsistencyException, reason:"To use location in iOS8 you need to define either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in the app bundle's Info.plist file", userInfo: nil).raise()
             }
         } else if permission == PermissionGroup.locationAlways {
             if (Bundle.main.object(forInfoDictionaryKey: "NSLocationAlwaysUsageDescription") != nil) {
-                locationManager.requestAlwaysAuthorization();
+                _locationManager!.requestAlwaysAuthorization();
             } else {
                 NSException(name: NSExceptionName.internalInconsistencyException, reason:"To use location in iOS8 you need to define NSLocationAlwaysUsageDescription in the app bundle's Info.plist file", userInfo: nil).raise()
             }
         } else if permission == PermissionGroup.locationWhenInUse {
             if (Bundle.main.object(forInfoDictionaryKey: "NSLocationWhenInUseUsageDescription") != nil) {
-                locationManager.requestWhenInUseAuthorization();
+                _locationManager!.requestWhenInUseAuthorization();
             } else {
                 NSException(name: NSExceptionName.internalInconsistencyException, reason:"To use location in iOS8 you need to define NSLocationWhenInUseUsageDescription in the app bundle's Info.plist file", userInfo: nil).raise()
             }
@@ -67,6 +71,10 @@ class LocationPermissionStrategy : NSObject, PermissionStrategy, CLLocationManag
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == CLAuthorizationStatus.notDetermined {
+            return
+        }
+        
         guard let completionHandler = _permissionStatusHandler else { return }
         
         completionHandler(
