@@ -19,11 +19,6 @@ class AudioVideoPermissionStrategy : NSObject, PermissionStrategy {
         return PermissionStatus.unknown
     }
     
-    func requestPermission(permission: PermissionGroup) -> PermissionStatus {
-        // TODO: Add implementation
-        return PermissionStatus.unknown
-    }
-    
     private static func getPermissionStatus(mediaType: AVMediaType) -> PermissionStatus {
         let status: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: mediaType)
         
@@ -37,5 +32,34 @@ class AudioVideoPermissionStrategy : NSObject, PermissionStrategy {
         default:
             return PermissionStatus.unknown
         }
+    }
+    
+    func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
+        let permissionStatus = checkPermissionStatus(permission: permission)
+        
+        if permissionStatus != PermissionStatus.unknown {
+            completionHandler(permissionStatus)
+            return
+        }
+        
+        var mediaType: AVMediaType
+        
+        if permission == PermissionGroup.camera {
+            mediaType = AVMediaType.video
+        } else if permission == PermissionGroup.microphone {
+            mediaType = AVMediaType.audio
+        } else {
+            completionHandler(PermissionStatus.unknown)
+            return
+        }
+        
+        AVCaptureDevice.requestAccess(for: mediaType, completionHandler: {
+            (granted: Bool) in
+                if granted {
+                    completionHandler(PermissionStatus.granted)
+                } else {
+                    completionHandler(PermissionStatus.denied)
+                }
+        })
     }
 }

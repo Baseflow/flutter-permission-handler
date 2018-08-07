@@ -19,8 +19,28 @@ struct Codec {
         return PermissionGroup(rawValue: permissionString)!
     }
     
+    static func decodePermissionGroups(from arguments: Any?) -> [PermissionGroup] {
+        let data = (arguments as! String).data(using: .utf8)
+        let permissions = try! jsonDecoder.decode([PermissionGroup].self, from: data!)
+
+        return permissions
+    }
+    
     static func encodePermissionStatus(permissionStatus: PermissionStatus) -> String? {
         let status = "\"" + permissionStatus.rawValue + "\""
         return status
+    }
+    
+    static func encodePermissionRequestResult(permissionStatusResult: [PermissionGroup: PermissionStatus]) -> String? {
+        let jsonDict = Dictionary(uniqueKeysWithValues:
+            permissionStatusResult.map {
+                (key: PermissionGroup, value: PermissionStatus) in (key.rawValue, value.rawValue)
+                
+        })
+        
+        let jsonData = try! JSONSerialization.data(withJSONObject: jsonDict, options: [])
+        let jsonString = String(data: jsonData, encoding: .utf8)!
+
+        return jsonString
     }
 }

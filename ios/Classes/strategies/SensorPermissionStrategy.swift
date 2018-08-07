@@ -14,11 +14,6 @@ class SensorPermissionStrategy : NSObject, PermissionStrategy {
         return SensorPermissionStrategy.getPermissionStatus()
     }
     
-    func requestPermission(permission: PermissionGroup) -> PermissionStatus {
-        // TODO: Add implementation
-        return PermissionStatus.unknown
-    }
-    
     private static func getPermissionStatus() -> PermissionStatus {
         if !CMMotionActivityManager.isActivityAvailable() {
             return PermissionStatus.disabled
@@ -40,5 +35,27 @@ class SensorPermissionStrategy : NSObject, PermissionStrategy {
         }
         
         return PermissionStatus.unknown
+    }
+    
+    func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
+        let status = checkPermissionStatus(permission: permission)
+        
+        if status != PermissionStatus.unknown {
+            completionHandler(status)
+            return
+        }
+        
+        if #available(iOS 11.0, *) {
+            let motionManager = CMMotionActivityManager.init()
+            
+            motionManager.queryActivityStarting(from: NSDate.distantPast, to: NSDate.distantFuture, to: OperationQueue.main) {
+                (results: [CMMotionActivity]?, error: Error?) in
+                    if results != nil {
+                        completionHandler(PermissionStatus.granted)
+                    } else {
+                        completionHandler(PermissionStatus.denied)
+                    }
+            }
+        }
     }
 }

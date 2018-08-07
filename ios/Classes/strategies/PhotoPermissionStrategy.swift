@@ -14,15 +14,28 @@ class PhotoPermissionStrategy : NSObject, PermissionStrategy {
         return PhotoPermissionStrategy.getPermissionStatus()
     }
     
-    func requestPermission(permission: PermissionGroup) -> PermissionStatus {
-        // TODO: Add implementation
-        return PermissionStatus.unknown
-    }
-    
     private static func getPermissionStatus() -> PermissionStatus {
         let status: PHAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
         
-        switch status {
+        return PhotoPermissionStrategy.determinePermissionStatus(authorizationStatus: status)
+    }
+    
+    func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
+        let status = checkPermissionStatus(permission: permission)
+        
+        if status != PermissionStatus.unknown {
+            completionHandler(status)
+            return
+        }
+        
+        PHPhotoLibrary.requestAuthorization { (authorizationStatus: PHAuthorizationStatus) in
+            completionHandler(
+                PhotoPermissionStrategy.determinePermissionStatus(authorizationStatus: authorizationStatus))
+        }
+    }
+    
+    private static func determinePermissionStatus(authorizationStatus: PHAuthorizationStatus) -> PermissionStatus {
+        switch authorizationStatus {
         case PHAuthorizationStatus.authorized:
             return PermissionStatus.granted
         case PHAuthorizationStatus.denied:
