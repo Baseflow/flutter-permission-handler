@@ -13,9 +13,38 @@ class PermissionManager: NSObject {
     
     static func checkPermissionStatus(permission: PermissionGroup, result: @escaping FlutterResult) {
         let permissionStrategy = PermissionManager.createPermissionStrategy(permission: permission)
-        let permissionStatus = permissionStrategy.checkPermissionStatus(permission: permission)
+        let permissionStatus = permissionStrategy?.checkPermissionStatus(permission: permission) ?? PermissionStatus.unknown
         
         result(Codec.encodePermissionStatus(permissionStatus: permissionStatus))
+    }
+    
+    static func requestPermission(permissions: [PermissionGroup], result: @escaping FlutterResult) {
+        var requestQueue = Set(permissions.map { $0 })
+        var permissionStatusResult: [PermissionGroup: PermissionStatus] = [:]
+        
+        for permission in permissions {
+            let permissionStrategy = PermissionManager.createPermissionStrategy(permission: permission)
+        
+            if permissionStrategy == nil {
+                permissionStatusResult[permission] = PermissionStatus.unknown
+                requestQueue.remove(permission)
+                
+                if requestQueue.count == 0 {
+                    result(Codec.encodePermissionRequestResult(permissionStatusResult: permissionStatusResult))
+                    return
+                }
+            } else {
+                permissionStrategy!.requestPermission(permission: permission) { (permissionStatus: PermissionStatus) in
+                    permissionStatusResult[permission] = permissionStatus
+                    requestQueue.remove(permission)
+                    
+                    if requestQueue.count == 0 {
+                        result(Codec.encodePermissionRequestResult(permissionStatusResult: permissionStatusResult))
+                        return
+                    }
+                }
+            }
+        }
     }
     
     static func openAppSettings(result: @escaping FlutterResult) {
@@ -34,7 +63,7 @@ class PermissionManager: NSObject {
         result(false)
     }
     
-    private static func createPermissionStrategy(permission: PermissionGroup) -> PermissionStrategy {
+    private static func createPermissionStrategy(permission: PermissionGroup) -> PermissionStrategy? {
         switch permission {
         case PermissionGroup.calendar:
             return EventPermissionStrategy()
@@ -58,6 +87,8 @@ class PermissionManager: NSObject {
             return SensorPermissionStrategy()
         case PermissionGroup.speech:
             return SpeechPermissionStrategy()
+        default:
+            return nil
         }
     }
 }

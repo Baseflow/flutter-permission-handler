@@ -20,11 +20,6 @@ class EventPermissionStrategy : NSObject, PermissionStrategy {
         return PermissionStatus.unknown
     }
     
-    func requestPermission(permission: PermissionGroup) -> PermissionStatus {
-        // TODO: Add implementation
-        return PermissionStatus.unknown
-    }
-    
     private static func getPermissionStatus(entityType: EKEntityType) -> PermissionStatus {
         let status: EKAuthorizationStatus = EKEventStore.authorizationStatus(for: entityType)
         
@@ -38,6 +33,35 @@ class EventPermissionStrategy : NSObject, PermissionStrategy {
         default:
             return PermissionStatus.unknown
             
+        }
+    }
+    
+    func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
+        let permissionStatus = checkPermissionStatus(permission: permission)
+        
+        if permissionStatus != PermissionStatus.unknown {
+            completionHandler(permissionStatus)
+            return
+        }
+        
+        var entityType: EKEntityType
+        
+        if permission == PermissionGroup.calendar {
+            entityType = EKEntityType.event
+        } else if permission == PermissionGroup.reminders {
+            entityType = EKEntityType.reminder
+        } else {
+            completionHandler(PermissionStatus.unknown)
+            return
+        }
+        
+        let eventStore: EKEventStore = EKEventStore.init()
+        eventStore.requestAccess(to: entityType) { (granted: Bool, error: Error?) in
+            if granted {
+                completionHandler(PermissionStatus.granted)
+            } else {
+                completionHandler(PermissionStatus.denied)
+            }
         }
     }
 }
