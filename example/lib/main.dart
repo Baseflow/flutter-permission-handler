@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_enums.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -5,20 +7,32 @@ import 'package:permission_handler/permission_handler.dart';
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new Scaffold(
-        appBar: new AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: new Center(
-          child: new ListView(
+        home: new Scaffold(
+      appBar: new AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: new Center(
+        child: new ListView(
             children: PermissionGroup.values
-              .where((PermissionGroup permission) => permission != PermissionGroup.unknown)
-              .map((PermissionGroup permission) => new PermissionWidget(permission)).toList()
-        ),
+                .where((PermissionGroup permission) {
+                  if (Platform.isIOS) {
+                    return permission != PermissionGroup.unknown &&
+                           permission != PermissionGroup.phone &&
+                           permission != PermissionGroup.sms &&
+                           permission != PermissionGroup.storage;
+                  } else {
+                    return permission != PermissionGroup.unknown &&
+                           permission != PermissionGroup.mediaLibrary &&
+                           permission != PermissionGroup.photos &&
+                           permission != PermissionGroup.reminders;
+                  }
+                })
+                .map((PermissionGroup permission) =>
+                    new PermissionWidget(permission))
+                .toList()),
       ),
     ));
   }
@@ -38,7 +52,7 @@ class _PermissionState extends State<PermissionWidget> {
   PermissionStatus _permissionStatus = PermissionStatus.unknown;
 
   _PermissionState(this._permissionGroup);
-  
+
   @override
   void initState() {
     super.initState();
@@ -48,14 +62,42 @@ class _PermissionState extends State<PermissionWidget> {
 
   void _listenForPermissionStatus() async {
     print(_permissionGroup.toString());
-    _permissionStatus = await PermissionHandler.checkPermissionStatus(_permissionGroup);
+    _permissionStatus =
+        await PermissionHandler.checkPermissionStatus(_permissionGroup);
   }
 
-    @override
+  Color getPermissionColor() {
+    switch (_permissionStatus) {
+      case PermissionStatus.denied:
+        return Colors.red;
+      case PermissionStatus.granted:
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return new ListTile(
       title: new Text(_permissionGroup.toString()),
-      subtitle: new Text(_permissionStatus.toString()),
+      subtitle: new Text(
+        _permissionStatus.toString(),
+        style: new TextStyle(color: getPermissionColor()),
+      ),
+      onTap: () async {
+        if (_permissionStatus == PermissionStatus.unknown) {
+          final List<PermissionGroup> permissions = <PermissionGroup>[
+            _permissionGroup
+          ];
+          final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
+              await PermissionHandler.requestPermissions(permissions);
+
+          setState(() {
+            _permissionStatus = permissionRequestResult[_permissionGroup];
+          });
+        }
+      },
     );
   }
 }
