@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_enums.dart';
@@ -44,6 +45,11 @@ class PermissionHandler {
   /// returns [false].
   static Future<bool> shouldShowRequestPermissionRationale(
       PermissionGroup permission) async {
+
+    if (!Platform.isAndroid) { 
+      return false;
+    }
+
     final bool shouldShowRationale = await _channel.invokeMethod(
         'shouldShowRequestPermissionRationale',
         Codec.encodePermissionGroup(permission));

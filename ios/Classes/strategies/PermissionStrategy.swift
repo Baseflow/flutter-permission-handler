@@ -7,7 +7,9 @@
 
 import Foundation
 
+typealias PermissionStatusHandler = (_ permissionStatus: PermissionStatus) -> Void
+
 protocol PermissionStrategy {
     func checkPermissionStatus(permission: PermissionGroup) -> PermissionStatus
-    func requestPermission(permission: PermissionGroup) -> PermissionStatus
+    func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler)
 }

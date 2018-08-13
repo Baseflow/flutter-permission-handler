@@ -12,11 +12,11 @@ class Codec {
 
   static Map<PermissionGroup, PermissionStatus> decodePermissionRequestResult(
       dynamic value) {
-    final dynamic jsonObject = json.decode(value.toString());
+    final Map<String, dynamic> jsonObject = json.decode(value.toString());
 
     final Map<PermissionGroup, PermissionStatus> permissionResults =
         <PermissionGroup, PermissionStatus>{};
-    jsonObject.forEach((PermissionGroup key, PermissionStatus value) {
+    jsonObject.forEach((String key, dynamic value) {
       final PermissionGroup permissionGroup = PermissionGroup.values.firstWhere(
           (PermissionGroup e) =>
               e.toString().split('.').last == key.toString());
