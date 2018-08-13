@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import Swift
 
+typealias PermissionRequestCompletion = (_ permissionRequestResults: [PermissionGroup:PermissionStatus]) -> ()
+
 class PermissionManager: NSObject {
     private var _strategyInstances: [ObjectIdentifier: PermissionStrategy] = [:]
     
@@ -20,7 +22,7 @@ class PermissionManager: NSObject {
         result(Codec.encodePermissionStatus(permissionStatus: permissionStatus))
     }
     
-    func requestPermission(permissions: [PermissionGroup], result: @escaping FlutterResult) {
+    func requestPermissions(permissions: [PermissionGroup], completion: @escaping PermissionRequestCompletion) {
         var requestQueue = Set(permissions.map { $0 })
         var permissionStatusResult: [PermissionGroup: PermissionStatus] = [:]
         
@@ -35,7 +37,7 @@ class PermissionManager: NSObject {
                 self._strategyInstances.removeValue(forKey: ObjectIdentifier(permissionStrategy as AnyObject))
                 
                 if requestQueue.count == 0 {
-                    result(Codec.encodePermissionRequestResult(permissionStatusResult: permissionStatusResult))
+                    completion(permissionStatusResult)
                     return
                 }
             }
