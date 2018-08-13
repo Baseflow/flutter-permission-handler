@@ -220,10 +220,14 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             }
         }
 
-        ActivityCompat.requestPermissions(
-                registrar.activity(),
-                permissionsToRequest.toTypedArray(),
-                permissionCode)
+        if (permissionsToRequest.count() > 0) {
+            ActivityCompat.requestPermissions(
+                    registrar.activity(),
+                    permissionsToRequest.toTypedArray(),
+                    permissionCode)
+        } else if (mRequestResults.count() > 0) {
+            processResult()
+        }
     }
 
     private fun handlePermissionsRequest(permissions: Array<String>, grantResults: IntArray) {

@@ -9,6 +9,7 @@ import UIKit
     
 public class SwiftPermissionHandlerPlugin: NSObject, FlutterPlugin {
     private static let METHOD_CHANNEL_NAME = "flutter.baseflow.com/permissions/methods";
+    private let _permissionManager: PermissionManager = PermissionManager()
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: METHOD_CHANNEL_NAME, binaryMessenger: registrar.messenger())
@@ -18,15 +19,17 @@ public class SwiftPermissionHandlerPlugin: NSObject, FlutterPlugin {
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if call.method == "checkPermissionStatus" {
+            let permission: PermissionGroup = Codec.decodePermissionGroup(from: call.arguments)
+            
             PermissionManager.checkPermissionStatus(
-                permission: Codec.decodePermissionGroup(
-                    from: call.arguments),
-                    result: result)
+                permission: permission,
+                result: result)
         } else if call.method == "requestPermissions" {
-            PermissionManager.requestPermission(
-                permissions: Codec.decodePermissionGroups(
-                    from: call.arguments),
-                    result: result)
+            let permissions: [PermissionGroup] = Codec.decodePermissionGroups(from: call.arguments)
+            
+            _permissionManager.requestPermission(
+                permissions: permissions,
+                result: result)
         } else if call.method == "shouldShowRequestPermissionRationale" {
             result(false)
         } else if call.method == "openAppSettings" {

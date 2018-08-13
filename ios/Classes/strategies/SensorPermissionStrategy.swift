@@ -48,14 +48,13 @@ class SensorPermissionStrategy : NSObject, PermissionStrategy {
         if #available(iOS 11.0, *) {
             let motionManager = CMMotionActivityManager.init()
             
-            motionManager.queryActivityStarting(from: NSDate.distantPast, to: NSDate.distantFuture, to: OperationQueue.main) {
-                (results: [CMMotionActivity]?, error: Error?) in
-                    if results != nil {
-                        completionHandler(PermissionStatus.granted)
-                    } else {
-                        completionHandler(PermissionStatus.denied)
-                    }
+            motionManager.startActivityUpdates(to: OperationQueue.main) { (_) in
+                motionManager.stopActivityUpdates()
+                
+                completionHandler(.granted)
             }
+        } else {
+            completionHandler(.unknown)
         }
     }
 }
