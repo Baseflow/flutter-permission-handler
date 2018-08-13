@@ -99,7 +99,7 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             call.method == "requestPermissions" -> {
                 if (mResult != null) {
                     result.error(
-                            "ERROR_ALREADY_REQUESTED_PERMISSIONS",
+                            "ERROR_ALREADY_REQUESTING_PERMISSIONS",
                             "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).",
                             null)
                 }
