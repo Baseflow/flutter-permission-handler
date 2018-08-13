@@ -38,9 +38,9 @@ class SpeechPermissionStrategy : NSObject, PermissionStrategy {
                     SpeechPermissionStrategy.determinePermissionStatus(authorizationStatus: authorizationStatus))
                 return
             }
+        } else {
+            completionHandler(PermissionStatus.unknown)
         }
-        
-        completionHandler(PermissionStatus.unknown)
     }
     
     @available(iOS 10.0, *)
