@@ -19,15 +19,17 @@ public class SwiftPermissionHandlerPlugin: NSObject, FlutterPlugin {
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         if call.method == "checkPermissionStatus" {
+            let permission: PermissionGroup = Codec.decodePermissionGroup(from: call.arguments)
+            
             PermissionManager.checkPermissionStatus(
-                permission: Codec.decodePermissionGroup(
-                    from: call.arguments),
-                    result: result)
+                permission: permission,
+                result: result)
         } else if call.method == "requestPermissions" {
+            let permissions: [PermissionGroup] = Codec.decodePermissionGroups(from: call.arguments)
+            
             _permissionManager.requestPermission(
-                permissions: Codec.decodePermissionGroups(
-                    from: call.arguments),
-                    result: result)
+                permissions: permissions,
+                result: result)
         } else if call.method == "shouldShowRequestPermissionRationale" {
             result(false)
         } else if call.method == "openAppSettings" {
