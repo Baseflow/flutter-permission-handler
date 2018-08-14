@@ -49,8 +49,7 @@ class PermissionHandler {
   /// returns [false].
   static Future<bool> shouldShowRequestPermissionRationale(
       PermissionGroup permission) async {
-
-    if (!Platform.isAndroid) { 
+    if (!Platform.isAndroid) {
       return false;
     }
 

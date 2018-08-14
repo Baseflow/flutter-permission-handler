@@ -96,7 +96,7 @@ class _PermissionState extends State<PermissionWidget> {
         style: new TextStyle(color: getPermissionColor()),
       ),
       onTap: () async {
-        requestPermission(_permissionGroup); 
+        requestPermission(_permissionGroup);
       },
     );
   }
