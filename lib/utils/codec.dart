@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:permission_handler/permission_enums.dart';
+part of permission_handler;
 
 class Codec {
   static PermissionStatus decodePermissionStatus(dynamic value) {
