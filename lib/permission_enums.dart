@@ -1,3 +1,5 @@
+part of permission_handler;
+
 /// Defines the state of a permission group
 enum PermissionStatus {
   /// Permission to access the requested feature is denied by the user.

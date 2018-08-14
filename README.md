@@ -34,7 +34,7 @@ dependencies:
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions(PermissionGroup.Contacts);
+Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler.requestPermissions([PermissionGroup.contacts]);
 ```
 
 ### Checking permission
@@ -42,7 +42,7 @@ Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().r
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.Contacts);
+PermissionStatus permission = await PermissionHandler.checkPermissionStatus(PermissionGroup.contacts);
 ```
 
 ### Open app settings
@@ -50,7 +50,7 @@ PermissionStatus permission = await PermissionHandler().checkPermissionStatus(Pe
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-bool isOpened = await PermissionHandler().openAppSettings();
+bool isOpened = await PermissionHandler.openAppSettings();
 ```
 
 ### Show a rationale for requesting permission (Android only)
@@ -58,7 +58,7 @@ bool isOpened = await PermissionHandler().openAppSettings();
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-bool isShown = await PermissionHandler().shouldShowRequestPermissionRationale(PermissionGroup.Contacts);
+bool isShown = await PermissionHandler.shouldShowRequestPermissionRationale(PermissionGroup.contacts);
 ```
 
 This will always return `false` on iOS.
