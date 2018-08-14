@@ -1,9 +1,13 @@
+library permission_handler;
+
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_enums.dart';
-import 'package:permission_handler/utils/codec.dart';
+
+part 'package:permission_handler/permission_enums.dart';
+part 'package:permission_handler/utils/codec.dart';
 
 /// Provides a cross-platform (iOS, Android) API to request and check permissions.
 class PermissionHandler {
@@ -45,8 +49,7 @@ class PermissionHandler {
   /// returns [false].
   static Future<bool> shouldShowRequestPermissionRationale(
       PermissionGroup permission) async {
-
-    if (!Platform.isAndroid) { 
+    if (!Platform.isAndroid) {
       return false;
     }
 

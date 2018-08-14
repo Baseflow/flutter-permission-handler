@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_enums.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(new MyApp());
@@ -97,7 +96,7 @@ class _PermissionState extends State<PermissionWidget> {
         style: new TextStyle(color: getPermissionColor()),
       ),
       onTap: () async {
-        requestPermission(_permissionGroup); 
+        requestPermission(_permissionGroup);
       },
     );
   }
