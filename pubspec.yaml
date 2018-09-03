@@ -7,6 +7,8 @@ homepage: https://github.com/baseflowit/flutter-permission-handler
 dependencies:
   flutter:
     sdk: flutter
+  
+  meta: ^1.1.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
