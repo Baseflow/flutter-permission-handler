@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              PermissionHandler.openAppSettings();
+              PermissionHandler().openAppSettings();
             },
           )
         ],
@@ -69,7 +69,7 @@ class _PermissionState extends State<PermissionWidget> {
 
   void _listenForPermissionStatus() async {
     final PermissionStatus status =
-        await PermissionHandler.checkPermissionStatus(_permissionGroup);
+        await PermissionHandler().checkPermissionStatus(_permissionGroup);
 
     setState(() {
       _permissionStatus = status;
@@ -104,7 +104,7 @@ class _PermissionState extends State<PermissionWidget> {
   void requestPermission(PermissionGroup permission) async {
     final List<PermissionGroup> permissions = <PermissionGroup>[permission];
     final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
-        await PermissionHandler.requestPermissions(permissions);
+        await PermissionHandler().requestPermissions(permissions);
 
     setState(() {
       _permissionStatus = permissionRequestResult[permission];
