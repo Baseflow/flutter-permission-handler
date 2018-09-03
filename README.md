@@ -22,7 +22,7 @@ To use this plugin, add `permission_handler` as a [dependency in your pubspec.ya
 
 ```yaml
 dependencies:
-  permission_handler: '^1.0.1'
+  permission_handler: '^2.0.0'
 ```
 
 > **NOTE:** There's a known issue with integrating plugins that use Swift into a Flutter project created with the Objective-C template. See issue [Flutter#16049](https://github.com/flutter/flutter/issues/16049) for help on integration.
@@ -34,7 +34,7 @@ dependencies:
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler.requestPermissions([PermissionGroup.contacts]);
+Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([PermissionGroup.contacts]);
 ```
 
 ### Checking permission
@@ -42,7 +42,7 @@ Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler.req
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-PermissionStatus permission = await PermissionHandler.checkPermissionStatus(PermissionGroup.contacts);
+PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
 ```
 
 ### Open app settings
@@ -50,7 +50,7 @@ PermissionStatus permission = await PermissionHandler.checkPermissionStatus(Perm
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-bool isOpened = await PermissionHandler.openAppSettings();
+bool isOpened = await PermissionHandler().openAppSettings();
 ```
 
 ### Show a rationale for requesting permission (Android only)
@@ -58,7 +58,7 @@ bool isOpened = await PermissionHandler.openAppSettings();
 ``` dart
 import 'package:permission_handler/permission_handler.dart';
 
-bool isShown = await PermissionHandler.shouldShowRequestPermissionRationale(PermissionGroup.contacts);
+bool isShown = await PermissionHandler().shouldShowRequestPermissionRationale(PermissionGroup.contacts);
 ```
 
 This will always return `false` on iOS.
