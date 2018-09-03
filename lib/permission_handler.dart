@@ -14,7 +14,7 @@ part 'package:permission_handler/utils/codec.dart';
 class PermissionHandler {
   factory PermissionHandler() {
     if (_instance == null) {
-      final MethodChannel methodChannel =
+      const MethodChannel methodChannel =
           const MethodChannel('flutter.baseflow.com/permissions/methods');
 
       _instance = new PermissionHandler.private(methodChannel);
