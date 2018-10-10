@@ -1,3 +1,8 @@
+## 2.0.1
+
+* Fix bug with dependency on `com.android.support:support-compat` library
+* Update used Kotlin and Gradle versions
+
 ## 2.0.0
 
 * Make methods non static so users can create an instance or override
