@@ -46,19 +46,19 @@ class MyApp extends StatelessWidget {
 }
 
 class PermissionWidget extends StatefulWidget {
-  final PermissionGroup _permissionGroup;
-
   const PermissionWidget(this._permissionGroup);
+
+  final PermissionGroup _permissionGroup;
 
   @override
   _PermissionState createState() => _PermissionState(_permissionGroup);
 }
 
 class _PermissionState extends State<PermissionWidget> {
+  _PermissionState(this._permissionGroup);
+
   final PermissionGroup _permissionGroup;
   PermissionStatus _permissionStatus = PermissionStatus.unknown;
-
-  _PermissionState(this._permissionGroup);
 
   @override
   void initState() {
