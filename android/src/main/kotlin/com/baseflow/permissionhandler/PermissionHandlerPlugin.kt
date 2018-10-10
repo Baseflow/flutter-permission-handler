@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -18,6 +19,10 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugin.common.PluginRegistry.Registrar
+import android.text.TextUtils
+import android.provider.Settings.SettingNotFoundException
+
+
 
 class PermissionHandlerPlugin(private val registrar: Registrar, private var requestedPermissions: MutableList<String>? = null) : MethodCallHandler {
     private var mRequestResults = mutableMapOf<PermissionGroup, PermissionStatus>()
@@ -149,6 +154,12 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             }
         }
 
+        if (permission == PermissionGroup.LOCATION || permission == PermissionGroup.LOCATION_ALWAYS || permission == PermissionGroup.LOCATION_WHEN_IN_USE) {
+            if (!isLocationServiceEnabled(context)) {
+                return PermissionStatus.DISABLED
+            }
+        }
+
         return PermissionStatus.GRANTED
     }
 
@@ -245,16 +256,20 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
                     mRequestResults[PermissionGroup.SPEECH] = grantResults[i].toPermissionStatus()
                 }
             } else if (permission == PermissionGroup.LOCATION) {
+                val context: Context? = registrar.activity() ?: registrar.activeContext()
+                val isLocationServiceEnabled= if (context == null) false else isLocationServiceEnabled(context)
+                val permissionStatus = if (isLocationServiceEnabled) grantResults[i].toPermissionStatus() else PermissionStatus.DISABLED
+
                 if (!mRequestResults.containsKey(PermissionGroup.LOCATION_ALWAYS)) {
-                    mRequestResults[PermissionGroup.LOCATION_ALWAYS] = grantResults[i].toPermissionStatus()
+                    mRequestResults[PermissionGroup.LOCATION_ALWAYS] = permissionStatus
                 }
 
                 if (!mRequestResults.containsKey(PermissionGroup.LOCATION_WHEN_IN_USE)) {
-                    mRequestResults[PermissionGroup.LOCATION_WHEN_IN_USE] = grantResults[i].toPermissionStatus()
+                    mRequestResults[PermissionGroup.LOCATION_WHEN_IN_USE] = permissionStatus
                 }
-            }
 
-            if (!mRequestResults.containsKey(permission)) {
+                mRequestResults[permission] = permissionStatus
+            } else if (!mRequestResults.containsKey(permission)) {
                 mRequestResults[permission] = grantResults[i].toPermissionStatus()
             }
 
@@ -434,6 +449,27 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             Log.d(mLogTag, "Unable to check manifest for permission: $ex")
         }
         return false
+    }
+
+    private fun isLocationServiceEnabled(context: Context): Boolean {
+        val locationMode: Int
+        val locationProviders: String
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            try {
+                locationMode = Settings.Secure.getInt(context.contentResolver, Settings.Secure.LOCATION_MODE)
+
+            } catch (e: SettingNotFoundException) {
+                e.printStackTrace()
+                return false
+            }
+
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF
+
+        } else {
+            locationProviders = Settings.Secure.getString(context.contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
+            return !TextUtils.isEmpty(locationProviders)
+        }
     }
 
     private fun handleSuccess(permissionStatus: PermissionStatus, result: Result?) {
