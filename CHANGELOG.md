@@ -1,3 +1,7 @@
+## 2.1.0
+
+* Added Android support to check if location services are enabled. If location services are not running the permission check returns `PermissionStatus.DISABLED`.
+
 ## 2.0.1
 
 * Fix bug with dependency on `com.android.support:support-compat` library
