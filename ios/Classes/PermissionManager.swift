@@ -47,12 +47,12 @@ class PermissionManager: NSObject {
     static func openAppSettings(result: @escaping FlutterResult) {
         if #available(iOS 8.0, *) {
             if #available(iOS 10, *) {
-                UIApplication.shared.open(URL.init(string: UIApplicationOpenSettingsURLString)!, options: [:],
+                UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]),
                                           completionHandler: {
                                             (success) in result(success)
                                           })
             } else {
-                let success = UIApplication.shared.openURL(URL.init(string: UIApplicationOpenSettingsURLString)!)
+                let success = UIApplication.shared.openURL(URL.init(string: UIApplication.openSettingsURLString)!)
                 result(success)
             }
         }
@@ -88,4 +88,9 @@ class PermissionManager: NSObject {
             return UnknownPermissionStrategy()
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertToUIApplicationOpenExternalURLOptionsKeyDictionary(_ input: [String: Any]) -> [UIApplication.OpenExternalURLOptionsKey: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (UIApplication.OpenExternalURLOptionsKey(rawValue: key), value)})
 }
