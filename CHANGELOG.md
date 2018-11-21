@@ -1,3 +1,9 @@
+## 2.1.1
+
+* Update to the latest version of Swift (4.2);
+* Make sure that the correct Swift version is set in the `Podfile` of consuming Apps;
+* Updated configuration for statis code analyses, so it complies with the Flutter recommendations.
+
 ## 2.1.0
 
 * Added Android support to check if location services are enabled. If location services are not running the permission check returns `PermissionStatus.DISABLED`.

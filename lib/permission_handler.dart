@@ -15,9 +15,9 @@ class PermissionHandler {
   factory PermissionHandler() {
     if (_instance == null) {
       const MethodChannel methodChannel =
-          const MethodChannel('flutter.baseflow.com/permissions/methods');
+          MethodChannel('flutter.baseflow.com/permissions/methods');
 
-      _instance = new PermissionHandler.private(methodChannel);
+      _instance = PermissionHandler.private(methodChannel);
     }
     return _instance;
   }

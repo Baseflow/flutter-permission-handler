@@ -3,14 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-        home: new Scaffold(
-      appBar: new AppBar(
+    return MaterialApp(
+        home: Scaffold(
+      appBar: AppBar(
         title: const Text('Plugin example app'),
         actions: <Widget>[
           IconButton(
@@ -21,8 +21,8 @@ class MyApp extends StatelessWidget {
           )
         ],
       ),
-      body: new Center(
-        child: new ListView(
+      body: Center(
+        child: ListView(
             children: PermissionGroup.values
                 .where((PermissionGroup permission) {
                   if (Platform.isIOS) {
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
                   }
                 })
                 .map((PermissionGroup permission) =>
-                    new PermissionWidget(permission))
+                    PermissionWidget(permission))
                 .toList()),
       ),
     ));
@@ -67,12 +67,14 @@ class _PermissionState extends State<PermissionWidget> {
     _listenForPermissionStatus();
   }
 
-  void _listenForPermissionStatus() async {
-    final PermissionStatus status =
-        await PermissionHandler().checkPermissionStatus(_permissionGroup);
+  void _listenForPermissionStatus() {
+    final Future<PermissionStatus> statusFuture =
+        PermissionHandler().checkPermissionStatus(_permissionGroup);
 
-    setState(() {
-      _permissionStatus = status;
+    statusFuture.then((PermissionStatus status) {
+      setState(() {
+        _permissionStatus = status;
+      });
     });
   }
 
@@ -89,11 +91,11 @@ class _PermissionState extends State<PermissionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return new ListTile(
-      title: new Text(_permissionGroup.toString()),
-      subtitle: new Text(
+    return ListTile(
+      title: Text(_permissionGroup.toString()),
+      subtitle: Text(
         _permissionStatus.toString(),
-        style: new TextStyle(color: getPermissionColor()),
+        style: TextStyle(color: getPermissionColor()),
       ),
       onTap: () async {
         requestPermission(_permissionGroup);
@@ -101,13 +103,16 @@ class _PermissionState extends State<PermissionWidget> {
     );
   }
 
-  void requestPermission(PermissionGroup permission) async {
+  void requestPermission(PermissionGroup permission) {
     final List<PermissionGroup> permissions = <PermissionGroup>[permission];
-    final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
-        await PermissionHandler().requestPermissions(permissions);
+    final Future<Map<PermissionGroup, PermissionStatus>> requestFuture =
+        PermissionHandler().requestPermissions(permissions);
 
-    setState(() {
-      _permissionStatus = permissionRequestResult[permission];
+    requestFuture
+        .then((Map<PermissionGroup, PermissionStatus> permissionRequestResult) {
+      setState(() {
+        _permissionStatus = permissionRequestResult[permission];
+      });
     });
   }
 }

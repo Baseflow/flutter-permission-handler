@@ -46,7 +46,7 @@ matrix:
       env:
         - SHARD="Build example ipas"
       language: generic
-      osx_image: xcode9.3
+      osx_image: xcode10.1
       before_script:
         - ./scripts/before_build_ipas.sh
         - export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
