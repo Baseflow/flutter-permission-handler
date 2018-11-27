@@ -47,10 +47,14 @@ class PermissionManager: NSObject {
     static func openAppSettings(result: @escaping FlutterResult) {
         if #available(iOS 8.0, *) {
             if #available(iOS 10, *) {
-                UIApplication.shared.open(URL.init(string: UIApplication.openSettingsURLString)!, options: convertToUIApplicationOpenExternalURLOptionsKeyDictionary([:]),
-                                          completionHandler: {
-                                            (success) in result(success)
-                                          })
+                guard let url = URL(string: UIApplication.openSettingsURLString),
+                    UIApplication.shared.canOpenURL(url) else {
+                        return
+                }
+                
+                let optionsKeyDictionary = [UIApplication.OpenExternalURLOptionsKey(rawValue: "universalLinksOnly"): NSNumber(value: true)]
+                
+                UIApplication.shared.open(url, options: optionsKeyDictionary, completionHandler: nil)
             } else {
                 let success = UIApplication.shared.openURL(URL.init(string: UIApplication.openSettingsURLString)!)
                 result(success)
