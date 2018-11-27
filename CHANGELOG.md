@@ -1,3 +1,7 @@
+## 2.1.2
+
+* Make sure the Permission Handler compiles with latest iOS SDK
+
 ## 2.1.1
 
 * Update to the latest version of Swift (4.2);
