@@ -143,7 +143,7 @@ enum PermissionStatus {
   /// Permission to access the requested feature is denied by the user.
   denied,
 
-  /// The feature is disabled (or not available) on the device.
+  /// Permissions to access the feature is granted by the user but the feature is disabled.
   disabled,
 
   /// Permission to access the requested feature is granted by the user.
