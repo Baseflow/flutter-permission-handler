@@ -149,8 +149,13 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
         val targetsMOrHigher = context.applicationInfo.targetSdkVersion >= android.os.Build.VERSION_CODES.M
 
         for (name in names) {
-            if (targetsMOrHigher && ContextCompat.checkSelfPermission(context, name) != PackageManager.PERMISSION_GRANTED) {
-                return PermissionStatus.DENIED
+            if (targetsMOrHigher) {
+                val permissionStatus = ContextCompat.checkSelfPermission(context, name)
+                if (permissionStatus == PackageManager.PERMISSION_DENIED) {
+                    return PermissionStatus.DENIED
+                } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                    return PermissionStatus.UNKNOWN
+                }
             }
         }
 
@@ -258,7 +263,10 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             } else if (permission == PermissionGroup.LOCATION) {
                 val context: Context? = registrar.activity() ?: registrar.activeContext()
                 val isLocationServiceEnabled= if (context == null) false else isLocationServiceEnabled(context)
-                val permissionStatus = if (isLocationServiceEnabled) grantResults[i].toPermissionStatus() else PermissionStatus.DISABLED
+                var permissionStatus = grantResults[i].toPermissionStatus()
+                if (permissionStatus == PermissionStatus.GRANTED && !isLocationServiceEnabled) {
+                    permissionStatus = PermissionStatus.DISABLED
+                }
 
                 if (!mRequestResults.containsKey(PermissionGroup.LOCATION_ALWAYS)) {
                     mRequestResults[PermissionGroup.LOCATION_ALWAYS] = permissionStatus
