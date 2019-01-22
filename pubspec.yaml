@@ -20,7 +20,7 @@ flutter:
     pluginClass: PermissionHandlerPlugin
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.1.0-dev.5.0 <3.0.0"
 
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
