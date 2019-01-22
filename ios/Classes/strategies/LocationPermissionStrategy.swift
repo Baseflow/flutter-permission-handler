@@ -31,7 +31,7 @@ class LocationPermissionStrategy : NSObject, PermissionStrategy, CLLocationManag
     }
     
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
-        let permissionStatus = LocationPermissionStrategy.getPermissionStatus(permission: permission)
+        let permissionStatus = checkPermissionStatus(permission: permission)
         
         if CLLocationManager.authorizationStatus() == CLAuthorizationStatus.authorizedWhenInUse && permission == PermissionGroup.locationAlways {
             // don't do anything and continue requesting permissions
