@@ -15,22 +15,25 @@ class SensorPermissionStrategy : NSObject, PermissionStrategy {
     }
     
     private static func getPermissionStatus() -> PermissionStatus {
-        if !CMMotionActivityManager.isActivityAvailable() {
-            return PermissionStatus.disabled
-        }
-        
         if #available(iOS 11.0, *) {
             let status: CMAuthorizationStatus = CMMotionActivityManager.authorizationStatus()
+            var permissionStatus: PermissionStatus
             
             switch status {
             case CMAuthorizationStatus.authorized:
-                return PermissionStatus.granted
+                permissionStatus = PermissionStatus.granted
             case CMAuthorizationStatus.denied:
-                return PermissionStatus.denied
+                permissionStatus = PermissionStatus.denied
             case CMAuthorizationStatus.restricted:
-                return PermissionStatus.restricted
+                permissionStatus = PermissionStatus.restricted
             default:
-                return PermissionStatus.unknown
+                permissionStatus = PermissionStatus.unknown
+            }
+            
+            if permissionStatus == PermissionStatus.granted && !CMMotionActivityManager.isActivityAvailable() {
+                return PermissionStatus.disabled
+            } else {
+                return permissionStatus
             }
         }
         
