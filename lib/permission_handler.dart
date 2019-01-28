@@ -32,7 +32,7 @@ class PermissionHandler {
   /// Returns a [Future] containing the current permission status for the supplied [PermissionGroup].
   Future<PermissionStatus> checkPermissionStatus(
       PermissionGroup permission) async {
-    final dynamic status = await _methodChannel.invokeMethod(
+    final String status = await _methodChannel.invokeMethod(
         'checkPermissionStatus', Codec.encodePermissionGroup(permission));
 
     return Codec.decodePermissionStatus(status);
@@ -52,7 +52,7 @@ class PermissionHandler {
   Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
       List<PermissionGroup> permissions) async {
     final String jsonData = Codec.encodePermissionGroups(permissions);
-    final dynamic status =
+    final String status =
         await _methodChannel.invokeMethod('requestPermissions', jsonData);
 
     return Codec.decodePermissionRequestResult(status);
