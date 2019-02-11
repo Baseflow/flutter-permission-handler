@@ -1,3 +1,10 @@
+## 2.1.3
+
+* Fixed bug on iOS where result of the `openAppSettings` call always returned `false`;
+* Upgrade Android plugin to support AndroidX and latest Gradle and Kotlin versions;
+* Added Swift version number to the Podfile of the plugin;
+* Updated flutter static analyzes to conform to latest recommendations.
+
 ## 2.1.2
 
 * Make sure the Permission Handler compiles with latest iOS SDK

@@ -22,7 +22,7 @@ To use this plugin, add `permission_handler` as a [dependency in your pubspec.ya
 
 ```yaml
 dependencies:
-  permission_handler: '^2.1.2'
+  permission_handler: '^2.1.3'
 ```
 
 > **NOTE:** There's a known issue with integrating plugins that use Swift into a Flutter project created with the Objective-C template. See issue [Flutter#16049](https://github.com/flutter/flutter/issues/16049) for help on integration.
@@ -143,7 +143,7 @@ enum PermissionStatus {
   /// Permission to access the requested feature is denied by the user.
   denied,
 
-  /// The feature is disabled (or not available) on the device.
+  /// Permissions to access the feature is granted by the user but the feature is disabled.
   disabled,
 
   /// Permission to access the requested feature is granted by the user.

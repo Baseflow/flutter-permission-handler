@@ -7,8 +7,8 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.provider.Settings
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.util.Log
 import com.baseflow.permissionhandler.data.PermissionGroup
 import com.baseflow.permissionhandler.data.PermissionStatus
@@ -149,8 +149,13 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
         val targetsMOrHigher = context.applicationInfo.targetSdkVersion >= android.os.Build.VERSION_CODES.M
 
         for (name in names) {
-            if (targetsMOrHigher && ContextCompat.checkSelfPermission(context, name) != PackageManager.PERMISSION_GRANTED) {
-                return PermissionStatus.DENIED
+            if (targetsMOrHigher) {
+                val permissionStatus = ContextCompat.checkSelfPermission(context, name)
+                if (permissionStatus == PackageManager.PERMISSION_DENIED) {
+                    return PermissionStatus.DENIED
+                } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                    return PermissionStatus.UNKNOWN
+                }
             }
         }
 
@@ -258,7 +263,10 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             } else if (permission == PermissionGroup.LOCATION) {
                 val context: Context? = registrar.activity() ?: registrar.activeContext()
                 val isLocationServiceEnabled= if (context == null) false else isLocationServiceEnabled(context)
-                val permissionStatus = if (isLocationServiceEnabled) grantResults[i].toPermissionStatus() else PermissionStatus.DISABLED
+                var permissionStatus = grantResults[i].toPermissionStatus()
+                if (permissionStatus == PermissionStatus.GRANTED && !isLocationServiceEnabled) {
+                    permissionStatus = PermissionStatus.DISABLED
+                }
 
                 if (!mRequestResults.containsKey(PermissionGroup.LOCATION_ALWAYS)) {
                     mRequestResults[PermissionGroup.LOCATION_ALWAYS] = permissionStatus
