@@ -16,7 +16,9 @@ class MyApp extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () {
-              PermissionHandler().openAppSettings();
+              PermissionHandler()
+                  .openAppSettings()
+                  .then((bool hasOpened) => debugPrint(hasOpened.toString()));
             },
           )
         ],
