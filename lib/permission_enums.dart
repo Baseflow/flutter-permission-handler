@@ -23,7 +23,7 @@ enum ServiceStatus {
   /// The unknown service status indicates the state of the service could not be determined.
   unknown,
 
-  /// There is not separate service for the supplied permission group.
+  /// There is no service for the supplied permission group.
   notApplicable,
 
   /// The service for the supplied permission group is disabled.
