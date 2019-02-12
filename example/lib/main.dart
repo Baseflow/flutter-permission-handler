@@ -110,13 +110,14 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void checkServiceStatus(BuildContext context, PermissionGroup permission) {
-    PermissionHandler().checkServiceStatus(permission)
+    PermissionHandler()
+        .checkServiceStatus(permission)
         .then((ServiceStatus serviceStatus) {
-          final SnackBar snackBar = SnackBar(
-              content: Text(serviceStatus.toString()));
+      final SnackBar snackBar =
+          SnackBar(content: Text(serviceStatus.toString()));
 
-          Scaffold.of(context).showSnackBar(snackBar);
-        });
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
   }
 
   void requestPermission(PermissionGroup permission) {

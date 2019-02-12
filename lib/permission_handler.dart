@@ -43,10 +43,9 @@ class PermissionHandler {
   /// Check current service status.
   ///
   /// Returns a [Future] containing the current service status for the supplied [PermissionGroup].
-  Future<ServiceStatus> checkServiceStatus(
-      PermissionGroup permission) async {
+  Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) async {
     final String status = await _methodChannel.invokeMethod(
-      'checkServiceStatus', Codec.encodePermissionGroup(permission));
+        'checkServiceStatus', Codec.encodePermissionGroup(permission));
 
     return Codec.decodeServiceStatus(status);
   }
@@ -55,8 +54,7 @@ class PermissionHandler {
   ///
   /// Returns [true] if the app settings page could be opened, otherwise [false] is returned.
   Future<bool> openAppSettings() async {
-    final bool hasOpened = await _methodChannel.invokeMethod(
-        'openAppSettings');
+    final bool hasOpened = await _methodChannel.invokeMethod('openAppSettings');
 
     return hasOpened;
   }
@@ -68,8 +66,7 @@ class PermissionHandler {
       List<PermissionGroup> permissions) async {
     final String jsonData = Codec.encodePermissionGroups(permissions);
     final String status =
-        await _methodChannel.invokeMethod(
-            'requestPermissions', jsonData);
+        await _methodChannel.invokeMethod('requestPermissions', jsonData);
 
     return Codec.decodePermissionRequestResult(status);
   }
