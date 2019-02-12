@@ -30,7 +30,7 @@ class SensorPermissionStrategy : NSObject, PermissionStrategy {
                 permissionStatus = PermissionStatus.unknown
             }
             
-            if permissionStatus == PermissionStatus.granted && !CMMotionActivityManager.isActivityAvailable() {
+            if (permissionStatus == PermissionStatus.granted || permissionStatus == PermissionStatus.denied) && !CMMotionActivityManager.isActivityAvailable() {
                 return PermissionStatus.disabled
             } else {
                 return permissionStatus
@@ -38,6 +38,16 @@ class SensorPermissionStrategy : NSObject, PermissionStrategy {
         }
         
         return PermissionStatus.unknown
+    }
+    
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        if #available(iOS 11.0, *) {
+            return CMMotionActivityManager.isActivityAvailable()
+                ? ServiceStatus.enabled
+                : ServiceStatus.disabled
+        }
+        
+        return ServiceStatus.unknown
     }
     
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {

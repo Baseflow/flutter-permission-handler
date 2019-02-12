@@ -11,5 +11,6 @@ typealias PermissionStatusHandler = (_ permissionStatus: PermissionStatus) -> Vo
 
 protocol PermissionStrategy {
     func checkPermissionStatus(permission: PermissionGroup) -> PermissionStatus
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler)
 }

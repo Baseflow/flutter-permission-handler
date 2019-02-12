@@ -19,6 +19,10 @@ class AudioVideoPermissionStrategy : NSObject, PermissionStrategy {
         return PermissionStatus.unknown
     }
     
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        return ServiceStatus.notApplicable
+    }
+    
     private static func getPermissionStatus(mediaType: AVMediaType) -> PermissionStatus {
         let status: AVAuthorizationStatus = AVCaptureDevice.authorizationStatus(for: mediaType)
         
