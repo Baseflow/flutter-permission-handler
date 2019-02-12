@@ -20,6 +20,10 @@ class PhotoPermissionStrategy : NSObject, PermissionStrategy {
         return PhotoPermissionStrategy.determinePermissionStatus(authorizationStatus: status)
     }
     
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        return ServiceStatus.notApplicable
+    }
+    
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
         let status = checkPermissionStatus(permission: permission)
         

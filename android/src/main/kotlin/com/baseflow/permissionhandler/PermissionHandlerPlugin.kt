@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import android.util.Log
 import com.baseflow.permissionhandler.data.PermissionGroup
 import com.baseflow.permissionhandler.data.PermissionStatus
+import com.baseflow.permissionhandler.data.ServiceStatus
 import com.baseflow.permissionhandler.utils.Codec
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
@@ -99,7 +100,14 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             call.method == "checkPermissionStatus" -> {
                 val permission = Codec.decodePermissionGroup(call.arguments)
                 val permissionStatus = checkPermissionStatus(permission)
-                handleSuccess(permissionStatus, result)
+
+                result?.success(Codec.encodePermissionStatus(permissionStatus))
+            }
+            call.method == "checkServiceStatus" -> {
+                val permission = Codec.decodePermissionGroup(call.arguments)
+                val serviceStatus = checkServiceStatus(permission)
+
+                result?.success(Codec.encodeServiceStatus(serviceStatus))
             }
             call.method == "requestPermissions" -> {
                 if (mResult != null) {
@@ -166,6 +174,20 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
         }
 
         return PermissionStatus.GRANTED
+    }
+
+    private fun checkServiceStatus(permission: PermissionGroup) : ServiceStatus {
+        val context: Context? = registrar.activity() ?: registrar.activeContext()
+        if (context == null) {
+            Log.d(mLogTag, "Unable to detect current Activity or App Context.")
+            return ServiceStatus.UNKNOWN
+        }
+
+        if (permission == PermissionGroup.LOCATION || permission == PermissionGroup.LOCATION_ALWAYS || permission == PermissionGroup.LOCATION_WHEN_IN_USE) {
+            return if(isLocationServiceEnabled(context)) ServiceStatus.ENABLED else ServiceStatus.DISABLED
+        }
+
+        return ServiceStatus.NOT_APPLICABLE
     }
 
     private fun shouldShowRequestPermissionRationale(permission: PermissionGroup) : Boolean {
@@ -478,9 +500,5 @@ class PermissionHandlerPlugin(private val registrar: Registrar, private var requ
             locationProviders = Settings.Secure.getString(context.contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
             return !TextUtils.isEmpty(locationProviders)
         }
-    }
-
-    private fun handleSuccess(permissionStatus: PermissionStatus, result: Result?) {
-        result?.success(Codec.encodePermissionStatus(permissionStatus))
     }
 }

@@ -98,10 +98,26 @@ class _PermissionState extends State<PermissionWidget> {
         _permissionStatus.toString(),
         style: TextStyle(color: getPermissionColor()),
       ),
-      onTap: () async {
+      trailing: IconButton(
+          icon: const Icon(Icons.info),
+          onPressed: () {
+            checkServiceStatus(context, _permissionGroup);
+          }),
+      onTap: () {
         requestPermission(_permissionGroup);
       },
     );
+  }
+
+  void checkServiceStatus(BuildContext context, PermissionGroup permission) {
+    PermissionHandler()
+        .checkServiceStatus(permission)
+        .then((ServiceStatus serviceStatus) {
+      final SnackBar snackBar =
+          SnackBar(content: Text(serviceStatus.toString()));
+
+      Scaffold.of(context).showSnackBar(snackBar);
+    });
   }
 
   void requestPermission(PermissionGroup permission) {

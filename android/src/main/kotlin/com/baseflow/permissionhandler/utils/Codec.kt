@@ -2,6 +2,7 @@ package com.baseflow.permissionhandler.utils
 
 import com.baseflow.permissionhandler.data.PermissionGroup
 import com.baseflow.permissionhandler.data.PermissionStatus
+import com.baseflow.permissionhandler.data.ServiceStatus
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
@@ -26,6 +27,11 @@ class Codec {
         @JvmStatic
         fun encodePermissionStatus(permissionStatus: PermissionStatus) : String {
             return gsonDecoder.toJson(permissionStatus)
+        }
+
+        @JvmStatic
+        fun encodeServiceStatus(serviceStatus: ServiceStatus) : String {
+            return gsonDecoder.toJson(serviceStatus)
         }
 
         @JvmStatic

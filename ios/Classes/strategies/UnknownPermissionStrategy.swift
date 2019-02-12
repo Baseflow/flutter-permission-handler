@@ -12,6 +12,10 @@ class UnknownPermissionStrategy : NSObject, PermissionStrategy {
         return PermissionStatus.unknown
     }
     
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        return ServiceStatus.unknown
+    }
+    
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
         completionHandler(PermissionStatus.unknown)
     }

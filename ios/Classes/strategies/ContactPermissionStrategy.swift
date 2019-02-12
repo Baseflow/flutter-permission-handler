@@ -45,6 +45,10 @@ class ContactPermissionStrategy : NSObject, PermissionStrategy {
         }
     }
     
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        return ServiceStatus.notApplicable
+    }
+    
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
         let permissionStatus = checkPermissionStatus(permission: permission)
         

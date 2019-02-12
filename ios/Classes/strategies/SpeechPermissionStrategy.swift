@@ -24,6 +24,10 @@ class SpeechPermissionStrategy : NSObject, PermissionStrategy {
         return PermissionStatus.unknown
     }
     
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        return ServiceStatus.notApplicable
+    }
+    
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) {
         let status = checkPermissionStatus(permission: permission)
         

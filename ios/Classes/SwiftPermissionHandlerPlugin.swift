@@ -25,6 +25,12 @@ public class SwiftPermissionHandlerPlugin: NSObject, FlutterPlugin {
             PermissionManager.checkPermissionStatus(
                 permission: permission,
                 result: result)
+        } else if call.method == "checkServiceStatus" {
+            let permission: PermissionGroup = Codec.decodePermissionGroup(from: call.arguments)
+            
+            PermissionManager.checkServiceStatus(
+                permission: permission,
+                result: result)
         } else if call.method == "requestPermissions" {
             if _methodResult != nil {
                 result(FlutterError(

@@ -29,6 +29,8 @@ class PermissionHandler {
 
   final MethodChannel _methodChannel;
 
+  /// Check current permission status.
+  ///
   /// Returns a [Future] containing the current permission status for the supplied [PermissionGroup].
   Future<PermissionStatus> checkPermissionStatus(
       PermissionGroup permission) async {
@@ -38,11 +40,22 @@ class PermissionHandler {
     return Codec.decodePermissionStatus(status);
   }
 
+  /// Check current service status.
+  ///
+  /// Returns a [Future] containing the current service status for the supplied [PermissionGroup].
+  Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) async {
+    final String status = await _methodChannel.invokeMethod(
+        'checkServiceStatus', Codec.encodePermissionGroup(permission));
+
+    return Codec.decodeServiceStatus(status);
+  }
+
   /// Open the App settings page.
   ///
   /// Returns [true] if the app settings page could be opened, otherwise [false] is returned.
   Future<bool> openAppSettings() async {
     final bool hasOpened = await _methodChannel.invokeMethod('openAppSettings');
+
     return hasOpened;
   }
 
