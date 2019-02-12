@@ -24,6 +24,10 @@ class MediaLibraryPermissionStrategy : NSObject, PermissionStrategy {
         return PermissionStatus.unknown
     }
     
+    func checkServiceStatus(permission: PermissionGroup) -> ServiceStatus {
+        return ServiceStatus.notApplicable
+    }
+    
     func requestPermission(permission: PermissionGroup, completionHandler: @escaping PermissionStatusHandler) -> Void {
         let status = checkPermissionStatus(permission: permission)
         if status != PermissionStatus.unknown {

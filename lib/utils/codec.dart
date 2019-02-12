@@ -2,10 +2,17 @@ part of permission_handler;
 
 class Codec {
   static PermissionStatus decodePermissionStatus(String value) {
-    final dynamic permission = json.decode(value);
+    final String permission = json.decode(value);
 
     return PermissionStatus.values.firstWhere(
         (PermissionStatus e) => e.toString().split('.').last == permission);
+  }
+
+  static ServiceStatus decodeServiceStatus(String value) {
+    final String status = json.decode(value);
+
+    return ServiceStatus.values.firstWhere(
+        (ServiceStatus s) => s.toString().split('.').last == status);
   }
 
   static Map<PermissionGroup, PermissionStatus> decodePermissionRequestResult(

@@ -31,6 +31,11 @@ struct Codec {
         return status
     }
     
+    static func encodeServiceStatus(serviceStatus: ServiceStatus) -> String? {
+        let status = "\"" + serviceStatus.rawValue + "\""
+        return status
+    }
+    
     static func encodePermissionRequestResult(permissionStatusResult: [PermissionGroup: PermissionStatus]) -> String? {
         let jsonDict = Dictionary(uniqueKeysWithValues:
             permissionStatusResult.map {

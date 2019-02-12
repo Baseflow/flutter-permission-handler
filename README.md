@@ -22,7 +22,7 @@ To use this plugin, add `permission_handler` as a [dependency in your pubspec.ya
 
 ```yaml
 dependencies:
-  permission_handler: '^2.1.3'
+  permission_handler: '^2.2.0'
 ```
 
 > **NOTE:** There's a known issue with integrating plugins that use Swift into a Flutter project created with the Objective-C template. See issue [Flutter#16049](https://github.com/flutter/flutter/issues/16049) for help on integration.
@@ -44,6 +44,16 @@ import 'package:permission_handler/permission_handler.dart';
 
 PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.contacts);
 ```
+
+### Checking service status
+
+``` dart
+import 'package:permission_handler/permission_handler.dart';
+
+ServiceStatus serviceStatus = await PermissionHandler().checkServiceStatus(PermissionGroup.location);
+```
+
+Checking the service status only makes sense for the `PermissionGroup.location` on Android and the `PermissionGroup.location`, `PermissionGroup.locationWhenInUser`, `PermissionGroup.locationAlways` or `PermissionGroup.sensors` on iOS. All other permission groups are not backed by a separate service and will always return `ServiceStatus.notApplicable`.
 
 ### Open app settings
 
