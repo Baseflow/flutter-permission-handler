@@ -20,7 +20,7 @@ unzip -qq gradle-4.1-bin.zip -d $HOME/gradle-4.1
 export GRADLE_HOME=$HOME/gradle-4.1
 export PATH=$GRADLE_HOME/bin:$PATH
 gradle -v
-git clone https://github.com/flutter/flutter.git $HOME/flutter
+git clone --single-branch --branch stable https://github.com/flutter/flutter.git $HOME/flutter
 export PATH=$HOME/flutter/bin:$HOME/flutter/bin/cache/dart-sdk/bin:$PATH
 flutter doctor
 
