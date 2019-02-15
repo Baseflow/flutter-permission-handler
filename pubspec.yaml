@@ -17,5 +17,5 @@ dependencies:
 
 flutter:
   plugin:
-    androidPackage: com.baseflow.permissionhandler.permissionhandler
+    androidPackage: com.baseflow.permissionhandler
     pluginClass: PermissionHandlerPlugin
