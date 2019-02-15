@@ -1,16 +1,15 @@
-group 'com.baseflow.permissionhandler'
+group 'com.baseflow.permissionhandler.permissionhandler'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.3.0'
     repositories {
         google()
         jcenter()
+        maven { url 'https://maven.google.com' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:3.3.1'
     }
 }
 
@@ -22,17 +21,13 @@ rootProject.allprojects {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
     defaultConfig {
         minSdkVersion 16
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -40,8 +35,10 @@ android {
 }
 
 dependencies {
-    api 'androidx.core:core:1.0.1'
+    implementation 'androidx.annotation:annotation:1.0.1'
+    implementation 'androidx.core:core:1.1.0-alpha04'
+}
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.google.code.gson:gson:2.8.5"
+repositories {
+    google()
 }

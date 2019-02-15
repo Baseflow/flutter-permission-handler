@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/permission_handler_example.iml" filepath="$PROJECT_DIR$/permission_handler_example.iml" />
-      <module fileurl="file://$PROJECT_DIR$/permission_handler_example_android.iml" filepath="$PROJECT_DIR$/permission_handler_example_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/permission_handler_example_android.iml" filepath="$PROJECT_DIR$/android/permission_handler_example_android.iml" />
     </modules>
   </component>
 </project>
