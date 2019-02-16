@@ -62,7 +62,7 @@ class PermissionHandler {
   Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
       List<PermissionGroup> permissions) async {
     final List<int> data = Codec.encodePermissionGroups(permissions);
-    final Map status =
+    final Map<dynamic, dynamic> status =
         await _methodChannel.invokeMethod('requestPermissions', data);
 
     return Codec.decodePermissionRequestResult(Map<int, int>.from(status));

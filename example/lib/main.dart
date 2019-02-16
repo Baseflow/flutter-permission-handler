@@ -26,20 +26,20 @@ class MyApp extends StatelessWidget {
           child: ListView(
               children: PermissionGroup.values
                   .where((PermissionGroup permission) {
-                if (Platform.isIOS) {
-                  return permission != PermissionGroup.unknown &&
-                         permission != PermissionGroup.phone &&
-                         permission != PermissionGroup.sms &&
-                         permission != PermissionGroup.storage;
-                } else {
-                  return permission != PermissionGroup.unknown &&
-                         permission != PermissionGroup.mediaLibrary &&
-                         permission != PermissionGroup.photos &&
-                         permission != PermissionGroup.reminders;
-                }
-              })
+                    if (Platform.isIOS) {
+                      return permission != PermissionGroup.unknown &&
+                          permission != PermissionGroup.phone &&
+                          permission != PermissionGroup.sms &&
+                          permission != PermissionGroup.storage;
+                    } else {
+                      return permission != PermissionGroup.unknown &&
+                          permission != PermissionGroup.mediaLibrary &&
+                          permission != PermissionGroup.photos &&
+                          permission != PermissionGroup.reminders;
+                    }
+                  })
                   .map((PermissionGroup permission) =>
-                  PermissionWidget(permission))
+                      PermissionWidget(permission))
                   .toList()),
         ),
       ),
@@ -71,7 +71,7 @@ class _PermissionState extends State<PermissionWidget> {
 
   void _listenForPermissionStatus() {
     final Future<PermissionStatus> statusFuture =
-    PermissionHandler().checkPermissionStatus(_permissionGroup);
+        PermissionHandler().checkPermissionStatus(_permissionGroup);
 
     statusFuture.then((PermissionStatus status) {
       setState(() {
@@ -115,7 +115,7 @@ class _PermissionState extends State<PermissionWidget> {
         .checkServiceStatus(permission)
         .then((ServiceStatus serviceStatus) {
       final SnackBar snackBar =
-      SnackBar(content: Text(serviceStatus.toString()));
+          SnackBar(content: Text(serviceStatus.toString()));
 
       Scaffold.of(context).showSnackBar(snackBar);
     });
@@ -124,7 +124,7 @@ class _PermissionState extends State<PermissionWidget> {
   Future<void> requestPermission(PermissionGroup permission) async {
     final List<PermissionGroup> permissions = <PermissionGroup>[permission];
     final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
-    await PermissionHandler().requestPermissions(permissions);
+        await PermissionHandler().requestPermissions(permissions);
 
     setState(() {
       print(permissionRequestResult);
