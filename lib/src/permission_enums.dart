@@ -49,7 +49,7 @@ class ServiceStatus {
   static const ServiceStatus disabled = ServiceStatus._(0);
 
   /// The service for the supplied permission group is enabled.
-  static const ServiceStatus enable = ServiceStatus._(1);
+  static const ServiceStatus enabled = ServiceStatus._(1);
 
   /// There is no service for the supplied permission group.
   static const ServiceStatus notApplicable = ServiceStatus._(2);
@@ -59,14 +59,14 @@ class ServiceStatus {
 
   static const List<ServiceStatus> values = <ServiceStatus>[
     disabled,
-    enable,
+    enabled,
     notApplicable,
     unknown,
   ];
 
   static const List<String> _names = <String>[
     'disabled',
-    'enable',
+    'enabled',
     'notApplicable',
     'unknown',
   ];

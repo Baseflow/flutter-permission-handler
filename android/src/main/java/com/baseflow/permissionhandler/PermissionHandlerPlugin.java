@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Build;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -54,6 +57,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     this.mRegistrar = mRegistrar;
   }
 
+  @Retention(RetentionPolicy.SOURCE)
   @IntDef({
       PERMISSION_GROUP_CALENDAR,
       PERMISSION_GROUP_CAMERA,
@@ -82,6 +86,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_STATUS_RESTRICTED = 3;
   private static final int PERMISSION_STATUS_UNKNOWN = 4;
 
+  @Retention(RetentionPolicy.SOURCE)
   @IntDef({
       PERMISSION_STATUS_DENIED,
       PERMISSION_STATUS_DISABLED,
@@ -99,6 +104,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int SERVICE_STATUS_NOT_APPLICABLE = 2;
   private static final int SERVICE_STATUS_UNKNOWN = 3;
 
+  @Retention(RetentionPolicy.SOURCE)
   @IntDef({
       SERVICE_STATUS_DISABLED,
       SERVICE_STATUS_ENABLED,
@@ -199,8 +205,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         }
 
         mResult = result;
-        //noinspection unchecked
-        final List<Integer> permissions = (List<Integer>) call.arguments;
+        final List<Integer> permissions = call.arguments();
         requestPermissions(permissions);
         break;
       case "shouldShowRequestPermissionRationale": {
@@ -571,23 +576,28 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     return false;
   }
 
+  @SuppressWarnings("deprecation")
   private boolean isLocationServiceEnabled(Context context) {
-    final int locationMode;
-    final String locationProviders;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+      final LocationManager locationManager = context.getSystemService(LocationManager.class);
+      if (locationManager == null) {
+        return false;
+      }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      return locationManager.isLocationEnabled();
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      final int locationMode;
+
       try {
         locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
       } catch (Settings.SettingNotFoundException e) {
         e.printStackTrace();
         return false;
       }
 
       return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
     } else {
-      locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+      final String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
       return !TextUtils.isEmpty(locationProviders);
     }
   }
