@@ -366,6 +366,9 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         continue;
 
       if (permission == PERMISSION_GROUP_MICROPHONE) {
+        if (!mRequestResults.containsKey(PERMISSION_GROUP_MICROPHONE)) {
+          mRequestResults.put(PERMISSION_GROUP_MICROPHONE, toPermissionStatus(grantResults[i]));
+        }
         if (!mRequestResults.containsKey(PERMISSION_GROUP_SPEECH)) {
           mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(grantResults[i]));
         }
