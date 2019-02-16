@@ -59,58 +59,43 @@
 }
 
 + (void)openAppSettings:(FlutterResult)result {
-    if (@available(iOS 8.0, *)) {
-        NSURL *url = [[NSURL alloc] initWithString:UIApplicationOpenSettingsURLString];
-        if (url == nil) {
-            result(@false);
-            return;
-        }
-        
-        if (@available(iOS 10, *)) {
-            if (![UIApplication.sharedApplication canOpenURL:url]) {
-                result(@false);
-                return;
-            }
-            
-            NSDictionary *optionsKeyDictionary = @{UIApplicationOpenURLOptionUniversalLinksOnly: @true};
-            [[UIApplication sharedApplication]
-             openURL:url options:optionsKeyDictionary completionHandler:^(BOOL success) {
-                 result([[NSNumber alloc] initWithBool:success]);
-             }];
-            return;
-        } else {
-            BOOL success = [[UIApplication sharedApplication] openURL:url];
-            result([[NSNumber alloc] initWithBool:success]);
-        }
+    if (@available(iOS 10, *)) {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
+                                           options:[[NSDictionary alloc] init]
+                                 completionHandler:^(BOOL success) {
+                                     result([[NSNumber alloc] initWithBool:success]);
+                                 }];
+    } else if (@available(iOS 8.0, *)) {
+        BOOL success = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+        result([[NSNumber alloc] initWithBool:success]);
+    } else {
+        result(@false);
     }
-    
-    result(@false);
-    
 }
 
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
-        case PermissionGroupCalendar:
+            case PermissionGroupCalendar:
             return [EventPermissionStrategy new];
-        case PermissionGroupCamera:
+            case PermissionGroupCamera:
             return [AudioVideoPermissionStrategy new];
-        case PermissionGroupContacts:
+            case PermissionGroupContacts:
             return [ContactPermissionStrategy new];
-        case PermissionGroupLocation:
-        case PermissionGroupLocationAlways:
-        case PermissionGroupLocationWhenInUse:
+            case PermissionGroupLocation:
+            case PermissionGroupLocationAlways:
+            case PermissionGroupLocationWhenInUse:
             return [[LocationPermissionStrategy alloc] initWithLocationManager];
-        case PermissionGroupMediaLibrary:
+            case PermissionGroupMediaLibrary:
             return [MediaLibraryPermissionStrategy new];
-        case PermissionGroupMicrophone:
+            case PermissionGroupMicrophone:
             return [AudioVideoPermissionStrategy new];
-        case PermissionGroupPhotos:
+            case PermissionGroupPhotos:
             return [PhotoPermissionStrategy new];
-        case PermissionGroupReminders:
+            case PermissionGroupReminders:
             return [EventPermissionStrategy new];
-        case PermissionGroupSensors:
+            case PermissionGroupSensors:
             return [SensorPermissionStrategy new];
-        case PermissionGroupSpeech:
+            case PermissionGroupSpeech:
             return [SpeechPermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
