@@ -9,40 +9,41 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-      appBar: AppBar(
-        title: const Text('Plugin example app'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              PermissionHandler().openAppSettings().then((bool hasOpened) =>
-                  debugPrint('App Settings opened: ' + hasOpened.toString()));
-            },
-          )
-        ],
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Plugin example app'),
+          actions: <Widget>[
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                PermissionHandler().openAppSettings().then((bool hasOpened) =>
+                    debugPrint('App Settings opened: ' + hasOpened.toString()));
+              },
+            )
+          ],
+        ),
+        body: Center(
+          child: ListView(
+              children: PermissionGroup.values
+                  .where((PermissionGroup permission) {
+                    if (Platform.isIOS) {
+                      return permission != PermissionGroup.unknown &&
+                          permission != PermissionGroup.phone &&
+                          permission != PermissionGroup.sms &&
+                          permission != PermissionGroup.storage;
+                    } else {
+                      return permission != PermissionGroup.unknown &&
+                          permission != PermissionGroup.mediaLibrary &&
+                          permission != PermissionGroup.photos &&
+                          permission != PermissionGroup.reminders;
+                    }
+                  })
+                  .map((PermissionGroup permission) =>
+                      PermissionWidget(permission))
+                  .toList()),
+        ),
       ),
-      body: Center(
-        child: ListView(
-            children: PermissionGroup.values
-                .where((PermissionGroup permission) {
-                  if (Platform.isIOS) {
-                    return permission != PermissionGroup.unknown &&
-                        permission != PermissionGroup.phone &&
-                        permission != PermissionGroup.sms &&
-                        permission != PermissionGroup.storage;
-                  } else {
-                    return permission != PermissionGroup.unknown &&
-                        permission != PermissionGroup.mediaLibrary &&
-                        permission != PermissionGroup.photos &&
-                        permission != PermissionGroup.reminders;
-                  }
-                })
-                .map((PermissionGroup permission) =>
-                    PermissionWidget(permission))
-                .toList()),
-      ),
-    ));
+    );
   }
 }
 
@@ -120,16 +121,15 @@ class _PermissionState extends State<PermissionWidget> {
     });
   }
 
-  void requestPermission(PermissionGroup permission) {
+  Future<void> requestPermission(PermissionGroup permission) async {
     final List<PermissionGroup> permissions = <PermissionGroup>[permission];
-    final Future<Map<PermissionGroup, PermissionStatus>> requestFuture =
-        PermissionHandler().requestPermissions(permissions);
+    final Map<PermissionGroup, PermissionStatus> permissionRequestResult =
+        await PermissionHandler().requestPermissions(permissions);
 
-    requestFuture
-        .then((Map<PermissionGroup, PermissionStatus> permissionRequestResult) {
-      setState(() {
-        _permissionStatus = permissionRequestResult[permission];
-      });
+    setState(() {
+      print(permissionRequestResult);
+      _permissionStatus = permissionRequestResult[permission];
+      print(_permissionStatus);
     });
   }
 }
