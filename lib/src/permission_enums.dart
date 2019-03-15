@@ -13,7 +13,9 @@ class PermissionStatus {
   /// Permission to access the requested feature is granted by the user.
   static const PermissionStatus granted = PermissionStatus._(2);
 
-  /// The user granted restricted access to the requested feature (only on iOS).
+  /// Permission to access the requested feature is denied by the OS (only on iOS).
+  /// The user cannot change this app's status, possibly due to active restrictions such as
+  /// parental controls being in place.
   static const PermissionStatus restricted = PermissionStatus._(3);
 
   /// Permission is in an unknown state
