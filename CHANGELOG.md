@@ -1,3 +1,11 @@
+## 3.0.1
+
+* Mark the Swift pod as static
+
+## 3.0.0
+
+* Converted the iOS version from Swift to Objective-C, reducing the size of the final binary considerably.
+
 ## 2.2.0
 
 * Added new method `checkServiceStatus` to allow users to check if the location services (on Android and iOS) and motion services (iOS only) are enabled;

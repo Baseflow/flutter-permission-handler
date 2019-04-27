@@ -11,7 +11,6 @@ class Codec {
 
   static Map<PermissionGroup, PermissionStatus> decodePermissionRequestResult(
       Map<int, int> value) {
-    print('decodePermissionRequestResult called with: value:[$value]');
     return value.map((int key, int value) =>
         MapEntry<PermissionGroup, PermissionStatus>(
             PermissionGroup.values[key], PermissionStatus.values[value]));
