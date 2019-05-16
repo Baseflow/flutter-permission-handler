@@ -202,6 +202,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
               "ERROR_ALREADY_REQUESTING_PERMISSIONS",
               "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).",
               null);
+          return;
         }
 
         mResult = result;
