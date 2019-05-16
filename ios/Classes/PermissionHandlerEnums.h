@@ -1,5 +1,5 @@
 //
-//  Enums.h
+//  PermissionHandlerEnums.h
 //  permission_handler
 //
 //  Created by Razvan Lung on 15/02/2019.
