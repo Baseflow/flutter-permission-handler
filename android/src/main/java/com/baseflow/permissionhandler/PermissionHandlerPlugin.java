@@ -33,7 +33,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final String LOG_TAG = "permissions_handler";
-  private static final int PERMISSION_CODE = 25;
+  private static final int PERMISSION_CODE = 24;
 
   //PERMISSION_GROUP
   private static final int PERMISSION_GROUP_CALENDAR = 0;
