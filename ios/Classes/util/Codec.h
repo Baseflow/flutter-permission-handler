@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Enums.h"
+#import "PermissionHandlerEnums.h"
 
 @interface Codec : NSObject
 + (PermissionGroup)decodePermissionGroupFrom:(NSNumber *_Nonnull)event;
