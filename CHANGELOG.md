@@ -1,3 +1,7 @@
+## 3.0.2
+
+* Rename Enums.h to PermissionHandlerEnums.h to prevent conflicts with geolocator (#104)
+
 ## 3.0.1
 
 * Mark the Swift pod as static
