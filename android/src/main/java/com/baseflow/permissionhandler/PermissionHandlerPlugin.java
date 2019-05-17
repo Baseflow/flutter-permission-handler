@@ -281,6 +281,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       return isLocationServiceEnabled(context) ? SERVICE_STATUS_ENABLED : SERVICE_STATUS_DISABLED;
     }
 
+    if (permission == PERMISSION_GROUP_PHONE) {
+      PackageManager pm = context.getPackageManager();
+      return pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY) ? SERVICE_STATUS_ENABLED : SERVICE_STATUS_NOT_APPLICABLE;
+    }
+
     return SERVICE_STATUS_NOT_APPLICABLE;
   }
 
