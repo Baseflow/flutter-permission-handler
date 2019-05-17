@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "Enums.h"
+#import "PermissionHandlerEnums.h"
 
 typedef void (^PermissionStatusHandler)(PermissionStatus permissionStatus);
 
