@@ -33,7 +33,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final String LOG_TAG = "permissions_handler";
-  private static final int PERMISSION_CODE = 25;
+  private static final int PERMISSION_CODE = 24;
 
   //PERMISSION_GROUP
   private static final int PERMISSION_GROUP_CALENDAR = 0;
@@ -202,6 +202,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
               "ERROR_ALREADY_REQUESTING_PERMISSIONS",
               "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).",
               null);
+          return;
         }
 
         mResult = result;
