@@ -1,6 +1,9 @@
 ## 3.0.2
 
-* Rename Enums.h to PermissionHandlerEnums.h to prevent conflicts with geolocator (#104)
+* Fixed bug when rapidly requesting permissions (#23);
+* Rename Enums.h to PermissionHandlerEnums.h to prevent conflicts with geolocator (#104);
+* Update the Android permission request code to prevent conflicts with geolocator (#111);
+* Update Gradle infrastructure.
 
 ## 3.0.1
 
