@@ -40,6 +40,18 @@ class PermissionHandler {
   /// Check current service status.
   ///
   /// Returns a [Future] containing the current service status for the supplied [PermissionGroup].
+  ///
+  /// Notes about specific PermissionGroups:
+  /// - **PermissionGroup.phone** on Android:
+  ///   - The method will return [ServiceStatus.notApplicable] when:
+  ///     1. the device lacks the TELEPHONY feature
+  ///     1. TelephonyManager.getPhoneType() returns PHONE_TYPE_NONE
+  ///     1. when no Intents can be resolved to handle the `tel:` scheme
+  ///   - The method will return [ServiceStatus.disabled] when:
+  ///     1. the SIM card is missing
+  ///   - **PLEASE NOTE that this is still not a perfect indication** of the
+  ///     devices' capability to place & connect phone calls
+  ///     as it also depends on the network condition.
   Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) async {
     final int status = await _methodChannel.invokeMethod(
         'checkServiceStatus', permission.value);
