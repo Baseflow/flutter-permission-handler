@@ -11,11 +11,15 @@ import android.content.pm.ResolveInfo;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -37,6 +41,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final String LOG_TAG = "permissions_handler";
   private static final int PERMISSION_CODE = 24;
+  private static final int PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS = 5672353;
 
   //PERMISSION_GROUP
   private static final int PERMISSION_GROUP_CALENDAR = 0;
@@ -54,7 +59,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_GROUP_SMS = 12;
   private static final int PERMISSION_GROUP_SPEECH = 13;
   private static final int PERMISSION_GROUP_STORAGE = 14;
-  private static final int PERMISSION_GROUP_UNKNOWN = 15;
+  private static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 15;
+  private static final int PERMISSION_GROUP_UNKNOWN = 16;
 
   private PermissionHandlerPlugin(Registrar mRegistrar) {
     this.mRegistrar = mRegistrar;
@@ -77,6 +83,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       PERMISSION_GROUP_SMS,
       PERMISSION_GROUP_SPEECH,
       PERMISSION_GROUP_STORAGE,
+      PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS,
       PERMISSION_GROUP_UNKNOWN,
   })
   private @interface PermissionGroup {
@@ -131,6 +138,18 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         } else {
           return false;
         }
+      }
+    });
+
+    registrar.addActivityResultListener(new ActivityResultListener() {
+      @Override
+      public boolean onActivityResult(int requestCode, int responseCode, Intent intent) {
+        if (requestCode == PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
+          permissionHandlerPlugin.handleIgnoreBatteryOptimizationsRequest(responseCode == Activity.RESULT_OK);
+          return true;
+        }
+
+        return false;
       }
     });
   }
@@ -249,10 +268,23 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       return PERMISSION_STATUS_UNKNOWN;
     }
 
-    final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= android.os.Build.VERSION_CODES.M;
+    final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= VERSION_CODES.M;
 
     for (String name : names) {
       if (targetsMOrHigher) {
+        if (permission == PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+          String packageName = context.getPackageName();
+          PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+          if (VERSION.SDK_INT >= VERSION_CODES.M) {
+            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+              return PERMISSION_STATUS_GRANTED;
+            } else {
+              return PERMISSION_STATUS_DENIED;
+            }
+          } else {
+            return PERMISSION_STATUS_RESTRICTED;
+          }
+        }
         final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
         if (permissionStatus == PackageManager.PERMISSION_DENIED) {
           return PERMISSION_STATUS_DENIED;
@@ -310,6 +342,10 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       }
 
       return SERVICE_STATUS_ENABLED;
+    }
+
+    if (permission == PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+      return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? SERVICE_STATUS_ENABLED : SERVICE_STATUS_NOT_APPLICABLE;
     }
 
     return SERVICE_STATUS_NOT_APPLICABLE;
@@ -371,7 +407,15 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
           continue;
         }
 
-        permissionsToRequest.addAll(names);
+        if (permission == PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+          String packageName = mRegistrar.context().getPackageName();
+          Intent intent = new Intent();
+          intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+          intent.setData(Uri.parse("package:" + packageName));
+          mRegistrar.activity().startActivityForResult(intent, PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+        } else {
+          permissionsToRequest.addAll(names);
+        }
       } else {
         if (!mRequestResults.containsKey(permission)) {
           mRequestResults.put(permission, PERMISSION_STATUS_GRANTED);
@@ -425,6 +469,18 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         mRequestResults.put(permission, toPermissionStatus(grantResults[i]));
       }
     }
+
+    processResult();
+  }
+
+  private void handleIgnoreBatteryOptimizationsRequest(boolean granted) {
+    if (mResult == null) {
+      return;
+    }
+
+    int status = granted ? PERMISSION_STATUS_GRANTED : PERMISSION_STATUS_DENIED;
+
+    mRequestResults.put(PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
 
     processResult();
   }
@@ -533,7 +589,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         break;
 
       case PERMISSION_GROUP_SENSORS:
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        if (VERSION.SDK_INT >= VERSION_CODES.KITKAT_WATCH) {
           if (hasPermissionInManifest(Manifest.permission.BODY_SENSORS)) {
             permissionNames.add(Manifest.permission.BODY_SENSORS);
           }
@@ -563,6 +619,12 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
         if (hasPermissionInManifest(Manifest.permission.WRITE_EXTERNAL_STORAGE))
           permissionNames.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        break;
+
+      case PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS:
+        if (hasPermissionInManifest(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
+          if (VERSION.SDK_INT >= VERSION_CODES.M)
+            permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         break;
 
       case PERMISSION_GROUP_MEDIA_LIBRARY:
