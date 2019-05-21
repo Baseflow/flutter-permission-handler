@@ -43,7 +43,7 @@
     return PermissionStatusUnknown;
 }
 
-+ (PermissionStatus)determinePermissionStatus:(MPMediaLibraryAuthorizationStatus)authorizationStatus {
++ (PermissionStatus)determinePermissionStatus:(MPMediaLibraryAuthorizationStatus)authorizationStatus  API_AVAILABLE(ios(9.3)){
     switch (authorizationStatus) {
         case MPMediaLibraryAuthorizationStatusNotDetermined:
             return PermissionStatusUnknown;
