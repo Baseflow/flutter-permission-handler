@@ -1,3 +1,7 @@
+## next
+
+* Support service status inquiry for phone permission on iOS & Android.
+
 ## 3.0.2
 
 * Fixed bug when rapidly requesting permissions (#23);
