@@ -36,22 +36,16 @@
      * Returns YES if the device can place a phone call
      */
 
-    // Check if the device can place a phone call
-    if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel://"]]) {
-        // Device supports phone calls, lets confirm it can place one right now
-        CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
-        CTCarrier *carrier = [netInfo subscriberCellularProvider];
-        NSString *mnc = [carrier mobileNetworkCode];
-        if (([mnc length] == 0) || ([mnc isEqualToString:@"65535"])) {
-            // Device cannot place a call at this time.  SIM might be removed.
-            return NO;
-        } else {
-            // Device can place a phone call
-            return YES;
-        }
+    // Device supports phone calls, lets confirm it can place one right now
+    CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
+    CTCarrier *carrier = [netInfo subscriberCellularProvider];
+    NSString *mnc = [carrier mobileNetworkCode];
+    if (([mnc length] == 0) || ([mnc isEqualToString:@"65535"])) {
+        // Device cannot place a call at this time.  SIM might be removed.
+        return NO;
     } else {
-        // Device does not support phone calls
-        return  NO;
+        // Device can place a phone call
+        return YES;
     }
 }
 
