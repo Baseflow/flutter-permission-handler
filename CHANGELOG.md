@@ -1,3 +1,7 @@
+## next
+
+* Add support for Androids' "ignore battery optimizations" permission.
+
 ## 3.1.0
 
 * Support service status inquiry for phone permission on iOS & Android.
