@@ -133,6 +133,9 @@
         }
     }
     
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
     switch (authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
             return PermissionStatusUnknown;
@@ -145,6 +148,9 @@
         default:
             return PermissionStatusUnknown;
     }
+
+#pragma clang diagnostic pop
+
 }
 
 @end

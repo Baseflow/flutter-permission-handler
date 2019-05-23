@@ -89,6 +89,8 @@
             return [MediaLibraryPermissionStrategy new];
             case PermissionGroupMicrophone:
             return [AudioVideoPermissionStrategy new];
+            case PermissionGroupPhone:
+            return [PhonePermissionStrategy new];
             case PermissionGroupPhotos:
             return [PhotoPermissionStrategy new];
             case PermissionGroupReminders:
