@@ -1,4 +1,4 @@
-## next
+## 3.1.0
 
 * Support service status inquiry for phone permission on iOS & Android.
 
