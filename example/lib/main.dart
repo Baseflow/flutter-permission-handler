@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
                   .where((PermissionGroup permission) {
                     if (Platform.isIOS) {
                       return permission != PermissionGroup.unknown &&
-                          permission != PermissionGroup.phone &&
                           permission != PermissionGroup.sms &&
                           permission != PermissionGroup.storage;
                     } else {

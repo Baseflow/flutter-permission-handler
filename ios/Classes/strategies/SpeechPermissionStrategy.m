@@ -42,7 +42,7 @@
     return PermissionStatusUnknown;
 }
 
-+ (PermissionStatus)determinePermissionStatus:(SFSpeechRecognizerAuthorizationStatus)authorizationStatus {
++ (PermissionStatus)determinePermissionStatus:(SFSpeechRecognizerAuthorizationStatus)authorizationStatus  API_AVAILABLE(ios(10.0)){
     switch (authorizationStatus) {
         case SFSpeechRecognizerAuthorizationStatusNotDetermined:
             return PermissionStatusUnknown;
