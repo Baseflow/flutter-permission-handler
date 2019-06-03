@@ -271,10 +271,12 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= VERSION_CODES.M;
 
     for (String name : names) {
+      // Only handle them if the client app actually targets a API level greater than M.
       if (targetsMOrHigher) {
         if (permission == PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
           String packageName = context.getPackageName();
           PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+          // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
           if (VERSION.SDK_INT >= VERSION_CODES.M) {
             if (pm.isIgnoringBatteryOptimizations(packageName)) {
               return PERMISSION_STATUS_GRANTED;
@@ -622,9 +624,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         break;
 
       case PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS:
-        if (hasPermissionInManifest(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
-          if (VERSION.SDK_INT >= VERSION_CODES.M)
-            permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        if (VERSION.SDK_INT >= VERSION_CODES.M && hasPermissionInManifest(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
+          permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         break;
 
       case PERMISSION_GROUP_MEDIA_LIBRARY:
