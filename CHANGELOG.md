@@ -1,6 +1,8 @@
-## next
+## 3.2.0
 
-* Add support for Androids' "ignore battery optimizations" permission.
+* Add support for Androids' "ignore battery optimizations" permission;
+* Improve error logging;
+* Documented support for AndroidX.
 
 ## 3.1.0
 
