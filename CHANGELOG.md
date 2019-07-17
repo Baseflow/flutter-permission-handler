@@ -1,3 +1,7 @@
+## 3.2.1
+
+* Updated dependecy on 'meta' to latest version.
+
 ## 3.2.0
 
 * Add support for Androids' "ignore battery optimizations" permission;
