@@ -1,3 +1,7 @@
+## 3.2.2
+
+* Fixed problem with dependency on specific version of gradle wrapper on Android.
+
 ## 3.2.1+1
 
 * Reverted the update of the 'meta' plugin since Flutter SDK depends on version 1.1.6
