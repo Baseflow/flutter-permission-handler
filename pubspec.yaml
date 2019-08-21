@@ -16,6 +16,9 @@ dependencies:
 
   meta: ^1.1.6
 
+dev_dependencies:
+  pedantic: ^1.7.0
+
 flutter:
   plugin:
     androidPackage: com.baseflow.permissionhandler
