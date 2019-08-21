@@ -75,33 +75,13 @@
 
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
-            case PermissionGroupCalendar:
-            return [EventPermissionStrategy new];
             case PermissionGroupCamera:
-            return [AudioVideoPermissionStrategy new];
-            case PermissionGroupContacts:
-            return [ContactPermissionStrategy new];
-            case PermissionGroupLocation:
-            case PermissionGroupLocationAlways:
-            case PermissionGroupLocationWhenInUse:
-            return [[LocationPermissionStrategy alloc] initWithLocationManager];
-            case PermissionGroupMediaLibrary:
-            return [MediaLibraryPermissionStrategy new];
-            case PermissionGroupMicrophone:
-            return [AudioVideoPermissionStrategy new];
-            case PermissionGroupPhone:
-            return [PhonePermissionStrategy new];
             case PermissionGroupPhotos:
             return [PhotoPermissionStrategy new];
-            case PermissionGroupReminders:
-            return [EventPermissionStrategy new];
-            case PermissionGroupSensors:
-            return [SensorPermissionStrategy new];
-            case PermissionGroupSpeech:
-            return [SpeechPermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }
 }
 
 @end
+
