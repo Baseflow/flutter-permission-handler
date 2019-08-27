@@ -78,8 +78,6 @@
             case PermissionGroupCamera:
             case PermissionGroupPhotos:
             return [PhotoPermissionStrategy new];
-            case PermissionGroupMicrophone:
-            return [AudioVideoPermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }
