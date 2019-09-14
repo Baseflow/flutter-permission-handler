@@ -83,6 +83,7 @@ class PermissionGroup {
 
   final int value;
 
+
   /// Android: Calendar
   /// iOS: Calendar (Events)
   static const PermissionGroup calendar = PermissionGroup._(0);
@@ -150,6 +151,10 @@ class PermissionGroup {
   /// The unknown permission only used for return type, never requested
   static const PermissionGroup unknown = PermissionGroup._(16);
 
+  /// Android: Nothing
+  /// iOS: SiriKit
+  static const PermissionGroup assistant = PermissionGroup._(17);
+
   static const List<PermissionGroup> values = <PermissionGroup>[
     calendar,
     camera,
@@ -168,6 +173,7 @@ class PermissionGroup {
     storage,
     ignoreBatteryOptimizations,
     unknown,
+    assistant
   ];
 
   static const List<String> _names = <String>[
@@ -188,6 +194,7 @@ class PermissionGroup {
     'storage',
     'ignoreBatteryOptimizations',
     'unknown',
+    'assistant'
   ];
 
   @override
