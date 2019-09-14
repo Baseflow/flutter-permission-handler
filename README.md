@@ -101,6 +101,10 @@ enum PermissionGroup {
   /// The unknown permission only used for return type, never requested
   unknown,
 
+  /// Android: Nothing
+  /// iOS: SiriKit/Intents
+  assistant,
+
   /// Android: Calendar
   /// iOS: Calendar (Events)
   calendar,
@@ -218,3 +222,5 @@ If you would like to contribute to the plugin (e.g. by improving the documentati
 ## Author
 
 This Permission handler plugin for Flutter is developed by [Baseflow](https://baseflow.com). You can contact us at <hello@baseflow.com>
+
+The Assistant/SiriKit/Intents was added by Voltaire, Inc(https://voltaireapp.com).
