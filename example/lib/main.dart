@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
                       return permission != PermissionGroup.unknown &&
                           permission != PermissionGroup.mediaLibrary &&
                           permission != PermissionGroup.photos &&
-                          permission != PermissionGroup.reminders;
+                          permission != PermissionGroup.reminders && permission != PermissionGroup.assistant;
                     }
                   })
                   .map((PermissionGroup permission) =>
