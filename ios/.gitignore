@@ -34,3 +34,6 @@ Icon?
 .tags*
 
 /Flutter/Generated.xcconfig
+
+# iOS/XCode related
+**/ios/Flutter/flutter_export_environment.sh
