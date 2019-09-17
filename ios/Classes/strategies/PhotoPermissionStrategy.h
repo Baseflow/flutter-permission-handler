@@ -3,10 +3,10 @@
 // Copyright (c) 2019 The Chromium Authors. All rights reserved.
 //
 
-#import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
 #import "PermissionStrategy.h"
+#import <Photos/Photos.h>
 
 
-@interface AudioVideoPermissionStrategy : NSObject <PermissionStrategy>
+@interface PhotoPermissionStrategy : NSObject <PermissionStrategy>
 @end

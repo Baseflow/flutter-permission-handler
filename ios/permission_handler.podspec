@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'permission_handler'
-  s.version          = '3.2.2'
+  s.version          = '4.0.3'
   s.summary          = 'Permission plugin for Flutter.'
   s.description      = <<-DESC
 A new Flutter project.

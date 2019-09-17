@@ -75,8 +75,9 @@
 
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
-            case PermissionGroupMicrophone:
-            return [AudioVideoPermissionStrategy new];
+            case PermissionGroupCamera:
+            case PermissionGroupPhotos:
+            return [PhotoPermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }
