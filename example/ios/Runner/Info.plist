@@ -41,6 +41,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+
+    <!-- Permission options for the `location` group -->
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Need location when in use</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -49,27 +51,44 @@
     <string>Older devices need location.</string>
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Can I haz location always?</string>
+
+    <!-- Permission options for the `mediaLibrary` group -->
     <key>NSAppleMusicUsageDescription</key>
     <string>Music!</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>bluetooth</string>
-    <key>NSCalendarsUsageDescription</key>
-    <string>Calendars</string>
-    <key>NSCameraUsageDescription</key>
-    <string>camera</string>
-    <key>NSContactsUsageDescription</key>
-    <string>contacts</string>
     <key>kTCCServiceMediaLibrary</key>
     <string>media</string>
+
+    <!-- Permission options for the `calendar` group -->
+    <key>NSCalendarsUsageDescription</key>
+    <string>Calendars</string>
+
+    <!-- Permission options for the `camera` group -->
+    <key>NSCameraUsageDescription</key>
+    <string>camera</string>
+
+    <!-- Permission options for the `contacts` group -->
+    <key>NSContactsUsageDescription</key>
+    <string>contacts</string>
+
+    <!-- Permission options for the `microphone` group -->
     <key>NSMicrophoneUsageDescription</key>
     <string>microphone</string>
-    <key>NSMotionUsageDescription</key>
-    <string>motion</string>
-    <key>NSPhotoLibraryUsageDescription</key>
-    <string>photos</string>
-    <key>NSRemindersUsageDescription</key>
-    <string>reminders</string>
+
+    <!-- Permission options for the `speech` group -->
     <key>NSSpeechRecognitionUsageDescription</key>
     <string>speech</string>
+
+    <!-- Permission options for the `sensors` group -->
+    <key>NSMotionUsageDescription</key>
+    <string>motion</string>
+
+    <!-- Permission options for the `photos` group -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>photos</string>
+
+    <!-- Permission options for the `reminder` group -->
+    <key>NSRemindersUsageDescription</key>
+    <string>reminders</string>
+
 </dict>
 </plist>
