@@ -573,8 +573,10 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         break;
 
       case PERMISSION_GROUP_LOCATION_ALWAYS:
-        if (hasPermissionInManifest(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
-          permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+          if (hasPermissionInManifest(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+            permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
 
       case PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
       case PERMISSION_GROUP_LOCATION:
