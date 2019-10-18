@@ -11,7 +11,7 @@ task:
   build_script: 
     - cd example
     - flutter build apk
-  test_script: flutter test
+  #test_script: flutter test
 
 task:
   osx_instance:
@@ -28,4 +28,4 @@ task:
   build_script: 
     - cd example
     - flutter build ios --no-codesign
-  test_script: flutter test
+  #test_script: flutter test
