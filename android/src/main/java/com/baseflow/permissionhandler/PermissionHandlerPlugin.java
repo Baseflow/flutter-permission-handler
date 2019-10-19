@@ -166,6 +166,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case Manifest.permission.WRITE_CONTACTS:
       case Manifest.permission.GET_ACCOUNTS:
         return PERMISSION_GROUP_CONTACTS;
+      case Manifest.permission.ACCESS_BACKGROUND_LOCATION:
+        return PERMISSION_GROUP_LOCATION_ALWAYS;
       case Manifest.permission.ACCESS_COARSE_LOCATION:
       case Manifest.permission.ACCESS_FINE_LOCATION:
         return PERMISSION_GROUP_LOCATION;
@@ -450,16 +452,19 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         if (!mRequestResults.containsKey(PERMISSION_GROUP_SPEECH)) {
           mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(grantResults[i]));
         }
-      } else if (permission == PERMISSION_GROUP_LOCATION) {
-        final Context context = mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
-        final boolean isLocationServiceEnabled = context != null && isLocationServiceEnabled(context);
-        @PermissionStatus int permissionStatus = toPermissionStatus(grantResults[i]);
-        if (permissionStatus == PERMISSION_STATUS_GRANTED && !isLocationServiceEnabled) {
-          permissionStatus = PERMISSION_STATUS_DISABLED;
-        }
+      } else if (permission == PERMISSION_GROUP_LOCATION_ALWAYS) {
+        @PermissionStatus int permissionStatus = determineActualLocationStatus(grantResults[i]);
 
         if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
           mRequestResults.put(PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
+        }
+      } else if (permission == PERMISSION_GROUP_LOCATION) {
+        @PermissionStatus int permissionStatus = determineActualLocationStatus(grantResults[i]);
+
+        if (VERSION.SDK_INT < VERSION_CODES.Q) {
+          if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
+            mRequestResults.put(PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
+          }
         }
 
         if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_WHEN_IN_USE)) {
@@ -473,6 +478,23 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
 
     processResult();
+  }
+
+  /**
+   * Crosschecks a permission grant result with the location service availability.
+   *
+   * @param grantResult Grant Result as received from the Android system.
+   */
+  @PermissionStatus
+  private int determineActualLocationStatus(int grantResult) {
+    final Context context =
+        mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
+    final boolean isLocationServiceEnabled = context != null && isLocationServiceEnabled(context);
+    @PermissionStatus int permissionStatus = toPermissionStatus(grantResult);
+    if (permissionStatus == PERMISSION_STATUS_GRANTED && !isLocationServiceEnabled) {
+      permissionStatus = PERMISSION_STATUS_DISABLED;
+    }
+    return permissionStatus;
   }
 
   private void handleIgnoreBatteryOptimizationsRequest(boolean granted) {
@@ -551,6 +573,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         break;
 
       case PERMISSION_GROUP_LOCATION_ALWAYS:
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+          if (hasPermissionInManifest(Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+            permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        }
+
       case PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
       case PERMISSION_GROUP_LOCATION:
         if (hasPermissionInManifest(Manifest.permission.ACCESS_COARSE_LOCATION))
