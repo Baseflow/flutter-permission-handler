@@ -99,7 +99,7 @@ class PermissionGroup {
   /// iOS: CoreLocation (Always and WhenInUse)
   static const PermissionGroup location = PermissionGroup._(3);
 
-  /// Android: 
+  /// Android:
   ///   When running on Android < Q: Fine and Coarse Location
   ///   When running on Android Q and above: Background Location Permission
   /// iOS: CoreLocation - Always
