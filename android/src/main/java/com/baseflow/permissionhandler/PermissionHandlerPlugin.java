@@ -19,6 +19,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.core.app.NotificationManagerCompat;
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -60,7 +61,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_GROUP_SPEECH = 13;
   private static final int PERMISSION_GROUP_STORAGE = 14;
   private static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 15;
-  private static final int PERMISSION_GROUP_UNKNOWN = 16;
+  private static final int PERMISSION_GROUP_NOTIFICATION = 16;
+  private static final int PERMISSION_GROUP_UNKNOWN = 17;
 
   private PermissionHandlerPlugin(Registrar mRegistrar) {
     this.mRegistrar = mRegistrar;
@@ -84,6 +86,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       PERMISSION_GROUP_SPEECH,
       PERMISSION_GROUP_STORAGE,
       PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS,
+      PERMISSION_GROUP_NOTIFICATION,
       PERMISSION_GROUP_UNKNOWN,
   })
   private @interface PermissionGroup {
@@ -250,6 +253,21 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
   @PermissionStatus
   private int checkPermissionStatus(@PermissionGroup int permission) {
+    final Context context = mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
+    if (context == null) {
+      Log.d(LOG_TAG, "Unable to detect current Activity or App Context.");
+      return PERMISSION_STATUS_UNKNOWN;
+    }
+
+    if (permission == PERMISSION_GROUP_NOTIFICATION) {
+      NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+      boolean isGranted = manager.areNotificationsEnabled();
+      if (isGranted) {
+        return PERMISSION_STATUS_GRANTED;
+      }
+      return PERMISSION_STATUS_DENIED;
+    }
+
     final List<String> names = getManifestNames(permission);
 
     if (names == null) {
@@ -261,12 +279,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     //if no permissions were found then there is an issue and permission is not set in Android manifest
     if (names.size() == 0) {
       Log.d(LOG_TAG, "No permissions found in manifest for: " + permission);
-      return PERMISSION_STATUS_UNKNOWN;
-    }
-
-    final Context context = mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
-    if (context == null) {
-      Log.d(LOG_TAG, "Unable to detect current Activity or App Context.");
       return PERMISSION_STATUS_UNKNOWN;
     }
 
@@ -399,6 +411,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     for (Integer permission : permissions) {
       @PermissionStatus final int permissionStatus = checkPermissionStatus(permission);
       if (permissionStatus != PERMISSION_STATUS_GRANTED) {
+        if (permission == PERMISSION_GROUP_NOTIFICATION) {
+          mRequestResults.put(permission, PERMISSION_STATUS_DENIED);
+          continue;
+        }
+
         final List<String> names = getManifestNames(permission);
 
         //check to see if we can find manifest names
@@ -653,6 +670,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS:
         if (VERSION.SDK_INT >= VERSION_CODES.M && hasPermissionInManifest(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
           permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        break;
+      case PERMISSION_GROUP_NOTIFICATION:
         break;
 
       case PERMISSION_GROUP_MEDIA_LIBRARY:
