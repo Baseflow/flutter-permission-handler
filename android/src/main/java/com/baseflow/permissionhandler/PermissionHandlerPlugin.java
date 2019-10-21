@@ -666,9 +666,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         if (VERSION.SDK_INT >= VERSION_CODES.M && hasPermissionInManifest(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
           permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
         break;
-      case PERMISSION_GROUP_NOTIFICATION:
-        break;
 
+      case PERMISSION_GROUP_NOTIFICATION:
       case PERMISSION_GROUP_MEDIA_LIBRARY:
       case PERMISSION_GROUP_PHOTOS:
       case PERMISSION_GROUP_REMINDERS:
