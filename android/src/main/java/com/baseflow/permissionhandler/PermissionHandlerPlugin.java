@@ -411,11 +411,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     for (Integer permission : permissions) {
       @PermissionStatus final int permissionStatus = checkPermissionStatus(permission);
       if (permissionStatus != PERMISSION_STATUS_GRANTED) {
-        if (permission == PERMISSION_GROUP_NOTIFICATION) {
-          mRequestResults.put(permission, PERMISSION_STATUS_DENIED);
-          continue;
-        }
-
         final List<String> names = getManifestNames(permission);
 
         //check to see if we can find manifest names
