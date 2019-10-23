@@ -260,12 +260,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
 
     if (permission == PERMISSION_GROUP_NOTIFICATION) {
-      NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-      boolean isGranted = manager.areNotificationsEnabled();
-      if (isGranted) {
-        return PERMISSION_STATUS_GRANTED;
-      }
-      return PERMISSION_STATUS_DENIED;
+      return checkNotificationPermissionStatus(context);
     }
 
     final List<String> names = getManifestNames(permission);
@@ -738,5 +733,14 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       final String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
       return !TextUtils.isEmpty(locationProviders);
     }
+  }
+
+  private int checkNotificationPermissionStatus(Context context) {
+    NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+    boolean isGranted = manager.areNotificationsEnabled();
+    if (isGranted) {
+      return PERMISSION_STATUS_GRANTED;
+    }
+    return PERMISSION_STATUS_DENIED;
   }
 }
