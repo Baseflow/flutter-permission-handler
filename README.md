@@ -53,7 +53,7 @@ For this plugin to work you will have to add permission configuration to your `A
 - [AndroidManifest.xml](https://github.com/BaseflowIT/flutter-permission-handler/blob/develop/example/android/app/src/main/AndroidManifest.xml) (note that there is a debug, main and profile version which are used depending on how you start your App. In general it is sufficient to add permissions only to the `main` version);
 - [Info.plist](https://github.com/BaseflowIT/flutter-permission-handler/blob/develop/example/ios/Runner/Info.plist)
 
-> IMPORTANT: On iOS you will have to include all permission options when you want to submit your App. This is because the `permission_handler` plugin touches all different SDKs and because the static code analyser (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/BaseflowIT/flutter-permission-handler/issues/26). Unfortunately we don't have a good solution for this.    
+> IMPORTANT: On iOS you will have to include all permission options when you want to submit your App. This is because the `permission_handler` plugin touches all different SDKs and because the static code analyser (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/BaseflowIT/flutter-permission-handler/issues/26). Unfortunately we don't have a good solution for this. You can fork library to your project and delete not used permission strategies until the good solution comes to mind.    
 
 ## API
 
