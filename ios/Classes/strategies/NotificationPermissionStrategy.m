@@ -23,30 +23,30 @@
     completionHandler(status);
     return;
   }
-  
-  if(@available(iOS 10.0, *)) {
-    UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-    
-    UNAuthorizationOptions authorizationOptions = 0;
-    authorizationOptions += UNAuthorizationOptionSound;
-    authorizationOptions += UNAuthorizationOptionAlert;
-    authorizationOptions += UNAuthorizationOptionBadge;
-    [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-      if (!granted || error != nil) {
-        completionHandler(PermissionStatusDenied);
-        return;
-      }
-      completionHandler(PermissionStatusGranted);
-    }];
-  } else {
-    UIUserNotificationType notificationTypes = 0;
-    notificationTypes |= UIUserNotificationTypeSound;
-    notificationTypes |= UIUserNotificationTypeAlert;
-    notificationTypes |= UIUserNotificationTypeBadge;
-    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
-    [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if(@available(iOS 10.0, *)) {
+      UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+      UNAuthorizationOptions authorizationOptions = 0;
+      authorizationOptions += UNAuthorizationOptionSound;
+      authorizationOptions += UNAuthorizationOptionAlert;
+      authorizationOptions += UNAuthorizationOptionBadge;
+      [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
+        if (!granted || error != nil) {
+          completionHandler(PermissionStatusDenied);
+          return;
+        }
+      }];
+    } else {
+      UIUserNotificationType notificationTypes = 0;
+      notificationTypes |= UIUserNotificationTypeSound;
+      notificationTypes |= UIUserNotificationTypeAlert;
+      notificationTypes |= UIUserNotificationTypeBadge;
+      UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
+      [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+    }
+    [[UIApplication sharedApplication] registerForRemoteNotifications];
     completionHandler(PermissionStatusGranted);
-  }
+  });
 }
 
 + (PermissionStatus)permissionStatus {
