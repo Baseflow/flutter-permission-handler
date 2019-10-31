@@ -20,6 +20,7 @@
 #import "SensorPermissionStrategy.h"
 #import "SpeechPermissionStrategy.h"
 #import "UnknownPermissionStrategy.h"
+#import "NotificationPermissionStrategy.h"
 #import "PermissionHandlerEnums.h"
 #import "Codec.h"
 
