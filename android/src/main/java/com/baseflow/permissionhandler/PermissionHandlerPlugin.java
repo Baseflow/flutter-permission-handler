@@ -182,7 +182,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case Manifest.permission.WRITE_CALL_LOG:
       case Manifest.permission.ADD_VOICEMAIL:
       case Manifest.permission.USE_SIP:
-      case Manifest.permission.PROCESS_OUTGOING_CALLS:
+      case Manifest.permission.ACTION_NEW_OUTGOING_CALL:
         return PERMISSION_GROUP_PHONE;
       case Manifest.permission.BODY_SENSORS:
         return PERMISSION_GROUP_SENSORS;
@@ -620,8 +620,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         if (hasPermissionInManifest(Manifest.permission.USE_SIP))
           permissionNames.add(Manifest.permission.USE_SIP);
 
-        if (hasPermissionInManifest(Manifest.permission.PROCESS_OUTGOING_CALLS))
-          permissionNames.add(Manifest.permission.PROCESS_OUTGOING_CALLS);
+        if (hasPermissionInManifest(Manifest.permission.ACTION_NEW_OUTGOING_CALL))
+          permissionNames.add(Manifest.permission.ACTION_NEW_OUTGOING_CALL);
         break;
 
       case PERMISSION_GROUP_SENSORS:
