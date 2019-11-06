@@ -169,6 +169,10 @@ enum PermissionGroup {
   /// Android: None
   /// iOS: MPMediaLibrary
   mediaLibrary
+
+  /// Android: Check notification enable
+  /// iOS: Check and request notification permission
+  notification
 }
 ```
 
