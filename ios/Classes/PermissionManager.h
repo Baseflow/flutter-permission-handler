@@ -21,6 +21,7 @@
 #import "SpeechPermissionStrategy.h"
 #import "StoragePermissionStrategy.h"
 #import "UnknownPermissionStrategy.h"
+#import "NotificationPermissionStrategy.h"
 #import "PermissionHandlerEnums.h"
 #import "Codec.h"
 

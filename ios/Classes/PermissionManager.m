@@ -99,6 +99,8 @@
             return [SensorPermissionStrategy new];
         case PermissionGroupSpeech:
             return [SpeechPermissionStrategy new];
+        case PermissionGroupNotification:
+            return [NotificationPermissionStrategy new];
         case PermissionGroupStorage:
             return [StoragePermissionStrategy new];
         default:
