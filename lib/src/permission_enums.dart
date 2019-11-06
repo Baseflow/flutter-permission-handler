@@ -142,7 +142,7 @@ class PermissionGroup {
   static const PermissionGroup speech = PermissionGroup._(13);
 
   /// Android: External Storage
-  /// iOS: Nothing
+  /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly granted.
   static const PermissionGroup storage = PermissionGroup._(14);
 
   /// Android: Ignore Battery Optimizations
