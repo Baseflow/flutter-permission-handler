@@ -19,6 +19,7 @@
 #import "PhotoPermissionStrategy.h"
 #import "SensorPermissionStrategy.h"
 #import "SpeechPermissionStrategy.h"
+#import "StoragePermissionStrategy.h"
 #import "UnknownPermissionStrategy.h"
 #import "NotificationPermissionStrategy.h"
 #import "PermissionHandlerEnums.h"
@@ -29,13 +30,10 @@ typedef void (^PermissionRequestCompletion)(NSDictionary *permissionRequestResul
 @interface PermissionManager : NSObject
 
 - (instancetype)initWithStrategyInstances;
+- (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion;
 
 + (void)checkPermissionStatus:(enum PermissionGroup)permission result:(FlutterResult)result;
-
 + (void)checkServiceStatus:(enum PermissionGroup)permission result:(FlutterResult)result;
-
 + (void)openAppSettings:(FlutterResult)result;
-
-- (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion;
 
 @end
