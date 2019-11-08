@@ -75,30 +75,34 @@
 
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
-            case PermissionGroupCalendar:
+        case PermissionGroupCalendar:
             return [EventPermissionStrategy new];
-            case PermissionGroupCamera:
+        case PermissionGroupCamera:
             return [AudioVideoPermissionStrategy new];
-            case PermissionGroupContacts:
+        case PermissionGroupContacts:
             return [ContactPermissionStrategy new];
-            case PermissionGroupLocation:
-            case PermissionGroupLocationAlways:
-            case PermissionGroupLocationWhenInUse:
+        case PermissionGroupLocation:
+        case PermissionGroupLocationAlways:
+        case PermissionGroupLocationWhenInUse:
             return [[LocationPermissionStrategy alloc] initWithLocationManager];
-            case PermissionGroupMediaLibrary:
+        case PermissionGroupMediaLibrary:
             return [MediaLibraryPermissionStrategy new];
-            case PermissionGroupMicrophone:
+        case PermissionGroupMicrophone:
             return [AudioVideoPermissionStrategy new];
-            case PermissionGroupPhone:
+        case PermissionGroupPhone:
             return [PhonePermissionStrategy new];
-            case PermissionGroupPhotos:
+        case PermissionGroupPhotos:
             return [PhotoPermissionStrategy new];
-            case PermissionGroupReminders:
+        case PermissionGroupReminders:
             return [EventPermissionStrategy new];
-            case PermissionGroupSensors:
+        case PermissionGroupSensors:
             return [SensorPermissionStrategy new];
-            case PermissionGroupSpeech:
+        case PermissionGroupSpeech:
             return [SpeechPermissionStrategy new];
+        case PermissionGroupNotification:
+            return [NotificationPermissionStrategy new];
+        case PermissionGroupStorage:
+            return [StoragePermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }
