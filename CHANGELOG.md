@@ -1,3 +1,8 @@
+## 4.0.0
+
+* iOS: Added support for requesting permissions on the DOCUMENTS and DOWNLOADS folder (thanks to @phranck);
+* Androis: Fix the PROCESS_OUTGOING_CALLS permissions which have been deprecated in API 29.
+
 ## 3.3.0
 
 * Android: Add support for requesting the background location permission within the `locationAlways` group.
