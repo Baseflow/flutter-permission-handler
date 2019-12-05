@@ -175,6 +175,7 @@ class PermissionGroup {
     ignoreBatteryOptimizations,
     notification,
     unknown,
+    //bluetooth
   ];
 
   static const List<String> _names = <String>[
