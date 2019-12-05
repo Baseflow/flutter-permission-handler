@@ -197,7 +197,7 @@ class PermissionGroup {
     'ignoreBatteryOptimizations',
     'notification',
     'unknown',
-    //bluetooth
+    //bluetooth permission
   ];
 
   @override
