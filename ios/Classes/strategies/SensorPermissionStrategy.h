@@ -3,10 +3,20 @@
 // Copyright (c) 2019 The Chromium Authors. All rights reserved.
 //
 
-#import <CoreMotion/CoreMotion.h>
 #import <Foundation/Foundation.h>
 #import "PermissionStrategy.h"
 
+#if PERMISSION_SENSORS
+
+#import <CoreMotion/CoreMotion.h>
 
 @interface SensorPermissionStrategy : NSObject <PermissionStrategy>
 @end
+
+#else
+
+#import "UnknownPermissionStrategy.h"
+@interface SensorPermissionStrategy : UnknownPermissionStrategy
+@end
+
+#endif
