@@ -623,6 +623,9 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         if (hasPermissionInManifest(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
           permissionNames.add(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE);
 
+        if (VERSION.SDK_INT >= VERSION_CODES.O && hasPermissionInManifest(Manifest.permission.ANSWER_PHONE_CALLS))
+            permissionNames.add(Manifest.permission.ANSWER_PHONE_CALLS);
+
         break;
 
       case PERMISSION_GROUP_SENSORS:
