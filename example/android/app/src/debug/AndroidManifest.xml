@@ -46,4 +46,8 @@
 
     <!-- Permissions options for the `sensors` group -->
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+
+    <!-- Permissions options for the `access_media_location` group -->
+    <uses-permission android:name="android.permission.ACCESS_MEDIA_LOCATION" />
+
 </manifest>

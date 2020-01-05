@@ -23,6 +23,7 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupStorage,
     PermissionGroupIgnoreBatteryOptimizations,
     PermissionGroupNotification,
+    PermissionGroupAccessMediaLocation,
     PermissionGroupUnknown,
 };
 
