@@ -121,7 +121,7 @@ You can remove permissions you don't use by:
 >    The following lists the relationship between `Permission` and `The key of Info.plist`:
 >
 >    | Permission  | Info.plist  | Macro |
->    |---|---|---|---|
+>    |---|---|---|
 >    | PermissionGroup.calendar  |  NSCalendarsUsageDescription | PERMISSION_EVENTS |
 >    | PermissionGroup.reminders  |  NSRemindersUsageDescription | PERMISSION_REMINDERS |
 >    | PermissionGroup.contacts  |  NSContactsUsageDescription | PERMISSION_CONTACTS |
