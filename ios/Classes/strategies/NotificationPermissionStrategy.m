@@ -7,6 +7,8 @@
 
 #import "NotificationPermissionStrategy.h"
 
+#if PERMISSION_NOTIFICATIONS
+
 @implementation NotificationPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
@@ -73,3 +75,10 @@
 }
 
 @end
+
+#else
+
+@implementation NotificationPermissionStrategy
+@end
+
+#endif

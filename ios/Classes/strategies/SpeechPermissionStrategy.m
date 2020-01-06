@@ -5,6 +5,7 @@
 
 #import "SpeechPermissionStrategy.h"
 
+#if PERMISSION_SPEECH_RECOGNIZER
 
 @implementation SpeechPermissionStrategy
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
@@ -58,3 +59,10 @@
 }
 
 @end
+
+#else
+
+@implementation SpeechPermissionStrategy
+@end
+
+#endif

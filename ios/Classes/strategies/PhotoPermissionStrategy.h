@@ -5,8 +5,18 @@
 
 #import <Foundation/Foundation.h>
 #import "PermissionStrategy.h"
-#import <Photos/Photos.h>
 
+#if PERMISSION_PHOTOS
+
+#import <Photos/Photos.h>
 
 @interface PhotoPermissionStrategy : NSObject <PermissionStrategy>
 @end
+
+#else
+
+#import "UnknownPermissionStrategy.h"
+@interface PhotoPermissionStrategy : UnknownPermissionStrategy
+@end
+
+#endif

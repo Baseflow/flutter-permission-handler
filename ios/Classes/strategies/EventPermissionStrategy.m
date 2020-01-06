@@ -5,14 +5,23 @@
 
 #import "EventPermissionStrategy.h"
 
+#if PERMISSION_EVENTS | PERMISSION_REMINDERS
 
 @implementation EventPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
     if (permission == PermissionGroupCalendar) {
+        #if PERMISSION_EVENTS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
+        #else
+        return PermissionStatusUnknown;
+        #endif
     } else if (permission == PermissionGroupReminders) {
+        #if PERMISSION_REMINDERS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeReminder];
+        #else
+        return PermissionStatusUnknown;
+        #endif
     }
     
     return PermissionStatusUnknown;
@@ -33,9 +42,19 @@
     EKEntityType entityType;
     
     if (permission == PermissionGroupCalendar) {
+        #if PERMISSION_EVENTS
         entityType = EKEntityTypeEvent;
+        #else
+        completionHandler(PermissionStatusUnknown);
+        return;
+        #endif
     } else if (permission == PermissionGroupReminders) {
+        #if PERMISSION_REMINDERS
         entityType = EKEntityTypeReminder;
+        #else
+        completionHandler(PermissionStatusUnknown);
+        return;
+        #endif
     } else {
         completionHandler(PermissionStatusUnknown);
         return;
@@ -69,3 +88,10 @@
 }
 
 @end
+
+#else
+
+@implementation EventPermissionStrategy
+@end
+
+#endif

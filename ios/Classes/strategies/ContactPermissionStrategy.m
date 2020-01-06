@@ -5,6 +5,7 @@
 
 #import "ContactPermissionStrategy.h"
 
+#if PERMISSION_CONTACTS
 
 @implementation ContactPermissionStrategy
 
@@ -94,3 +95,10 @@
     });
 }
 @end
+
+#else
+
+@implementation ContactPermissionStrategy
+@end
+
+#endif

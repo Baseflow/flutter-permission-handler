@@ -5,6 +5,7 @@
 
 #import "SensorPermissionStrategy.h"
 
+#if PERMISSION_SENSORS
 
 @implementation SensorPermissionStrategy
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
@@ -80,3 +81,10 @@
 }
 
 @end
+
+#else
+
+@implementation SensorPermissionStrategy
+@end
+
+#endif

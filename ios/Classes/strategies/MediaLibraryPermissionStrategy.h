@@ -4,9 +4,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <MediaPlayer/MediaPlayer.h>
 #include "PermissionStrategy.h"
 
+#if PERMISSION_MEDIA_LIBRARY
+
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface MediaLibraryPermissionStrategy : NSObject <PermissionStrategy>
 @end
+
+#else
+
+#import "UnknownPermissionStrategy.h"
+@interface MediaLibraryPermissionStrategy : UnknownPermissionStrategy
+@end
+
+#endif
