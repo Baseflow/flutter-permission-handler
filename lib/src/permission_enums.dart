@@ -153,8 +153,11 @@ class PermissionGroup {
   /// iOS: Notification
   static const PermissionGroup notification = PermissionGroup._(16);
 
+  /// Android: Allows an application to access any geographic locations persisted in the user's shared collection.
+  static const PermissionGroup access_media_location = PermissionGroup._(17);
+
   /// The unknown permission only used for return type, never requested
-  static const PermissionGroup unknown = PermissionGroup._(17);
+  static const PermissionGroup unknown = PermissionGroup._(18);
 
   static const List<PermissionGroup> values = <PermissionGroup>[
     calendar,
@@ -174,6 +177,7 @@ class PermissionGroup {
     storage,
     ignoreBatteryOptimizations,
     notification,
+    access_media_location,
     unknown,
   ];
 
@@ -195,6 +199,7 @@ class PermissionGroup {
     'storage',
     'ignoreBatteryOptimizations',
     'notification',
+    'access_media_location',
     'unknown',
   ];
 

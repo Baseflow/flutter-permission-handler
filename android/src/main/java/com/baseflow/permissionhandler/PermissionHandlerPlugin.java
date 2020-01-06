@@ -62,7 +62,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_GROUP_STORAGE = 14;
   private static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 15;
   private static final int PERMISSION_GROUP_NOTIFICATION = 16;
-  private static final int PERMISSION_GROUP_UNKNOWN = 17;
+  private static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 17;
+  private static final int PERMISSION_GROUP_UNKNOWN = 18;
 
   private PermissionHandlerPlugin(Registrar mRegistrar) {
     this.mRegistrar = mRegistrar;
@@ -87,6 +88,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       PERMISSION_GROUP_STORAGE,
       PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS,
       PERMISSION_GROUP_NOTIFICATION,
+      PERMISSION_GROUP_ACCESS_MEDIA_LOCATION,
       PERMISSION_GROUP_UNKNOWN,
   })
   private @interface PermissionGroup {
@@ -195,6 +197,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case Manifest.permission.READ_EXTERNAL_STORAGE:
       case Manifest.permission.WRITE_EXTERNAL_STORAGE:
         return PERMISSION_GROUP_STORAGE;
+      case Manifest.permission.ACCESS_MEDIA_LOCATION:
+        return PERMISSION_GROUP_ACCESS_MEDIA_LOCATION;
       default:
         return PERMISSION_GROUP_UNKNOWN;
     }
@@ -664,6 +668,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS:
         if (VERSION.SDK_INT >= VERSION_CODES.M && hasPermissionInManifest(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
           permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        break;
+
+      case PERMISSION_GROUP_ACCESS_MEDIA_LOCATION:
+        if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.ACCESS_MEDIA_LOCATION))
+            permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
         break;
 
       case PERMISSION_GROUP_NOTIFICATION:
