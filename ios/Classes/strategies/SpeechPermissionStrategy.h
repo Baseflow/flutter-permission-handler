@@ -5,7 +5,18 @@
 
 #import <Foundation/Foundation.h>
 #import "PermissionStrategy.h"
+
+#if PERMISSION_SPEECH_RECOGNIZER
+
 #import <Speech/Speech.h>
 
 @interface SpeechPermissionStrategy : NSObject <PermissionStrategy>
 @end
+
+#else
+
+#import "UnknownPermissionStrategy.h"
+@interface SpeechPermissionStrategy : UnknownPermissionStrategy
+@end
+
+#endif

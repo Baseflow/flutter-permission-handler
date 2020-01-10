@@ -5,6 +5,7 @@
 
 #import "PhotoPermissionStrategy.h"
 
+#if PERMISSION_PHOTOS
 
 @implementation PhotoPermissionStrategy
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
@@ -50,3 +51,10 @@
 }
 
 @end
+
+#else
+
+@implementation PhotoPermissionStrategy
+@end
+
+#endif

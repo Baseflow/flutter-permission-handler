@@ -1,3 +1,10 @@
+## 4.1.0
+
+* iOS: Added option to exclude permissions logic using macros. This allows developers to submit their app to the AppStore without having to include all permissions in their Info.plist;
+* Android: Support ANSWER_PHONE_CALLS permission for API 26 and higher;
+* Android: Support ACCESS_MEDIA_LOCATION permission for API 26 and higher;
+* Android: Synchronized Gradle version with Flutter stable (1.12.13+hotfix.5).
+
 ## 4.0.0
 
 * iOS: Added support for requesting permissions on the DOCUMENTS and DOWNLOADS folder (thanks to @phranck);

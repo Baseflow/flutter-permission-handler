@@ -84,7 +84,11 @@
         case PermissionGroupLocation:
         case PermissionGroupLocationAlways:
         case PermissionGroupLocationWhenInUse:
+            #if PERMISSION_LOCATION
             return [[LocationPermissionStrategy alloc] initWithLocationManager];
+            #else
+            return [LocationPermissionStrategy new];
+            #endif
         case PermissionGroupMediaLibrary:
             return [MediaLibraryPermissionStrategy new];
         case PermissionGroupMicrophone:

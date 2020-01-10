@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
                           permission != PermissionGroup.sms &&
                           permission != PermissionGroup.storage &&
                           permission !=
-                              PermissionGroup.ignoreBatteryOptimizations;
+                              PermissionGroup.ignoreBatteryOptimizations &&
+                          permission != PermissionGroup.access_media_location;
                     } else {
                       return permission != PermissionGroup.unknown &&
                           permission != PermissionGroup.mediaLibrary &&

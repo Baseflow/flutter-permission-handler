@@ -5,6 +5,7 @@
 
 #import "LocationPermissionStrategy.h"
 
+#if PERMISSION_LOCATION
 
 @implementation LocationPermissionStrategy {
     CLLocationManager *_locationManager;
@@ -154,3 +155,10 @@
 }
 
 @end
+
+#else
+
+@implementation LocationPermissionStrategy
+@end
+
+#endif

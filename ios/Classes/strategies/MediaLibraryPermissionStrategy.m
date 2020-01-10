@@ -5,6 +5,7 @@
 
 #import "MediaLibraryPermissionStrategy.h"
 
+#if PERMISSION_MEDIA_LIBRARY
 
 @implementation MediaLibraryPermissionStrategy
 
@@ -59,3 +60,10 @@
 }
 
 @end
+
+#else
+
+@implementation MediaLibraryPermissionStrategy
+@end
+
+#endif

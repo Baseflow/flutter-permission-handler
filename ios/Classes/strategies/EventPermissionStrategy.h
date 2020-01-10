@@ -4,9 +4,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <EventKit/EventKit.h>
 #import "PermissionStrategy.h"
 
+#if PERMISSION_EVENTS | PERMISSION_REMINDERS
+
+#import <EventKit/EventKit.h>
 
 @interface EventPermissionStrategy : NSObject <PermissionStrategy>
 @end
+
+#else
+
+#import "UnknownPermissionStrategy.h"
+@interface EventPermissionStrategy : UnknownPermissionStrategy
+@end
+
+#endif
