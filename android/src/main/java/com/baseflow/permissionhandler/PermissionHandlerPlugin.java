@@ -19,6 +19,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationManagerCompat;
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
 import java.lang.annotation.Retention;
@@ -100,7 +101,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_STATUS_GRANTED = 2;
   private static final int PERMISSION_STATUS_RESTRICTED = 3;
   private static final int PERMISSION_STATUS_UNKNOWN = 4;
-
+  private static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 5;
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({
       PERMISSION_STATUS_DENIED,
@@ -108,6 +109,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       PERMISSION_STATUS_GRANTED,
       PERMISSION_STATUS_RESTRICTED,
       PERMISSION_STATUS_UNKNOWN,
+      PERMISSION_STATUS_NEWER_ASK_AGAIN,
   })
   private @interface PermissionStatus {
   }
@@ -204,12 +206,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
   }
 
-  private final Registrar mRegistrar;
-  private Result mResult;
-  private ArrayList<String> mRequestedPermissions;
-  @SuppressLint("UseSparseArrays")
-  private Map<Integer, Integer> mRequestResults = new HashMap<>();
-
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     switch (call.method) {
@@ -302,7 +298,9 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         }
         final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
         if (permissionStatus == PackageManager.PERMISSION_DENIED) {
-          return PERMISSION_STATUS_DENIED;
+          if (VERSION.SDK_INT >= VERSION_CODES.M && isNeverAskAgainSelected(permission)) {
+            return PERMISSION_STATUS_NEWER_ASK_AGAIN;
+          } else return PERMISSION_STATUS_DENIED;
         } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
           return PERMISSION_STATUS_UNKNOWN;
         }
@@ -456,21 +454,24 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       if (permission == PERMISSION_GROUP_UNKNOWN)
         continue;
 
+      final int result = grantResults[i];
+      updatePermissionShouldShowStatus(permission);
+
       if (permission == PERMISSION_GROUP_MICROPHONE) {
         if (!mRequestResults.containsKey(PERMISSION_GROUP_MICROPHONE)) {
-          mRequestResults.put(PERMISSION_GROUP_MICROPHONE, toPermissionStatus(grantResults[i]));
+          mRequestResults.put(PERMISSION_GROUP_MICROPHONE, toPermissionStatus(permission, result));
         }
         if (!mRequestResults.containsKey(PERMISSION_GROUP_SPEECH)) {
-          mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(grantResults[i]));
+          mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(permission, result));
         }
       } else if (permission == PERMISSION_GROUP_LOCATION_ALWAYS) {
-        @PermissionStatus int permissionStatus = determineActualLocationStatus(grantResults[i]);
+        @PermissionStatus int permissionStatus = determineActualLocationStatus(permission, result);
 
         if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
           mRequestResults.put(PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
         }
       } else if (permission == PERMISSION_GROUP_LOCATION) {
-        @PermissionStatus int permissionStatus = determineActualLocationStatus(grantResults[i]);
+        @PermissionStatus int permissionStatus = determineActualLocationStatus(permission, result);
 
         if (VERSION.SDK_INT < VERSION_CODES.Q) {
           if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
@@ -484,7 +485,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
         mRequestResults.put(permission, permissionStatus);
       } else if (!mRequestResults.containsKey(permission)) {
-        mRequestResults.put(permission, toPermissionStatus(grantResults[i]));
+        mRequestResults.put(permission, toPermissionStatus(permission, result));
       }
     }
 
@@ -497,11 +498,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
    * @param grantResult Grant Result as received from the Android system.
    */
   @PermissionStatus
-  private int determineActualLocationStatus(int grantResult) {
+  private int determineActualLocationStatus(@PermissionGroup int permission, int grantResult) {
     final Context context =
         mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
     final boolean isLocationServiceEnabled = context != null && isLocationServiceEnabled(context);
-    @PermissionStatus int permissionStatus = toPermissionStatus(grantResult);
+    @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
     if (permissionStatus == PERMISSION_STATUS_GRANTED && !isLocationServiceEnabled) {
       permissionStatus = PERMISSION_STATUS_DISABLED;
     }
@@ -521,7 +522,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   }
 
   @PermissionStatus
-  private int toPermissionStatus(int grantResult) {
+  private int toPermissionStatus(@PermissionGroup int permission, int grantResult) {
+    if (VERSION.SDK_INT >= VERSION_CODES.M && isNeverAskAgainSelected(permission)) {
+      return PERMISSION_STATUS_NEWER_ASK_AGAIN;
+    }
+
     return grantResult == PackageManager.PERMISSION_GRANTED ? PERMISSION_STATUS_GRANTED : PERMISSION_STATUS_DENIED;
   }
 
@@ -720,6 +725,46 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       Log.d(LOG_TAG, "Unable to check manifest for permission: ", ex);
     }
     return false;
+  }
+
+  private void updatePermissionShouldShowStatus(@PermissionGroup int permission) {
+
+    List<String> names = getManifestNames(permission);
+
+    if (names == null || names.isEmpty()) {
+      return;
+    }
+
+    final Context context = mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
+
+    if (context == null) {
+      return;
+    }
+
+    for (String name : names) {
+      PermissionUtils.setShouldShowStatus(context, name);
+    }
+  }
+
+  @RequiresApi(api = Build.VERSION_CODES.M)
+  private boolean isNeverAskAgainSelected(@PermissionGroup int permission) {
+    List<String> names = getManifestNames(permission);
+
+    if (names == null || names.isEmpty()) {
+      return false;
+    }
+
+    final Activity activity = mRegistrar.activity();
+
+    if (activity == null) {
+      return false;
+    }
+    boolean isNeverAskAgainSelected = false;
+    for (String name : names) {
+      isNeverAskAgainSelected |= PermissionUtils.neverAskAgainSelected(activity, name);
+    }
+
+    return isNeverAskAgainSelected;
   }
 
   @SuppressWarnings("deprecation")
