@@ -206,6 +206,12 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
   }
 
+    private final Registrar mRegistrar;
+    private Result mResult;
+    private ArrayList<String> mRequestedPermissions;
+    @SuppressLint("UseSparseArrays")
+    private Map<Integer, Integer> mRequestResults = new HashMap<>();
+
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     switch (call.method) {
