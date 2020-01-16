@@ -748,7 +748,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
 
     for (String name : names) {
-      PermissionUtils.setShouldShowStatus(context, name);
+      PermissionUtils.setRequestedPermission(context, name);
     }
   }
 

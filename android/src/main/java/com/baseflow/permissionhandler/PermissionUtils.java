@@ -13,8 +13,8 @@ public class PermissionUtils {
   @RequiresApi(api = Build.VERSION_CODES.M)
   static boolean neverAskAgainSelected(final Activity activity, final String permission) {
     final boolean hasRequestedPermissionBefore = getRequestedPermissionBefore(activity, permission);
-    final boolean currShouldShowStatus = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
-    return prevShouldShowStatus != currShouldShowStatus;
+    final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+    return hasRequestedPermissionBefore != shouldShowRequestPermissionRationale;
   }
 
   static void setRequestedPermission(final Context context, final String permission) {
