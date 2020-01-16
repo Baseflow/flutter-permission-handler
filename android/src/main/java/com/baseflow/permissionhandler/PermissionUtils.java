@@ -24,7 +24,7 @@ public class PermissionUtils {
     editor.apply();
   }
 
-  private static boolean getRationaleDisplayStatus(final Context context, final String permission) {
+  private static boolean getRequestedPermissionBefore(final Context context, final String permission) {
     SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
     return genPrefs.getBoolean(permission, false);
   }
