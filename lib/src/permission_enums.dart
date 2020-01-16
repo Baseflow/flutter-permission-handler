@@ -21,12 +21,16 @@ class PermissionStatus {
   /// Permission is in an unknown state
   static const PermissionStatus unknown = PermissionStatus._(4);
 
+  /// Permission to access the requested feature is denied by the user and never show selected (only on Android).
+  static const PermissionStatus neverAskAgain = PermissionStatus._(5);
+
   static const List<PermissionStatus> values = <PermissionStatus>[
     denied,
     disabled,
     granted,
     restricted,
     unknown,
+    neverAskAgain,
   ];
 
   static const List<String> _names = <String>[
@@ -35,6 +39,7 @@ class PermissionStatus {
     'granted',
     'restricted',
     'unknown',
+    'neverAskAgain',
   ];
 
   @override

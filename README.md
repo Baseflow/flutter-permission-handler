@@ -277,6 +277,9 @@ enum PermissionStatus {
 
   /// Permission is in an unknown state
   unknown
+  
+  /// Permission to access the requested feature is denied by the user and never show selected (only on Android).
+  neverAskAgain
 }
 ```
 
