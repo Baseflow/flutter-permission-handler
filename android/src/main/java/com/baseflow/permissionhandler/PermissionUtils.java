@@ -17,7 +17,7 @@ public class PermissionUtils {
     return prevShouldShowStatus != currShouldShowStatus;
   }
 
-   static void setShouldShowStatus(final Context context, final String permission) {
+  static void setRequestedPermission(final Context context, final String permission) {
     SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
     SharedPreferences.Editor editor = genPrefs.edit();
     editor.putBoolean(permission, true);
