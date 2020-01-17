@@ -1,3 +1,7 @@
+## 4.2.0+hotfix.1
+
+* Android: Fixes a bug where permissions are reported as `neverAskAgain` incorrectly.
+
 ## 4.2.0
 
 * Android: Methods `checkPermissionStatus` and `requestPermissions` now support addition `neverAskAgain` status.
