@@ -1,3 +1,7 @@
+## 4.2.0
+
+* Android: Methods `checkPermissionStatus` and `requestPermissions` now support addition `neverAskAgain` status.
+
 ## 4.1.0
 
 * iOS: Added option to exclude permissions logic using macros. This allows developers to submit their app to the AppStore without having to include all permissions in their Info.plist;
