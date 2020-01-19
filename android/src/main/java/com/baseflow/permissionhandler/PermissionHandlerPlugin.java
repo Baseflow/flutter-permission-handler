@@ -529,11 +529,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
   @PermissionStatus
   private int toPermissionStatus(@PermissionGroup int permission, int grantResult) {
-    if (VERSION.SDK_INT >= VERSION_CODES.M && isNeverAskAgainSelected(permission)) {
-      return PERMISSION_STATUS_NEWER_ASK_AGAIN;
+    if (grantResult == PackageManager.PERMISSION_DENIED) {
+      return VERSION.SDK_INT >= VERSION_CODES.M && isNeverAskAgainSelected(permission)
+              ? PERMISSION_STATUS_NEWER_ASK_AGAIN
+              : PERMISSION_STATUS_DENIED;
     }
 
-    return grantResult == PackageManager.PERMISSION_GRANTED ? PERMISSION_STATUS_GRANTED : PERMISSION_STATUS_DENIED;
+    return PERMISSION_STATUS_GRANTED;
   }
 
   private void processResult() {
