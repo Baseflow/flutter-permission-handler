@@ -1,3 +1,7 @@
+## 4.2.0+hotfix.3
+
+* Android: Fixes a bug which in some cases caused the permission `neverAskAgain` to be returned incorrectly.
+
 ## 4.2.0+hotfix.2
 
 * Android: Fixes a bug where permissions are reported as `neverAskAgain` incorrectly after calling `requestPermissions` method.
