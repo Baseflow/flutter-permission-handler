@@ -19,6 +19,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationManagerCompat;
 import io.flutter.plugin.common.PluginRegistry.ActivityResultListener;
@@ -213,7 +214,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private Map<Integer, Integer> mRequestResults = new HashMap<>();
 
   @Override
-  public void onMethodCall(MethodCall call, Result result) {
+  public void onMethodCall(MethodCall call, @NonNull Result result) {
     switch (call.method) {
       case "checkPermissionStatus": {
         @PermissionGroup final int permission = (int) call.arguments;
@@ -293,7 +294,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
           PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
           // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
           if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+            if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
               return PERMISSION_STATUS_GRANTED;
             } else {
               return PERMISSION_STATUS_DENIED;
@@ -344,7 +345,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       TelephonyManager telephonyManager = (TelephonyManager) context
           .getSystemService(Context.TELEPHONY_SERVICE);
 
-      if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+      if (telephonyManager == null || telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
         return SERVICE_STATUS_NOT_APPLICABLE;
       }
 
@@ -426,7 +427,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
           continue;
         }
 
-        if (permission == PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+        if (VERSION.SDK_INT >= VERSION_CODES.M && permission == PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
           String packageName = mRegistrar.context().getPackageName();
           Intent intent = new Intent();
           intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
@@ -461,7 +462,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         continue;
 
       final int result = grantResults[i];
-      updatePermissionShouldShowStatus(permission);
 
       if (permission == PERMISSION_GROUP_MICROPHONE) {
         if (!mRequestResults.containsKey(PERMISSION_GROUP_MICROPHONE)) {
@@ -493,6 +493,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       } else if (!mRequestResults.containsKey(permission)) {
         mRequestResults.put(permission, toPermissionStatus(permission, result));
       }
+
+      updatePermissionShouldShowStatus(permission);
     }
 
     processResult();
@@ -637,7 +639,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         if (hasPermissionInManifest(Manifest.permission.USE_SIP))
           permissionNames.add(Manifest.permission.USE_SIP);
 
-        if (hasPermissionInManifest(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
+        if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
           permissionNames.add(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE);
 
         if (VERSION.SDK_INT >= VERSION_CODES.O && hasPermissionInManifest(Manifest.permission.ANSWER_PHONE_CALLS))
@@ -775,7 +777,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     return isNeverAskAgainSelected;
   }
 
-  @SuppressWarnings("deprecation")
   private boolean isLocationServiceEnabled(Context context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
       final LocationManager locationManager = context.getSystemService(LocationManager.class);
