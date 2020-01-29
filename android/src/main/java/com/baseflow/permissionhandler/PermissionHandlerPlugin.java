@@ -461,7 +461,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         continue;
 
       final int result = grantResults[i];
-      updatePermissionShouldShowStatus(permission);
 
       if (permission == PERMISSION_GROUP_MICROPHONE) {
         if (!mRequestResults.containsKey(PERMISSION_GROUP_MICROPHONE)) {
@@ -493,6 +492,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       } else if (!mRequestResults.containsKey(permission)) {
         mRequestResults.put(permission, toPermissionStatus(permission, result));
       }
+
+      updatePermissionShouldShowStatus(permission);
     }
 
     processResult();
