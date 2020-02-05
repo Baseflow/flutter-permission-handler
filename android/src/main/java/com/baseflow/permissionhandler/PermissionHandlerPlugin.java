@@ -313,13 +313,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         }
       }
     }
-
-    if (permission == PERMISSION_GROUP_LOCATION || permission == PERMISSION_GROUP_LOCATION_ALWAYS || permission == PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
-      if (!isLocationServiceEnabled(context)) {
-        return PERMISSION_STATUS_DISABLED;
-      }
-    }
-
     return PERMISSION_STATUS_GRANTED;
   }
 
@@ -471,13 +464,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
           mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(permission, result));
         }
       } else if (permission == PERMISSION_GROUP_LOCATION_ALWAYS) {
-        @PermissionStatus int permissionStatus = determineActualLocationStatus(permission, result);
+        @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
 
         if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
           mRequestResults.put(PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
         }
       } else if (permission == PERMISSION_GROUP_LOCATION) {
-        @PermissionStatus int permissionStatus = determineActualLocationStatus(permission, result);
+        @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
 
         if (VERSION.SDK_INT < VERSION_CODES.Q) {
           if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
