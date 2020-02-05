@@ -464,13 +464,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
           mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(permission, result));
         }
       } else if (permission == PERMISSION_GROUP_LOCATION_ALWAYS) {
-        @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
+        @PermissionStatus int permissionStatus = toPermissionStatus(permission, result);
 
         if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
           mRequestResults.put(PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
         }
       } else if (permission == PERMISSION_GROUP_LOCATION) {
-        @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
+        @PermissionStatus int permissionStatus = toPermissionStatus(permission, result);
 
         if (VERSION.SDK_INT < VERSION_CODES.Q) {
           if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
