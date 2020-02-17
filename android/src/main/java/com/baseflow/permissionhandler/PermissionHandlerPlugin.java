@@ -695,7 +695,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
       case PERMISSION_GROUP_ACTIVITY_RECOGNITION:
         if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.ACTIVITY_RECOGNITION))
-          permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+          permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
         break;
 
       case PERMISSION_GROUP_NOTIFICATION:
