@@ -13,7 +13,7 @@ class Codec {
     return ServiceStatus.values[value];
   }
 
-  /// Converts the supplied [Map] of integers into a [Map] of 
+  /// Converts the supplied [Map] of integers into a [Map] of
   /// [PermissionGroup] key and [PermissionStatus] value instances.
   static Map<PermissionGroup, PermissionStatus> decodePermissionRequestResult(
       Map<int, int> value) {
@@ -23,7 +23,7 @@ class Codec {
   }
 
   /// Converts the supplied [List] containing [PermissionGroup] instances into
-  /// a [List] containing integers which can be used to send on the Flutter 
+  /// a [List] containing integers which can be used to send on the Flutter
   /// method channel.
   static List<int> encodePermissionGroups(List<PermissionGroup> permissions) {
     return permissions.map((it) => it.value).toList();
