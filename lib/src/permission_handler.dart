@@ -13,8 +13,8 @@ class PermissionHandler {
   /// Constructs a singleton instance of [Geolocator].
   ///
   /// When a second instance is created, the first instance will not be able to
-  /// listen to the EventChannel because it is overridden. Forcing the class to 
-  /// be a singleton class can prevent misuse of creating a second instance 
+  /// listen to the EventChannel because it is overridden. Forcing the class to
+  /// be a singleton class can prevent misuse of creating a second instance
   /// from a programmer.
   factory PermissionHandler() {
     if (_instance == null) {
@@ -37,7 +37,7 @@ class PermissionHandler {
 
   /// Check current permission status.
   ///
-  /// Returns a [Future] containing the current permission status for the 
+  /// Returns a [Future] containing the current permission status for the
   /// supplied [PermissionGroup].
   Future<PermissionStatus> checkPermissionStatus(
       PermissionGroup permission) async {
@@ -79,7 +79,7 @@ class PermissionHandler {
 
   /// Open the App settings page.
   ///
-  /// Returns [true] if the app settings page could be opened, 
+  /// Returns [true] if the app settings page could be opened,
   /// otherwise [false] is returned.
   Future<bool> openAppSettings() async {
     final hasOpened = await _methodChannel.invokeMethod('openAppSettings');
