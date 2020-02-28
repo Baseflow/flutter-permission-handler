@@ -8,28 +8,24 @@ class PermissionStatus {
   /// Permission to access the requested feature is denied by the user.
   static const PermissionStatus denied = PermissionStatus._(0);
 
-  /// The feature is disabled (or not available) on the device.
-  static const PermissionStatus disabled = PermissionStatus._(1);
-
   /// Permission to access the requested feature is granted by the user.
-  static const PermissionStatus granted = PermissionStatus._(2);
+  static const PermissionStatus granted = PermissionStatus._(1);
 
   /// Permission to access the requested feature is denied by the OS (only on 
   /// iOS). The user cannot change this app's status, possibly due to active 
   /// restrictions such as parental controls being in place.
-  static const PermissionStatus restricted = PermissionStatus._(3);
+  static const PermissionStatus restricted = PermissionStatus._(2);
 
   /// Permission is in an unknown state
-  static const PermissionStatus unknown = PermissionStatus._(4);
+  static const PermissionStatus unknown = PermissionStatus._(3);
 
   /// Permission to access the requested feature is denied by the user and 
   /// never show selected (only on Android).
-  static const PermissionStatus neverAskAgain = PermissionStatus._(5);
+  static const PermissionStatus neverAskAgain = PermissionStatus._(4);
 
   /// Returns a list of all possible [PermissionStatus] values.
   static const List<PermissionStatus> values = <PermissionStatus>[
     denied,
-    disabled,
     granted,
     restricted,
     unknown,
@@ -38,7 +34,6 @@ class PermissionStatus {
 
   static const List<String> _names = <String>[
     'denied',
-    'disabled',
     'granted',
     'restricted',
     'unknown',
@@ -169,12 +164,12 @@ class PermissionGroup {
 
   /// Android: Allows an application to access any geographic locations 
   /// persisted in the user's shared collection.
-  static const PermissionGroup access_media_location = PermissionGroup._(17);
+  static const PermissionGroup accessMediaLocation = PermissionGroup._(17);
 
   /// When running on Android Q and above: Activity Recognition
   /// When running on Android < Q: Nothing
   /// iOS: Nothing
-  static const PermissionGroup activity_recognition = PermissionGroup._(18);
+  static const PermissionGroup activityRecognition = PermissionGroup._(18);
 
   /// The unknown permission only used for return type, never requested
   static const PermissionGroup unknown = PermissionGroup._(19);
@@ -198,8 +193,8 @@ class PermissionGroup {
     storage,
     ignoreBatteryOptimizations,
     notification,
-    access_media_location,
-    activity_recognition,
+    accessMediaLocation,
+    activityRecognition,
     unknown,
   ];
 

@@ -69,12 +69,7 @@
                 permissionStatus = PermissionStatusGranted;
         }
         
-        
-        if ((permissionStatus == PermissionStatusGranted || permissionStatus == PermissionStatusDenied) && ![CMMotionActivityManager isActivityAvailable]) {
-            return PermissionStatusDisabled;
-        } else {
-            return permissionStatus;
-        }
+        return permissionStatus;
     }
     
     return PermissionStatusUnknown;
