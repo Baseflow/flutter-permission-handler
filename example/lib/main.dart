@@ -5,7 +5,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 void main() => runApp(MyApp());
 
-/// Example Flutter Application demonstrating the functionality of the 
+/// Example Flutter Application demonstrating the functionality of the
 /// Permission Handler plugin.
 class MyApp extends StatelessWidget {
   @override
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-/// Permission widget which displays a permission and allows users to request 
+/// Permission widget which displays a permission and allows users to request
 /// the permissions.
 class PermissionWidget extends StatefulWidget {
   /// Constructs a [PermissionWidget] for the supplied [PermissionGroup].

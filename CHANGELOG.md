@@ -1,3 +1,11 @@
+## 4.3.0
+
+* Allow requesting location permissions when location services are disabled (on iOS this will redirect the user to the Location settings page);
+* Android: Add support for requesting Activity Recognition permissions;
+* Confirm to Effective Dart guidelines;
+* Documented all public API members;
+* Fixed several typos in the README.md.
+
 ## 4.2.0+hotfix.3
 
 * Android: Fixes a bug which in some cases caused the permission `neverAskAgain` to be returned incorrectly.
