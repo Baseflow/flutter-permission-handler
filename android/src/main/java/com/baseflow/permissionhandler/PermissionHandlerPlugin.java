@@ -100,15 +100,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
   //PERMISSION_STATUS
   private static final int PERMISSION_STATUS_DENIED = 0;
-  private static final int PERMISSION_STATUS_DISABLED = 1;
-  private static final int PERMISSION_STATUS_GRANTED = 2;
-  private static final int PERMISSION_STATUS_RESTRICTED = 3;
-  private static final int PERMISSION_STATUS_UNKNOWN = 4;
-  private static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 5;
+  private static final int PERMISSION_STATUS_GRANTED = 1;
+  private static final int PERMISSION_STATUS_RESTRICTED = 2;
+  private static final int PERMISSION_STATUS_UNKNOWN = 3;
+  private static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 4;
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({
       PERMISSION_STATUS_DENIED,
-      PERMISSION_STATUS_DISABLED,
       PERMISSION_STATUS_GRANTED,
       PERMISSION_STATUS_RESTRICTED,
       PERMISSION_STATUS_UNKNOWN,
@@ -496,23 +494,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
 
     processResult();
-  }
-
-  /**
-   * Crosschecks a permission grant result with the location service availability.
-   *
-   * @param grantResult Grant Result as received from the Android system.
-   */
-  @PermissionStatus
-  private int determineActualLocationStatus(@PermissionGroup int permission, int grantResult) {
-    final Context context =
-        mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
-    final boolean isLocationServiceEnabled = context != null && isLocationServiceEnabled(context);
-    @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
-    if (permissionStatus == PERMISSION_STATUS_GRANTED && !isLocationServiceEnabled) {
-      permissionStatus = PERMISSION_STATUS_DISABLED;
-    }
-    return permissionStatus;
   }
 
   private void handleIgnoreBatteryOptimizationsRequest(boolean granted) {
