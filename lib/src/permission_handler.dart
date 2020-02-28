@@ -4,14 +4,21 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:meta/meta.dart';
-import 'package:permission_handler/src/permission_enums.dart';
-import 'package:permission_handler/src/utils/codec.dart';
+import 'permission_enums.dart';
+import 'utils/codec.dart';
 
-/// Provides a cross-platform (iOS, Android) API to request and check permissions.
+/// Provides a cross-platform (iOS, Android) API to request and check
+/// permissions.
 class PermissionHandler {
+  /// Constructs a singleton instance of [Geolocator].
+  ///
+  /// When a second instance is created, the first instance will not be able to
+  /// listen to the EventChannel because it is overridden. Forcing the class to 
+  /// be a singleton class can prevent misuse of creating a second instance 
+  /// from a programmer.
   factory PermissionHandler() {
     if (_instance == null) {
-      const MethodChannel methodChannel =
+      const methodChannel =
           MethodChannel('flutter.baseflow.com/permissions/methods');
 
       _instance = PermissionHandler.private(methodChannel);
@@ -19,6 +26,8 @@ class PermissionHandler {
     return _instance;
   }
 
+  /// This constructor is only used for testing and shouldn't be accessed by
+  /// users of the plugin.
   @visibleForTesting
   PermissionHandler.private(this._methodChannel);
 
@@ -28,10 +37,11 @@ class PermissionHandler {
 
   /// Check current permission status.
   ///
-  /// Returns a [Future] containing the current permission status for the supplied [PermissionGroup].
+  /// Returns a [Future] containing the current permission status for the 
+  /// supplied [PermissionGroup].
   Future<PermissionStatus> checkPermissionStatus(
       PermissionGroup permission) async {
-    final int status = await _methodChannel.invokeMethod(
+    final status = await _methodChannel.invokeMethod(
         'checkPermissionStatus', permission.value);
 
     return Codec.decodePermissionStatus(status);
@@ -39,7 +49,8 @@ class PermissionHandler {
 
   /// Check current service status.
   ///
-  /// Returns a [Future] containing the current service status for the supplied [PermissionGroup].
+  /// Returns a [Future] containing the current service status for the supplied
+  /// [PermissionGroup].
   ///
   /// Notes about specific PermissionGroups:
   /// - **PermissionGroup.phone**
@@ -60,7 +71,7 @@ class PermissionHandler {
   ///     devices' capability to place & connect phone calls
   ///     as it also depends on the network condition.
   Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) async {
-    final int status = await _methodChannel.invokeMethod(
+    final status = await _methodChannel.invokeMethod(
         'checkServiceStatus', permission.value);
 
     return Codec.decodeServiceStatus(status);
@@ -68,9 +79,10 @@ class PermissionHandler {
 
   /// Open the App settings page.
   ///
-  /// Returns [true] if the app settings page could be opened, otherwise [false] is returned.
+  /// Returns [true] if the app settings page could be opened, 
+  /// otherwise [false] is returned.
   Future<bool> openAppSettings() async {
-    final bool hasOpened = await _methodChannel.invokeMethod('openAppSettings');
+    final hasOpened = await _methodChannel.invokeMethod('openAppSettings');
 
     return hasOpened;
   }
@@ -80,8 +92,8 @@ class PermissionHandler {
   /// Returns a [Map] containing the status per requested permissiongroup.
   Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
       List<PermissionGroup> permissions) async {
-    final List<int> data = Codec.encodePermissionGroups(permissions);
-    final Map<dynamic, dynamic> status =
+    final data = Codec.encodePermissionGroups(permissions);
+    final status =
         await _methodChannel.invokeMethod('requestPermissions', data);
 
     return Codec.decodePermissionRequestResult(Map<int, int>.from(status));
@@ -97,7 +109,7 @@ class PermissionHandler {
       return false;
     }
 
-    final bool shouldShowRationale = await _methodChannel.invokeMethod(
+    final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
 
     return shouldShowRationale;
