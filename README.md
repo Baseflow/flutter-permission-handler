@@ -162,7 +162,7 @@ import 'package:permission_handler/permission_handler.dart';
 ServiceStatus serviceStatus = await PermissionHandler().checkServiceStatus(PermissionGroup.location);
 ```
 
-Checking the service status only makes sense for the `PermissionGroup.location` on Android and the `PermissionGroup.location`, `PermissionGroup.locationWhenInUser`, `PermissionGroup.locationAlways` or `PermissionGroup.sensors` on iOS. All other permission groups are not backed by a separate service and will always return `ServiceStatus.notApplicable`.
+Checking the service status only makes sense for the `PermissionGroup.location` on Android and the `PermissionGroup.location`, `PermissionGroup.locationWhenInUse`, `PermissionGroup.locationAlways` or `PermissionGroup.sensors` on iOS. All other permission groups are not backed by a separate service and will always return `ServiceStatus.notApplicable`.
 
 ### Open app settings
 
