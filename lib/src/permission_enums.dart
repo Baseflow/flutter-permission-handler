@@ -169,7 +169,7 @@ class PermissionGroup {
 
   /// Android: Allows an application to access any geographic locations 
   /// persisted in the user's shared collection.
-  static const PermissionGroup accessMediaLocation = PermissionGroup._(17);
+  static const PermissionGroup access_media_location = PermissionGroup._(17);
 
   /// The unknown permission only used for return type, never requested
   static const PermissionGroup unknown = PermissionGroup._(18);
@@ -193,7 +193,7 @@ class PermissionGroup {
     storage,
     ignoreBatteryOptimizations,
     notification,
-    accessMediaLocation,
+    access_media_location,
     unknown,
   ];
 
