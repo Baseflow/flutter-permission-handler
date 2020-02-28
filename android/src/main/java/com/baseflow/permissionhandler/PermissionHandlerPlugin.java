@@ -65,7 +65,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 15;
   private static final int PERMISSION_GROUP_NOTIFICATION = 16;
   private static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 17;
-  private static final int PERMISSION_GROUP_UNKNOWN = 18;
+  private static final int PERMISSION_GROUP_ACTIVITY_RECOGNITION = 18;
+  private static final int PERMISSION_GROUP_UNKNOWN = 19;
 
   private PermissionHandlerPlugin(Registrar mRegistrar) {
     this.mRegistrar = mRegistrar;
@@ -91,6 +92,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS,
       PERMISSION_GROUP_NOTIFICATION,
       PERMISSION_GROUP_ACCESS_MEDIA_LOCATION,
+      PERMISSION_GROUP_ACTIVITY_RECOGNITION,
       PERMISSION_GROUP_UNKNOWN,
   })
   private @interface PermissionGroup {
@@ -202,6 +204,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         return PERMISSION_GROUP_STORAGE;
       case Manifest.permission.ACCESS_MEDIA_LOCATION:
         return PERMISSION_GROUP_ACCESS_MEDIA_LOCATION;
+      case Manifest.permission.ACTIVITY_RECOGNITION:
+        return PERMISSION_GROUP_ACTIVITY_RECOGNITION;
       default:
         return PERMISSION_GROUP_UNKNOWN;
     }
@@ -319,7 +323,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         return PERMISSION_STATUS_DISABLED;
       }
     }
-
     return PERMISSION_STATUS_GRANTED;
   }
 
@@ -688,6 +691,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case PERMISSION_GROUP_ACCESS_MEDIA_LOCATION:
         if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.ACCESS_MEDIA_LOCATION))
             permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+        break;
+
+      case PERMISSION_GROUP_ACTIVITY_RECOGNITION:
+        if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.ACTIVITY_RECOGNITION))
+          permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
         break;
 
       case PERMISSION_GROUP_NOTIFICATION:
