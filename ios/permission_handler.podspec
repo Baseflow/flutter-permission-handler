@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'permission_handler'
-  s.version          = '4.2.0+hotfix.3'
+  s.version          = '4.3.0'
   s.summary          = 'Permission plugin for Flutter.'
   s.description      = <<-DESC
 Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.

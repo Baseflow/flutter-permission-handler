@@ -96,11 +96,6 @@
     PermissionStatus status = [LocationPermissionStrategy
                                determinePermissionStatus:permission authorizationStatus:authorizationStatus];
     
-    if ((status == PermissionStatusGranted || status == PermissionStatusDenied)
-        && ![CLLocationManager locationServicesEnabled]) {
-        return PermissionStatusDisabled;
-    }
-    
     return status;
 }
 

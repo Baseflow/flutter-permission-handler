@@ -2,31 +2,30 @@
 class PermissionStatus {
   const PermissionStatus._(this.value);
 
+  /// Integer representation of the [PermissionStatus].
   final int value;
 
   /// Permission to access the requested feature is denied by the user.
   static const PermissionStatus denied = PermissionStatus._(0);
 
-  /// The feature is disabled (or not available) on the device.
-  static const PermissionStatus disabled = PermissionStatus._(1);
-
   /// Permission to access the requested feature is granted by the user.
-  static const PermissionStatus granted = PermissionStatus._(2);
+  static const PermissionStatus granted = PermissionStatus._(1);
 
-  /// Permission to access the requested feature is denied by the OS (only on iOS).
-  /// The user cannot change this app's status, possibly due to active restrictions such as
-  /// parental controls being in place.
-  static const PermissionStatus restricted = PermissionStatus._(3);
+  /// Permission to access the requested feature is denied by the OS (only on 
+  /// iOS). The user cannot change this app's status, possibly due to active 
+  /// restrictions such as parental controls being in place.
+  static const PermissionStatus restricted = PermissionStatus._(2);
 
   /// Permission is in an unknown state
-  static const PermissionStatus unknown = PermissionStatus._(4);
+  static const PermissionStatus unknown = PermissionStatus._(3);
 
-  /// Permission to access the requested feature is denied by the user and never show selected (only on Android).
-  static const PermissionStatus neverAskAgain = PermissionStatus._(5);
+  /// Permission to access the requested feature is denied by the user and 
+  /// never show selected (only on Android).
+  static const PermissionStatus neverAskAgain = PermissionStatus._(4);
 
+  /// Returns a list of all possible [PermissionStatus] values.
   static const List<PermissionStatus> values = <PermissionStatus>[
     denied,
-    disabled,
     granted,
     restricted,
     unknown,
@@ -35,7 +34,6 @@ class PermissionStatus {
 
   static const List<String> _names = <String>[
     'denied',
-    'disabled',
     'granted',
     'restricted',
     'unknown',
@@ -50,6 +48,7 @@ class PermissionStatus {
 class ServiceStatus {
   const ServiceStatus._(this.value);
 
+  /// Integer representation of the [ServiceStatus].
   final int value;
 
   /// The service for the supplied permission group is disabled.
@@ -61,9 +60,11 @@ class ServiceStatus {
   /// There is no service for the supplied permission group.
   static const ServiceStatus notApplicable = ServiceStatus._(2);
 
-  /// The unknown service status indicates the state of the service could not be determined.
+  /// The unknown service status indicates the state of the service could not 
+  /// be determined.
   static const ServiceStatus unknown = ServiceStatus._(3);
 
+  /// Returns a list of all possible [ServiceStatus] values.
   static const List<ServiceStatus> values = <ServiceStatus>[
     disabled,
     enabled,
@@ -82,10 +83,12 @@ class ServiceStatus {
   String toString() => 'ServiceStatus.${_names[value]}';
 }
 
-/// Defines the permission groups for which permissions can be checked or requested.
+/// Defines the permission groups for which permissions can be checked or
+/// requested.
 class PermissionGroup {
   const PermissionGroup._(this.value);
 
+  /// Integer representation of the [PermissionGroup].
   final int value;
 
   /// Android: Calendar
@@ -147,7 +150,8 @@ class PermissionGroup {
   static const PermissionGroup speech = PermissionGroup._(13);
 
   /// Android: External Storage
-  /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly granted.
+  /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly 
+  /// granted.
   static const PermissionGroup storage = PermissionGroup._(14);
 
   /// Android: Ignore Battery Optimizations
@@ -158,12 +162,19 @@ class PermissionGroup {
   /// iOS: Notification
   static const PermissionGroup notification = PermissionGroup._(16);
 
-  /// Android: Allows an application to access any geographic locations persisted in the user's shared collection.
-  static const PermissionGroup access_media_location = PermissionGroup._(17);
+  /// Android: Allows an application to access any geographic locations 
+  /// persisted in the user's shared collection.
+  static const PermissionGroup accessMediaLocation = PermissionGroup._(17);
+
+  /// When running on Android Q and above: Activity Recognition
+  /// When running on Android < Q: Nothing
+  /// iOS: Nothing
+  static const PermissionGroup activityRecognition = PermissionGroup._(18);
 
   /// The unknown permission only used for return type, never requested
-  static const PermissionGroup unknown = PermissionGroup._(18);
+  static const PermissionGroup unknown = PermissionGroup._(19);
 
+  /// Returns a list of all possible [PermissionGroup] values.
   static const List<PermissionGroup> values = <PermissionGroup>[
     calendar,
     camera,
@@ -182,7 +193,8 @@ class PermissionGroup {
     storage,
     ignoreBatteryOptimizations,
     notification,
-    access_media_location,
+    accessMediaLocation,
+    activityRecognition,
     unknown,
   ];
 
@@ -205,6 +217,7 @@ class PermissionGroup {
     'ignoreBatteryOptimizations',
     'notification',
     'access_media_location',
+    'activity_recognition',
     'unknown',
   ];
 

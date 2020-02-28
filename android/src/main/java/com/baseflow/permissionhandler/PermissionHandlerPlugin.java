@@ -65,7 +65,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   private static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 15;
   private static final int PERMISSION_GROUP_NOTIFICATION = 16;
   private static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 17;
-  private static final int PERMISSION_GROUP_UNKNOWN = 18;
+  private static final int PERMISSION_GROUP_ACTIVITY_RECOGNITION = 18;
+  private static final int PERMISSION_GROUP_UNKNOWN = 19;
 
   private PermissionHandlerPlugin(Registrar mRegistrar) {
     this.mRegistrar = mRegistrar;
@@ -91,6 +92,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS,
       PERMISSION_GROUP_NOTIFICATION,
       PERMISSION_GROUP_ACCESS_MEDIA_LOCATION,
+      PERMISSION_GROUP_ACTIVITY_RECOGNITION,
       PERMISSION_GROUP_UNKNOWN,
   })
   private @interface PermissionGroup {
@@ -98,15 +100,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
   //PERMISSION_STATUS
   private static final int PERMISSION_STATUS_DENIED = 0;
-  private static final int PERMISSION_STATUS_DISABLED = 1;
-  private static final int PERMISSION_STATUS_GRANTED = 2;
-  private static final int PERMISSION_STATUS_RESTRICTED = 3;
-  private static final int PERMISSION_STATUS_UNKNOWN = 4;
-  private static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 5;
+  private static final int PERMISSION_STATUS_GRANTED = 1;
+  private static final int PERMISSION_STATUS_RESTRICTED = 2;
+  private static final int PERMISSION_STATUS_UNKNOWN = 3;
+  private static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 4;
   @Retention(RetentionPolicy.SOURCE)
   @IntDef({
       PERMISSION_STATUS_DENIED,
-      PERMISSION_STATUS_DISABLED,
       PERMISSION_STATUS_GRANTED,
       PERMISSION_STATUS_RESTRICTED,
       PERMISSION_STATUS_UNKNOWN,
@@ -202,6 +202,8 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         return PERMISSION_GROUP_STORAGE;
       case Manifest.permission.ACCESS_MEDIA_LOCATION:
         return PERMISSION_GROUP_ACCESS_MEDIA_LOCATION;
+      case Manifest.permission.ACTIVITY_RECOGNITION:
+        return PERMISSION_GROUP_ACTIVITY_RECOGNITION;
       default:
         return PERMISSION_GROUP_UNKNOWN;
     }
@@ -313,13 +315,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         }
       }
     }
-
-    if (permission == PERMISSION_GROUP_LOCATION || permission == PERMISSION_GROUP_LOCATION_ALWAYS || permission == PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
-      if (!isLocationServiceEnabled(context)) {
-        return PERMISSION_STATUS_DISABLED;
-      }
-    }
-
+    
     return PERMISSION_STATUS_GRANTED;
   }
 
@@ -471,13 +467,13 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
           mRequestResults.put(PERMISSION_GROUP_SPEECH, toPermissionStatus(permission, result));
         }
       } else if (permission == PERMISSION_GROUP_LOCATION_ALWAYS) {
-        @PermissionStatus int permissionStatus = determineActualLocationStatus(permission, result);
+        @PermissionStatus int permissionStatus = toPermissionStatus(permission, result);
 
         if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
           mRequestResults.put(PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
         }
       } else if (permission == PERMISSION_GROUP_LOCATION) {
-        @PermissionStatus int permissionStatus = determineActualLocationStatus(permission, result);
+        @PermissionStatus int permissionStatus = toPermissionStatus(permission, result);
 
         if (VERSION.SDK_INT < VERSION_CODES.Q) {
           if (!mRequestResults.containsKey(PERMISSION_GROUP_LOCATION_ALWAYS)) {
@@ -498,23 +494,6 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
     }
 
     processResult();
-  }
-
-  /**
-   * Crosschecks a permission grant result with the location service availability.
-   *
-   * @param grantResult Grant Result as received from the Android system.
-   */
-  @PermissionStatus
-  private int determineActualLocationStatus(@PermissionGroup int permission, int grantResult) {
-    final Context context =
-        mRegistrar.activity() == null ? mRegistrar.activeContext() : mRegistrar.activity();
-    final boolean isLocationServiceEnabled = context != null && isLocationServiceEnabled(context);
-    @PermissionStatus int permissionStatus = toPermissionStatus(permission, grantResult);
-    if (permissionStatus == PERMISSION_STATUS_GRANTED && !isLocationServiceEnabled) {
-      permissionStatus = PERMISSION_STATUS_DISABLED;
-    }
-    return permissionStatus;
   }
 
   private void handleIgnoreBatteryOptimizationsRequest(boolean granted) {
@@ -688,6 +667,11 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
       case PERMISSION_GROUP_ACCESS_MEDIA_LOCATION:
         if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.ACCESS_MEDIA_LOCATION))
             permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
+        break;
+
+      case PERMISSION_GROUP_ACTIVITY_RECOGNITION:
+        if (VERSION.SDK_INT >= VERSION_CODES.Q && hasPermissionInManifest(Manifest.permission.ACTIVITY_RECOGNITION))
+          permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
         break;
 
       case PERMISSION_GROUP_NOTIFICATION:

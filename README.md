@@ -1,13 +1,8 @@
 # Flutter Permission handler Plugin
 
-[![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler)
+[![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler) [![Build Status](https://app.bitrise.io/app/fa4f5d4bf452bcfb/status.svg?token=HorGpL_AOw2llYz39CjmdQ&branch=master)](https://app.bitrise.io/app/fa4f5d4bf452bcfb) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
 
 A permissions plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.
-
-Branch  | Build Status 
-------- | ------------
-develop | [![Build Status](https://app.bitrise.io/app/fa4f5d4bf452bcfb/status.svg?token=HorGpL_AOw2llYz39CjmdQ&branch=develop)](https://app.bitrise.io/app/fa4f5d4bf452bcfb)
-master  | [![Build Status](https://app.bitrise.io/app/fa4f5d4bf452bcfb/status.svg?token=HorGpL_AOw2llYz39CjmdQ&branch=master)](https://app.bitrise.io/app/fa4f5d4bf452bcfb)
 
 ## Features
 
@@ -22,7 +17,7 @@ To use this plugin, add `permission_handler` as a [dependency in your pubspec.ya
 
 ```yaml
 dependencies:
-  permission_handler: '^4.2.0+hotfix.3'
+  permission_handler: '^4.3.0'
 ```
 
 > **NOTE:** As of version 3.1.0 the permission_handler plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility). 
@@ -162,7 +157,7 @@ import 'package:permission_handler/permission_handler.dart';
 ServiceStatus serviceStatus = await PermissionHandler().checkServiceStatus(PermissionGroup.location);
 ```
 
-Checking the service status only makes sense for the `PermissionGroup.location` on Android and the `PermissionGroup.location`, `PermissionGroup.locationWhenInUser`, `PermissionGroup.locationAlways` or `PermissionGroup.sensors` on iOS. All other permission groups are not backed by a separate service and will always return `ServiceStatus.notApplicable`.
+Checking the service status only makes sense for the `PermissionGroup.location` on Android and the `PermissionGroup.location`, `PermissionGroup.locationWhenInUse`, `PermissionGroup.locationAlways` or `PermissionGroup.sensors` on iOS. All other permission groups are not backed by a separate service and will always return `ServiceStatus.notApplicable`.
 
 ### Open app settings
 
