@@ -11,15 +11,15 @@ class PermissionStatus {
   /// Permission to access the requested feature is granted by the user.
   static const PermissionStatus granted = PermissionStatus._(1);
 
-  /// Permission to access the requested feature is denied by the OS (only on 
-  /// iOS). The user cannot change this app's status, possibly due to active 
+  /// Permission to access the requested feature is denied by the OS (only on
+  /// iOS). The user cannot change this app's status, possibly due to active
   /// restrictions such as parental controls being in place.
   static const PermissionStatus restricted = PermissionStatus._(2);
 
   /// Permission is in an unknown state
   static const PermissionStatus unknown = PermissionStatus._(3);
 
-  /// Permission to access the requested feature is denied by the user and 
+  /// Permission to access the requested feature is denied by the user and
   /// never show selected (only on Android).
   static const PermissionStatus neverAskAgain = PermissionStatus._(4);
 
@@ -60,7 +60,7 @@ class ServiceStatus {
   /// There is no service for the supplied permission group.
   static const ServiceStatus notApplicable = ServiceStatus._(2);
 
-  /// The unknown service status indicates the state of the service could not 
+  /// The unknown service status indicates the state of the service could not
   /// be determined.
   static const ServiceStatus unknown = ServiceStatus._(3);
 
@@ -150,7 +150,7 @@ class PermissionGroup {
   static const PermissionGroup speech = PermissionGroup._(13);
 
   /// Android: External Storage
-  /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly 
+  /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly
   /// granted.
   static const PermissionGroup storage = PermissionGroup._(14);
 
@@ -162,7 +162,7 @@ class PermissionGroup {
   /// iOS: Notification
   static const PermissionGroup notification = PermissionGroup._(16);
 
-  /// Android: Allows an application to access any geographic locations 
+  /// Android: Allows an application to access any geographic locations
   /// persisted in the user's shared collection.
   static const PermissionGroup accessMediaLocation = PermissionGroup._(17);
 
