@@ -770,20 +770,46 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
 
       return locationManager.isLocationEnabled();
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      return isLocationServiceEnablePrePie(context);
+    } else {
+      return isLocationServiceEnablePreKitKat(context);
+    }
+  }
+
+  // Suppress deprecation warnings since it's purpose is to support to be backwards compatible with
+  // pre Pie versions of Android.
+  @SuppressWarnings("deprecation")
+  private static boolean isLocationServiceEnablePrePie(Context context)
+  {
+      if (VERSION.SDK_INT < VERSION_CODES.P)
+          return false;
+
       final int locationMode;
 
       try {
-        locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
+          locationMode = Settings.Secure.getInt(
+                  context.getContentResolver(),
+                  Settings.Secure.LOCATION_MODE);
       } catch (Settings.SettingNotFoundException e) {
-        e.printStackTrace();
-        return false;
+          e.printStackTrace();
+          return false;
       }
 
       return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-    } else {
-      final String locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+  }
+
+  // Suppress deprecation warnings since it's purpose is to support to be backwards compatible with
+  // pre KitKat versions of Android.
+  @SuppressWarnings("deprecation")
+  private static boolean isLocationServiceEnablePreKitKat(Context context)
+  {
+      if (VERSION.SDK_INT >= VERSION_CODES.KITKAT)
+          return false;
+
+      final String locationProviders = Settings.Secure.getString(
+              context.getContentResolver(),
+              Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
       return !TextUtils.isEmpty(locationProviders);
-    }
   }
 
   private int checkNotificationPermissionStatus(Context context) {
