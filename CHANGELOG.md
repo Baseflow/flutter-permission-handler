@@ -1,3 +1,8 @@
+## vNext
+
+* Android: Migrate to FlutterPlugin Android API (better support for Add-to-App);
+* Android: Suppress JAVA warnings which are generated to old platform code (only executes on older platforms).
+
 ## 4.3.0
 
 * Allow requesting location permissions when location services are disabled (on iOS this will redirect the user to the Location settings page);
