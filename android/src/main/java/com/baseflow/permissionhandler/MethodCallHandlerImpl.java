@@ -52,7 +52,7 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     {
         switch (call.method) {
             case "checkPermissionStatus": {
-                @PermissionConstants.PermissionGroup final int permission = (int) call.arguments;
+                @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 @PermissionConstants.PermissionStatus final int permissionStatus =
                         permissionManager.checkPermissionStatus(
                                 permission,
@@ -62,7 +62,7 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 break;
             }
             case "checkServiceStatus": {
-                @PermissionConstants.PermissionGroup final int permission = (int) call.arguments;
+                @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 @PermissionConstants.ServiceStatus final int serviceStatus =
                         serviceManager.checkServiceStatus(
                                 permission,
@@ -79,13 +79,13 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                         activityRegistry,
                         permissionRegistry,
                         result::success,
-                        (String errorCode, String errorDiscription) -> {
-                            result.error(errorCode, errorDiscription, null);
+                        (String errorCode, String errorDescription) -> {
+                            result.error(errorCode, errorDescription, null);
                         });
 
                 break;
             case "shouldShowRequestPermissionRationale": {
-                @PermissionConstants.PermissionGroup final int permission = (int) call.arguments;
+                @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 final boolean showRationale = permissionManager
                         .shouldShowRequestPermissionRationale(permission, activity);
                 result.success(showRationale);
