@@ -219,14 +219,14 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
   public void onMethodCall(MethodCall call, @NonNull Result result) {
     switch (call.method) {
       case "checkPermissionStatus": {
-        @PermissionGroup final int permission = (int) call.arguments;
+        @PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
         @PermissionStatus final int permissionStatus = checkPermissionStatus(permission);
 
         result.success(permissionStatus);
         break;
       }
       case "checkServiceStatus": {
-        @PermissionGroup final int permission = (int) call.arguments;
+        @PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
         @ServiceStatus final int serviceStatus = checkServiceStatus(permission);
 
         result.success(serviceStatus);
@@ -246,7 +246,7 @@ public class PermissionHandlerPlugin implements MethodCallHandler {
         requestPermissions(permissions);
         break;
       case "shouldShowRequestPermissionRationale": {
-        @PermissionGroup final int permission = (int) call.arguments;
+        @PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
         result.success(shouldShowRequestPermissionRationale(permission));
         break;
       }
