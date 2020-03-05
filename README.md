@@ -244,11 +244,21 @@ enum PermissionGroup {
 
   /// Android: None
   /// iOS: MPMediaLibrary
-  mediaLibrary
+  mediaLibrary,
 
   /// Android: Check notification enable
   /// iOS: Check and request notification permission
-  notification
+  notification,
+
+  /// Android Q: Check and request permissions to read from the media location (ACCESS_MEDIA_LOCATION)
+  /// Android pre-Q: Nothing
+  /// iOS: Nothing
+  accessMediaLocation,
+
+  /// Android Q: Check and request permissions to access the Activity Recognition API
+  /// Android pre-Q: Nothing 
+  /// iOS: Nothing (should implement access to CMMotionActivity, see issue #219)
+  activityRecognition,  
 }
 ```
 
