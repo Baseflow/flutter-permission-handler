@@ -3,8 +3,14 @@ description: Permission plugin for Flutter. This plugin provides a cross-platfor
 version: 4.4.0
 homepage: https://github.com/baseflowit/flutter-permission-handler
 
-environment:
-  sdk: ">=2.1.0 <3.0.0"
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.baseflow.permissionhandler
+        pluginClass: PermissionHandlerPlugin
+      ios:
+        pluginClass: PermissionHandlerPlugin
 
 dependencies:
   flutter:
@@ -16,11 +22,6 @@ dev_dependencies:
   effective_dart: ^1.2.1
   plugin_platform_interface: ^1.0.1
 
-flutter:
-  plugin:
-    platforms:
-      android:
-        package: com.baseflow.permissionhandler
-        pluginClass: PermissionHandlerPlugin
-      ios:
-        pluginClass: PermissionHandlerPlugin
+environment:
+  sdk: ">=2.1.0 <3.0.0"
+  flutter: ">=1.12.8 <2.0.0"
