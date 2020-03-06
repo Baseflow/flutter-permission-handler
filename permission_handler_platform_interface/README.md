@@ -1,5 +1,7 @@
 # permission_handler_platform_interface
 
+[![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
+
 A common platform interface for the [`permission_handler`][1] plugin.
 
 This interface allows platform-specific implementations of the 
