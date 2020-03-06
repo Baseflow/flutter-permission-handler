@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-export 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart' 
-  show PermissionGroup, PermissionStatus, ServiceStatus;
+export 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart'
+    show PermissionGroup, PermissionStatus, ServiceStatus;
 
 /// The Android and iOS implementation of [PermissionHandlerPlatform].
 ///
@@ -35,7 +35,7 @@ class PermissionHandler extends PermissionHandlerPlatform {
   @override
   Future<bool> shouldShowRequestPermissionRationale(
       PermissionGroup permission) {
-    if(!Platform.isAndroid) {
+    if (!Platform.isAndroid) {
       return Future.value(false);
     }
 
