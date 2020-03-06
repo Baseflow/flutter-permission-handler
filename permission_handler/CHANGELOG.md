@@ -1,7 +1,9 @@
-## vNext
+## 4.4.0
 
+* Updated plugin structure to confirm to the Flutter federated plugin architecture. This will make it easier to add new platform implementations (see: https://medium.com/flutter/how-to-write-a-flutter-web-plugin-part-2-afdddb69ece6);
 * Android: Migrate to FlutterPlugin Android API (better support for Add-to-App);
-* Android: Suppress JAVA warnings which are generated to old platform code (only executes on older platforms).
+* Android: Suppress JAVA warnings which are generated to old platform code (only executes on older platforms);
+* Android: Fixed issue which sometimes resulting in illegal cast exception.
 
 ## 4.3.0
 

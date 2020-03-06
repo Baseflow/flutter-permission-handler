@@ -1,40 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
-import 'package:meta/meta.dart';
-import 'permission_enums.dart';
+
+import '../../permission_handler_platform_interface.dart';
 import 'utils/codec.dart';
 
-/// Provides a cross-platform (iOS, Android) API to request and check
-/// permissions.
-class PermissionHandler {
-  /// Constructs a singleton instance of [Geolocator].
-  ///
-  /// When a second instance is created, the first instance will not be able to
-  /// listen to the EventChannel because it is overridden. Forcing the class to
-  /// be a singleton class can prevent misuse of creating a second instance
-  /// from a programmer.
-  factory PermissionHandler() {
-    if (_instance == null) {
-      const methodChannel =
-          MethodChannel('flutter.baseflow.com/permissions/methods');
+const MethodChannel _methodChannel =
+    MethodChannel('flutter.baseflow.com/permissions/methods');
 
-      _instance = PermissionHandler.private(methodChannel);
-    }
-    return _instance;
-  }
-
-  /// This constructor is only used for testing and shouldn't be accessed by
-  /// users of the plugin.
-  @visibleForTesting
-  PermissionHandler.private(this._methodChannel);
-
-  static PermissionHandler _instance;
-
-  final MethodChannel _methodChannel;
-
+/// An implementation of [PermissionHandlerPlatform] that uses method channels.
+class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// Check current permission status.
   ///
   /// Returns a [Future] containing the current permission status for the
@@ -105,10 +80,6 @@ class PermissionHandler {
   /// returns [false].
   Future<bool> shouldShowRequestPermissionRationale(
       PermissionGroup permission) async {
-    if (!Platform.isAndroid) {
-      return false;
-    }
-
     final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
 

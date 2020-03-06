@@ -1,4 +1,4 @@
-import '../permission_enums.dart';
+import '../../../permission_handler_platform_interface.dart';
 
 /// Provides utility methods for encoding messages that are send on the Flutter
 /// message channel.
