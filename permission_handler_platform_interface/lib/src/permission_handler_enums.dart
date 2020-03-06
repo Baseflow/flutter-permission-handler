@@ -1,3 +1,5 @@
+part of permission_handler_platform_interface;
+
 /// Defines the state of a permission group
 class PermissionStatus {
   const PermissionStatus._(this.value);
