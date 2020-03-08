@@ -16,12 +16,14 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.1.6
-  permission_handler_platform_interface: ^1.0.0
+  # permission_handler_platform_interface: ^1.0.0
+  permission_handler_platform_interface:
+    path: ../permission_handler_platform_interface
 
 dev_dependencies:
   effective_dart: ^1.2.1
   plugin_platform_interface: ^1.0.1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
   flutter: ">=1.12.8 <2.0.0"
