@@ -32,7 +32,7 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   ///
   /// Returns a [Future] containing the current permission status for the
   /// supplied [PermissionGroup].
-  Future<PermissionStatus> checkPermissionStatus(PermissionGroup permission) {
+  Future<PermissionStatus> checkPermissionStatus(Permission permission) {
     throw UnimplementedError(
         'checkPermissionStatus() has not been implemented.');
   }
@@ -40,10 +40,10 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   /// Check current service status.
   ///
   /// Returns a [Future] containing the current service status for the supplied
-  /// [PermissionGroup].
+  /// [Permission].
   ///
-  /// Notes about specific PermissionGroups:
-  /// - **PermissionGroup.phone**
+  /// Notes about specific [Permission]s:
+  /// - **[Permission.phone]**
   ///   - Android:
   ///     - The method will return [ServiceStatus.notApplicable] when:
   ///       1. the device lacks the TELEPHONY feature
@@ -60,7 +60,7 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   ///   - **PLEASE NOTE that this is still not a perfect indication** of the
   ///     devices' capability to place & connect phone calls
   ///     as it also depends on the network condition.
-  Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) {
+  Future<ServiceStatus> checkServiceStatus(Permission permission) {
     throw UnimplementedError('checkServiceStatus() has not been implemented.');
   }
 
@@ -75,8 +75,8 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   /// Request the user for access to the supplied list of permissiongroups.
   ///
   /// Returns a [Map] containing the status per requested permissiongroup.
-  Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
-      List<PermissionGroup> permissions) {
+  Future<Map<Permission, PermissionStatus>> requestPermissions(
+      List<Permission> permissions) {
     throw UnimplementedError('requestPermissions() has not been implemented.');
   }
 
@@ -84,8 +84,7 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   ///
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
-  Future<bool> shouldShowRequestPermissionRationale(
-      PermissionGroup permission) {
+  Future<bool> shouldShowRequestPermissionRationale(Permission permission) {
     throw UnimplementedError(
         'shouldShowRequestPermissionRationale() has not been implemented.');
   }

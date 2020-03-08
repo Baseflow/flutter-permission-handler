@@ -13,9 +13,8 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// Check current permission status.
   ///
   /// Returns a [Future] containing the current permission status for the
-  /// supplied [PermissionGroup].
-  Future<PermissionStatus> checkPermissionStatus(
-      PermissionGroup permission) async {
+  /// supplied [Permission].
+  Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
         'checkPermissionStatus', permission.value);
 
@@ -25,10 +24,10 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// Check current service status.
   ///
   /// Returns a [Future] containing the current service status for the supplied
-  /// [PermissionGroup].
+  /// [Permission].
   ///
-  /// Notes about specific PermissionGroups:
-  /// - **PermissionGroup.phone**
+  /// Notes about specific permissions:
+  /// - **[Permission.phone]**
   ///   - Android:
   ///     - The method will return [ServiceStatus.notApplicable] when:
   ///       1. the device lacks the TELEPHONY feature
@@ -45,7 +44,7 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   ///   - **PLEASE NOTE that this is still not a perfect indication** of the
   ///     devices' capability to place & connect phone calls
   ///     as it also depends on the network condition.
-  Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) async {
+  Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
         'checkServiceStatus', permission.value);
 
@@ -62,12 +61,12 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
     return hasOpened;
   }
 
-  /// Request the user for access to the supplied list of permissiongroups.
+  /// Request the user for access to the supplied list of Permissions.
   ///
-  /// Returns a [Map] containing the status per requested permissiongroup.
-  Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
-      List<PermissionGroup> permissions) async {
-    final data = Codec.encodePermissionGroups(permissions);
+  /// Returns a [Map] containing the status per requested Permission.
+  Future<Map<Permission, PermissionStatus>> requestPermissions(
+      List<Permission> permissions) async {
+    final data = Codec.encodePermissions(permissions);
     final status =
         await _methodChannel.invokeMethod('requestPermissions', data);
 
@@ -79,7 +78,7 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
   Future<bool> shouldShowRequestPermissionRationale(
-      PermissionGroup permission) async {
+      Permission permission) async {
     final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
 
