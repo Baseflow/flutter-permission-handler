@@ -36,16 +36,16 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
      * <p>Calling this automatically initializes the plugin. However plugins initialized this way
      * won't react to changes in activity or context, unlike {@link PermissionHandlerPlugin}.
      */
-  public static void registerWith(Registrar registrar) {
-    final PermissionHandlerPlugin permissionHandlerPlugin = new PermissionHandlerPlugin();
-    permissionHandlerPlugin.startListening(
-            registrar.context(),
-            registrar.activity(),
-            registrar.messenger(),
-            registrar::addActivityResultListener,
-            registrar::addRequestPermissionsResultListener
-    );
-  }
+    public static void registerWith(Registrar registrar) {
+        final PermissionHandlerPlugin permissionHandlerPlugin = new PermissionHandlerPlugin();
+        permissionHandlerPlugin.startListening(
+                registrar.context(),
+                registrar.activity(),
+                registrar.messenger(),
+                registrar::addActivityResultListener,
+                registrar::addRequestPermissionsResultListener
+        );
+    }
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {

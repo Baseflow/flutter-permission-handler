@@ -80,14 +80,12 @@ final class PermissionConstants {
     static final int SERVICE_STATUS_DISABLED = 0;
     static final int SERVICE_STATUS_ENABLED = 1;
     static final int SERVICE_STATUS_NOT_APPLICABLE = 2;
-    static final int SERVICE_STATUS_UNKNOWN = 3;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             SERVICE_STATUS_DISABLED,
             SERVICE_STATUS_ENABLED,
-            SERVICE_STATUS_NOT_APPLICABLE,
-            SERVICE_STATUS_UNKNOWN,
+            SERVICE_STATUS_NOT_APPLICABLE
     })
     @interface ServiceStatus {
     }

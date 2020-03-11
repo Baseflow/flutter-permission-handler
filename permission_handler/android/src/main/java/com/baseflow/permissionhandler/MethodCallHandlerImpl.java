@@ -51,24 +51,30 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     public void onMethodCall(@NonNull MethodCall call, @NonNull final Result result)
     {
         switch (call.method) {
-            case "checkPermissionStatus": {
-                @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
-                @PermissionConstants.PermissionStatus final int permissionStatus =
-                        permissionManager.checkPermissionStatus(
-                                permission,
-                                activity);
-
-                result.success(permissionStatus);
-                break;
-            }
             case "checkServiceStatus": {
                 @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
-                @PermissionConstants.ServiceStatus final int serviceStatus =
-                        serviceManager.checkServiceStatus(
-                                permission,
-                                activity);
+                serviceManager.checkServiceStatus(
+                        permission,
+                        applicationContext,
+                        result::success,
+                        (String errorCode, String errorDescription) -> result.error(
+                                errorCode,
+                                errorDescription,
+                                null));
 
-                result.success(serviceStatus);
+                break;
+            }
+            case "checkPermissionStatus": {
+                @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
+                permissionManager.checkPermissionStatus(
+                        permission,
+                        activity,
+                        result::success,
+                        (String errorCode, String errorDescription) -> result.error(
+                                errorCode,
+                                errorDescription,
+                                null));
+
                 break;
             }
             case "requestPermissions":
@@ -79,21 +85,34 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                         activityRegistry,
                         permissionRegistry,
                         result::success,
-                        (String errorCode, String errorDescription) -> {
-                            result.error(errorCode, errorDescription, null);
-                        });
+                        (String errorCode, String errorDescription) -> result.error(
+                                errorCode,
+                                errorDescription,
+                                null));
 
                 break;
             case "shouldShowRequestPermissionRationale": {
                 @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
-                final boolean showRationale = permissionManager
-                        .shouldShowRequestPermissionRationale(permission, activity);
-                result.success(showRationale);
+                permissionManager.shouldShowRequestPermissionRationale(
+                        permission,
+                        activity,
+                        result::success,
+                        (String errorCode, String errorDescription) -> result.error(
+                                errorCode,
+                                errorDescription,
+                                null));
+
                 break;
             }
             case "openAppSettings":
-                boolean isOpen = appSettingsManager.openAppSettings(applicationContext);
-                result.success(isOpen);
+                appSettingsManager.openAppSettings(
+                        applicationContext,
+                        result::success,
+                        (String errorCode, String errorDescription) -> result.error(
+                                errorCode,
+                                errorDescription,
+                                null));
+
                 break;
             default:
                 result.notImplemented();
