@@ -1,6 +1,5 @@
 package com.baseflow.permissionhandler;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,8 +20,8 @@ final class ServiceManager {
     @PermissionConstants.ServiceStatus
     int checkServiceStatus(
             int permission,
-            Activity activity) {
-        if (activity == null) {
+            Context context) {
+        if (context == null) {
             Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity or App Context.");
             return PermissionConstants.SERVICE_STATUS_UNKNOWN;
         }
@@ -30,18 +29,18 @@ final class ServiceManager {
         if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION ||
             permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS ||
             permission == PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
-                return isLocationServiceEnabled(activity)
+                return isLocationServiceEnabled(context)
                         ? PermissionConstants.SERVICE_STATUS_ENABLED
                         : PermissionConstants.SERVICE_STATUS_DISABLED;
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {
-            PackageManager pm = activity.getPackageManager();
+            PackageManager pm = context.getPackageManager();
             if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
                 return PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE;
             }
 
-            TelephonyManager telephonyManager = (TelephonyManager) activity
+            TelephonyManager telephonyManager = (TelephonyManager) context
                     .getSystemService(Context.TELEPHONY_SERVICE);
 
             if (telephonyManager == null || telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {

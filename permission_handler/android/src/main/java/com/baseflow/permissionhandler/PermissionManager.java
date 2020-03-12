@@ -44,17 +44,13 @@ final class PermissionManager {
     @PermissionConstants.PermissionStatus
     int checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
+            Context context,
             Activity activity) {
-        if (activity == null) {
-            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity or App Context.");
-            return PermissionConstants.PERMISSION_STATUS_UNKNOWN;
-        }
-
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
-            return checkNotificationPermissionStatus(activity);
+            return checkNotificationPermissionStatus(context);
         }
 
-        final List<String> names = PermissionUtils.getManifestNames(activity, permission);
+        final List<String> names = PermissionUtils.getManifestNames(context, permission);
 
         if (names == null) {
             Log.d(PermissionConstants.LOG_TAG, "No android specific permissions needed for: " + permission);
@@ -68,14 +64,14 @@ final class PermissionManager {
             return PermissionConstants.PERMISSION_STATUS_UNKNOWN;
         }
 
-        final boolean targetsMOrHigher = activity.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
+        final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
         for (String name : names) {
             // Only handle them if the client app actually targets a API level greater than M.
             if (targetsMOrHigher) {
                 if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                    String packageName = activity.getPackageName();
-                    PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+                    String packageName = context.getPackageName();
+                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                     // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -87,7 +83,7 @@ final class PermissionManager {
                         return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
                     }
                 }
-                final int permissionStatus = ContextCompat.checkSelfPermission(activity, name);
+                final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus == PackageManager.PERMISSION_DENIED) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                             PermissionUtils.isNeverAskAgainSelected(activity, permission)) {
@@ -125,7 +121,7 @@ final class PermissionManager {
         Map<Integer, Integer> requestResults = new HashMap<>();
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
-            @PermissionConstants.PermissionStatus final int permissionStatus = checkPermissionStatus(permission, activity);
+            @PermissionConstants.PermissionStatus final int permissionStatus = checkPermissionStatus(permission, activity.getApplicationContext(), activity);
             if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
                 if (!requestResults.containsKey(permission)) {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
