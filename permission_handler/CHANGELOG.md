@@ -1,3 +1,7 @@
+## 4.4.0+hotfix.1
+
+* Issue #233: Solved a bug that prevented Android applications running in the background to check the permission status.
+
 ## 4.4.0
 
 * Updated plugin structure to confirm to the Flutter federated plugin architecture. This will make it easier to add new platform implementations (see: https://medium.com/flutter/how-to-write-a-flutter-web-plugin-part-2-afdddb69ece6);
