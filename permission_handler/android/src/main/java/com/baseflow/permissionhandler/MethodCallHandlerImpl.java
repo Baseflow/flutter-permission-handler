@@ -56,6 +56,7 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 @PermissionConstants.PermissionStatus final int permissionStatus =
                         permissionManager.checkPermissionStatus(
                                 permission,
+                                applicationContext,
                                 activity);
 
                 result.success(permissionStatus);
@@ -66,7 +67,7 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 @PermissionConstants.ServiceStatus final int serviceStatus =
                         serviceManager.checkServiceStatus(
                                 permission,
-                                activity);
+                                applicationContext);
 
                 result.success(serviceStatus);
                 break;
@@ -79,9 +80,10 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                         activityRegistry,
                         permissionRegistry,
                         result::success,
-                        (String errorCode, String errorDescription) -> {
-                            result.error(errorCode, errorDescription, null);
-                        });
+                        (String errorCode, String errorDescription) -> result.error(
+                                errorCode,
+                                errorDescription,
+                                null));
 
                 break;
             case "shouldShowRequestPermissionRationale": {
