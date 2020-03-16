@@ -1,3 +1,8 @@
+## 4.4.0+hotfix.2
+
+* Issue #235: Solved a bug which made it impossible to request service status on Android 7;
+* Issue #237: Solved a bug which crashes the application when cancelling the "Ignore battery optimizations" request for permissions.
+
 ## 4.4.0+hotfix.1
 
 * Issue #233: Solved a bug that prevented Android applications running in the background to check the permission status.
