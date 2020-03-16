@@ -21,8 +21,9 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   /// Defaults to [MethodChannelPermissionHandler].
   static PermissionHandlerPlatform get instance => _instance;
 
-  /// Platform-specific plugins should set this with their own platform-specific
-  /// class that extends [PermissionHandlerPlatform] when they register themselves.
+  /// Platform-specific plugins should set this with their own 
+  /// platform-specific class that extends 
+  /// [PermissionHandlerPlatform] when they register themselves.
   static set instance(PermissionHandlerPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
