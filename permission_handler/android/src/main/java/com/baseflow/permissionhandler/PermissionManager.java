@@ -241,7 +241,9 @@ final class PermissionManager {
                     ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
 
-            callback.onResult(new HashMap<>(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status));
+            HashMap<Integer, Integer> results = new HashMap<>();
+            results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
+            callback.onResult(results);
             return true;
         }
     }
