@@ -1,9 +1,10 @@
 part of permission_handler_platform_interface;
 
-/// A special kind of permission used to access a service. Additionally to
-/// normal [Permission]s, you can also query the status of the related service.
-class ServicePermission extends Permission {
-  const ServicePermission._(int value) : super._(value);
+/// A special kind of permission used to access a service. Additionally to the
+/// actions that normal [Permission]s have, you can also query the status of
+/// the related service.
+class PermissionWithService extends Permission {
+  const PermissionWithService._(int value) : super._(value);
 }
 
 /// Defines the permissions which can be checked and requested.
@@ -28,17 +29,17 @@ class Permission {
 
   /// Android: Fine and Coarse Location
   /// iOS: CoreLocation (Always and WhenInUse)
-  static const location = ServicePermission._(3);
+  static const location = PermissionWithService._(3);
 
   /// Android:
   ///   When running on Android < Q: Fine and Coarse Location
   ///   When running on Android Q and above: Background Location Permission
   /// iOS: CoreLocation - Always
-  static const locationAlways = ServicePermission._(4);
+  static const locationAlways = PermissionWithService._(4);
 
   /// Android: Fine and Coarse Location
   /// iOS: CoreLocation - WhenInUse
-  static const locationWhenInUse = ServicePermission._(5);
+  static const locationWhenInUse = PermissionWithService._(5);
 
   /// Android: None
   /// iOS: MPMediaLibrary
@@ -144,5 +145,5 @@ class Permission {
   ];
 
   @override
-  String toString() => 'PermissionGroup.${_names[value]}';
+  String toString() => 'Permission.${_names[value]}';
 }
