@@ -15,8 +15,6 @@ That requires adding permission configuration to Android- and iOS-specific files
 <details>
 <summary>Android</summary>
 
-<details>
-
 > The current version of the plugin requires AndroidX.
 >
 > As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
