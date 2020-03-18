@@ -1,7 +1,7 @@
 [![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler) [![Build Status](https://app.bitrise.io/app/fa4f5d4bf452bcfb/status.svg?token=HorGpL_AOw2llYz39CjmdQ&branch=master)](https://app.bitrise.io/app/fa4f5d4bf452bcfb) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
 
-On most OSes, permissions aren't just granted to apps at install time.
-Rather, developers have to ask users for permissions during runtime.
+On most operating systems, permissions aren't just granted to apps at install time.
+Rather, developers have to ask the user for permissions while the app is running.
 
 This plugin provides a cross-platform (iOS, Android) API to request permissions and check their status.
 You can also open the device's app settings so users can grant a permission.  
@@ -16,32 +16,25 @@ That requires adding permission configuration to Android- and iOS-specific files
 <summary>Android</summary>
 
 <details>
-<summary>
-The current version of the plugin requires AndroidX.
-</summary>
 
-As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
-
-The TL;DR version is:
-
-1. Add the following to your "gradle.properties" file:
-
-```
-android.useAndroidX=true
-android.enableJetifier=true
-```
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 28:
-
-```
-android {
-  compileSdkVersion 28
-
-  ...
-}
-```
-3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
-
-</details>
+> The current version of the plugin requires AndroidX.
+>
+> As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
+>
+> The TL;DR version is:
+> 1. Add the following to your "gradle.properties" file:
+> ```
+> android.useAndroidX=true
+> android.enableJetifier=true
+> ```
+> 2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 28:
+> ```
+> android {
+  >   compileSdkVersion 28
+>   ...
+> }
+> ```
+> 3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
 
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
@@ -163,7 +156,7 @@ if (await Permission.contacts.request().isGranted) {
 }
 
 // You can request multiple permissions at once.
-Map<Permission, PermissionStatus> statuses = [
+Map<Permission, PermissionStatus> statuses = await [
   Permission.location,
   Permission.storage,
 ].request();
@@ -173,7 +166,7 @@ print(statuses[Permission.location]);
 All location permissions and the `Permission.sensor` have an associated service, which also has a status.
 
 ```dart
-if (await Permission.location.serviceStatus.isEnabled) {
+if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
   // Use location.
 }
 ```
@@ -186,7 +179,7 @@ if (await Permission.speech.isPermanentlyDenied) {
 }
 ```
 
-On Android, you can also show a rationale for using a permission:
+On Android, you can show a rationale for using a permission:
 
 ```dart
 bool isShown = await Permission.contacts.shouldShowRequestRationale;
