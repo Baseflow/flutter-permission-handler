@@ -62,7 +62,7 @@ final class PermissionConstants {
     static final int PERMISSION_STATUS_DENIED = 0;
     static final int PERMISSION_STATUS_GRANTED = 1;
     static final int PERMISSION_STATUS_RESTRICTED = 2;
-    static final int PERMISSION_STATUS_UNKNOWN = 3;
+    static final int PERMISSION_STATUS_NOT_DETERMINED = 3;
     static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 4;
 
     @Retention(RetentionPolicy.SOURCE)
@@ -70,7 +70,7 @@ final class PermissionConstants {
             PERMISSION_STATUS_DENIED,
             PERMISSION_STATUS_GRANTED,
             PERMISSION_STATUS_RESTRICTED,
-            PERMISSION_STATUS_UNKNOWN,
+            PERMISSION_STATUS_NOT_DETERMINED,
             PERMISSION_STATUS_NEWER_ASK_AGAIN,
     })
     @interface PermissionStatus {

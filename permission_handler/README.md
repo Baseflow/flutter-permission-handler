@@ -12,8 +12,15 @@ On Android, you can show a rationale for requesting a permission.
 While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use.  
 That requires adding permission configuration to Android- and iOS-specific files.
 
+<<<<<<< HEAD
 <details>
 <summary>Android</summary>
+=======
+```yaml
+dependencies:
+  permission_handler: '^4.4.0+hotfix.1'
+```
+>>>>>>> upstream/develop
 
 > The current version of the plugin requires AndroidX.
 >

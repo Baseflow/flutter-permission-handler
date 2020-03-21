@@ -52,6 +52,7 @@ final class PermissionManager {
 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
+            Context context,
             Activity activity,
             CheckPermissionsSuccessCallback successCallback,
             ErrorCallback errorCallback) {
@@ -66,6 +67,7 @@ final class PermissionManager {
 
         successCallback.onSuccess(determinePermissionStatus(
                 permission,
+                context,
                 activity));
     }
 
@@ -95,7 +97,7 @@ final class PermissionManager {
         Map<Integer, Integer> requestResults = new HashMap<>();
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
-            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity);
+            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity, activity);
             if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
                 if (!requestResults.containsKey(permission)) {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
@@ -109,7 +111,7 @@ final class PermissionManager {
             // if we can't add as unknown and continue
             if (names == null || names.isEmpty()) {
                 if (!requestResults.containsKey(permission)) {
-                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_UNKNOWN);
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
                 }
 
                 continue;
@@ -159,13 +161,14 @@ final class PermissionManager {
     @PermissionConstants.PermissionStatus
     private int determinePermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
+            Context context,
             Activity activity) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
-            return checkNotificationPermissionStatus(activity);
+            return checkNotificationPermissionStatus(context);
         }
 
-        final List<String> names = PermissionUtils.getManifestNames(activity, permission);
+        final List<String> names = PermissionUtils.getManifestNames(context, permission);
 
         if (names == null) {
             Log.d(PermissionConstants.LOG_TAG, "No android specific permissions needed for: " + permission);
@@ -176,17 +179,17 @@ final class PermissionManager {
         //if no permissions were found then there is an issue and permission is not set in Android manifest
         if (names.size() == 0) {
             Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission);
-            return PermissionConstants.PERMISSION_STATUS_UNKNOWN;
+            return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
         }
 
-        final boolean targetsMOrHigher = activity.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
+        final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
         for (String name : names) {
             // Only handle them if the client app actually targets a API level greater than M.
             if (targetsMOrHigher) {
                 if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                    String packageName = activity.getPackageName();
-                    PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+                    String packageName = context.getPackageName();
+                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                     // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -198,16 +201,19 @@ final class PermissionManager {
                         return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
                     }
                 }
-                final int permissionStatus = ContextCompat.checkSelfPermission(activity, name);
+                final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus == PackageManager.PERMISSION_DENIED) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            PermissionUtils.isNeverAskAgainSelected(activity, permission)) {
+                    if (!PermissionUtils.getRequestedPermissionBefore(context, name))
+                    {
+                        return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            PermissionUtils.isNeverAskAgainSelected(activity, name)) {
                         return PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN;
                     } else {
                         return PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
                 } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionConstants.PERMISSION_STATUS_UNKNOWN;
+                    return PermissionConstants.PERMISSION_STATUS_DENIED;
                 }
             }
         }
@@ -284,7 +290,9 @@ final class PermissionManager {
                     ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
 
-            callback.onSuccess(new HashMap<>(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status));
+            HashMap<Integer, Integer> results = new HashMap<>();
+            results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
+            callback.onSuccess(results);
             return true;
         }
     }
@@ -323,8 +331,10 @@ final class PermissionManager {
             alreadyCalled = true;
 
             for (int i = 0; i < permissions.length; i++) {
+                final String permissionName = permissions[i];
+
                 @PermissionConstants.PermissionGroup final int permission =
-                        PermissionUtils.parseManifestName(permissions[i]);
+                        PermissionUtils.parseManifestName(permissionName);
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_UNKNOWN)
                     continue;
@@ -335,23 +345,23 @@ final class PermissionManager {
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
                         requestResults.put(
                                 PermissionConstants.PERMISSION_GROUP_MICROPHONE,
-                                PermissionUtils.toPermissionStatus(this.activity, permission, result));
+                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
                     }
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_SPEECH)) {
                         requestResults.put(
                                 PermissionConstants.PERMISSION_GROUP_SPEECH,
-                                PermissionUtils.toPermissionStatus(this.activity, permission, result));
+                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) {
                     @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permission, result);
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
 
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
                         requestResults.put(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
                     @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permission, result);
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
 
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
@@ -371,7 +381,7 @@ final class PermissionManager {
                 } else if (!requestResults.containsKey(permission)) {
                     requestResults.put(
                             permission,
-                            PermissionUtils.toPermissionStatus(this.activity, permission, result));
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
                 }
 
                 PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);

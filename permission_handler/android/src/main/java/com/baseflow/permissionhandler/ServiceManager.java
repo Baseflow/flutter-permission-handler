@@ -96,7 +96,7 @@ final class ServiceManager {
 
             return locationManager.isLocationEnabled();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return isLocationServiceEnablePrePie(context);
+            return isLocationServiceEnabledKitKat(context);
         } else {
             return isLocationServiceEnablePreKitKat(context);
         }
@@ -105,10 +105,11 @@ final class ServiceManager {
     // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
     // pre Pie versions of Android.
     @SuppressWarnings("deprecation")
-    private static boolean isLocationServiceEnablePrePie(Context context)
+    private static boolean isLocationServiceEnabledKitKat(Context context)
     {
-        if (VERSION.SDK_INT < VERSION_CODES.P)
+        if (Build.VERSION.SDK_INT < VERSION_CODES.KITKAT) {
             return false;
+        }
 
         final int locationMode;
 

@@ -68,7 +68,8 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 permissionManager.checkPermissionStatus(
                         permission,
-                        activity,
+                        applicationContext,
+						activity,
                         result::success,
                         (String errorCode, String errorDescription) -> result.error(
                                 errorCode,
