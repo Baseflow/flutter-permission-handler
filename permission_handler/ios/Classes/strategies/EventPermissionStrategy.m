@@ -24,7 +24,7 @@
         #endif
     }
     
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -34,7 +34,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus permissionStatus = [self checkPermissionStatus:permission];
     
-    if (permissionStatus != PermissionStatusUnknown) {
+    if (permissionStatus != PermissionStatusNotDetermined) {
         completionHandler(permissionStatus);
         return;
     }
@@ -56,7 +56,7 @@
         return;
         #endif
     } else {
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
     }
     
@@ -75,7 +75,7 @@
     
     switch (status) {
         case EKAuthorizationStatusNotDetermined:
-            return PermissionStatusUnknown;
+            return PermissionStatusNotDetermined;
         case EKAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case EKAuthorizationStatusDenied:
@@ -84,7 +84,7 @@
             return PermissionStatusGranted;
     }
     
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 @end
