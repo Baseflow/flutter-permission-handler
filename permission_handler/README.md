@@ -173,9 +173,9 @@ You can also open the app settings:
 
 ```dart
 if (await Permission.speech.isPermanentlyDenied) {
-  // The user requested to never again show the permission request dialog.
-  // The only way to change a permission's status is to let the user do it
-  // manually in the system settings.
+  // The user opted to never again seeing the permission request dialog from
+  // this app. The only way to change the permission's status now is to let the
+  // user manually enable permissions in the system settings.
   openAppSettings();
 }
 ```
