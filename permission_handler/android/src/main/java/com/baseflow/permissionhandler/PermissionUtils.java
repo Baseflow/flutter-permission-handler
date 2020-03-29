@@ -238,9 +238,9 @@ public class PermissionUtils {
     }
 
     @PermissionConstants.PermissionStatus
-    static int toPermissionStatus(final Activity activity, @PermissionConstants.PermissionGroup int permission, int grantResult) {
+    static int toPermissionStatus(final Activity activity, final String permissionName, int grantResult) {
         if (grantResult == PackageManager.PERMISSION_DENIED) {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && PermissionUtils.isNeverAskAgainSelected(activity, permission)
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && PermissionUtils.isNeverAskAgainSelected(activity, permissionName)
                     ? PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
@@ -265,23 +265,12 @@ public class PermissionUtils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    static boolean isNeverAskAgainSelected(final Activity activity, @PermissionConstants.PermissionGroup int permission) {
+    static boolean isNeverAskAgainSelected(final Activity activity, final String name) {
         if (activity == null) {
             return false;
         }
 
-        List<String> names = getManifestNames(activity, permission);
-
-        if (names == null || names.isEmpty()) {
-            return false;
-        }
-
-        boolean isNeverAskAgainSelected = false;
-        for (String name : names) {
-            isNeverAskAgainSelected |= PermissionUtils.neverAskAgainSelected(activity, name);
-        }
-
-        return isNeverAskAgainSelected;
+        return PermissionUtils.neverAskAgainSelected(activity, name);
     }
 
   @RequiresApi(api = Build.VERSION_CODES.M)
@@ -298,7 +287,7 @@ public class PermissionUtils {
     editor.apply();
   }
 
-  private static boolean getRequestedPermissionBefore(final Context context, final String permission) {
+  static boolean getRequestedPermissionBefore(final Context context, final String permission) {
     SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
     return genPrefs.getBoolean(permission, false);
   }

@@ -21,7 +21,7 @@
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
   PermissionStatus status = [self checkPermissionStatus:permission];
-  if (status != PermissionStatusUnknown) {
+  if (status != PermissionStatusNotDetermined) {
     completionHandler(status);
     return;
   }
@@ -59,7 +59,7 @@
       if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
         permissionStatus = PermissionStatusDenied;
       } else if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
-        permissionStatus = PermissionStatusUnknown;
+        permissionStatus = PermissionStatusNotDetermined;
       }
       dispatch_semaphore_signal(sem);
     }];

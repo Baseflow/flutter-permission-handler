@@ -1,3 +1,7 @@
+## 5.0.0
+
+* **BREAKING**: Implemented more intuitive API exposed by `permission_handler_platform_interface: 2.0.0` ([#230](https://github.com/Baseflow/flutter-permission-handler/issues/230)).
+
 ## 4.4.0+hotfix.2
 
 * Issue #235: Solved a bug which made it impossible to request service status on Android 7;

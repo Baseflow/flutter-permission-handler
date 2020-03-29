@@ -19,7 +19,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
 
-    if (status != PermissionStatusUnknown) {
+    if (status != PermissionStatusNotDetermined) {
         completionHandler(status);
         return;
     }
@@ -38,7 +38,7 @@
 + (PermissionStatus)determinePermissionStatus:(PHAuthorizationStatus)authorizationStatus {
     switch (authorizationStatus) {
         case PHAuthorizationStatusNotDetermined:
-            return PermissionStatusUnknown;
+            return PermissionStatusNotDetermined;
         case PHAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case PHAuthorizationStatusDenied:
@@ -47,7 +47,7 @@
             return PermissionStatusGranted;
     }
 
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 @end
