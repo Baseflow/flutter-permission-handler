@@ -23,7 +23,7 @@
         return PermissionStatusUnknown;
         #endif
     }
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -33,7 +33,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
 
-    if (status != PermissionStatusUnknown) {
+    if (status != PermissionStatusNotDetermined) {
         completionHandler(status);
         return;
     }
@@ -55,7 +55,7 @@
         return;
         #endif
     } else {
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
     }
 
@@ -73,7 +73,7 @@
 
     switch (status) {
         case AVAuthorizationStatusNotDetermined:
-            return PermissionStatusUnknown;
+            return PermissionStatusNotDetermined;
         case AVAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case AVAuthorizationStatusDenied:
@@ -82,7 +82,7 @@
             return PermissionStatusGranted;
     }
 
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 @end

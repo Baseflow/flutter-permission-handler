@@ -17,34 +17,45 @@ import android.util.Log;
 import java.util.List;
 
 final class ServiceManager {
-    @PermissionConstants.ServiceStatus
-    int checkServiceStatus(
+    @FunctionalInterface
+    interface SuccessCallback {
+        void onSuccess(@PermissionConstants.ServiceStatus int serviceStatus);
+    }
+
+    void checkServiceStatus(
             int permission,
-            Context context) {
-        if (context == null) {
-            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity or App Context.");
-            return PermissionConstants.SERVICE_STATUS_UNKNOWN;
+            Context context,
+            SuccessCallback successCallback,
+            ErrorCallback errorCallback) {
+        if(context == null) {
+            Log.d(PermissionConstants.LOG_TAG, "Context cannot be null.");
+            errorCallback.onError("PermissionHandler.ServiceManager", "Android context cannot be null.");
+            return;
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION ||
             permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS ||
             permission == PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
-                return isLocationServiceEnabled(context)
+                final int serviceStatus = isLocationServiceEnabled(context)
                         ? PermissionConstants.SERVICE_STATUS_ENABLED
                         : PermissionConstants.SERVICE_STATUS_DISABLED;
+
+                successCallback.onSuccess(serviceStatus);
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {
             PackageManager pm = context.getPackageManager();
             if (!pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
-                return PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE;
+                successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE);
+                return;
             }
 
             TelephonyManager telephonyManager = (TelephonyManager) context
                     .getSystemService(Context.TELEPHONY_SERVICE);
 
             if (telephonyManager == null || telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
-                return PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE;
+                successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE);
+                return;
             }
 
             Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -52,23 +63,28 @@ final class ServiceManager {
             List<ResolveInfo> callAppsList = pm.queryIntentActivities(callIntent, 0);
 
             if (callAppsList.isEmpty()) {
-                return PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE;
+                successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE);
+                return;
             }
 
             if (telephonyManager.getSimState() != TelephonyManager.SIM_STATE_READY) {
-                return PermissionConstants.SERVICE_STATUS_DISABLED;
+                successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_DISABLED);
+                return;
             }
 
-            return PermissionConstants.SERVICE_STATUS_ENABLED;
+            successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_ENABLED);
+            return;
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            final int serviceStatus = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     ? PermissionConstants.SERVICE_STATUS_ENABLED
                     : PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE;
+            successCallback.onSuccess(serviceStatus);
+            return;
         }
 
-        return PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE;
+        successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE);
     }
 
     private boolean isLocationServiceEnabled(Context context) {
@@ -86,7 +102,7 @@ final class ServiceManager {
         }
     }
 
-    // Suppress deprecation warnings since it's purpose is to support to be backwards compatible with
+    // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
     // pre Pie versions of Android.
     @SuppressWarnings("deprecation")
     private static boolean isLocationServiceEnabledKitKat(Context context)
@@ -109,7 +125,7 @@ final class ServiceManager {
         return locationMode != Settings.Secure.LOCATION_MODE_OFF;
     }
 
-    // Suppress deprecation warnings since it's purpose is to support to be backwards compatible with
+    // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
     // pre KitKat versions of Android.
     @SuppressWarnings("deprecation")
     private static boolean isLocationServiceEnablePreKitKat(Context context)

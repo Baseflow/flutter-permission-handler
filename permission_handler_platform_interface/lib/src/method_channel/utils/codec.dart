@@ -1,31 +1,29 @@
 import '../../../permission_handler_platform_interface.dart';
 
-/// Provides utility methods for encoding messages that are send on the Flutter
+/// Provides utility methods for encoding messages that are sent on the Flutter
 /// message channel.
 class Codec {
-  /// Converts the supplied integer value into a [PermissionStatus] instance.
+  /// Converts the given [value] into a [PermissionStatus] instance.
   static PermissionStatus decodePermissionStatus(int value) {
-    return PermissionStatus.values[value];
+    return PermissionStatusValue.statusByValue(value);
   }
 
-  /// Converts the supplied integer value into a [ServiceStatus] instance.
+  /// Converts the given [value] into a [ServiceStatus] instance.
   static ServiceStatus decodeServiceStatus(int value) {
-    return ServiceStatus.values[value];
+    return ServiceStatusValue.statusByValue(value);
   }
 
-  /// Converts the supplied [Map] of integers into a [Map] of
-  /// [PermissionGroup] key and [PermissionStatus] value instances.
-  static Map<PermissionGroup, PermissionStatus> decodePermissionRequestResult(
+  /// Converts the given [Map] of [int]s into a [Map] with [Permission]s as
+  /// keys and their respective [PermissionStatus] as value.
+  static Map<Permission, PermissionStatus> decodePermissionRequestResult(
       Map<int, int> value) {
-    return value.map((key, value) =>
-        MapEntry<PermissionGroup, PermissionStatus>(
-            PermissionGroup.values[key], PermissionStatus.values[value]));
+    return value.map((key, value) => MapEntry<Permission, PermissionStatus>(
+        Permission.byValue(key), PermissionStatusValue.statusByValue(value)));
   }
 
-  /// Converts the supplied [List] containing [PermissionGroup] instances into
-  /// a [List] containing integers which can be used to send on the Flutter
-  /// method channel.
-  static List<int> encodePermissionGroups(List<PermissionGroup> permissions) {
+  /// Converts the given [List] of [Permission]s into a [List] of [int]s which
+  /// can be sent on the Flutter method channel.
+  static List<int> encodePermissions(List<Permission> permissions) {
     return permissions.map((it) => it.value).toList();
   }
 }

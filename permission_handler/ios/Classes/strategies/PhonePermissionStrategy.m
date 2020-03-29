@@ -13,7 +13,7 @@
 @implementation PhonePermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -26,7 +26,7 @@
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
-    completionHandler(PermissionStatusUnknown);
+    completionHandler(PermissionStatusNotDetermined);
 }
 
 

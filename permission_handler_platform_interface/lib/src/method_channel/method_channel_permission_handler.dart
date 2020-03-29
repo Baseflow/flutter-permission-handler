@@ -8,78 +8,71 @@ import 'utils/codec.dart';
 const MethodChannel _methodChannel =
     MethodChannel('flutter.baseflow.com/permissions/methods');
 
-/// An implementation of [PermissionHandlerPlatform] that uses method channels.
+/// An implementation of [PermissionHandlerPlatform] that uses [MethodChannel]s.
 class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
-  /// Check current permission status.
-  ///
-  /// Returns a [Future] containing the current permission status for the
-  /// supplied [PermissionGroup].
-  Future<PermissionStatus> checkPermissionStatus(
-      PermissionGroup permission) async {
+  /// Checks the current status of the given [Permission].
+  Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
         'checkPermissionStatus', permission.value);
 
     return Codec.decodePermissionStatus(status);
   }
 
-  /// Check current service status.
+  /// Checks the current status of the service associated with the given
+  /// [Permission].
   ///
-  /// Returns a [Future] containing the current service status for the supplied
-  /// [PermissionGroup].
-  ///
-  /// Notes about specific PermissionGroups:
-  /// - **PermissionGroup.phone**
+  /// Notes about specific permissions:
+  /// - **[Permission.phone]**
   ///   - Android:
   ///     - The method will return [ServiceStatus.notApplicable] when:
-  ///       1. the device lacks the TELEPHONY feature
-  ///       1. TelephonyManager.getPhoneType() returns PHONE_TYPE_NONE
-  ///       1. when no Intents can be resolved to handle the `tel:` scheme
+  ///       - the device lacks the TELEPHONY feature
+  ///       - TelephonyManager.getPhoneType() returns PHONE_TYPE_NONE
+  ///       - when no Intents can be resolved to handle the `tel:` scheme
   ///     - The method will return [ServiceStatus.disabled] when:
-  ///       1. the SIM card is missing
+  ///       - the SIM card is missing
   ///   - iOS:
   ///     - The method will return [ServiceStatus.notApplicable] when:
-  ///       1. the native code can not find a handler for the `tel:` scheme
+  ///       - the native code can not find a handler for the `tel:` scheme
   ///     - The method will return [ServiceStatus.disabled] when:
-  ///       1. the mobile network code (MNC) is either 0 or 65535. See
+  ///       - the mobile network code (MNC) is either 0 or 65535. See
   ///          https://stackoverflow.com/a/11595365 for details
   ///   - **PLEASE NOTE that this is still not a perfect indication** of the
-  ///     devices' capability to place & connect phone calls
-  ///     as it also depends on the network condition.
-  Future<ServiceStatus> checkServiceStatus(PermissionGroup permission) async {
+  ///     device's capability to place & connect phone calls as it also depends
+  ///     on the network condition.
+  Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
         'checkServiceStatus', permission.value);
 
     return Codec.decodeServiceStatus(status);
   }
 
-  /// Open the App settings page.
+  /// Opens the app settings page.
   ///
-  /// Returns [true] if the app settings page could be opened,
-  /// otherwise [false] is returned.
+  /// Returns [true] if the app settings page could be opened, otherwise [false].
   Future<bool> openAppSettings() async {
-    final hasOpened = await _methodChannel.invokeMethod('openAppSettings');
-
-    return hasOpened;
+    final wasOpened = await _methodChannel.invokeMethod('openAppSettings');
+    return wasOpened;
   }
 
-  /// Request the user for access to the supplied list of permissiongroups.
+  /// Requests the user for access to the supplied list of [Permission]s, if
+  /// they have not already been granted before.
   ///
-  /// Returns a [Map] containing the status per requested permissiongroup.
-  Future<Map<PermissionGroup, PermissionStatus>> requestPermissions(
-      List<PermissionGroup> permissions) async {
-    final data = Codec.encodePermissionGroups(permissions);
+  /// Returns a [Map] containing the status per requested [Permission].
+  Future<Map<Permission, PermissionStatus>> requestPermissions(
+      List<Permission> permissions) async {
+    final data = Codec.encodePermissions(permissions);
     final status =
         await _methodChannel.invokeMethod('requestPermissions', data);
 
     return Codec.decodePermissionRequestResult(Map<int, int>.from(status));
   }
 
-  /// Request to see if you should show a rationale for requesting permission.
+  /// Checks if you should show a rationale for requesting permission.
   ///
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
   Future<bool> shouldShowRequestPermissionRationale(
-      PermissionGroup permission) async {
+      Permission permission) async {
     final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
 
