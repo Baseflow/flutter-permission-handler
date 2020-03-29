@@ -21,8 +21,8 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   /// Defaults to [MethodChannelPermissionHandler].
   static PermissionHandlerPlatform get instance => _instance;
 
-  /// Platform-specific plugins should set this with their own 
-  /// platform-specific class that extends 
+  /// Platform-specific plugins should set this with their own
+  /// platform-specific class that extends
   /// [PermissionHandlerPlatform] when they register themselves.
   static set instance(PermissionHandlerPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
@@ -62,7 +62,8 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
 
   /// Opens the app settings page.
   ///
-  /// Returns [true] if the app settings page could be opened, otherwise [false].
+  /// Returns [true] if the app settings page could be opened, otherwise
+  /// [false].
   Future<bool> openAppSettings() {
     throw UnimplementedError('openAppSettings() has not been implemented.');
   }
