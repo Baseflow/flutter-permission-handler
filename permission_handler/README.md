@@ -161,7 +161,7 @@ Map<Permission, PermissionStatus> statuses = await [
 print(statuses[Permission.location]);
 ```
 
-All location permissions and the `Permission.sensor` have an associated service, which also has a status.
+Some permissions, for example location or acceleration sensor permissions, have an associated service, which also has a status that can be `enabled` or `disabled`.
 
 ```dart
 if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
