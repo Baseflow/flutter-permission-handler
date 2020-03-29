@@ -150,7 +150,7 @@ If it has already been granted before, nothing happens.
 
 ```dart
 if (await Permission.contacts.request().isGranted) {
-  // Either the permission was granted before or the user just granted it.
+  // Either the permission was already granted before or the user just granted it.
 }
 
 // You can request multiple permissions at once.
@@ -161,7 +161,7 @@ Map<Permission, PermissionStatus> statuses = await [
 print(statuses[Permission.location]);
 ```
 
-Some permissions, for example location or acceleration sensor permissions, have an associated service, which also has a status that can be `enabled` or `disabled`.
+Some permissions, for example location or acceleration sensor permissions, have an associated service, which can be `enabled` or `disabled`.
 
 ```dart
 if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
@@ -173,6 +173,9 @@ You can also open the app settings:
 
 ```dart
 if (await Permission.speech.isPermanentlyDenied) {
+  // The user requested to never again show the permission request dialog.
+  // The only way to change a permission's status is to let the user do it
+  // manually in the system settings.
   openAppSettings();
 }
 ```
