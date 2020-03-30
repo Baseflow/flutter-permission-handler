@@ -3,7 +3,14 @@ import 'dart:io';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 export 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart'
-    show Permission, PermissionStatus, ServiceStatus;
+    show
+        Permission,
+        PermissionStatus,
+        PermissionStatusGetters,
+        FuturePermissionStatusGetters,
+        ServiceStatus,
+        ServiceStatusGetters,
+        FutureServiceStatusGetters;
 
 PermissionHandlerPlatform get _handler => PermissionHandlerPlatform.instance;
 

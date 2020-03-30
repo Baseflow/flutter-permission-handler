@@ -1,3 +1,7 @@
+## 5.0.0+hotfix.1
+
+* Make sure all enums from `permission_handler_platform_interface: 2.0.0` are exposed through the `permission_handler`.
+
 ## 5.0.0
 
 * **BREAKING**: Implemented more intuitive API exposed by `permission_handler_platform_interface: 2.0.0` ([#230](https://github.com/Baseflow/flutter-permission-handler/issues/230)).
