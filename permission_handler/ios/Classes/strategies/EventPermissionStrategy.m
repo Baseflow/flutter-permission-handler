@@ -13,14 +13,10 @@
     if (permission == PermissionGroupCalendar) {
         #if PERMISSION_EVENTS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
-        #else
-        return PermissionStatusUnknown;
         #endif
     } else if (permission == PermissionGroupReminders) {
         #if PERMISSION_REMINDERS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeReminder];
-        #else
-        return PermissionStatusUnknown;
         #endif
     }
     
@@ -45,14 +41,14 @@
         #if PERMISSION_EVENTS
         entityType = EKEntityTypeEvent;
         #else
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
         #endif
     } else if (permission == PermissionGroupReminders) {
         #if PERMISSION_REMINDERS
         entityType = EKEntityTypeReminder;
         #else
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
         #endif
     } else {

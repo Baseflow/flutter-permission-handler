@@ -1,3 +1,7 @@
+## 5.0.0+hotfix.2
+
+* Removed some residual usages of the `PermissionStatusUnknown` constants in #ifdef statements that were not found by the compiler.
+
 ## 5.0.0+hotfix.1
 
 * Make sure all enums from `permission_handler_platform_interface: 2.0.0` are exposed through the `permission_handler`.
