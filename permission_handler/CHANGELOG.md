@@ -1,3 +1,7 @@
+## 4.4.0+hotfix.3
+
+* Android: solved issue where `permission_handler` is used in a service (see [#251](https://github.com/Baseflow/flutter-permission-handler/issues/251))
+
 ## 4.4.0+hotfix.2
 
 * Issue #235: Solved a bug which made it impossible to request service status on Android 7;
