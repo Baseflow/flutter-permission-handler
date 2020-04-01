@@ -23,29 +23,147 @@ import java.util.Map;
 import io.flutter.plugin.common.PluginRegistry;
 
 final class PermissionManager {
+    @FunctionalInterface
     interface ActivityRegistry {
         void addListener(PluginRegistry.ActivityResultListener handler);
     }
 
+    @FunctionalInterface
     interface PermissionRegistry {
         void addListener(PluginRegistry.RequestPermissionsResultListener handler);
     }
 
-    interface ResultCallback {
-        void onResult(Map<Integer, Integer> results);
+    @FunctionalInterface
+    interface RequestPermissionsSuccessCallback {
+        void onSuccess(Map<Integer, Integer> results);
     }
 
-    interface ErrorCallback {
-        void onError(String errorCode, String errorDescription);
+    @FunctionalInterface
+    interface CheckPermissionsSuccessCallback {
+        void onSuccess(@PermissionConstants.PermissionStatus int permissionStatus);
+    }
+
+    @FunctionalInterface
+    interface ShouldShowRequestPermissionRationaleSuccessCallback {
+        void onSuccess(boolean shouldShowRequestPermissionRationale);
     }
 
     private boolean ongoing = false;
 
+    void checkPermissionStatus(
+            @PermissionConstants.PermissionGroup int permission,
+            Context context,
+            Activity activity,
+            CheckPermissionsSuccessCallback successCallback,
+            ErrorCallback errorCallback) {
+
+        if(activity == null) {
+            Log.d(PermissionConstants.LOG_TAG, "Activity cannot be null.");
+            errorCallback.onError(
+                    "PermissionHandler.PermissionManager",
+                    "Android activity is required to check for permissions and cannot be null.");
+            return;
+        }
+
+        successCallback.onSuccess(determinePermissionStatus(
+                permission,
+                context,
+                activity));
+    }
+
+    void requestPermissions(
+            List<Integer> permissions,
+            Activity activity,
+            ActivityRegistry activityRegistry,
+            PermissionRegistry permissionRegistry,
+            RequestPermissionsSuccessCallback successCallback,
+            ErrorCallback errorCallback) {
+        if(ongoing) {
+            errorCallback.onError(
+                    "PermissionHandler.PermissionManager",
+                    "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).");
+            return;
+        }
+
+        if (activity == null) {
+            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity.");
+
+            errorCallback.onError(
+                    "PermissionHandler.PermissionManager",
+                    "Unable to detect current Android Activity.");
+            return;
+        }
+
+        Map<Integer, Integer> requestResults = new HashMap<>();
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (Integer permission : permissions) {
+            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity, activity);
+            if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
+                if (!requestResults.containsKey(permission)) {
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
+                }
+                continue;
+            }
+
+            final List<String> names = PermissionUtils.getManifestNames(activity, permission);
+
+            // check to see if we can find manifest names
+            // if we can't add as unknown and continue
+            if (names == null || names.isEmpty()) {
+                if (!requestResults.containsKey(permission)) {
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
+                }
+
+                continue;
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+                activityRegistry.addListener(
+                    new ActivityResultListener(successCallback)
+                );
+
+                String packageName = activity.getPackageName();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+            } else {
+                permissionsToRequest.addAll(names);
+            }
+        }
+
+        final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
+        if (permissionsToRequest.size() > 0) {
+            permissionRegistry.addListener(
+                    new RequestPermissionsListener(
+                            activity,
+                            requestResults,
+                            (Map<Integer, Integer> results) -> {
+                                ongoing = false;
+                                successCallback.onSuccess(results);
+                            })
+            );
+
+            ongoing = true;
+
+            ActivityCompat.requestPermissions(
+                    activity,
+                    requestPermissions,
+                    PermissionConstants.PERMISSION_CODE);
+        } else {
+            ongoing = false;
+            if (requestResults.size() > 0) {
+                successCallback.onSuccess(requestResults);
+            }
+        }
+    }
+
     @PermissionConstants.PermissionStatus
-    int checkPermissionStatus(
+    private int determinePermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
             Context context,
             Activity activity) {
+
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
         }
@@ -61,7 +179,7 @@ final class PermissionManager {
         //if no permissions were found then there is an issue and permission is not set in Android manifest
         if (names.size() == 0) {
             Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission);
-            return PermissionConstants.PERMISSION_STATUS_UNKNOWN;
+            return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
         }
 
         final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
@@ -85,12 +203,17 @@ final class PermissionManager {
                 }
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus == PackageManager.PERMISSION_DENIED) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            PermissionUtils.isNeverAskAgainSelected(activity, permission)) {
+                    if (!PermissionUtils.getRequestedPermissionBefore(context, name))
+                    {
+                        return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            PermissionUtils.isNeverAskAgainSelected(activity, name)) {
                         return PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN;
-                    } else return PermissionConstants.PERMISSION_STATUS_DENIED;
+                    } else {
+                        return PermissionConstants.PERMISSION_STATUS_DENIED;
+                    }
                 } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionConstants.PERMISSION_STATUS_UNKNOWN;
+                    return PermissionConstants.PERMISSION_STATUS_DENIED;
                 }
             }
         }
@@ -98,94 +221,18 @@ final class PermissionManager {
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
-    void requestPermissions(
-            List<Integer> permissions,
+    void shouldShowRequestPermissionRationale(
+            int permission,
             Activity activity,
-            ActivityRegistry activityRegistry,
-            PermissionRegistry permissionRegistry,
-            ResultCallback resultCallback,
+            ShouldShowRequestPermissionRationaleSuccessCallback successCallback,
             ErrorCallback errorCallback) {
-        if(ongoing) {
+        if (activity == null) {
+            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity.");
+
             errorCallback.onError(
-                    "ERROR_ALREADY_REQUESTING_PERMISSIONS",
-                    "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).");
-        }
-
-        if (activity == null) {
-            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity.");
-
-            errorCallback.onError("ERROR_ANDROID_ACTIVITY_MISSING", "Unable to detect current Android Activity.");
+                    "PermissionHandler.PermissionManager",
+                    "Unable to detect current Android Activity.");
             return;
-        }
-
-        Map<Integer, Integer> requestResults = new HashMap<>();
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (Integer permission : permissions) {
-            @PermissionConstants.PermissionStatus final int permissionStatus = checkPermissionStatus(permission, activity.getApplicationContext(), activity);
-            if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
-                if (!requestResults.containsKey(permission)) {
-                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
-                }
-                continue;
-            }
-
-            final List<String> names = PermissionUtils.getManifestNames(activity, permission);
-
-            // check to see if we can find manifest names
-            // if we can't add as unknown and continue
-            if (names == null || names.isEmpty()) {
-                if (!requestResults.containsKey(permission)) {
-                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_UNKNOWN);
-                }
-
-                continue;
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                activityRegistry.addListener(
-                    new ActivityResultListener(resultCallback)
-                );
-
-                String packageName = activity.getPackageName();
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setData(Uri.parse("package:" + packageName));
-                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
-            } else {
-                permissionsToRequest.addAll(names);
-            }
-        }
-
-        final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
-        if (permissionsToRequest.size() > 0) {
-            permissionRegistry.addListener(
-                    new RequestPermissionsListener(
-                            activity,
-                            requestResults,
-                            (Map<Integer, Integer> results) -> {
-                                ongoing = false;
-                                resultCallback.onResult(results);
-                            })
-            );
-
-            ongoing = true;
-
-            ActivityCompat.requestPermissions(
-                    activity,
-                    requestPermissions,
-                    PermissionConstants.PERMISSION_CODE);
-        } else {
-            ongoing = false;
-            if (requestResults.size() > 0) {
-                resultCallback.onResult(requestResults);
-            }
-        }
-    }
-
-    boolean shouldShowRequestPermissionRationale(int permission, Activity activity) {
-        if (activity == null) {
-            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity.");
-            return false;
         }
 
         List<String> names = PermissionUtils.getManifestNames(activity, permission);
@@ -193,15 +240,17 @@ final class PermissionManager {
         // if isn't an android specific group then go ahead and return false;
         if (names == null) {
             Log.d(PermissionConstants.LOG_TAG, "No android specific permissions needed for: " + permission);
-            return false;
+            successCallback.onSuccess(false);
+            return;
         }
 
         if (names.isEmpty()) {
             Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission + " no need to show request rationale");
-            return false;
+            successCallback.onSuccess(false);
+            return;
         }
 
-        return ActivityCompat.shouldShowRequestPermissionRationale(activity, names.get(0));
+        successCallback.onSuccess(ActivityCompat.shouldShowRequestPermissionRationale(activity, names.get(0)));
     }
 
     private int checkNotificationPermissionStatus(Context context) {
@@ -223,10 +272,10 @@ final class PermissionManager {
         // call.
         boolean alreadyCalled = false;
 
-        final ResultCallback callback;
+        final RequestPermissionsSuccessCallback callback;
 
         @VisibleForTesting
-        ActivityResultListener(ResultCallback callback) {
+        ActivityResultListener(RequestPermissionsSuccessCallback callback) {
             this.callback = callback;
         }
 
@@ -243,7 +292,7 @@ final class PermissionManager {
 
             HashMap<Integer, Integer> results = new HashMap<>();
             results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
-            callback.onResult(results);
+            callback.onSuccess(results);
             return true;
         }
     }
@@ -259,14 +308,14 @@ final class PermissionManager {
         boolean alreadyCalled = false;
 
         final Activity activity;
-        final ResultCallback callback;
+        final RequestPermissionsSuccessCallback callback;
         final Map<Integer, Integer> requestResults;
 
         @VisibleForTesting
         RequestPermissionsListener(
                 Activity activity,
                 Map<Integer, Integer> requestResults,
-                ResultCallback callback) {
+                RequestPermissionsSuccessCallback callback) {
             this.activity = activity;
             this.callback = callback;
             this.requestResults = requestResults;
@@ -282,8 +331,10 @@ final class PermissionManager {
             alreadyCalled = true;
 
             for (int i = 0; i < permissions.length; i++) {
+                final String permissionName = permissions[i];
+
                 @PermissionConstants.PermissionGroup final int permission =
-                        PermissionUtils.parseManifestName(permissions[i]);
+                        PermissionUtils.parseManifestName(permissionName);
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_UNKNOWN)
                     continue;
@@ -294,23 +345,23 @@ final class PermissionManager {
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
                         requestResults.put(
                                 PermissionConstants.PERMISSION_GROUP_MICROPHONE,
-                                PermissionUtils.toPermissionStatus(this.activity, permission, result));
+                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
                     }
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_SPEECH)) {
                         requestResults.put(
                                 PermissionConstants.PERMISSION_GROUP_SPEECH,
-                                PermissionUtils.toPermissionStatus(this.activity, permission, result));
+                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) {
                     @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permission, result);
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
 
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
                         requestResults.put(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
                     @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permission, result);
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
 
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                         if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
@@ -330,13 +381,13 @@ final class PermissionManager {
                 } else if (!requestResults.containsKey(permission)) {
                     requestResults.put(
                             permission,
-                            PermissionUtils.toPermissionStatus(this.activity, permission, result));
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
                 }
 
                 PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
             }
 
-            this.callback.onResult(requestResults);
+            this.callback.onSuccess(requestResults);
             return true;
         }
     }

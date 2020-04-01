@@ -13,18 +13,14 @@
     if (permission == PermissionGroupCalendar) {
         #if PERMISSION_EVENTS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
-        #else
-        return PermissionStatusUnknown;
         #endif
     } else if (permission == PermissionGroupReminders) {
         #if PERMISSION_REMINDERS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeReminder];
-        #else
-        return PermissionStatusUnknown;
         #endif
     }
     
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -34,7 +30,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus permissionStatus = [self checkPermissionStatus:permission];
     
-    if (permissionStatus != PermissionStatusUnknown) {
+    if (permissionStatus != PermissionStatusNotDetermined) {
         completionHandler(permissionStatus);
         return;
     }
@@ -45,18 +41,18 @@
         #if PERMISSION_EVENTS
         entityType = EKEntityTypeEvent;
         #else
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
         #endif
     } else if (permission == PermissionGroupReminders) {
         #if PERMISSION_REMINDERS
         entityType = EKEntityTypeReminder;
         #else
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
         #endif
     } else {
-        completionHandler(PermissionStatusUnknown);
+        completionHandler(PermissionStatusNotDetermined);
         return;
     }
     
@@ -75,7 +71,7 @@
     
     switch (status) {
         case EKAuthorizationStatusNotDetermined:
-            return PermissionStatusUnknown;
+            return PermissionStatusNotDetermined;
         case EKAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case EKAuthorizationStatusDenied:
@@ -84,7 +80,7 @@
             return PermissionStatusGranted;
     }
     
-    return PermissionStatusUnknown;
+    return PermissionStatusNotDetermined;
 }
 
 @end

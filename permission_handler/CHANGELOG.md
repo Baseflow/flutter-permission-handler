@@ -1,3 +1,16 @@
+## 5.0.0+hotfix.1
+
+* Make sure all enums from `permission_handler_platform_interface: 2.0.0` are exposed through the `permission_handler`.
+
+## 5.0.0
+
+* **BREAKING**: Implemented more intuitive API exposed by `permission_handler_platform_interface: 2.0.0` ([#230](https://github.com/Baseflow/flutter-permission-handler/issues/230)).
+
+## 4.4.0+hotfix.2
+
+* Issue #235: Solved a bug which made it impossible to request service status on Android 7;
+* Issue #237: Solved a bug which crashes the application when cancelling the "Ignore battery optimizations" request for permissions.
+
 ## 4.4.0+hotfix.1
 
 * Issue #233: Solved a bug that prevented Android applications running in the background to check the permission status.

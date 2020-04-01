@@ -35,7 +35,7 @@
     PermissionStatus status = [self checkPermissionStatus:permission];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
         // don't do anything and continue requesting permissions
-    } else if (status != PermissionStatusUnknown) {
+    } else if (status != PermissionStatusNotDetermined) {
         completionHandler(status);
     }
     
@@ -105,7 +105,7 @@
         if (permission == PermissionGroupLocationAlways) {
             switch (authorizationStatus) {
                 case kCLAuthorizationStatusNotDetermined:
-                    return PermissionStatusUnknown;
+                    return PermissionStatusNotDetermined;
                 case kCLAuthorizationStatusRestricted:
                     return PermissionStatusRestricted;
                 case kCLAuthorizationStatusDenied:
@@ -118,7 +118,7 @@
         
         switch (authorizationStatus) {
             case kCLAuthorizationStatusNotDetermined:
-                return PermissionStatusUnknown;
+                return PermissionStatusNotDetermined;
             case kCLAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case kCLAuthorizationStatusDenied:
@@ -134,7 +134,7 @@
 
     switch (authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
-            return PermissionStatusUnknown;
+            return PermissionStatusNotDetermined;
         case kCLAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case kCLAuthorizationStatusDenied:
@@ -142,7 +142,7 @@
         case kCLAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
         default:
-            return PermissionStatusUnknown;
+            return PermissionStatusNotDetermined;
     }
 
 #pragma clang diagnostic pop

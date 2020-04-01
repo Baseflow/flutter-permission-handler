@@ -62,7 +62,7 @@ final class PermissionConstants {
     static final int PERMISSION_STATUS_DENIED = 0;
     static final int PERMISSION_STATUS_GRANTED = 1;
     static final int PERMISSION_STATUS_RESTRICTED = 2;
-    static final int PERMISSION_STATUS_UNKNOWN = 3;
+    static final int PERMISSION_STATUS_NOT_DETERMINED = 3;
     static final int PERMISSION_STATUS_NEWER_ASK_AGAIN = 4;
 
     @Retention(RetentionPolicy.SOURCE)
@@ -70,7 +70,7 @@ final class PermissionConstants {
             PERMISSION_STATUS_DENIED,
             PERMISSION_STATUS_GRANTED,
             PERMISSION_STATUS_RESTRICTED,
-            PERMISSION_STATUS_UNKNOWN,
+            PERMISSION_STATUS_NOT_DETERMINED,
             PERMISSION_STATUS_NEWER_ASK_AGAIN,
     })
     @interface PermissionStatus {
@@ -80,14 +80,12 @@ final class PermissionConstants {
     static final int SERVICE_STATUS_DISABLED = 0;
     static final int SERVICE_STATUS_ENABLED = 1;
     static final int SERVICE_STATUS_NOT_APPLICABLE = 2;
-    static final int SERVICE_STATUS_UNKNOWN = 3;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             SERVICE_STATUS_DISABLED,
             SERVICE_STATUS_ENABLED,
-            SERVICE_STATUS_NOT_APPLICABLE,
-            SERVICE_STATUS_UNKNOWN,
+            SERVICE_STATUS_NOT_APPLICABLE
     })
     @interface ServiceStatus {
     }
