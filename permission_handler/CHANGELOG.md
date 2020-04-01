@@ -1,6 +1,10 @@
-## 4.4.0+hotfix.3
+## 4.4.0+hotfix.4
 
 * Android: solved issue where `permission_handler` is used in a service (see [#251](https://github.com/Baseflow/flutter-permission-handler/issues/251))
+
+## 4.4.0+hotfix.3
+
+IGNORE THIS VERSION, it was released by accident and contains the same code as 4.4.0+hotfix.2
 
 ## 4.4.0+hotfix.2
 
