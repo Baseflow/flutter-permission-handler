@@ -98,6 +98,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
             new PermissionManager(),
             new ServiceManager()
         );
+
+        methodChannel.setMethodCallHandler(methodCallHandler);
     }
 
     private void stopListening() {
