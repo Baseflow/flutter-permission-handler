@@ -1,6 +1,10 @@
-## 5.0.0+hotfix.2
+## 5.0.0+hotfix.3
 
 * Includes the changes of 4.4.0+hotfix.4 (which was released to be backwardscompatible).
+
+## 5.0.0+hotfix.2
+
+* Removed some residual usages of the `PermissionStatusUnknown` constants in #ifdef statements that were not found by the compiler.
 
 ## 5.0.0+hotfix.1
 
