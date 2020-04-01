@@ -5,6 +5,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import androidx.annotation.Nullable;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -16,38 +17,45 @@ import java.util.List;
 
 final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     private final Context applicationContext;
-    private final Activity activity;
     private final AppSettingsManager appSettingsManager;
     private final PermissionManager permissionManager;
     private final ServiceManager serviceManager;
-    private final ActivityRegistry activityRegistry;
-    private final PermissionRegistry permissionRegistry;
-    private final MethodChannel methodChannel;
 
     MethodCallHandlerImpl(
             Context applicationContext,
-            Activity activity,
-            BinaryMessenger messenger,
             AppSettingsManager appSettingsManager,
             PermissionManager permissionManager,
-            ServiceManager serviceManager,
-            ActivityRegistry activityRegistry,
-            PermissionRegistry permissionRegistry) {
+            ServiceManager serviceManager) {
         this.applicationContext = applicationContext;
-        this.activity = activity;
         this.appSettingsManager = appSettingsManager;
         this.permissionManager = permissionManager;
         this.serviceManager = serviceManager;
-        this.activityRegistry = activityRegistry;
-        this.permissionRegistry = permissionRegistry;
-
-        methodChannel = new MethodChannel(
-                messenger,
-                "flutter.baseflow.com/permissions/methods");
-        methodChannel.setMethodCallHandler(this);
     }
 
-    @Override
+    @Nullable
+    private Activity activity;
+
+    @Nullable
+    private ActivityRegistry activityRegistry;
+
+    @Nullable
+    private PermissionRegistry permissionRegistry;
+
+    public void setActivity(@Nullable Activity activity) {
+      this.activity = activity;
+    }
+
+    public void setActivityRegistry(
+        @Nullable ActivityRegistry activityRegistry) {
+      this.activityRegistry = activityRegistry;
+    }
+
+    public void setPermissionRegistry(
+        @Nullable PermissionRegistry permissionRegistry) {
+      this.permissionRegistry = permissionRegistry;
+    }
+
+  @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull final Result result)
     {
         switch (call.method) {
@@ -101,9 +109,5 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 result.notImplemented();
                 break;
         }
-    }
-
-    void stopListening() {
-        methodChannel.setMethodCallHandler(null);
     }
 }
