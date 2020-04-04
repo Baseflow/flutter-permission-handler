@@ -108,7 +108,12 @@ You can remove permissions you don't use:
      end
    end
    ```
-2. Delete the corresponding permission description in `Info.plist`
+2. Remove the `#` character in front of the permission you do not want to use. For example if you don't need access to the calendar make sure the code looks like this:
+   ```ruby
+           ## dart: PermissionGroup.calendar
+           'PERMISSION_EVENTS=0',
+   ```
+3. Delete the corresponding permission description in `Info.plist`
    e.g. when you don't need camera permission, just delete 'NSCameraUsageDescription'
    The following lists the relationship between `Permission` and `The key of Info.plist`:
    | Permission                                                                                  | Info.plist                                                                                                    | Macro                        |
@@ -124,7 +129,7 @@ You can remove permissions you don't use:
    | PermissionGroup.notification                                                                | PermissionGroupNotification                                                                                   | PERMISSION_NOTIFICATIONS     |
    | PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMediaLibrary                                                         | PERMISSION_MEDIA_LIBRARY     |
    | PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                      | PERMISSION_SENSORS           |
-3. Clean & Rebuild
+4. Clean & Rebuild
 
 </details>
 
