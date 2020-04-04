@@ -9,30 +9,33 @@ On Android, you can show a rationale for requesting a permission.
 
 ## Setup
 
-While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use.  
-That requires adding permission configuration to Android- and iOS-specific files.
+While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use. That requires adding permission configuration to Android- and iOS-specific files.
 
 <details>
 <summary>Android</summary>
+  
+**Upgrade pre 1.12 Android projects**
+  
+Since version 4.4.0 this plugin is implemented using the Flutter 1.12 Android plugin APIs. Unfortunately this means App developers also need to migrate their Apps to support the new Android infrastructure. You can do so by following the [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects) migration guide. Failing to do so might result in unexpected behaviour. Most common known error is the permission_handler not returning after calling the `.request()` method on a permission. 
 
-> The current version of the plugin requires AndroidX.
->
-> As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
->
-> The TL;DR version is:
-> 1. Add the following to your "gradle.properties" file:
-> ```
-> android.useAndroidX=true
-> android.enableJetifier=true
-> ```
-> 2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 28:
-> ```
-> android {
-  >   compileSdkVersion 28
->   ...
-> }
-> ```
-> 3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
+**AndroidX**
+
+As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
+
+The TL;DR version is:
+1. Add the following to your "gradle.properties" file:
+```
+android.useAndroidX=true
+android.enableJetifier=true
+```
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 28:
+```
+android {
+  compileSdkVersion 28
+  ...
+}
+```
+3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
 
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
