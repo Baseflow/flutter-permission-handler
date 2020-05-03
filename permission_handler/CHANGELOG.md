@@ -1,3 +1,7 @@
+## 5.0.0+hotfix.4
+
+* Solve issue on Android causing an IllegalStateException ([#267](https://github.com/Baseflow/flutter-permission-handler/issues/267))
+
 ## 5.0.0+hotfix.3
 
 * Includes the changes of 4.4.0+hotfix.4 (which was released to be backwardscompatible).
