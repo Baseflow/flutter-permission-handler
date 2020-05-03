@@ -68,8 +68,7 @@
     UIUserNotificationSettings * setting = [[UIApplication sharedApplication] currentUserNotificationSettings];
     if (setting.types == UIUserNotificationTypeNone) permissionStatus = PermissionStatusDenied;
   } else {
-    UIRemoteNotificationType type = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-    if (type == UIUserNotificationTypeNone) permissionStatus = PermissionStatusDenied;
+      permissionStatus = PermissionStatusDenied;
   }
   return permissionStatus;
 }
