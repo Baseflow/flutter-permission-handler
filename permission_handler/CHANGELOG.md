@@ -1,6 +1,10 @@
+## 5.0.0+hotfix.5
+
+* Remove use of the deprecated pre iOS 8 API causing users compile issues (see issue [#277](https://github.com/Baseflow/flutter-permission-handler/issues/277)).
+
 ## 5.0.0+hotfix.4
 
-* Solve issue on Android causing an IllegalStateException ([#267](https://github.com/Baseflow/flutter-permission-handler/issues/267))
+* Solve issue on Android causing an IllegalStateException ([#267](https://github.com/Baseflow/flutter-permission-handler/issues/267)).
 
 ## 5.0.0+hotfix.3
 
