@@ -50,7 +50,7 @@
     <key>NSLocationUsageDescription</key>
     <string>Older devices need location.</string>
     <key>NSLocationAlwaysUsageDescription</key>
-    <string>Can I haz location always?</string>
+    <string>Can I have location always?</string>
 
     <!-- Permission options for the `mediaLibrary` group -->
     <key>NSAppleMusicUsageDescription</key>
