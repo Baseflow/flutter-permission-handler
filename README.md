@@ -195,7 +195,7 @@ bool isShown = await Permission.contacts.shouldShowRequestRationale;
 
 ## Issues
 
-Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com]((mailto:hello@baseflow.com)).
+Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).
 
 ## Want to contribute
 
