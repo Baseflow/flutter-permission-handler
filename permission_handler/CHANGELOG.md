@@ -1,3 +1,7 @@
+## 5.0.0+hotfix.6
+
+* Solved an issue on iOS where requesting notification permissions always resulted in a "granted" result (see pull-request [#289](https://github.com/Baseflow/flutter-permission-handler/pull/289))
+
 ## 5.0.0+hotfix.5
 
 * Remove use of the deprecated pre iOS 8 API causing users compile issues (see issue [#277](https://github.com/Baseflow/flutter-permission-handler/issues/277)).
