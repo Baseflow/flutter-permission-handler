@@ -37,7 +37,11 @@
           completionHandler(PermissionStatusDenied);
           return;
         }
+
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+        completionHandler(PermissionStatusGranted);
       }];
+
     } else {
       UIUserNotificationType notificationTypes = 0;
       notificationTypes |= UIUserNotificationTypeSound;
@@ -45,9 +49,10 @@
       notificationTypes |= UIUserNotificationTypeBadge;
       UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
       [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+
+      [[UIApplication sharedApplication] registerForRemoteNotifications];
+      completionHandler(PermissionStatusGranted);
     }
-    [[UIApplication sharedApplication] registerForRemoteNotifications];
-    completionHandler(PermissionStatusGranted);
   });
 }
 
@@ -68,8 +73,7 @@
     UIUserNotificationSettings * setting = [[UIApplication sharedApplication] currentUserNotificationSettings];
     if (setting.types == UIUserNotificationTypeNone) permissionStatus = PermissionStatusDenied;
   } else {
-    UIRemoteNotificationType type = [[UIApplication sharedApplication] enabledRemoteNotificationTypes];
-    if (type == UIUserNotificationTypeNone) permissionStatus = PermissionStatusDenied;
+      permissionStatus = PermissionStatusDenied;
   }
   return permissionStatus;
 }

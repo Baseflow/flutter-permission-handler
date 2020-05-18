@@ -40,7 +40,7 @@ android {
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
 In general, it's sufficient to add permission only to the `main` version.
-[Here]((https://github.com/Baseflow/flutter-permission-handler/blob/develop/example/android/app/src/main/AndroidManifest.xml))'s an example `AndroidManifest.xml` with a complete list of all possible permissions.
+[Here](https://github.com/Baseflow/flutter-permission-handler/blob/develop/example/android/app/src/main/AndroidManifest.xml)'s an example `AndroidManifest.xml` with a complete list of all possible permissions.
 
 </details>
 
@@ -195,7 +195,7 @@ bool isShown = await Permission.contacts.shouldShowRequestRationale;
 
 ## Issues
 
-Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page.
+Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).
 
 ## Want to contribute
 

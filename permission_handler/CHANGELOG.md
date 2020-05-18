@@ -1,3 +1,23 @@
+## 5.0.0+hotfix.6
+
+* Solved an issue on iOS where requesting notification permissions always resulted in a "granted" result (see pull-request [#289](https://github.com/Baseflow/flutter-permission-handler/pull/289))
+
+## 5.0.0+hotfix.5
+
+* Remove use of the deprecated pre iOS 8 API causing users compile issues (see issue [#277](https://github.com/Baseflow/flutter-permission-handler/issues/277)).
+
+## 5.0.0+hotfix.4
+
+* Solve issue on Android causing an IllegalStateException ([#267](https://github.com/Baseflow/flutter-permission-handler/issues/267)).
+
+## 5.0.0+hotfix.3
+
+* Includes the changes of 4.4.0+hotfix.4 (which was released to be backwardscompatible).
+
+## 5.0.0+hotfix.2
+
+* Removed some residual usages of the `PermissionStatusUnknown` constants in #ifdef statements that were not found by the compiler.
+
 ## 5.0.0+hotfix.1
 
 * Make sure all enums from `permission_handler_platform_interface: 2.0.0` are exposed through the `permission_handler`.
@@ -5,6 +25,14 @@
 ## 5.0.0
 
 * **BREAKING**: Implemented more intuitive API exposed by `permission_handler_platform_interface: 2.0.0` ([#230](https://github.com/Baseflow/flutter-permission-handler/issues/230)).
+
+## 4.4.0+hotfix.4
+
+* Android: solved issue where `permission_handler` is used in a service (see [#251](https://github.com/Baseflow/flutter-permission-handler/issues/251))
+
+## 4.4.0+hotfix.3
+
+IGNORE THIS VERSION, it was released by accident and contains the same code as 4.4.0+hotfix.2
 
 ## 4.4.0+hotfix.2
 

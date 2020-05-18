@@ -36,11 +36,12 @@ final class ServiceManager {
         if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION ||
             permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS ||
             permission == PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
-                final int serviceStatus = isLocationServiceEnabled(context)
-                        ? PermissionConstants.SERVICE_STATUS_ENABLED
-                        : PermissionConstants.SERVICE_STATUS_DISABLED;
+            final int serviceStatus = isLocationServiceEnabled(context)
+                    ? PermissionConstants.SERVICE_STATUS_ENABLED
+                    : PermissionConstants.SERVICE_STATUS_DISABLED;
 
-                successCallback.onSuccess(serviceStatus);
+            successCallback.onSuccess(serviceStatus);
+            return;
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {
