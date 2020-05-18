@@ -40,7 +40,7 @@ android {
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
 In general, it's sufficient to add permission only to the `main` version.
-[Here]((https://github.com/Baseflow/flutter-permission-handler/blob/develop/example/android/app/src/main/AndroidManifest.xml))'s an example `AndroidManifest.xml` with a complete list of all possible permissions.
+[Here](https://github.com/Baseflow/flutter-permission-handler/blob/develop/example/android/app/src/main/AndroidManifest.xml)'s an example `AndroidManifest.xml` with a complete list of all possible permissions.
 
 </details>
 
