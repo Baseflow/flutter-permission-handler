@@ -1,3 +1,7 @@
+## 5.0.0+hotfix.7
+
+* Solved an issue on iOS where requesting notifcation permissions returned prematurely (see pull-request [#297](https://github.com/Baseflow/flutter-permission-handler/pull/297))
+
 ## 5.0.0+hotfix.6
 
 * Solved an issue on iOS where requesting notification permissions always resulted in a "granted" result (see pull-request [#289](https://github.com/Baseflow/flutter-permission-handler/pull/289))
