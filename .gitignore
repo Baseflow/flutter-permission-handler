@@ -10,6 +10,8 @@
 .history
 .project
 .svn/
+.settings/
+.classpath
 bin/
 
 # IntelliJ related
