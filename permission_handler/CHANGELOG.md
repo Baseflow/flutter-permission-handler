@@ -1,6 +1,10 @@
-## 5.0.0+hotfix.7
+## 5.0.0+hotfix.8
 
 * Solved an issue on iOS where requesting notifcation permissions returned prematurely (see pull-request [#297](https://github.com/Baseflow/flutter-permission-handler/pull/297))
+
+## 5.0.0+hotfix.7
+
+* ** Mistake release please don't use this version **
 
 ## 5.0.0+hotfix.6
 
