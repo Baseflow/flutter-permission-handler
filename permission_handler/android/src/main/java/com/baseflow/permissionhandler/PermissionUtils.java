@@ -61,6 +61,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_ACCESS_MEDIA_LOCATION;
             case Manifest.permission.ACTIVITY_RECOGNITION:
                 return PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION;
+            case Manifest.permission.SYSTEM_ALERT_WINDOW:
+                return PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -95,7 +97,8 @@ public class PermissionUtils {
 
             case PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_BACKGROUND_LOCATION))
+                    if (hasPermissionInManifest(context, permissionNames,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION))
                         permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                 }
 
@@ -107,7 +110,6 @@ public class PermissionUtils {
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_FINE_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 break;
-
 
             case PermissionConstants.PERMISSION_GROUP_SPEECH:
             case PermissionConstants.PERMISSION_GROUP_MICROPHONE:
@@ -134,10 +136,12 @@ public class PermissionUtils {
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.USE_SIP))
                     permissionNames.add(Manifest.permission.USE_SIP);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames,
+                        Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
                     permissionNames.add(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && hasPermissionInManifest(context, permissionNames, Manifest.permission.ANSWER_PHONE_CALLS))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                        && hasPermissionInManifest(context, permissionNames, Manifest.permission.ANSWER_PHONE_CALLS))
                     permissionNames.add(Manifest.permission.ANSWER_PHONE_CALLS);
 
                 break;
@@ -176,18 +180,27 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames,
+                        Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS))
                     permissionNames.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_ACCESS_MEDIA_LOCATION:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                        && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACTIVITY_RECOGNITION))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                        && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACTIVITY_RECOGNITION))
                     permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
+                break;
+
+            case PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        && hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW))
+                    permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
@@ -201,7 +214,8 @@ public class PermissionUtils {
         return permissionNames;
     }
 
-    private static boolean hasPermissionInManifest(Context context, ArrayList<String> confirmedPermissions, String permission) {
+    private static boolean hasPermissionInManifest(Context context, ArrayList<String> confirmedPermissions,
+            String permission) {
         try {
             if (confirmedPermissions != null) {
                 for (String r : confirmedPermissions) {
@@ -216,12 +230,12 @@ public class PermissionUtils {
                 return false;
             }
 
-            PackageInfo info = context
-                    .getPackageManager()
-                    .getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+            PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),
+                    PackageManager.GET_PERMISSIONS);
 
             if (info == null) {
-                Log.d(PermissionConstants.LOG_TAG, "Unable to get Package info, will not be able to determine permissions to request.");
+                Log.d(PermissionConstants.LOG_TAG,
+                        "Unable to get Package info, will not be able to determine permissions to request.");
                 return false;
             }
 
@@ -240,15 +254,17 @@ public class PermissionUtils {
     @PermissionConstants.PermissionStatus
     static int toPermissionStatus(final Activity activity, final String permissionName, int grantResult) {
         if (grantResult == PackageManager.PERMISSION_DENIED) {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && PermissionUtils.isNeverAskAgainSelected(activity, permissionName)
-                    ? PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && PermissionUtils.isNeverAskAgainSelected(activity, permissionName)
+                            ? PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN
+                            : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
-    static void updatePermissionShouldShowStatus(final Activity activity, @PermissionConstants.PermissionGroup int permission) {
+    static void updatePermissionShouldShowStatus(final Activity activity,
+            @PermissionConstants.PermissionGroup int permission) {
         if (activity == null) {
             return;
         }
@@ -273,22 +289,23 @@ public class PermissionUtils {
         return PermissionUtils.neverAskAgainSelected(activity, name);
     }
 
-  @RequiresApi(api = Build.VERSION_CODES.M)
-  static boolean neverAskAgainSelected(final Activity activity, final String permission) {
-    final boolean hasRequestedPermissionBefore = getRequestedPermissionBefore(activity, permission);
-    final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
-    return hasRequestedPermissionBefore && !shouldShowRequestPermissionRationale;
-  }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    static boolean neverAskAgainSelected(final Activity activity, final String permission) {
+        final boolean hasRequestedPermissionBefore = getRequestedPermissionBefore(activity, permission);
+        final boolean shouldShowRequestPermissionRationale = ActivityCompat
+                .shouldShowRequestPermissionRationale(activity, permission);
+        return hasRequestedPermissionBefore && !shouldShowRequestPermissionRationale;
+    }
 
-  static void setRequestedPermission(final Context context, final String permission) {
-    SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
-    SharedPreferences.Editor editor = genPrefs.edit();
-    editor.putBoolean(permission, true);
-    editor.apply();
-  }
+    static void setRequestedPermission(final Context context, final String permission) {
+        SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = genPrefs.edit();
+        editor.putBoolean(permission, true);
+        editor.apply();
+    }
 
-  static boolean getRequestedPermissionBefore(final Context context, final String permission) {
-    SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
-    return genPrefs.getBoolean(permission, false);
-  }
+    static boolean getRequestedPermissionBefore(final Context context, final String permission) {
+        SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
+        return genPrefs.getBoolean(permission, false);
+    }
 }
