@@ -31,7 +31,7 @@ final class PermissionConstants {
         static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 17;
         static final int PERMISSION_GROUP_ACTIVITY_RECOGNITION = 18;
         static final int PERMISSION_GROUP_UNKNOWN = 19;
-        static final int PERMISSION_GROUP_DRAW_OVER_OTHER_APPS = 20;
+        static final int PERMISSION_GROUP_SYSTEM_ALERT_WINDOW = 20;
 
         @Retention(RetentionPolicy.SOURCE)
         @IntDef({ PERMISSION_GROUP_CALENDAR, PERMISSION_GROUP_CAMERA, PERMISSION_GROUP_CONTACTS,
@@ -42,7 +42,7 @@ final class PermissionConstants {
                         PERMISSION_GROUP_SPEECH, PERMISSION_GROUP_STORAGE,
                         PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, PERMISSION_GROUP_NOTIFICATION,
                         PERMISSION_GROUP_ACCESS_MEDIA_LOCATION, PERMISSION_GROUP_ACTIVITY_RECOGNITION,
-                        PERMISSION_GROUP_UNKNOWN, PERMISSION_GROUP_DRAW_OVER_OTHER_APPS, })
+                        PERMISSION_GROUP_UNKNOWN, PERMISSION_GROUP_SYSTEM_ALERT_WINDOW, })
         @interface PermissionGroup {
         }
 

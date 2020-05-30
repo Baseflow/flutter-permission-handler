@@ -60,7 +60,7 @@
     <!-- Permissions options for the `ignoreBatteryOptimizations` group -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
 
-    <!-- Permissions options for the `drawOverOtherApps` group -->
+    <!-- Permissions options for the `systemAlertWindow` group -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application

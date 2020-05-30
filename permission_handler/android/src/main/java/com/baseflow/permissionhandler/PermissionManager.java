@@ -114,14 +114,14 @@ final class PermissionManager {
                 activity.startActivityForResult(intent,
                         PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                    && permission == PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS) {
+                    && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                 activityRegistry.addListener(new ActivityResultListener(activity, successCallback));
 
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
                 intent.setData(Uri.parse("package:" + packageName));
-                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS);
+                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -190,7 +190,7 @@ final class PermissionManager {
                         return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
                     }
                 }
-                if (permission == PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS) {
+                if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (Settings.canDrawOverlays(context)) {
                             return PermissionConstants.PERMISSION_STATUS_GRANTED;
@@ -267,7 +267,7 @@ final class PermissionManager {
         // we've responded before and bail out of handling the callback manually if this
         // is a repeat
         // call.
-        boolean alreadyBatteryOptimizationCallbackCalled = false, alreadyDrawOverCallbackCalled = false;
+        boolean alreadyBatteryOptimizationCallbackCalled = false, alreadySystemAlertWindowCallbackCalled = false;
 
         final RequestPermissionsSuccessCallback callback;
         final Context context;
@@ -291,16 +291,16 @@ final class PermissionManager {
                 results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
                 callback.onSuccess(results);
                 return true;
-            } else if (requestCode == PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS
+            } else if (requestCode == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW
                     && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (alreadyDrawOverCallbackCalled)
+                if (alreadySystemAlertWindowCallbackCalled)
                     return false;
-                alreadyDrawOverCallbackCalled = true;
+                alreadySystemAlertWindowCallbackCalled = true;
                 final int status = Settings.canDrawOverlays(context) ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
 
                 HashMap<Integer, Integer> results = new HashMap<>();
-                results.put(PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS, status);
+                results.put(PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW, status);
                 callback.onSuccess(results);
                 return true;
             }

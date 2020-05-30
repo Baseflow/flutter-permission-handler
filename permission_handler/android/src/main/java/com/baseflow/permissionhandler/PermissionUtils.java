@@ -62,7 +62,7 @@ public class PermissionUtils {
             case Manifest.permission.ACTIVITY_RECOGNITION:
                 return PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION;
             case Manifest.permission.SYSTEM_ALERT_WINDOW:
-                return PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS;
+                return PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -197,7 +197,7 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
                 break;
 
-            case PermissionConstants.PERMISSION_GROUP_DRAW_OVER_OTHER_APPS:
+            case PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                         && hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW))
                     permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);

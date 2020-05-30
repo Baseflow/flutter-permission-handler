@@ -97,9 +97,10 @@ class Permission {
   /// The unknown only used for return type, never requested
   static const unknown = Permission._(19);
 
-  /// Android: Draw Over Other Apps (Works only above Android M)
+  /// Android: System Alert Window Or Draw Over Other Apps
+  /// (Works only above Android M)
   /// iOS: Nothing
-  static const drawOverOtherApps = Permission._(20);
+  static const systemAlertWindow = Permission._(20);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
@@ -123,7 +124,7 @@ class Permission {
     accessMediaLocation,
     activityRecognition,
     unknown,
-    drawOverOtherApps,
+    systemAlertWindow,
   ];
 
   static const List<String> _names = <String>[
@@ -147,7 +148,7 @@ class Permission {
     'access_media_location',
     'activity_recognition',
     'unknown',
-    'drawOverOtherApps',
+    'systemAlertWindow',
   ];
 
   @override

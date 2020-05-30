@@ -6,6 +6,7 @@
 *.swp
 .DS_Store
 .atom/
+.editorconfig
 .buildlog/
 .history
 .project
