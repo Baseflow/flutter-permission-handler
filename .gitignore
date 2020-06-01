@@ -6,13 +6,10 @@
 *.swp
 .DS_Store
 .atom/
-.editorconfig
 .buildlog/
 .history
 .project
 .svn/
-.settings/
-.classpath
 bin/
 
 # IntelliJ related
