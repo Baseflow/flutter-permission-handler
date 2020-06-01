@@ -1,2 +1,3 @@
-connection.project.dir=../example/android
+.settings/=
+connection.project.dir=../example/android/app
 eclipse.preferences.version=1
