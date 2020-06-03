@@ -215,7 +215,7 @@ public class PermissionUtils {
     }
 
     private static boolean hasPermissionInManifest(Context context, ArrayList<String> confirmedPermissions,
-            String permission) {
+                                                   String permission) {
         try {
             if (confirmedPermissions != null) {
                 for (String r : confirmedPermissions) {
@@ -256,15 +256,15 @@ public class PermissionUtils {
         if (grantResult == PackageManager.PERMISSION_DENIED) {
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     && PermissionUtils.isNeverAskAgainSelected(activity, permissionName)
-                            ? PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN
-                            : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    ? PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN
+                    : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
     static void updatePermissionShouldShowStatus(final Activity activity,
-            @PermissionConstants.PermissionGroup int permission) {
+                                                 @PermissionConstants.PermissionGroup int permission) {
         if (activity == null) {
             return;
         }
