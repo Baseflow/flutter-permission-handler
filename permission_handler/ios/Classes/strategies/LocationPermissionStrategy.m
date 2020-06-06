@@ -102,20 +102,6 @@
 
 + (PermissionStatus)determinePermissionStatus:(PermissionGroup)permission authorizationStatus:(CLAuthorizationStatus)authorizationStatus {
     if (@available(iOS 8.0, *)) {
-        if (permission == PermissionGroupLocationAlways) {
-            switch (authorizationStatus) {
-                case kCLAuthorizationStatusNotDetermined:
-                    return PermissionStatusNotDetermined;
-                case kCLAuthorizationStatusRestricted:
-                    return PermissionStatusRestricted;
-                case kCLAuthorizationStatusDenied:
-                case kCLAuthorizationStatusAuthorizedWhenInUse:
-                    return PermissionStatusDenied;
-                case kCLAuthorizationStatusAuthorizedAlways:
-                    return PermissionStatusGranted;
-            }
-        }
-        
         switch (authorizationStatus) {
             case kCLAuthorizationStatusNotDetermined:
                 return PermissionStatusNotDetermined;
@@ -123,8 +109,8 @@
                 return PermissionStatusRestricted;
             case kCLAuthorizationStatusDenied:
                 return PermissionStatusDenied;
-            case kCLAuthorizationStatusAuthorizedAlways:
             case kCLAuthorizationStatusAuthorizedWhenInUse:
+            case kCLAuthorizationStatusAuthorizedAlways:
                 return PermissionStatusGranted;
         }
     }
