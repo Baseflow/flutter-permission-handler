@@ -7,6 +7,7 @@ export 'package:permission_handler_platform_interface/permission_handler_platfor
         Permission,
         PermissionStatus,
         PermissionStatusGetters,
+        PermissionWithService,
         FuturePermissionStatusGetters,
         ServiceStatus,
         ServiceStatusGetters,
