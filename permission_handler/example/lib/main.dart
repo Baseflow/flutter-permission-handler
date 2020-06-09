@@ -71,7 +71,7 @@ class _PermissionState extends State<PermissionWidget> {
   void initState() {
     super.initState();
 
-    //_listenForPermissionStatus();
+    _listenForPermissionStatus();
   }
 
   void _listenForPermissionStatus() async {
