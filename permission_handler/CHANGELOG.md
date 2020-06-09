@@ -1,3 +1,7 @@
+# 5.0.1
+
+* Update `permission_handler_platform_interface 2.0.1`
+
 # 5.0.0+hotfix.10
 
 * Revert pull-request [#317](https://github.com/Baseflow/flutter-permission-handler/pull/317)
