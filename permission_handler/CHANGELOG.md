@@ -1,3 +1,23 @@
+# 5.0.1
+
+* Update `permission_handler_platform_interface 2.0.1`
+
+# 5.0.0+hotfix.10
+
+* Revert pull-request [#317](https://github.com/Baseflow/flutter-permission-handler/pull/317)
+
+# 5.0.0+hotfix.9
+
+* Solved an issue where kCLAuthorizationStatusAuthorizedWhenInUse was returning PermissionStatusDenied (see [#317](https://github.com/Baseflow/flutter-permission-handler/pull/317))
+
+## 5.0.0+hotfix.8
+
+* Solved an issue on iOS where requesting notifcation permissions returned prematurely (see pull-request [#297](https://github.com/Baseflow/flutter-permission-handler/pull/297))
+
+## 5.0.0+hotfix.7
+
+* ** Mistake release please don't use this version **
+
 ## 5.0.0+hotfix.6
 
 * Solved an issue on iOS where requesting notification permissions always resulted in a "granted" result (see pull-request [#289](https://github.com/Baseflow/flutter-permission-handler/pull/289))

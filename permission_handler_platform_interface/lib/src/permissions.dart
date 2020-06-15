@@ -51,7 +51,7 @@ class Permission {
 
   /// Android: Phone
   /// iOS: Nothing
-  static const phone = Permission._(8);
+  static const phone = PermissionWithService._(8);
 
   /// Android: Nothing
   /// iOS: Photos
