@@ -200,7 +200,7 @@ final class PermissionManager {
                         return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                             PermissionUtils.isNeverAskAgainSelected(activity, name)) {
-                        return PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN;
+                        return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
                     } else {
                         return PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
