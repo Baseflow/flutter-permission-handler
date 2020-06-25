@@ -1,4 +1,4 @@
-# next
+# 5.0.1+1
 
 * Fixes Typo
 * Issue #233 - on 5.0: Solved a bug that prevented Android applications running in the background to check the permission status.
