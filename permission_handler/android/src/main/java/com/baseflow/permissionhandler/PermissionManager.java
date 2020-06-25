@@ -10,6 +10,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -57,14 +58,6 @@ final class PermissionManager {
             CheckPermissionsSuccessCallback successCallback,
             ErrorCallback errorCallback) {
 
-        if(activity == null) {
-            Log.d(PermissionConstants.LOG_TAG, "Activity cannot be null.");
-            errorCallback.onError(
-                    "PermissionHandler.PermissionManager",
-                    "Android activity is required to check for permissions and cannot be null.");
-            return;
-        }
-
         successCallback.onSuccess(determinePermissionStatus(
                 permission,
                 context,
@@ -78,7 +71,7 @@ final class PermissionManager {
             PermissionRegistry permissionRegistry,
             RequestPermissionsSuccessCallback successCallback,
             ErrorCallback errorCallback) {
-        if(ongoing) {
+        if (ongoing) {
             errorCallback.onError(
                     "PermissionHandler.PermissionManager",
                     "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).");
@@ -162,7 +155,7 @@ final class PermissionManager {
     private int determinePermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
             Context context,
-            Activity activity) {
+            @Nullable Activity activity) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
@@ -203,12 +196,11 @@ final class PermissionManager {
                 }
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus == PackageManager.PERMISSION_DENIED) {
-                    if (!PermissionUtils.getRequestedPermissionBefore(context, name))
-                    {
+                    if (!PermissionUtils.getRequestedPermissionBefore(context, name)) {
                         return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
                     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                             PermissionUtils.isNeverAskAgainSelected(activity, name)) {
-                        return PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN;
+                        return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
                     } else {
                         return PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
