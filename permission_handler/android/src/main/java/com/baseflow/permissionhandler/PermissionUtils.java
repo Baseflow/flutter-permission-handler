@@ -11,7 +11,6 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -241,7 +240,7 @@ public class PermissionUtils {
     static int toPermissionStatus(final Activity activity, final String permissionName, int grantResult) {
         if (grantResult == PackageManager.PERMISSION_DENIED) {
             return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && PermissionUtils.isNeverAskAgainSelected(activity, permissionName)
-                    ? PermissionConstants.PERMISSION_STATUS_NEWER_ASK_AGAIN
+                    ? PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
