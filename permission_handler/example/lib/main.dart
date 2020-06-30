@@ -7,7 +7,9 @@ void main() {
   runApp(BaseflowPluginExample());
 }
 
+/// Baseflow plugin example theme
 class BaseflowPluginExample extends StatelessWidget {
+  /// Theme material color
   final MaterialColor themeMaterialColor =
       createMaterialColor(const Color.fromRGBO(48, 49, 60, 1));
 
@@ -54,6 +56,7 @@ class BaseflowPluginExample extends StatelessWidget {
     );
   }
 
+  /// Create theme's material color
   static MaterialColor createMaterialColor(Color color) {
     List strengths = <double>[.05];
     Map swatch = <int, Color>{};
@@ -75,9 +78,12 @@ class BaseflowPluginExample extends StatelessWidget {
   }
 }
 
+/// Main template page
 class MyHomePage extends StatefulWidget {
+  ///
   MyHomePage({Key key, this.title}) : super(key: key);
 
+  /// Title
   final String title;
 
   @override
