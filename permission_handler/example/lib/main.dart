@@ -7,7 +7,7 @@ void main() {
   runApp(BaseflowPluginExample());
 }
 
-/// Baseflow Plugin Example application
+/// A Flutter application demonstrating the functionality of this plugin
 class BaseflowPluginExample extends StatelessWidget {
   /// [MaterialColor] to be used in the app [ThemeData]
   final MaterialColor themeMaterialColor =
@@ -56,7 +56,7 @@ class BaseflowPluginExample extends StatelessWidget {
     );
   }
 
-  /// Creates [MaterialColor] based on [Color]
+  /// Creates a [MaterialColor] based on the supplied [Color]
   static MaterialColor createMaterialColor(Color color) {
     List strengths = <double>[.05];
     Map swatch = <int, Color>{};
@@ -83,7 +83,8 @@ class AppHome extends StatefulWidget {
   /// Constructs the [AppHome] class
   AppHome({Key key, this.title}) : super(key: key);
 
-  /// Application title
+  /// The [title] of the application, which is shown in the application's
+  /// title bar.
   final String title;
 
   @override

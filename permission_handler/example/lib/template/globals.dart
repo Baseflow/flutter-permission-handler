@@ -25,13 +25,13 @@ const EdgeInsets defaultHorizontalPadding =
 /// [EdgeInsets] to define vertical padding throughout the application.
 const EdgeInsets defaultVerticalPadding = EdgeInsets.symmetric(vertical: 24);
 
-/// Returns [List] with [IconData] to show in the [AppHome] [AppBar].
+/// Returns a [List] with [IconData] to show in the [AppHome] [AppBar].
 final List<IconData> icons = [
   Icons.list,
   Icons.info_outline,
 ];
 
-/// Returns [List] with [Widget]'s to construct pages in the [AppBar].
+/// Returns a [List] with [Widget]s to construct pages in the [AppBar].
 final List<Widget> pages = [
   PermissionList(),
   InfoPage(),
