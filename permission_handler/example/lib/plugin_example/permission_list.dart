@@ -13,7 +13,7 @@ class PermissionList extends StatelessWidget {
     return Center(
       child: ListView(
           children: Permission.values
-              .where((Permission permission) {
+              .where((permission) {
                 if (Platform.isIOS) {
                   return permission != Permission.unknown &&
                       permission != Permission.sms &&
