@@ -1,127 +1,156 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/widgets.dart';
 
-void main() => runApp(MyApp());
+import 'template/globals.dart';
 
-/// Example Flutter Application demonstrating the functionality of the
-/// Permission Handler plugin.
-class MyApp extends StatelessWidget {
+/// main
+void main() {
+  runApp(BaseflowPluginExample());
+}
+
+/// Baseflow Plugin Example
+class BaseflowPluginExample extends StatelessWidget {
+  /// Theme's MaterialColor
+  final MaterialColor themeMaterialColor =
+      createMaterialColor(const Color.fromRGBO(48, 49, 60, 1));
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-          actions: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () async {
-                var hasOpened = openAppSettings();
-                debugPrint('App Settings opened: ' + hasOpened.toString());
-              },
-            )
-          ],
+      title: 'Baseflow $pluginName',
+      theme: ThemeData(
+        accentColor: Colors.white60,
+        backgroundColor: const Color.fromRGBO(48, 49, 60, 0.8),
+        buttonTheme: ButtonThemeData(
+          buttonColor: themeMaterialColor.shade500,
+          disabledColor: themeMaterialColor.withRed(200),
+          splashColor: themeMaterialColor.shade50,
+          textTheme: ButtonTextTheme.primary,
         ),
-        body: Center(
-          child: ListView(
-              children: Permission.values
-                  .where((Permission permission) {
-                    if (Platform.isIOS) {
-                      return permission != Permission.unknown &&
-                          permission != Permission.sms &&
-                          //permission != Permission.storage &&
-                          permission != Permission.ignoreBatteryOptimizations &&
-                          permission != Permission.accessMediaLocation;
-                    } else {
-                      return permission != Permission.unknown &&
-                          permission != Permission.mediaLibrary &&
-                          permission != Permission.photos &&
-                          permission != Permission.reminders;
-                    }
-                  })
-                  .map((permission) => PermissionWidget(permission))
-                  .toList()),
+        bottomAppBarColor: const Color.fromRGBO(57, 58, 71, 1),
+        hintColor: themeMaterialColor.shade500,
+        primarySwatch: createMaterialColor(const Color.fromRGBO(48, 49, 60, 1)),
+        textTheme: TextTheme(
+          bodyText1: TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            height: 1.3,
+          ),
+          bodyText2: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+            height: 1.2,
+          ),
+          button: TextStyle(color: Colors.white),
+          headline1: TextStyle(
+            color: Colors.white,
+            fontSize: 18,
+          ),
+        ),
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        inputDecorationTheme: InputDecorationTheme(
+          fillColor: const Color.fromRGBO(37, 37, 37, 1),
+          filled: true,
         ),
       ),
+      home: AppHome(title: 'Baseflow $pluginName example app'),
     );
   }
-}
 
-/// Permission widget which displays a permission and allows users to request
-/// the permissions.
-class PermissionWidget extends StatefulWidget {
-  /// Constructs a [PermissionWidget] for the supplied [Permission].
-  const PermissionWidget(this._permission);
+  /// Method to create MaterialColor based on RGBO Color
+  static MaterialColor createMaterialColor(Color color) {
+    List strengths = <double>[.05];
+    Map swatch = <int, Color>{};
+    final r = color.red, g = color.green, b = color.blue;
 
-  final Permission _permission;
-
-  @override
-  _PermissionState createState() => _PermissionState(_permission);
-}
-
-class _PermissionState extends State<PermissionWidget> {
-  _PermissionState(this._permission);
-
-  final Permission _permission;
-  PermissionStatus _permissionStatus = PermissionStatus.undetermined;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _listenForPermissionStatus();
-  }
-
-  void _listenForPermissionStatus() async {
-    final status = await _permission.status;
-    setState(() => _permissionStatus = status);
-  }
-
-  Color getPermissionColor() {
-    switch (_permissionStatus) {
-      case PermissionStatus.denied:
-        return Colors.red;
-      case PermissionStatus.granted:
-        return Colors.green;
-      default:
-        return Colors.grey;
+    for (var i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
     }
+    for (var strength in strengths) {
+      final ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+        g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+        b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+        1,
+      );
+    }
+    return MaterialColor(color.value, swatch);
   }
+}
+
+/// Application main page
+class AppHome extends StatefulWidget {
+  /// Application main page constructor
+  AppHome({Key key, this.title}) : super(key: key);
+
+  /// Application title
+  final String title;
+
+  @override
+  _AppHomeState createState() => _AppHomeState();
+}
+
+/// Application main page
+class _AppHomeState extends State<AppHome> {
+  static final PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(_permission.toString()),
-      subtitle: Text(
-        _permissionStatus.toString(),
-        style: TextStyle(color: getPermissionColor()),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).bottomAppBarColor,
+        title: Center(
+          child: Image.asset(
+            'res/images/baseflow_logo_def_light-02.png',
+            width: 140,
+          ),
+        ),
       ),
-      trailing: IconButton(
-          icon: const Icon(Icons.info),
-          onPressed: () {
-            checkServiceStatus(context, _permission);
-          }),
-      onTap: () {
-        requestPermission(_permission);
-      },
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: PageView(
+        controller: _pageController,
+        children: pages,
+        onPageChanged: (page) {
+          setState(() {
+            _currentPage = page;
+          });
+        },
+      ),
+      bottomNavigationBar: _bottomAppBar(),
     );
   }
 
-  void checkServiceStatus(BuildContext context, Permission permission) async {
-    Scaffold.of(context).showSnackBar(SnackBar(
-      content: Text((await permission.status).toString()),
-    ));
+  BottomAppBar _bottomAppBar() {
+    return BottomAppBar(
+      elevation: 5,
+      color: Theme.of(context).bottomAppBarColor,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.unmodifiable(() sync* {
+          for (var i = 0; i < pages.length; i++) {
+            yield Expanded(
+              child: IconButton(
+                iconSize: 30,
+                icon: Icon(icons.elementAt(i)),
+                color: _bottomAppBarIconColor(i),
+                onPressed: () => _animateToPage(i),
+              ),
+            );
+          }
+        }()),
+      ),
+    );
   }
 
-  Future<void> requestPermission(Permission permission) async {
-    final status = await permission.request();
+  void _animateToPage(int page) {
+    _pageController.animateToPage(page,
+        duration: Duration(milliseconds: 200), curve: Curves.linear);
+  }
 
-    setState(() {
-      print(status);
-      _permissionStatus = status;
-      print(_permissionStatus);
-    });
+  Color _bottomAppBarIconColor(int page) {
+    return _currentPage == page ? Colors.white : Theme.of(context).accentColor;
   }
 }
