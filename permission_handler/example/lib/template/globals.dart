@@ -1,42 +1,37 @@
 import 'dart:core';
-import 'package:flutter/material.dart';
-import 'package:permission_handler_example/plugin_example/permission_list.dart';
 
+import 'package:flutter/material.dart';
+
+import '../plugin_example/permission_list.dart';
 import 'info_page.dart';
 
-/// Globals for example app template
-class Globals {
-  /// Plugin Name
-  static const String pluginName = 'CachedNetworkImage';
+/// Constant plugin name
+const String pluginName = 'Geocoding';
 
-  /// Github URL to plugin
-  static const String githubURL =
-      'https://github.com/Baseflow/flutter_cached_network_image/';
+/// Constant GitHub URL to flutter package
+const String githubURL = 'https://github.com/Baseflow/flutter-geocoding';
 
-  /// Baseflow URL
-  static const String baseflowURL = 'https://baseflow.com';
+/// Constant Baseflow URL
+const String baseflowURL = 'https://baseflow.com';
 
-  /// Pub.dev link to plugin
-  static const String pubDevURL =
-      'https://pub.dev/packages/cached_network_image';
+/// Constant pub.dev URL to flutter package
+const String pubDevURL = 'https://pub.dev/packages/geocoding';
 
-  /// Application wide default horizontal padding
-  static const EdgeInsets defaultHorizontalPadding =
-      EdgeInsets.symmetric(horizontal: 24);
+/// Constant application-wide horizontal padding
+const EdgeInsets defaultHorizontalPadding =
+    EdgeInsets.symmetric(horizontal: 24);
 
-  /// Application wide default horizontal padding
-  static const EdgeInsets defaultVerticalPadding =
-      EdgeInsets.symmetric(vertical: 24);
+/// Constant application-wide vertical padding
+const EdgeInsets defaultVerticalPadding = EdgeInsets.symmetric(vertical: 24);
 
-  /// List of icons for BottomAppBar
-  static final icons = [
-    Icons.list,
-    Icons.info_outline,
-  ];
+/// Constant list of AppBar Icons
+final List<IconData> icons = [
+  Icons.location_on,
+  Icons.info_outline,
+];
 
-  /// List of pages in BottomAppBar
-  static final pages = [
-    PermissionList(),
-    InfoPage(),
-  ];
-}
+/// Constant list of application widgets
+final List<Widget> pages = [
+  PermissionList(),
+  InfoPage(),
+];
