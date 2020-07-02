@@ -3,14 +3,13 @@ import 'package:flutter/widgets.dart';
 
 import 'template/globals.dart';
 
-/// main
 void main() {
   runApp(BaseflowPluginExample());
 }
 
-/// Baseflow Plugin Example
+/// Baseflow Plugin Example application
 class BaseflowPluginExample extends StatelessWidget {
-  /// Theme's MaterialColor
+  /// [MaterialColor] to be used in the app [ThemeData]
   final MaterialColor themeMaterialColor =
       createMaterialColor(const Color.fromRGBO(48, 49, 60, 1));
 
@@ -57,7 +56,7 @@ class BaseflowPluginExample extends StatelessWidget {
     );
   }
 
-  /// Method to create MaterialColor based on RGBO Color
+  /// Creates [MaterialColor] based on [Color]
   static MaterialColor createMaterialColor(Color color) {
     List strengths = <double>[.05];
     Map swatch = <int, Color>{};
@@ -79,9 +78,9 @@ class BaseflowPluginExample extends StatelessWidget {
   }
 }
 
-/// Application main page
+/// A Flutter example demonstrating how the [pluginName] plugin could be used
 class AppHome extends StatefulWidget {
-  /// Application main page constructor
+  /// Constructs the [AppHome] class
   AppHome({Key key, this.title}) : super(key: key);
 
   /// Application title
@@ -91,7 +90,6 @@ class AppHome extends StatefulWidget {
   _AppHomeState createState() => _AppHomeState();
 }
 
-/// Application main page
 class _AppHomeState extends State<AppHome> {
   static final PageController _pageController = PageController(initialPage: 0);
   int _currentPage = 0;

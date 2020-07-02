@@ -5,7 +5,8 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'permission_widget.dart';
 
-/// List with PermissionWidgets
+/// Constructs a [ListView] containing [PermissionWidget] for each available
+/// permission.
 class PermissionList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'globals.dart';
 
-/// Page containing Baseflow information
+/// [StatelessWidget] displaying information about Baseflow
 class InfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

@@ -5,32 +5,33 @@ import '../plugin_example/permission_list.dart';
 
 import 'info_page.dart';
 
-/// Constant plugin name
-const String pluginName = 'Geocoding';
+/// The name of the plugin, which will be displayed throughout the example App.
+const String pluginName = 'Permission Handler';
 
-/// Constant GitHub URL to flutter package
-const String githubURL = 'https://github.com/Baseflow/flutter-geocoding';
+/// Returns Github URL, which is shown in the [InfoPage].
+const String githubURL =
+    'https://github.com/Baseflow/flutter-permission-handler';
 
-/// Constant Baseflow URL
+/// Returns Baseflow URL, which is shown in the [InfoPage].
 const String baseflowURL = 'https://baseflow.com';
 
-/// Constant pub.dev URL to flutter package
-const String pubDevURL = 'https://pub.dev/packages/geocoding';
+/// Returns pub.dev URL, which is shown in the [InfoPage].
+const String pubDevURL = 'https://pub.dev/packages/permission_handler';
 
-/// Constant application-wide horizontal padding
+/// [EdgeInsets] to define horizontal padding throughout the application.
 const EdgeInsets defaultHorizontalPadding =
     EdgeInsets.symmetric(horizontal: 24);
 
-/// Constant application-wide vertical padding
+/// [EdgeInsets] to define vertical padding throughout the application.
 const EdgeInsets defaultVerticalPadding = EdgeInsets.symmetric(vertical: 24);
 
-/// Constant list of AppBar Icons
+/// Returns [List] with [IconData] to show in the [AppHome] [AppBar].
 final List<IconData> icons = [
   Icons.list,
   Icons.info_outline,
 ];
 
-/// Constant list of application widgets
+/// Returns [List] with [Widget]'s to construct pages in the [AppBar].
 final List<Widget> pages = [
   PermissionList(),
   InfoPage(),
