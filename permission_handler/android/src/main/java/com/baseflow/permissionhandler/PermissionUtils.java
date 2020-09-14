@@ -60,6 +60,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_ACCESS_MEDIA_LOCATION;
             case Manifest.permission.ACTIVITY_RECOGNITION:
                 return PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION;
+            case Manifest.permission.SYSTEM_ALERT_WINDOW:
+                return PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -187,6 +189,10 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACTIVITY_RECOGNITION))
                     permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW))
+                    permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:

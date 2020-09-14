@@ -120,6 +120,14 @@ final class PermissionManager {
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                 intent.setData(Uri.parse("package:" + packageName));
                 activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                activityRegistry.addListener(new ActivityResultListener(activity, successCallback));
+
+                String packageName = activity.getPackageName();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + packageName));
+                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -186,6 +194,17 @@ final class PermissionManager {
                     // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
+                            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+                        } else {
+                            return PermissionConstants.PERMISSION_STATUS_DENIED;
+                        }
+                    } else {
+                        return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                    }
+                }
+                if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (Settings.canDrawOverlays(context)) {
                             return PermissionConstants.PERMISSION_STATUS_GRANTED;
                         } else {
                             return PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -273,19 +292,30 @@ final class PermissionManager {
 
         @Override
         public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-            if(alreadyCalled || requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-                return false;
+            if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
+                if (alreadyBatteryOptimizationCallbackCalled)
+                    return false;
+                alreadyBatteryOptimizationCallbackCalled = true;
+                final int status = resultCode == Activity.RESULT_OK ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+
+                HashMap<Integer, Integer> results = new HashMap<>();
+                results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
+                callback.onSuccess(results);
+                return true;
+            } else if (requestCode == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (alreadySystemAlertWindowCallbackCalled)
+                    return false;
+                alreadySystemAlertWindowCallbackCalled = true;
+                final int status = Settings.canDrawOverlays(context) ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+
+                HashMap<Integer, Integer> results = new HashMap<>();
+                results.put(PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW, status);
+                callback.onSuccess(results);
+                return true;
             }
-
-            alreadyCalled = true;
-            final int status = resultCode == Activity.RESULT_OK
-                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
-
-            HashMap<Integer, Integer> results = new HashMap<>();
-            results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
-            callback.onSuccess(results);
-            return true;
+            return false;
         }
     }
 
