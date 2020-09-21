@@ -121,7 +121,7 @@ final class PermissionManager {
                 intent.setData(Uri.parse("package:" + packageName));
                 activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
-                activityRegistry.addListener(new ActivityResultListener(activity, successCallback));
+                activityRegistry.addListener(new ActivityResultListener(successCallback, activity));
 
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
@@ -282,6 +282,8 @@ final class PermissionManager {
         // we've responded before and bail out of handling the callback manually if this is a repeat
         // call.
         boolean alreadyCalled = false;
+        boolean alreadySystemAlertWindowCallbackCalled = false;
+        Context context;
 
         final RequestPermissionsSuccessCallback callback;
 
@@ -290,12 +292,18 @@ final class PermissionManager {
             this.callback = callback;
         }
 
+        @VisibleForTesting
+        ActivityResultListener(RequestPermissionsSuccessCallback callback, Context context) {
+            this.callback = callback;
+            this.context = context;
+        }
+
         @Override
         public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
             if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-                if (alreadyBatteryOptimizationCallbackCalled)
+                if (alreadyCalled)
                     return false;
-                alreadyBatteryOptimizationCallbackCalled = true;
+                alreadyCalled = true;
                 final int status = resultCode == Activity.RESULT_OK ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
 
