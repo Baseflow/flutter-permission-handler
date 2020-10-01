@@ -25,9 +25,20 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 
     private MethodChannel methodChannel;
+    private final PermissionManager permissionManager;
+
+    @Nullable
+    private Registrar pluginRegistrar;
 
     @Nullable
     private MethodCallHandlerImpl methodCallHandler;
+
+    @Nullable
+    private ActivityPluginBinding pluginBinding;
+
+    public PermissionHandlerPlugin() {
+        this.permissionManager = PermissionManager.ActivityResultListener();
+    }
 
     /**
      * Registers a plugin implementation that uses the stable {@code io.flutter.plugin.common}
@@ -38,6 +49,9 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
      */
     public static void registerWith(Registrar registrar) {
         final PermissionHandlerPlugin plugin = new PermissionHandlerPlugin();
+        plugin.pluginRegistrar = registrar;
+        plugin.registerListeners();
+
         plugin.startListening(registrar.context(), registrar.messenger());
 
         if (registrar.activeContext() instanceof Activity) {
@@ -65,10 +79,11 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         startListeningToActivity(
-            binding.getActivity(),
+            binding.getActivity(), 
             binding::addActivityResultListener,
-            binding::addRequestPermissionsResultListener
-        );
+            binding::addRequestPermissionsResultListener);
+        this.pluginBinding = binding;
+        registerListeners();
     }
 
     @Override
@@ -79,13 +94,13 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onDetachedFromActivity() {
         stopListeningToActivity();
+        deregisterListeners();
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
         onDetachedFromActivity();
     }
-
 
     private void startListening(Context applicationContext, BinaryMessenger messenger) {
         methodChannel = new MethodChannel(
@@ -95,7 +110,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         methodCallHandler = new MethodCallHandlerImpl(
             applicationContext,
             new AppSettingsManager(),
-            new PermissionManager(),
+            this.permissionManager,
             new ServiceManager()
         );
 
@@ -125,6 +140,20 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
             methodCallHandler.setActivity(null);
             methodCallHandler.setActivityRegistry(null);
             methodCallHandler.setPermissionRegistry(null);
+        }
+    }
+
+    private void registerListeners() {
+        if (this.pluginRegistrar != null) {
+            this.pluginRegistrar.addActivityResultListener(this.permissionManager);
+        } else if (pluginBinding != null) {
+            this.pluginBinding.addActivityResultListener(this.permissionManager);
+        }
+    }
+
+    private void deregisterListeners() {
+        if (this.pluginBinding != null) {
+            this.pluginBinding.removeActivityResultListener(this.permissionManager);
         }
     }
 }

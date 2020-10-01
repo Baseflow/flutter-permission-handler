@@ -111,9 +111,9 @@ final class PermissionManager {
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                activityRegistry.addListener(
-                    new ActivityResultListener(successCallback)
-                );
+                // activityRegistry.addListener(
+                // new ActivityResultListener(successCallback)
+                // );
 
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
@@ -121,7 +121,8 @@ final class PermissionManager {
                 intent.setData(Uri.parse("package:" + packageName));
                 activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
-                activityRegistry.addListener(new ActivityResultListener(successCallback, activity));
+                // activityRegistry.addListener(new ActivityResultListener(successCallback,
+                // activity));
 
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
@@ -274,8 +275,7 @@ final class PermissionManager {
     }
 
     @VisibleForTesting
-    static final class ActivityResultListener
-        implements PluginRegistry.ActivityResultListener {
+    public static final class ActivityResultListener implements PluginRegistry.ActivityResultListener {
 
         // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
         // duplicate times in cases where the user denies and then grants a permission. Keep track of if
