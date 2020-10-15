@@ -25,7 +25,8 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 
     private MethodChannel methodChannel;
-    private final PermissionManager permissionManager;
+    private final RequestPermissionsListener permissionManager;
+    private final PermissionManagerResult activityResultManager;
 
     @Nullable
     private Registrar pluginRegistrar;
@@ -37,7 +38,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     private ActivityPluginBinding pluginBinding;
 
     public PermissionHandlerPlugin() {
-        this.permissionManager = PermissionManager.ActivityResultListener();
+        this.permissionManager = new RequestPermissionsListener();
+        this.activityResultManager = new PermissionManagerResult(this.permissionManager);
     }
 
     /**
