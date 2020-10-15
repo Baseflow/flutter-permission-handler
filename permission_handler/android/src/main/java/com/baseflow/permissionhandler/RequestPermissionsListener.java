@@ -18,14 +18,101 @@ public class RequestPermissionsListener
         final PermissionManager.RequestPermissionsSuccessCallback callback;
         final Map<Integer, Integer> requestResults;
 
-        RequestPermissionsListener(
-                Activity activity,
-                Map<Integer, Integer> requestResults,
-                PermissionManager.RequestPermissionsSuccessCallback callback) {
-            this.activity = activity;
-            this.callback = callback;
-            this.requestResults = requestResults;
+        void requestPermissions(
+            List<Integer> permissions,
+            Activity activity,
+            ActivityRegistry activityRegistry,
+            PermissionRegistry permissionRegistry,
+            RequestPermissionsSuccessCallback successCallback,
+            ErrorCallback errorCallback) {
+        if (ongoing) {
+            errorCallback.onError(
+                    "PermissionHandler.PermissionManager",
+                    "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).");
+            return;
         }
+
+        if (activity == null) {
+            Log.d(PermissionConstants.LOG_TAG, "Unable to detect current Activity.");
+
+            errorCallback.onError(
+                    "PermissionHandler.PermissionManager",
+                    "Unable to detect current Android Activity.");
+            return;
+        }
+
+        Map<Integer, Integer> requestResults = new HashMap<>();
+        ArrayList<String> permissionsToRequest = new ArrayList<>();
+        for (Integer permission : permissions) {
+            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity, activity);
+            if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
+                if (!requestResults.containsKey(permission)) {
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
+                }
+                continue;
+            }
+
+            final List<String> names = PermissionUtils.getManifestNames(activity, permission);
+
+            // check to see if we can find manifest names
+            // if we can't add as unknown and continue
+            if (names == null || names.isEmpty()) {
+                if (!requestResults.containsKey(permission)) {
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
+                }
+
+                continue;
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+                // activityRegistry.addListener(
+                // new ActivityResultListener(successCallback)
+                // );
+
+                String packageName = activity.getPackageName();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                // activityRegistry.addListener(new ActivityResultListener(successCallback,
+                // activity));
+
+                String packageName = activity.getPackageName();
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                intent.setData(Uri.parse("package:" + packageName));
+                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+            } else {
+                permissionsToRequest.addAll(names);
+            }
+        }
+
+        final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
+        if (permissionsToRequest.size() > 0) {
+            permissionRegistry.addListener(
+                    new RequestPermissionsListener(
+                            activity,
+                            requestResults,
+                            (Map<Integer, Integer> results) -> {
+                                ongoing = false;
+                                successCallback.onSuccess(results);
+                            })
+            );
+
+            ongoing = true;
+
+            ActivityCompat.requestPermissions(
+                    activity,
+                    requestPermissions,
+                    PermissionConstants.PERMISSION_CODE);
+        } else {
+            ongoing = false;
+            if (requestResults.size() > 0) {
+                successCallback.onSuccess(requestResults);
+            }
+        }
+    }
 
         @Override
         public boolean onRequestPermissionsResult(int id, String[] permissions, int[] grantResults)
