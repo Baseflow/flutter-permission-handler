@@ -6,6 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.baseflow.permissionhandler.PermissionManager.ActivityRegistry;
 import com.baseflow.permissionhandler.PermissionManager.PermissionRegistry;
+
+import java.util.Map;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -25,7 +28,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 
     private MethodChannel methodChannel;
-    private final RequestPermissionsListener permissionManager;
+//    private final RequestPermissionsListener permissionManager;
     private final PermissionManagerResult activityResultManager;
 
     @Nullable
@@ -38,8 +41,13 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     private ActivityPluginBinding pluginBinding;
 
     public PermissionHandlerPlugin() {
-        this.permissionManager = new RequestPermissionsListener();
-        this.activityResultManager = new PermissionManagerResult(this.permissionManager);
+//        this.permissionManager = new RequestPermissionsListener();
+        this.activityResultManager = new PermissionManagerResult(new PermissionManager.RequestPermissionsSuccessCallback() {
+            @Override
+            public void onSuccess(Map<Integer, Integer> results) {
+                //handle response here for successfully granted permission
+            }
+        });
     }
 
     /**
@@ -112,7 +120,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         methodCallHandler = new MethodCallHandlerImpl(
             applicationContext,
             new AppSettingsManager(),
-            this.permissionManager,
+            new PermissionManager(),
             new ServiceManager()
         );
 
@@ -147,15 +155,15 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
     private void registerListeners() {
         if (this.pluginRegistrar != null) {
-            this.pluginRegistrar.addActivityResultListener(this.permissionManager);
+            this.pluginRegistrar.addActivityResultListener(this.activityResultManager);
         } else if (pluginBinding != null) {
-            this.pluginBinding.addActivityResultListener(this.permissionManager);
+            this.pluginBinding.addActivityResultListener(this.activityResultManager);
         }
     }
 
     private void deregisterListeners() {
         if (this.pluginBinding != null) {
-            this.pluginBinding.removeActivityResultListener(this.permissionManager);
+            this.pluginBinding.removeActivityResultListener(this.activityResultManager);
         }
     }
 }
