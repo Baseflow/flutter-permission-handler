@@ -50,6 +50,11 @@ final class PermissionManager {
     }
 
     private boolean ongoing = false;
+    private RequestPermissionsSuccessCallback successCallback;
+
+    public RequestPermissionsSuccessCallback getSuccessCallback() {
+        return successCallback;
+    }
 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
@@ -71,6 +76,7 @@ final class PermissionManager {
             PermissionRegistry permissionRegistry,
             RequestPermissionsSuccessCallback successCallback,
             ErrorCallback errorCallback) {
+        this.successCallback = successCallback;
         if (ongoing) {
             errorCallback.onError(
                     "PermissionHandler.PermissionManager",
@@ -145,7 +151,12 @@ final class PermissionManager {
                                 successCallback.onSuccess(results);
                             })
             );
-
+//            activityRegistry.addListener(new PermissionManagerResult(new RequestPermissionsSuccessCallback() {
+//                @Override
+//                public void onSuccess(Map<Integer, Integer> results) {
+//                    successCallback.onSuccess(results);
+//                }
+//            },activity));
             ongoing = true;
 
             ActivityCompat.requestPermissions(
