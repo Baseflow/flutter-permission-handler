@@ -28,8 +28,8 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 
     private MethodChannel methodChannel;
-//    private final RequestPermissionsListener permissionManager;
-    private final PermissionManagerResult activityResultManager;
+    private  PermissionManager permissionManager;
+    private  PermissionManagerResult activityResultManager;
 
     @Nullable
     private Registrar pluginRegistrar;
@@ -41,13 +41,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     private ActivityPluginBinding pluginBinding;
 
     public PermissionHandlerPlugin() {
-//        this.permissionManager = new RequestPermissionsListener();
-        this.activityResultManager = new PermissionManagerResult(new PermissionManager.RequestPermissionsSuccessCallback() {
-            @Override
-            public void onSuccess(Map<Integer, Integer> results) {
-                //handle response here for successfully granted permission
-            }
-        });
+        this.permissionManager = new PermissionManager();
     }
 
     /**
@@ -120,7 +114,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         methodCallHandler = new MethodCallHandlerImpl(
             applicationContext,
             new AppSettingsManager(),
-            new PermissionManager(),
+            permissionManager,
             new ServiceManager()
         );
 
@@ -138,6 +132,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         ActivityRegistry activityRegistry,
         PermissionRegistry permissionRegistry
     ) {
+        this.activityResultManager = new PermissionManagerResult(permissionManager,activity);
         if (methodCallHandler != null) {
             methodCallHandler.setActivity(activity);
             methodCallHandler.setActivityRegistry(activityRegistry);
