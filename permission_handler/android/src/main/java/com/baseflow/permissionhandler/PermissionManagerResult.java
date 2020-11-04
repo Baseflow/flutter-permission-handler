@@ -13,13 +13,6 @@ import java.util.HashMap;
 import io.flutter.plugin.common.PluginRegistry;
 
 public class PermissionManagerResult implements PluginRegistry.ActivityResultListener {
-
-    // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
-    // duplicate times in cases where the user denies and then grants a permission. Keep track of if
-    // we've responded before and bail out of handling the callback manually if this is a repeat
-    // call.
-    boolean alreadyCalled = false;
-    boolean alreadySystemAlertWindowCallbackCalled = false;
     Context context;
 
     final PermissionManager permissionManager;
@@ -35,30 +28,25 @@ public class PermissionManagerResult implements PluginRegistry.ActivityResultLis
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-       PermissionManager.RequestPermissionsSuccessCallback callback = permissionManager.getSuccessCallback();
+        PermissionManager.RequestPermissionsSuccessCallback callback = permissionManager.getSuccessCallback();
         if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-            if (alreadyCalled)
-                return false;
-            alreadyCalled = true;
             final int status = resultCode == Activity.RESULT_OK ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
 
             HashMap<Integer, Integer> results = new HashMap<>();
             results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
-            if(callback!=null)
-            callback.onSuccess(results);
+            if (callback != null)
+                callback.onSuccess(results);
             return true;
-        } else if (requestCode == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (alreadySystemAlertWindowCallbackCalled)
-                return false;
-            alreadySystemAlertWindowCallbackCalled = true;
+        } else if (requestCode == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             final int status = Settings.canDrawOverlays(context) ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
 
             HashMap<Integer, Integer> results = new HashMap<>();
             results.put(PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW, status);
-            if(callback!=null)
-            callback.onSuccess(results);
+            if (callback != null)
+                callback.onSuccess(results);
             return true;
         }
         return false;
