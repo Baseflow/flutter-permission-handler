@@ -50,6 +50,11 @@ final class PermissionManager {
     }
 
     private boolean ongoing = false;
+    private RequestPermissionsSuccessCallback successCallback;
+
+    public RequestPermissionsSuccessCallback getSuccessCallback() {
+        return successCallback;
+    }
 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
@@ -71,6 +76,7 @@ final class PermissionManager {
             PermissionRegistry permissionRegistry,
             RequestPermissionsSuccessCallback successCallback,
             ErrorCallback errorCallback) {
+        this.successCallback = successCallback;
         if (ongoing) {
             errorCallback.onError(
                     "PermissionHandler.PermissionManager",
@@ -111,9 +117,9 @@ final class PermissionManager {
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                activityRegistry.addListener(
-                    new ActivityResultListener(successCallback)
-                );
+                // activityRegistry.addListener(
+                // new ActivityResultListener(successCallback)
+                // );
 
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
@@ -121,7 +127,8 @@ final class PermissionManager {
                 intent.setData(Uri.parse("package:" + packageName));
                 activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
-                activityRegistry.addListener(new ActivityResultListener(successCallback, activity));
+                // activityRegistry.addListener(new ActivityResultListener(successCallback,
+                // activity));
 
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
@@ -144,7 +151,12 @@ final class PermissionManager {
                                 successCallback.onSuccess(results);
                             })
             );
-
+//            activityRegistry.addListener(new PermissionManagerResult(new RequestPermissionsSuccessCallback() {
+//                @Override
+//                public void onSuccess(Map<Integer, Integer> results) {
+//                    successCallback.onSuccess(results);
+//                }
+//            },activity));
             ongoing = true;
 
             ActivityCompat.requestPermissions(
@@ -273,152 +285,5 @@ final class PermissionManager {
         return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
-    @VisibleForTesting
-    static final class ActivityResultListener
-        implements PluginRegistry.ActivityResultListener {
-
-        // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
-        // duplicate times in cases where the user denies and then grants a permission. Keep track of if
-        // we've responded before and bail out of handling the callback manually if this is a repeat
-        // call.
-        boolean alreadyCalled = false;
-        boolean alreadySystemAlertWindowCallbackCalled = false;
-        Context context;
-
-        final RequestPermissionsSuccessCallback callback;
-
-        @VisibleForTesting
-        ActivityResultListener(RequestPermissionsSuccessCallback callback) {
-            this.callback = callback;
-        }
-
-        @VisibleForTesting
-        ActivityResultListener(RequestPermissionsSuccessCallback callback, Context context) {
-            this.callback = callback;
-            this.context = context;
-        }
-
-        @Override
-        public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-                if (alreadyCalled)
-                    return false;
-                alreadyCalled = true;
-                final int status = resultCode == Activity.RESULT_OK ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                        : PermissionConstants.PERMISSION_STATUS_DENIED;
-
-                HashMap<Integer, Integer> results = new HashMap<>();
-                results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
-                callback.onSuccess(results);
-                return true;
-            } else if (requestCode == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (alreadySystemAlertWindowCallbackCalled)
-                    return false;
-                alreadySystemAlertWindowCallbackCalled = true;
-                final int status = Settings.canDrawOverlays(context) ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                        : PermissionConstants.PERMISSION_STATUS_DENIED;
-
-                HashMap<Integer, Integer> results = new HashMap<>();
-                results.put(PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW, status);
-                callback.onSuccess(results);
-                return true;
-            }
-            return false;
-        }
-    }
-
-    @VisibleForTesting
-    static final class RequestPermissionsListener
-        implements PluginRegistry.RequestPermissionsResultListener {
-
-        // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
-        // duplicate times in cases where the user denies and then grants a permission. Keep track of if
-        // we've responded before and bail out of handling the callback manually if this is a repeat
-        // call.
-        boolean alreadyCalled = false;
-
-        final Activity activity;
-        final RequestPermissionsSuccessCallback callback;
-        final Map<Integer, Integer> requestResults;
-
-        @VisibleForTesting
-        RequestPermissionsListener(
-                Activity activity,
-                Map<Integer, Integer> requestResults,
-                RequestPermissionsSuccessCallback callback) {
-            this.activity = activity;
-            this.callback = callback;
-            this.requestResults = requestResults;
-        }
-
-        @Override
-        public boolean onRequestPermissionsResult(int id, String[] permissions, int[] grantResults)
-        {
-            if (alreadyCalled || id != PermissionConstants.PERMISSION_CODE) {
-                return false;
-            }
-
-            alreadyCalled = true;
-
-            for (int i = 0; i < permissions.length; i++) {
-                final String permissionName = permissions[i];
-
-                @PermissionConstants.PermissionGroup final int permission =
-                        PermissionUtils.parseManifestName(permissionName);
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_UNKNOWN)
-                    continue;
-
-                final int result = grantResults[i];
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_MICROPHONE) {
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
-                        requestResults.put(
-                                PermissionConstants.PERMISSION_GROUP_MICROPHONE,
-                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
-                    }
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_SPEECH)) {
-                        requestResults.put(
-                                PermissionConstants.PERMISSION_GROUP_SPEECH,
-                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
-                    }
-                } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) {
-                    @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
-
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
-                        requestResults.put(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
-                    }
-                } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
-                    @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
-
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                        if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
-                            requestResults.put(
-                                    PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS,
-                                    permissionStatus);
-                        }
-                    }
-
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE)) {
-                        requestResults.put(
-                                PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE,
-                                permissionStatus);
-                    }
-
-                    requestResults.put(permission, permissionStatus);
-                } else if (!requestResults.containsKey(permission)) {
-                    requestResults.put(
-                            permission,
-                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
-                }
-
-                PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
-            }
-
-            this.callback.onSuccess(requestResults);
-            return true;
-        }
-    }
+    
 }
