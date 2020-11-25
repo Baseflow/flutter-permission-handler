@@ -24,13 +24,24 @@
         return;
     }
 
+    if(@available(iOS 14, *)) {
+        [PHPhotoLibrary requestAuthorizationForAccessLevel:PHAccessLevelReadWrite handler:^(PHAuthorizationStatus authorizationStatus) {
+            completionHandler([PhotoPermissionStrategy determinePermissionStatus:authorizationStatus]);
+        }];
+    }else {
     [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus authorizationStatus) {
         completionHandler([PhotoPermissionStrategy determinePermissionStatus:authorizationStatus]);
     }];
+    }
 }
 
 + (PermissionStatus)permissionStatus {
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    PHAuthorizationStatus status;
+    if(@available(iOS 14, *)){
+        status = [PHPhotoLibrary authorizationStatusForAccessLevel:PHAccessLevelReadWrite];
+    }else {
+        status = [PHPhotoLibrary authorizationStatus];
+    }
 
     return [PhotoPermissionStrategy determinePermissionStatus:status];
 }
