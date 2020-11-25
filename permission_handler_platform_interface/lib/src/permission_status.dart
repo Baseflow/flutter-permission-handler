@@ -17,15 +17,15 @@ enum PermissionStatus {
   /// *Only supported on iOS.*
   restricted,
 
+  ///User has authorized this application for limited access.
+  /// *Only supported on iOS (iOS14+).*
+  limited,
+
   /// The user denied access to the requested feature and selected to never
   /// again show a request for this permission. The user may still change the
   /// permission status in the settings.
   /// *Only supported on Android.*
   permanentlyDenied,
-
-  ///User has authorized this application for limited access.
-  /// *Only supported on iOS (iOS14+).*
-  limited,
 }
 
 extension PermissionStatusValue on PermissionStatus {
@@ -40,9 +40,9 @@ extension PermissionStatusValue on PermissionStatus {
       case PermissionStatus.undetermined:
         return 3;
       case PermissionStatus.permanentlyDenied:
-        return 4;
-      case PermissionStatus.limited:
         return 5;
+      case PermissionStatus.limited:
+        return 4;
       default:
         throw UnimplementedError();
     }
@@ -54,8 +54,8 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.granted,
       PermissionStatus.restricted,
       PermissionStatus.undetermined,
-      PermissionStatus.permanentlyDenied,
       PermissionStatus.limited,
+      PermissionStatus.permanentlyDenied,
     ][value];
   }
 }

@@ -63,7 +63,7 @@ final class PermissionConstants {
     static final int PERMISSION_STATUS_GRANTED = 1;
     static final int PERMISSION_STATUS_RESTRICTED = 2;
     static final int PERMISSION_STATUS_NOT_DETERMINED = 3;
-    static final int PERMISSION_STATUS_NEVER_ASK_AGAIN = 4;
+    static final int PERMISSION_STATUS_NEVER_ASK_AGAIN = 5;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
