@@ -7,9 +7,21 @@
 
 #if PERMISSION_PHOTOS
 
-@implementation PhotoPermissionStrategy
+@implementation PhotoPermissionStrategy{
+    bool addOnlyAccessLevel;
+}
+
+- (instancetype)initWithAccessAddOnly:(BOOL)addOnly {
+    self = [super init];
+    if(self) {
+        addOnlyAccessLevel = addOnly;
+    }
+    
+    return self;
+}
+
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    return [PhotoPermissionStrategy permissionStatus];
+    return [PhotoPermissionStrategy permissionStatus:addOnlyAccessLevel];
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -25,7 +37,7 @@
     }
 
     if(@available(iOS 14, *)) {
-        [PHPhotoLibrary requestAuthorizationForAccessLevel:PHAccessLevelReadWrite handler:^(PHAuthorizationStatus authorizationStatus) {
+        [PHPhotoLibrary requestAuthorizationForAccessLevel:(addOnlyAccessLevel)?PHAccessLevelAddOnly:PHAccessLevelReadWrite handler:^(PHAuthorizationStatus authorizationStatus) {
             completionHandler([PhotoPermissionStrategy determinePermissionStatus:authorizationStatus]);
         }];
     }else {
@@ -35,10 +47,10 @@
     }
 }
 
-+ (PermissionStatus)permissionStatus {
++ (PermissionStatus)permissionStatus:(BOOL) addOnlyAccessLevel {
     PHAuthorizationStatus status;
     if(@available(iOS 14, *)){
-        status = [PHPhotoLibrary authorizationStatusForAccessLevel:PHAccessLevelReadWrite];
+        status = [PHPhotoLibrary authorizationStatusForAccessLevel:(addOnlyAccessLevel)?PHAccessLevelAddOnly:PHAccessLevelReadWrite];
     }else {
         status = [PHPhotoLibrary authorizationStatus];
     }

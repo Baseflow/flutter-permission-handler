@@ -54,6 +54,13 @@
     #define PERMISSION_PHOTOS 1
 #endif
 
+// ios: PermissionGroupPhotosAddOnly
+// Info.plist: NSPhotoLibraryUsageDescription
+// dart: PermissionGroup.photosAddOnly
+#ifndef PERMISSION_PHOTOS_ADD_ONLY
+    #define PERMISSION_PHOTOS_ADD_ONLY
+#endif
+
 // ios: [PermissionGroupLocation, PermissionGroupLocationAlways, PermissionGroupLocationWhenInUse]
 // Info.plist: [NSLocationUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationWhenInUseUsageDescription]
 // dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
@@ -92,6 +99,7 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupMicrophone,
     PermissionGroupPhone,
     PermissionGroupPhotos,
+    PermissionGroupPhotosAddOnly,
     PermissionGroupReminders,
     PermissionGroupSensors,
     PermissionGroupSms,
