@@ -38,6 +38,7 @@ public class PermissionUtils {
             case Manifest.permission.RECORD_AUDIO:
                 return PermissionConstants.PERMISSION_GROUP_MICROPHONE;
             case Manifest.permission.READ_PHONE_STATE:
+            case Manifest.permission.READ_PHONE_NUMBERS:
             case Manifest.permission.CALL_PHONE:
             case Manifest.permission.READ_CALL_LOG:
             case Manifest.permission.WRITE_CALL_LOG:
@@ -117,6 +118,10 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_PHONE:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_STATE))
                     permissionNames.add(Manifest.permission.READ_PHONE_STATE);
+
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_NUMBERS)) {
+                    permissionNames.add(Manifest.permission.READ_PHONE_NUMBERS);
+                }
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.CALL_PHONE))
                     permissionNames.add(Manifest.permission.CALL_PHONE);
