@@ -1,3 +1,7 @@
+## 3.0.0-nullsafety.0
+
+* Make package nullsafe in pre-release mode.
+
 ## 2.0.1
 
 * Update `platform_interface 1.0.2`

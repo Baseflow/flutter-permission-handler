@@ -1,3 +1,6 @@
+# 6.0.0-nullsafety.0
+* Make package null-safe in pre-release mode.
+
 # 5.0.1+1
 
 * Fixes Typo
