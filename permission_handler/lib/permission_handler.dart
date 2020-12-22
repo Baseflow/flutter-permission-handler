@@ -18,7 +18,7 @@ PermissionHandlerPlatform get _handler => PermissionHandlerPlatform.instance;
 /// Opens the app settings page.
 ///
 /// Returns [true] if the app settings page could be opened, otherwise [false].
-Future<bool> openAppSettings() => _handler.openAppSettings();
+Future<bool?> openAppSettings() => _handler.openAppSettings();
 
 /// Actions that can be executed on a permission.
 extension PermissionActions on Permission {
@@ -33,7 +33,7 @@ extension PermissionActions on Permission {
   ///
   /// This is only implemented on Android, calling this on iOS always returns
   /// [false].
-  Future<bool> get shouldShowRequestRationale async {
+  Future<bool?> get shouldShowRequestRationale async {
     if (!Platform.isAndroid) {
       return false;
     }
@@ -45,7 +45,7 @@ extension PermissionActions on Permission {
   /// been grant access before.
   ///
   /// Returns the new [PermissionStatus].
-  Future<PermissionStatus> request() async {
+  Future<PermissionStatus?> request() async {
     return (await [this].request())[this];
   }
 }

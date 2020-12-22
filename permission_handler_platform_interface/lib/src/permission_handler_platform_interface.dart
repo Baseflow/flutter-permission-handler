@@ -64,7 +64,7 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   ///
   /// Returns [true] if the app settings page could be opened, otherwise
   /// [false].
-  Future<bool> openAppSettings() {
+  Future<bool?> openAppSettings() {
     throw UnimplementedError('openAppSettings() has not been implemented.');
   }
 
@@ -81,7 +81,7 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   ///
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
-  Future<bool> shouldShowRequestPermissionRationale(Permission permission) {
+  Future<bool?> shouldShowRequestPermissionRationale(Permission permission) {
     throw UnimplementedError(
         'shouldShowRequestPermissionRationale() has not been implemented.');
   }
