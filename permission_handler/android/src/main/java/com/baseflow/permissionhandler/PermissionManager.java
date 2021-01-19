@@ -55,6 +55,19 @@ final class PermissionManager {
     public RequestPermissionsSuccessCallback getSuccessCallback() {
         return successCallback;
     }
+    private Map<Integer, Integer> successResult;
+    private int sendingIntentCount = 0;
+    public Map<Integer, Integer> getResult() {
+        return successResult;
+    }
+
+    public void setSendingIntentCount(int sendingIntentCount) {
+        this.sendingIntentCount = sendingIntentCount;
+    }
+
+    public int getSendingIntentCount() {
+        return sendingIntentCount;
+    }
 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
@@ -120,7 +133,8 @@ final class PermissionManager {
                 // activityRegistry.addListener(
                 // new ActivityResultListener(successCallback)
                 // );
-
+                requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
+                sendingIntentCount++;
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
@@ -129,7 +143,8 @@ final class PermissionManager {
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                 // activityRegistry.addListener(new ActivityResultListener(successCallback,
                 // activity));
-
+                requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
+                sendingIntentCount++;
                 String packageName = activity.getPackageName();
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -148,6 +163,9 @@ final class PermissionManager {
                             requestResults,
                             (Map<Integer, Integer> results) -> {
                                 ongoing = false;
+                                if(sendingIntentCount>0)
+                                    successResult = results;
+                                else
                                 successCallback.onSuccess(results);
                             })
             );
@@ -166,6 +184,9 @@ final class PermissionManager {
         } else {
             ongoing = false;
             if (requestResults.size() > 0) {
+                if(sendingIntentCount>0)
+                    successResult = requestResults;
+                else
                 successCallback.onSuccess(requestResults);
             }
         }
