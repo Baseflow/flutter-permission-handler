@@ -1,11 +1,13 @@
 package com.baseflow.permissionhandler;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
@@ -16,10 +18,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import io.flutter.plugin.common.PluginRegistry;
 
@@ -145,11 +151,12 @@ final class PermissionManager {
                 // activity));
                 requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
                 sendingIntentCount++;
-                String packageName = activity.getPackageName();
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
-                intent.setData(Uri.parse("package:" + packageName));
-                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+//                String packageName = activity.getPackageName();
+//                Intent intent = new Intent();
+//                intent.setAction(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+//                intent.setData(Uri.parse("package:" + packageName));
+//                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+                onDisplayPopupPermission(activity);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -306,5 +313,56 @@ final class PermissionManager {
         return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
+
+    private  void onDisplayPopupPermission(Activity activity) {
+        if (!isMIUI()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + activity.getPackageName()));
+            activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+            return;
+        }
+        try {
+            Intent intent = new Intent("miui.intent.action.APP_PERM_EDITOR");
+            intent.setClassName("com.miui.securitycenter",
+                    "com.miui.permcenter.permissions.PermissionsEditorActivity");
+            intent.putExtra("extra_pkgname", activity.getPackageName());
+            activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+            return;
+        } catch (Exception ignore) {
+        }
+        try {
+            // MIUI 5/6/7
+            Intent localIntent = new Intent("miui.intent.action.APP_PERM_EDITOR");
+            localIntent.setClassName("com.miui.securitycenter", "com.miui.permcenter.permissions.AppPermissionsEditorActivity");
+            localIntent.putExtra("extra_pkgname", activity.getPackageName());
+            activity.startActivityForResult(localIntent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+            return;
+        } catch (Exception ignore) {
+        }
+        // Otherwise jump to application details
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
+        intent.setData(uri);
+        activity.startActivityForResult(intent, PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW);
+    }
+
+
+    private static boolean isMIUI() {
+        String device = Build.MANUFACTURER;
+        if (device.equalsIgnoreCase("xiaomi")) {
+            try {
+                Properties prop = new Properties();
+                prop.load(new FileInputStream(new File(Environment.getRootDirectory(), "build.prop")));
+                return prop.getProperty("ro.miui.ui.version.code", null) != null
+                        || prop.getProperty("ro.miui.ui.version.name", null) != null
+                        || prop.getProperty("ro.miui.internal.storage", null) != null;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return true;
+            }
+
+        }
+        return false;
+    }
     
 }
