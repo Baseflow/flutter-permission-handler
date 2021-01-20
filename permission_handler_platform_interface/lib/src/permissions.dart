@@ -8,6 +8,7 @@ class PermissionWithService extends Permission {
 }
 
 /// Defines the permissions which can be checked and requested.
+@immutable
 class Permission {
   const Permission._(this.value);
   factory Permission.byValue(int value) => values[value];
@@ -146,4 +147,18 @@ class Permission {
 
   @override
   String toString() => 'Permission.${_names[value]}';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is Permission && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
 }
