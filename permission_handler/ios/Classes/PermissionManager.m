@@ -102,7 +102,9 @@
         case PermissionGroupPhone:
             return [PhonePermissionStrategy new];
         case PermissionGroupPhotos:
-            return [PhotoPermissionStrategy new];
+            return [[PhotoPermissionStrategy alloc] initWithAccessAddOnly:false];
+        case PermissionGroupPhotosAddOnly:
+            return [[PhotoPermissionStrategy alloc] initWithAccessAddOnly:true];
         case PermissionGroupReminders:
             return [EventPermissionStrategy new];
         case PermissionGroupSensors:
