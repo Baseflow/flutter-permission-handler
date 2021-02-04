@@ -21,16 +21,17 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_MICROPHONE = 7;
     static final int PERMISSION_GROUP_PHONE = 8;
     static final int PERMISSION_GROUP_PHOTOS = 9;
-    static final int PERMISSION_GROUP_REMINDERS = 10;
-    static final int PERMISSION_GROUP_SENSORS = 11;
-    static final int PERMISSION_GROUP_SMS = 12;
-    static final int PERMISSION_GROUP_SPEECH = 13;
-    static final int PERMISSION_GROUP_STORAGE = 14;
-    static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 15;
-    static final int PERMISSION_GROUP_NOTIFICATION = 16;
-    static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 17;
-    static final int PERMISSION_GROUP_ACTIVITY_RECOGNITION = 18;
-    static final int PERMISSION_GROUP_UNKNOWN = 19;
+    static final int PERMISSION_GROUP_PHOTOS_ADD_ONLY = 10;
+    static final int PERMISSION_GROUP_REMINDERS = 11;
+    static final int PERMISSION_GROUP_SENSORS = 12;
+    static final int PERMISSION_GROUP_SMS = 13;
+    static final int PERMISSION_GROUP_SPEECH = 14;
+    static final int PERMISSION_GROUP_STORAGE = 15;
+    static final int PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS = 16;
+    static final int PERMISSION_GROUP_NOTIFICATION = 17;
+    static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 18;
+    static final int PERMISSION_GROUP_ACTIVITY_RECOGNITION = 19;
+    static final int PERMISSION_GROUP_UNKNOWN = 20;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({

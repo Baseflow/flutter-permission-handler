@@ -1,5 +1,6 @@
 # 5.1.0+2
 
+* Solve mismatch with permission constants between Dart and Android (due to addition of permission on iOS);
 * Fix compile error which occurred when on iOS the "PERMISSION_PHOTOS" macro is deactivated (meaning code dealing with the `PHPhotoLibrary` library is removed from the code base).
 
 # 5.1.0+1
