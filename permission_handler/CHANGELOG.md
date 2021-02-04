@@ -1,3 +1,7 @@
+# 5.1.0+2
+
+* Fix compile error which occurred when on iOS the "PERMISSION_PHOTOS" macro is deactivated (meaning code dealing with the `PHPhotoLibrary` library is removed from the code base).
+
 # 5.1.0+1
 
 * Recreate the iOS part of the example project based on the Flutter stable channel (previous version was accidentally created with the Flutter beta channel).
