@@ -1,3 +1,7 @@
+# 5.1.0+1
+
+* Recreate the iOS part of the example project based on the Flutter stable channel (previous version was accidentally created with the Flutter beta channel).
+
 # 5.1.0
 
 * Added support for the limited photos permission available on iOS 14 and up;
