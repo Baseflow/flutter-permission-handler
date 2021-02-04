@@ -1,3 +1,7 @@
+## 2.0.2
+
+* Added support for the limited photos permission available on iOS 14 and up.
+
 ## 2.0.1
 
 * Update `platform_interface 1.0.2`

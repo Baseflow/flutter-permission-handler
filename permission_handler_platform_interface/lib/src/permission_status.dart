@@ -17,6 +17,10 @@ enum PermissionStatus {
   /// *Only supported on iOS.*
   restricted,
 
+  ///User has authorized this application for limited access.
+  /// *Only supported on iOS (iOS14+).*
+  limited,
+
   /// The user denied access to the requested feature and selected to never
   /// again show a request for this permission. The user may still change the
   /// permission status in the settings.
@@ -36,6 +40,8 @@ extension PermissionStatusValue on PermissionStatus {
       case PermissionStatus.undetermined:
         return 3;
       case PermissionStatus.permanentlyDenied:
+        return 5;
+      case PermissionStatus.limited:
         return 4;
       default:
         throw UnimplementedError();
@@ -48,6 +54,7 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.granted,
       PermissionStatus.restricted,
       PermissionStatus.undetermined,
+      PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
     ][value];
   }
@@ -74,6 +81,8 @@ extension PermissionStatusGetters on PermissionStatus {
   /// permission status in the settings.
   /// *Only supported on Android.*
   bool get isPermanentlyDenied => this == PermissionStatus.permanentlyDenied;
+
+  bool get isLimited => this == PermissionStatus.limited;
 }
 
 extension FuturePermissionStatusGetters on Future<PermissionStatus> {
@@ -98,4 +107,6 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// *Only supported on Android.*
   Future<bool> get isPermanentlyDenied async =>
       (await this).isPermanentlyDenied;
+
+  Future<bool> get isLimited async => (await this).isLimited;
 }

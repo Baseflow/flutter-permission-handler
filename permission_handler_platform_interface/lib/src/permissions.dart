@@ -55,47 +55,53 @@ class Permission {
 
   /// Android: Nothing
   /// iOS: Photos
+  /// iOS 14+ read & write access level
   static const photos = Permission._(9);
 
   /// Android: Nothing
+  /// iOS: Photos
+  /// iOS 14+ read & write access level
+  static const photosAddOnly = Permission._(10);
+
+  /// Android: Nothing
   /// iOS: Reminders
-  static const reminders = Permission._(10);
+  static const reminders = Permission._(11);
 
   /// Android: Body Sensors
   /// iOS: CoreMotion
-  static const sensors = Permission._(11);
+  static const sensors = Permission._(12);
 
   /// Android: Sms
   /// iOS: Nothing
-  static const sms = Permission._(12);
+  static const sms = Permission._(13);
 
   /// Android: Microphone
   /// iOS: Speech
-  static const speech = Permission._(13);
+  static const speech = Permission._(14);
 
   /// Android: External Storage
   /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly
   /// granted.
-  static const storage = Permission._(14);
+  static const storage = Permission._(15);
 
   /// Android: Ignore Battery Optimizations
-  static const ignoreBatteryOptimizations = Permission._(15);
+  static const ignoreBatteryOptimizations = Permission._(16);
 
   /// Android: Notification
   /// iOS: Notification
-  static const notification = Permission._(16);
+  static const notification = Permission._(17);
 
   /// Android: Allows an application to access any geographic locations
   /// persisted in the user's shared collection.
-  static const accessMediaLocation = Permission._(17);
+  static const accessMediaLocation = Permission._(18);
 
   /// When running on Android Q and above: Activity Recognition
   /// When running on Android < Q: Nothing
   /// iOS: Nothing
-  static const activityRecognition = Permission._(18);
+  static const activityRecognition = Permission._(19);
 
   /// The unknown only used for return type, never requested
-  static const unknown = Permission._(19);
+  static const unknown = Permission._(20);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
@@ -109,6 +115,7 @@ class Permission {
     microphone,
     phone,
     photos,
+    photosAddOnly,
     reminders,
     sensors,
     sms,
@@ -132,6 +139,7 @@ class Permission {
     'microphone',
     'phone',
     'photos',
+    'photosAddOnly',
     'reminders',
     'sensors',
     'sms',
