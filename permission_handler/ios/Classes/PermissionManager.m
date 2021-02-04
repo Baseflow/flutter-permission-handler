@@ -102,9 +102,17 @@
         case PermissionGroupPhone:
             return [PhonePermissionStrategy new];
         case PermissionGroupPhotos:
+            #if PERMISSION_PHOTOS
             return [[PhotoPermissionStrategy alloc] initWithAccessAddOnly:false];
+            #else
+            return [PhotoPermissionStrategy new];
+            #endif
         case PermissionGroupPhotosAddOnly:
+            #if PERMISSION_PHOTOS
             return [[PhotoPermissionStrategy alloc] initWithAccessAddOnly:true];
+            #else
+            return [PhotoPermissionStrategy new];
+            #endif
         case PermissionGroupReminders:
             return [EventPermissionStrategy new];
         case PermissionGroupSensors:
