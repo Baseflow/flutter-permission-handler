@@ -1,3 +1,10 @@
+# 5.1.0
+
+* Added support for the limited photos permission available on iOS 14 and up;
+* Fixed deprecated warning on iOS;
+* Added support for the "READ_PHONE_NUMBERS" permission on Android;
+* Fix a link to the contribution guide in the README.md.
+
 # 5.0.1+1
 
 * Fixes Typo
