@@ -7,8 +7,12 @@ name: platform_interface_package
 on:
   push:
     branches: [ master, develop ]
+    paths:
+    - 'permission_handler_platform_interface'
   pull_request:
     branches: [ master, develop ]
+    paths:
+    - 'permission_handler_platform_interface'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
