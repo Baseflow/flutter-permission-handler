@@ -8,11 +8,11 @@ on:
   push:
     branches: [ master, develop ]
     paths:
-    - 'permission_handler'
+    - 'permission_handler/**'
   pull_request:
     branches: [ master, develop ]
     paths:
-    - 'permission_handler'
+    - 'permission_handler/**'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
