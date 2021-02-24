@@ -46,7 +46,8 @@ extension PermissionActions on Permission {
   ///
   /// Returns the new [PermissionStatus].
   Future<PermissionStatus> request() async {
-    return (await [this].request())[this];
+    final permissionStatus = (await [this].request())[this];
+    return permissionStatus!;
   }
 }
 

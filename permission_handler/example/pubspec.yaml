@@ -2,7 +2,7 @@ name: permission_handler_example
 description: Demonstrates how to use the permission_handler plugin.
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.12.0-0 <3.0.0"
 
 dependencies:
   flutter:
@@ -15,7 +15,7 @@ dev_dependencies:
   permission_handler:
     path: ../
 
-  url_launcher: ^5.4.11
+  url_launcher: ^6.0.0-nullsafety.6
 
 flutter:
   uses-material-design: true
