@@ -52,7 +52,8 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// [false].
   Future<bool> openAppSettings() async {
     final wasOpened = await _methodChannel.invokeMethod('openAppSettings');
-    return wasOpened;
+
+    return wasOpened ?? false;
   }
 
   /// Requests the user for access to the supplied list of [Permission]s, if
@@ -77,6 +78,6 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
     final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
 
-    return shouldShowRationale;
+    return shouldShowRationale ?? false;
   }
 }
