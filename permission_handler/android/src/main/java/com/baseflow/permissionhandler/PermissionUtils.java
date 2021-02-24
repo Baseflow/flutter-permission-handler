@@ -269,12 +269,7 @@ public class PermissionUtils {
             return false;
         }
 
-        return PermissionUtils.neverAskAgainSelected(activity, name);
+        final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+        return !shouldShowRequestPermissionRationale;
     }
-
-  @RequiresApi(api = Build.VERSION_CODES.M)
-  static boolean neverAskAgainSelected(final Activity activity, final String permission) {
-    final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
-    return !shouldShowRequestPermissionRationale;
-  }
 }

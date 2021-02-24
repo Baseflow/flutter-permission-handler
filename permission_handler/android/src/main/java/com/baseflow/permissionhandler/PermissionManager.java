@@ -195,9 +195,7 @@ final class PermissionManager {
                     }
                 }
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                if (permissionStatus == PackageManager.PERMISSION_DENIED) {
-                    return PermissionConstants.PERMISSION_STATUS_DENIED;
-                } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                     return PermissionConstants.PERMISSION_STATUS_DENIED;
                 }
             }
