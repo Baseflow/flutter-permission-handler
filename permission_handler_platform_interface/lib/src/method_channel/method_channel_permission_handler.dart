@@ -51,8 +51,7 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// Returns [true] if the app settings page could be opened, otherwise
   /// [false].
   Future<bool> openAppSettings() async {
-    final wasOpened =
-      await _methodChannel.invokeMethod('openAppSettings');
+    final wasOpened = await _methodChannel.invokeMethod('openAppSettings');
 
     return wasOpened ?? false;
   }
