@@ -1,3 +1,7 @@
+## 6.0.0
+
+* Migrated to null safety 
+
 ## 5.1.0+2
 
 * Solve mismatch with permission constants between Dart and Android (due to addition of permission on iOS);
