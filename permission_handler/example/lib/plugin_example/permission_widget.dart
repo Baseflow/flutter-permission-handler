@@ -70,7 +70,7 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void checkServiceStatus(BuildContext context, Permission permission) async {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text((await permission.status).toString()),
     ));
   }
