@@ -74,18 +74,18 @@ class BaseflowPluginExample extends StatelessWidget {
         1,
       );
     }
-    return MaterialColor(color.value, swatch);
+    return MaterialColor(color.value, swatch as Map<int, Color>);
   }
 }
 
 /// A Flutter example demonstrating how the [pluginName] plugin could be used
 class AppHome extends StatefulWidget {
   /// Constructs the [AppHome] class
-  AppHome({Key key, this.title}) : super(key: key);
+  AppHome({Key? key, this.title}) : super(key: key);
 
   /// The [title] of the application, which is shown in the application's
   /// title bar.
-  final String title;
+  final String? title;
 
   @override
   _AppHomeState createState() => _AppHomeState();
