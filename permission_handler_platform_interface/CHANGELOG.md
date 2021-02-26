@@ -1,6 +1,7 @@
 ## 3.0.0
 
 * Migrated to null safety.
+* Removed PermissionStatus.undetermined. This is now replaced by PermissionStatus.denied.
 
 ## 2.0.2
 

@@ -2,9 +2,6 @@ part of permission_handler_platform_interface;
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
-  /// The permission wasn't requested yet.
-  undetermined,
-
   /// The user granted access to the requested feature.
   granted,
 
@@ -37,7 +34,7 @@ extension PermissionStatusValue on PermissionStatus {
         return 1;
       case PermissionStatus.restricted:
         return 2;
-      case PermissionStatus.undetermined:
+      case PermissionStatus.denied:
         return 3;
       case PermissionStatus.permanentlyDenied:
         return 5;
@@ -53,7 +50,6 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.denied,
       PermissionStatus.granted,
       PermissionStatus.restricted,
-      PermissionStatus.undetermined,
       PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
     ][value];
@@ -61,9 +57,6 @@ extension PermissionStatusValue on PermissionStatus {
 }
 
 extension PermissionStatusGetters on PermissionStatus {
-  /// If the permission was never requested before.
-  bool get isUndetermined => this == PermissionStatus.undetermined;
-
   /// If the user granted access to the requested feature.
   bool get isGranted => this == PermissionStatus.granted;
 
@@ -86,9 +79,6 @@ extension PermissionStatusGetters on PermissionStatus {
 }
 
 extension FuturePermissionStatusGetters on Future<PermissionStatus> {
-  /// If the permission was never requested before.
-  Future<bool> get isUndetermined async => (await this).isUndetermined;
-
   /// If the user granted access to the requested feature.
   Future<bool> get isGranted async => (await this).isGranted;
 
