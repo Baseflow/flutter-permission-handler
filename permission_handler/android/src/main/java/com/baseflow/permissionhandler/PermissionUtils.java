@@ -269,7 +269,7 @@ public class PermissionUtils {
             return false;
         }
 
-        final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+        final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, name);
         return !shouldShowRequestPermissionRationale;
     }
 }
