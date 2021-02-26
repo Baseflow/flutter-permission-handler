@@ -20,7 +20,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
 
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
     }
 
@@ -37,7 +37,7 @@
 
         switch (status) {
             case CNAuthorizationStatusNotDetermined:
-                return PermissionStatusNotDetermined;
+                return PermissionStatusDenied;
             case CNAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case CNAuthorizationStatusDenied:
@@ -51,7 +51,7 @@
 
         switch (status) {
             case kABAuthorizationStatusNotDetermined:
-                return PermissionStatusNotDetermined;
+                return PermissionStatusDenied;
             case kABAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case kABAuthorizationStatusDenied:
@@ -61,7 +61,7 @@
         }
     }
 
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 + (void)requestPermissionsFromContactStore:(PermissionStatusHandler)completionHandler API_AVAILABLE(ios(9)) {

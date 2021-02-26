@@ -20,7 +20,7 @@
         #endif
     }
     
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -30,7 +30,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus permissionStatus = [self checkPermissionStatus:permission];
     
-    if (permissionStatus != PermissionStatusNotDetermined) {
+    if (permissionStatus != PermissionStatusDenied) {
         completionHandler(permissionStatus);
         return;
     }
@@ -41,18 +41,18 @@
         #if PERMISSION_EVENTS
         entityType = EKEntityTypeEvent;
         #else
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else if (permission == PermissionGroupReminders) {
         #if PERMISSION_REMINDERS
         entityType = EKEntityTypeReminder;
         #else
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else {
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
         return;
     }
     
@@ -71,7 +71,7 @@
     
     switch (status) {
         case EKAuthorizationStatusNotDetermined:
-            return PermissionStatusNotDetermined;
+            return PermissionStatusDenied;
         case EKAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case EKAuthorizationStatusDenied:
@@ -80,7 +80,7 @@
             return PermissionStatusGranted;
     }
     
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 @end

@@ -25,7 +25,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
         return;
     }
@@ -42,7 +42,7 @@
             }
         }];
     } else {
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
     }
     
 }
@@ -54,7 +54,7 @@
         
         switch (status) {
             case CMAuthorizationStatusNotDetermined:
-                permissionStatus = PermissionStatusNotDetermined;
+                permissionStatus = PermissionStatusDenied;
                 break;
             case CMAuthorizationStatusRestricted:
                 permissionStatus = PermissionStatusRestricted;
@@ -72,7 +72,7 @@
         return permissionStatus;
     }
     
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 @end
