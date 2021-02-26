@@ -75,7 +75,8 @@
         BOOL success = [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
         result([[NSNumber alloc] initWithBool:success]);
     } else {
-        result(@false);    }
+        result(@false);    
+    }
 }
 
 + (id)createPermissionStrategy:(PermissionGroup)permission {
