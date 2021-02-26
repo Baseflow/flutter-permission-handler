@@ -137,12 +137,12 @@ You can remove permissions you don't use:
 ## How to use
 
 There are a number of [`Permission`](https://pub.dev/documentation/permission_handler_platform_interface/latest/permission_handler_platform_interface/Permission-class.html#constants)s.
-You can get a `Permission`'s `status`, which is either `undetermined`, `granted`, `denied`, `restricted` or `permanentlyDenied`.
+You can get a `Permission`'s `status`, which is either `granted`, `denied`, `restricted` or `permanentlyDenied`.
 
 ```dart
 var status = await Permission.camera.status;
-if (status.isUndetermined) {
-  // We didn't ask for permission yet.
+if (status.denied) {
+  // We didn't ask for permission yet or the permission has been denied before but not permanently.
 }
 
 // You can can also directly ask the permission about its status.
