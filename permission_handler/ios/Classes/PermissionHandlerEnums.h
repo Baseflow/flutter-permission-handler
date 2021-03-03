@@ -113,11 +113,10 @@ typedef NS_ENUM(int, PermissionGroup) {
 
 typedef NS_ENUM(int, PermissionStatus) {
     PermissionStatusDenied = 0,
-    PermissionStatusGranted,
-    PermissionStatusRestricted,
-    PermissionStatusUndetermined,
-    PermissionStatusLimited,
-    PermissionStatusPermanentlyDenied,
+    PermissionStatusGranted = 1,
+    PermissionStatusRestricted = 2,
+    PermissionStatusLimited = 4,
+    PermissionStatusPermanentlyDenied = 5,
 };
 
 typedef NS_ENUM(int, ServiceStatus) {
