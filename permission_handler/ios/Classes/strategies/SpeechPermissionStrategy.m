@@ -48,7 +48,7 @@
         case SFSpeechRecognizerAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;
         case SFSpeechRecognizerAuthorizationStatusDenied:
-            return PermissionStatusPermanently;
+            return PermissionStatusPermanentlyDenied;
         case SFSpeechRecognizerAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case SFSpeechRecognizerAuthorizationStatusAuthorized:

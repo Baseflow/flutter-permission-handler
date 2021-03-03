@@ -65,7 +65,7 @@
         case PHAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case PHAuthorizationStatusDenied:
-            return PermissionStatusPermanently;
+            return PermissionStatusPermanentlyDenied;
         case PHAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
         case PHAuthorizationStatusLimited:
