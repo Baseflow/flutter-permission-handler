@@ -49,7 +49,7 @@
         case MPMediaLibraryAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;
         case MPMediaLibraryAuthorizationStatusDenied:
-            return PermissionStatusDenied;
+            return PermissionStatusPermanently;
         case MPMediaLibraryAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case MPMediaLibraryAuthorizationStatusAuthorized:

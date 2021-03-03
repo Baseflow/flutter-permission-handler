@@ -60,7 +60,7 @@
                 permissionStatus = PermissionStatusRestricted;
                 break;
             case CMAuthorizationStatusDenied:
-                permissionStatus = PermissionStatusDenied;
+                permissionStatus = PermissionStatusPermanently;
                 break;
             case CMAuthorizationStatusAuthorized:
                 permissionStatus = PermissionStatusGranted;

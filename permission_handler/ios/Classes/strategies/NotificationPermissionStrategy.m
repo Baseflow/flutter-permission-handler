@@ -34,7 +34,7 @@
       authorizationOptions += UNAuthorizationOptionBadge;
       [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
         if (!granted || error != nil) {
-          completionHandler(PermissionStatusDenied);
+          completionHandler(PermissionStatusPermanently);
           return;
         }
 
@@ -64,7 +64,7 @@
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
       if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
-        permissionStatus = PermissionStatusDenied;
+        permissionStatus = PermissionStatusPermanently;
       } else if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
         permissionStatus = PermissionStatusDenied;
       }

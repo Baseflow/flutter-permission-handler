@@ -17,6 +17,6 @@
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
-    completionHandler(PermissionStatusDenied);
+    completionHandler(PermissionStatusPermanently);
 }
 @end
