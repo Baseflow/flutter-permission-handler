@@ -17,7 +17,7 @@ class _PermissionState extends State<PermissionWidget> {
   _PermissionState(this._permission);
 
   final Permission _permission;
-  PermissionStatus _permissionStatus = PermissionStatus.undetermined;
+  PermissionStatus? _permissionStatus = null;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _PermissionState extends State<PermissionWidget> {
         style: Theme.of(context).textTheme.bodyText1,
       ),
       subtitle: Text(
-        _permissionStatus.toString(),
+        _permissionStatus?.toString() ?? '',
         style: TextStyle(color: getPermissionColor()),
       ),
       trailing: IconButton(
