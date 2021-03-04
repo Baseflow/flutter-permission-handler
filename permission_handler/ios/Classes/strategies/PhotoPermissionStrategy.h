@@ -11,6 +11,7 @@
 #import <Photos/Photos.h>
 
 @interface PhotoPermissionStrategy : NSObject <PermissionStrategy>
+-(instancetype)initWithAccessAddOnly:(BOOL) addOnly;
 @end
 
 #else

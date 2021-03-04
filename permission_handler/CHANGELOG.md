@@ -1,17 +1,41 @@
-# 5.0.1+1
+## 6.0.0
+
+* Migrated to null safety 
+
+## 5.1.0+2
+
+* Solve mismatch with permission constants between Dart and Android (due to addition of permission on iOS);
+* Fix compile error which occurred when on iOS the "PERMISSION_PHOTOS" macro is deactivated (meaning code dealing with the `PHPhotoLibrary` library is removed from the code base).
+
+## 5.1.0+1
+
+* Recreate the iOS part of the example project based on the Flutter stable channel (previous version was accidentally created with the Flutter beta channel).
+
+## 5.1.0
+
+* Added support for the limited photos permission available on iOS 14 and up;
+* Fixed deprecated warning on iOS;
+* Added support for the "READ_PHONE_NUMBERS" permission on Android;
+* Fix a link to the contribution guide in the README.md.
+
+## 5.0.1+2
+
+* Pin dependency on permission_handler_platform_interface on version 2.0.1.
+
+## 5.0.1+1
 
 * Fixes Typo
 * Issue #233 - on 5.0: Solved a bug that prevented Android applications running in the background to check the permission status.
 
-# 5.0.1
+## 5.0.1
 
 * Update `permission_handler_platform_interface 2.0.1`
 
-# 5.0.0+hotfix.10
+## 5.0.0+hotfix.10
 
 * Revert pull-request [#317](https://github.com/Baseflow/flutter-permission-handler/pull/317)
 
-# 5.0.0+hotfix.9
+## 5.0.0+hotfix.9
 
 * Solved an issue where kCLAuthorizationStatusAuthorizedWhenInUse was returning PermissionStatusDenied (see [#317](https://github.com/Baseflow/flutter-permission-handler/pull/317))
 

@@ -23,8 +23,8 @@ Future<bool> openAppSettings() => _handler.openAppSettings();
 /// Actions that can be executed on a permission.
 extension PermissionActions on Permission {
   /// The current status of this permission.
-  /// 
-  /// The Android-only [PermissionStatus.permanentlyDenied] status will only be 
+  ///
+  /// The Android-only [PermissionStatus.permanentlyDenied] status will only be
   /// calculated if the active context is an Activity. If it isn't,
   /// [PermissionStatus.denied] will be returned.
   Future<PermissionStatus> get status => _handler.checkPermissionStatus(this);
@@ -46,7 +46,8 @@ extension PermissionActions on Permission {
   ///
   /// Returns the new [PermissionStatus].
   Future<PermissionStatus> request() async {
-    return (await [this].request())[this];
+    final permissionStatus = (await [this].request())[this];
+    return permissionStatus ?? PermissionStatus.denied;
   }
 }
 
@@ -66,6 +67,10 @@ extension PermissionCheckShortcuts on Permission {
   /// place.
   /// *Only supported on iOS.*
   Future<bool> get isRestricted => status.isRestricted;
+
+  ///User has authorized this application for limited photo library access.
+  /// *Only supported on iOS.(iOS14+)*
+  Future<bool> get isLimited => status.isLimited;
 
   /// If the user denied this permission and selected to never again show a
   /// request for it. The user may still change the permission's status in the

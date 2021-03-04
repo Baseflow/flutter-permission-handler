@@ -2,9 +2,6 @@ part of permission_handler_platform_interface;
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
-  /// The permission wasn't requested yet.
-  undetermined,
-
   /// The user granted access to the requested feature.
   granted,
 
@@ -16,6 +13,10 @@ enum PermissionStatus {
   /// controls being in place.
   /// *Only supported on iOS.*
   restricted,
+
+  ///User has authorized this application for limited access.
+  /// *Only supported on iOS (iOS14+).*
+  limited,
 
   /// The user denied access to the requested feature and selected to never
   /// again show a request for this permission. The user may still change the
@@ -33,9 +34,11 @@ extension PermissionStatusValue on PermissionStatus {
         return 1;
       case PermissionStatus.restricted:
         return 2;
-      case PermissionStatus.undetermined:
+      case PermissionStatus.denied:
         return 3;
       case PermissionStatus.permanentlyDenied:
+        return 5;
+      case PermissionStatus.limited:
         return 4;
       default:
         throw UnimplementedError();
@@ -47,16 +50,13 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.denied,
       PermissionStatus.granted,
       PermissionStatus.restricted,
-      PermissionStatus.undetermined,
+      PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
     ][value];
   }
 }
 
 extension PermissionStatusGetters on PermissionStatus {
-  /// If the permission was never requested before.
-  bool get isUndetermined => this == PermissionStatus.undetermined;
-
   /// If the user granted access to the requested feature.
   bool get isGranted => this == PermissionStatus.granted;
 
@@ -74,12 +74,11 @@ extension PermissionStatusGetters on PermissionStatus {
   /// permission status in the settings.
   /// *Only supported on Android.*
   bool get isPermanentlyDenied => this == PermissionStatus.permanentlyDenied;
+
+  bool get isLimited => this == PermissionStatus.limited;
 }
 
 extension FuturePermissionStatusGetters on Future<PermissionStatus> {
-  /// If the permission was never requested before.
-  Future<bool> get isUndetermined async => (await this).isUndetermined;
-
   /// If the user granted access to the requested feature.
   Future<bool> get isGranted async => (await this).isGranted;
 
@@ -98,4 +97,6 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// *Only supported on Android.*
   Future<bool> get isPermanentlyDenied async =>
       (await this).isPermanentlyDenied;
+
+  Future<bool> get isLimited async => (await this).isLimited;
 }

@@ -32,13 +32,19 @@
 }
 
 - (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion {
-    NSMutableSet *requestQueue = [[NSMutableSet alloc] initWithArray:permissions];
     NSMutableDictionary *permissionStatusResult = [[NSMutableDictionary alloc] init];
+
+    if (permissions.count == 0) {
+        completion(permissionStatusResult);
+        return;
+    }
     
+    NSMutableSet *requestQueue = [[NSMutableSet alloc] initWithArray:permissions];
+        
     for (int i = 0; i < permissions.count; ++i) {
-        PermissionGroup value;
-        [permissions[i] getValue:&value];
-        PermissionGroup permission = value;
+        NSNumber *rawNumberValue = permissions[i];
+        int rawValue = rawNumberValue.intValue;
+        PermissionGroup permission = (PermissionGroup) rawValue;
         
         id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
         [_strategyInstances addObject:permissionStrategy];
@@ -96,7 +102,17 @@
         case PermissionGroupPhone:
             return [PhonePermissionStrategy new];
         case PermissionGroupPhotos:
+            #if PERMISSION_PHOTOS
+            return [[PhotoPermissionStrategy alloc] initWithAccessAddOnly:false];
+            #else
             return [PhotoPermissionStrategy new];
+            #endif
+        case PermissionGroupPhotosAddOnly:
+            #if PERMISSION_PHOTOS
+            return [[PhotoPermissionStrategy alloc] initWithAccessAddOnly:true];
+            #else
+            return [PhotoPermissionStrategy new];
+            #endif
         case PermissionGroupReminders:
             return [EventPermissionStrategy new];
         case PermissionGroupSensors:
