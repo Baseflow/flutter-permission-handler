@@ -104,7 +104,7 @@ final class PermissionManager {
             // if we can't add as unknown and continue
             if (names == null || names.isEmpty()) {
                 if (!requestResults.containsKey(permission)) {
-                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
                 }
 
                 continue;
@@ -172,7 +172,7 @@ final class PermissionManager {
         //if no permissions were found then there is an issue and permission is not set in Android manifest
         if (names.size() == 0) {
             Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission);
-            return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
         final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
