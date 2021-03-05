@@ -75,7 +75,7 @@
     UIUserNotificationSettings * setting = [[UIApplication sharedApplication] currentUserNotificationSettings];
     if (setting.types == UIUserNotificationTypeNone) permissionStatus = PermissionStatusDenied;
   } else {
-      permissionStatus = PermissionStatusDenied;
+      permissionStatus = PermissionStatusPermanentlyDenied;
   }
   return permissionStatus;
 }

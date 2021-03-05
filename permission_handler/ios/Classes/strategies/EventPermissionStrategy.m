@@ -52,7 +52,7 @@
         return;
         #endif
     } else {
-        completionHandler(PermissionStatusDenied);
+        completionHandler(PermissionStatusPermanentlyDenied);
         return;
     }
     
@@ -61,7 +61,7 @@
         if (granted) {
             completionHandler(PermissionStatusGranted);
         } else {
-            completionHandler(PermissionStatusDenied);
+            completionHandler(PermissionStatusPermanentlyDenied);
         }
     }];
 }
