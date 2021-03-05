@@ -138,7 +138,7 @@
         case kCLAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case kCLAuthorizationStatusDenied:
-            return PermissionStatusDenied;
+            return PermissionStatusPermanentlyDenied;
         case kCLAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
         default:

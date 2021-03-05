@@ -59,7 +59,7 @@
         if (granted) {
             completionHandler(PermissionStatusGranted);
         } else {
-            completionHandler(PermissionStatusDenied);
+            completionHandler(PermissionStatusPermanentlyDenied);
         }
     }];
 }

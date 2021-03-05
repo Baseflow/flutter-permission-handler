@@ -29,7 +29,7 @@
             completionHandler([MediaLibraryPermissionStrategy determinePermissionStatus:status]);
         }];
     } else {
-        completionHandler(PermissionStatusDenied);
+        completionHandler(PermissionStatusPermanentlyDenied);
         return;
     }
 }

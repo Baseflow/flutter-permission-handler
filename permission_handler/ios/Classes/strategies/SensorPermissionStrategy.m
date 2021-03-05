@@ -35,11 +35,8 @@
         
         NSDate *today = [NSDate new];
         [motionManager queryActivityStartingFromDate:today toDate:today toQueue:[NSOperationQueue mainQueue] withHandler:^(NSArray<CMMotionActivity *> *__nullable activities, NSError *__nullable error) {
-            if (error != nil && error.code == CMErrorMotionActivityNotAuthorized) {
-                completionHandler(PermissionStatusDenied);
-            } else {
-                completionHandler(PermissionStatusGranted);
-            }
+            PermissionStatus status = [SensorPermissionStrategy permissionStatus];
+            completionHandler(status);
         }];
     } else {
         completionHandler(PermissionStatusDenied);

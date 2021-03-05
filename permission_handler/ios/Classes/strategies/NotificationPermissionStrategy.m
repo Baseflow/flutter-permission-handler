@@ -33,7 +33,7 @@
       authorizationOptions += UNAuthorizationOptionAlert;
       authorizationOptions += UNAuthorizationOptionBadge;
       [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        if (!granted || error != nil) {
+        if (error != nil || !granted) {
           completionHandler(PermissionStatusPermanentlyDenied);
           return;
         }
