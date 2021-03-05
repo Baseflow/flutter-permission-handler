@@ -75,7 +75,7 @@
         case EKAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case EKAuthorizationStatusDenied:
-            return PermissionStatusPermanently;
+            return PermissionStatusPermanentlyDenied;
         case EKAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
     }

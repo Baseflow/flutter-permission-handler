@@ -73,7 +73,7 @@
         case AVAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case AVAuthorizationStatusDenied:
-            return PermissionStatusPermanently;
+            return PermissionStatusPermanentlyDenied;
         case AVAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
     }

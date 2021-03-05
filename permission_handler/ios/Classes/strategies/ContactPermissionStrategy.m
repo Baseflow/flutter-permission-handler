@@ -41,7 +41,7 @@
             case CNAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case CNAuthorizationStatusDenied:
-                return PermissionStatusPermanently;
+                return PermissionStatusPermanentlyDenied;
             case CNAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
         }
@@ -55,7 +55,7 @@
             case kABAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case kABAuthorizationStatusDenied:
-                return PermissionStatusPermanently;
+                return PermissionStatusPermanentlyDenied;
             case kABAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
         }
