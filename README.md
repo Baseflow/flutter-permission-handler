@@ -1,4 +1,4 @@
-[![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/permission_handler/badge.svg?branch=master) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
+[![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler) [![Build status](https://github.com/Baseflow/flutter-permission-handler/actions/workflows/app_facing_package.yaml/badge.svg?branch=master)](https://github.com/Baseflow/flutter-permission-handler/actions/workflows/app_facing_package.yaml) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
 
 On most operating systems, permissions aren't just granted to apps at install time.
 Rather, developers have to ask the user for permissions while the app is running.
