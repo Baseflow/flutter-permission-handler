@@ -19,7 +19,7 @@
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
         return;
     }
@@ -29,7 +29,7 @@
             completionHandler([MediaLibraryPermissionStrategy determinePermissionStatus:status]);
         }];
     } else {
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusPermanentlyDenied);
         return;
     }
 }
@@ -41,22 +41,22 @@
         return [MediaLibraryPermissionStrategy determinePermissionStatus:status];
     }
 
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 + (PermissionStatus)determinePermissionStatus:(MPMediaLibraryAuthorizationStatus)authorizationStatus  API_AVAILABLE(ios(9.3)){
     switch (authorizationStatus) {
         case MPMediaLibraryAuthorizationStatusNotDetermined:
-            return PermissionStatusNotDetermined;
-        case MPMediaLibraryAuthorizationStatusDenied:
             return PermissionStatusDenied;
+        case MPMediaLibraryAuthorizationStatusDenied:
+            return PermissionStatusPermanentlyDenied;
         case MPMediaLibraryAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case MPMediaLibraryAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
     }
 
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 @end

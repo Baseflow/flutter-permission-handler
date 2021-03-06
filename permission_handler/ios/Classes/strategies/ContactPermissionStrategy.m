@@ -20,7 +20,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
 
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
     }
 
@@ -37,11 +37,11 @@
 
         switch (status) {
             case CNAuthorizationStatusNotDetermined:
-                return PermissionStatusNotDetermined;
+                return PermissionStatusDenied;
             case CNAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case CNAuthorizationStatusDenied:
-                return PermissionStatusDenied;
+                return PermissionStatusPermanentlyDenied;
             case CNAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
         }
@@ -51,17 +51,17 @@
 
         switch (status) {
             case kABAuthorizationStatusNotDetermined:
-                return PermissionStatusNotDetermined;
+                return PermissionStatusDenied;
             case kABAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case kABAuthorizationStatusDenied:
-                return PermissionStatusDenied;
+                return PermissionStatusPermanentlyDenied;
             case kABAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
         }
     }
 
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 + (void)requestPermissionsFromContactStore:(PermissionStatusHandler)completionHandler API_AVAILABLE(ios(9)) {
@@ -71,18 +71,9 @@
         if (granted) {
             completionHandler(PermissionStatusGranted);
         } else {
-            completionHandler(PermissionStatusDenied);
+            completionHandler(PermissionStatusPermanentlyDenied);
         }
     }];
-
-
-    ABAddressBookRequestAccessWithCompletion(ABAddressBookCreate(), ^(bool granted, CFErrorRef error) {
-        if (granted) {
-            completionHandler(PermissionStatusGranted);
-        } else {
-            completionHandler(PermissionStatusDenied);
-        }
-    });
 }
 
 + (void)requestPermissionsFromAddressBook:(PermissionStatusHandler)completionHandler {
@@ -90,7 +81,7 @@
         if (granted) {
             completionHandler(PermissionStatusGranted);
         } else {
-            completionHandler(PermissionStatusDenied);
+            completionHandler(PermissionStatusPermanentlyDenied);
         }
     });
 }

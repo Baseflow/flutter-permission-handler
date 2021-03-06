@@ -19,7 +19,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
         return;
     }
@@ -29,7 +29,7 @@
             completionHandler([SpeechPermissionStrategy determinePermissionStatus:authorizationStatus]);
         }];
     } else {
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
     }
 }
 
@@ -40,22 +40,22 @@
         return [SpeechPermissionStrategy determinePermissionStatus:status];
     }
     
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 + (PermissionStatus)determinePermissionStatus:(SFSpeechRecognizerAuthorizationStatus)authorizationStatus  API_AVAILABLE(ios(10.0)){
     switch (authorizationStatus) {
         case SFSpeechRecognizerAuthorizationStatusNotDetermined:
-            return PermissionStatusNotDetermined;
-        case SFSpeechRecognizerAuthorizationStatusDenied:
             return PermissionStatusDenied;
+        case SFSpeechRecognizerAuthorizationStatusDenied:
+            return PermissionStatusPermanentlyDenied;
         case SFSpeechRecognizerAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case SFSpeechRecognizerAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
     }
     
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 @end
