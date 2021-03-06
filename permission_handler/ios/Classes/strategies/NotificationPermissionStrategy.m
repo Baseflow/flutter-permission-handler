@@ -21,7 +21,7 @@
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
   PermissionStatus status = [self checkPermissionStatus:permission];
-  if (status != PermissionStatusNotDetermined) {
+  if (status != PermissionStatusDenied) {
     completionHandler(status);
     return;
   }
@@ -33,8 +33,8 @@
       authorizationOptions += UNAuthorizationOptionAlert;
       authorizationOptions += UNAuthorizationOptionBadge;
       [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        if (!granted || error != nil) {
-          completionHandler(PermissionStatusDenied);
+        if (error != nil || !granted) {
+          completionHandler(PermissionStatusPermanentlyDenied);
           return;
         }
 
@@ -64,9 +64,9 @@
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
       if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
-        permissionStatus = PermissionStatusDenied;
+        permissionStatus = PermissionStatusPermanentlyDenied;
       } else if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
-        permissionStatus = PermissionStatusNotDetermined;
+        permissionStatus = PermissionStatusDenied;
       }
       dispatch_semaphore_signal(sem);
     }];
@@ -75,7 +75,7 @@
     UIUserNotificationSettings * setting = [[UIApplication sharedApplication] currentUserNotificationSettings];
     if (setting.types == UIUserNotificationTypeNone) permissionStatus = PermissionStatusDenied;
   } else {
-      permissionStatus = PermissionStatusDenied;
+      permissionStatus = PermissionStatusPermanentlyDenied;
   }
   return permissionStatus;
 }

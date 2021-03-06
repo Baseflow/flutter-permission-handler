@@ -25,7 +25,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
         return;
     }
@@ -35,14 +35,11 @@
         
         NSDate *today = [NSDate new];
         [motionManager queryActivityStartingFromDate:today toDate:today toQueue:[NSOperationQueue mainQueue] withHandler:^(NSArray<CMMotionActivity *> *__nullable activities, NSError *__nullable error) {
-            if (error != nil && error.code == CMErrorMotionActivityNotAuthorized) {
-                completionHandler(PermissionStatusDenied);
-            } else {
-                completionHandler(PermissionStatusGranted);
-            }
+            PermissionStatus status = [SensorPermissionStrategy permissionStatus];
+            completionHandler(status);
         }];
     } else {
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
     }
     
 }
@@ -54,13 +51,13 @@
         
         switch (status) {
             case CMAuthorizationStatusNotDetermined:
-                permissionStatus = PermissionStatusNotDetermined;
+                permissionStatus = PermissionStatusDenied;
                 break;
             case CMAuthorizationStatusRestricted:
                 permissionStatus = PermissionStatusRestricted;
                 break;
             case CMAuthorizationStatusDenied:
-                permissionStatus = PermissionStatusDenied;
+                permissionStatus = PermissionStatusPermanentlyDenied;
                 break;
             case CMAuthorizationStatusAuthorized:
                 permissionStatus = PermissionStatusGranted;
@@ -72,7 +69,7 @@
         return permissionStatus;
     }
     
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 @end
