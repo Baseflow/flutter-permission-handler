@@ -1,7 +1,12 @@
+## 6.0.1
+
+* Fixed deprecation warning when building Android project.
+
 ## 6.0.0
 
+This release includes the following **breaking changes**:
 * Migrated to null safety 
-* Removed PermissionStatus.undetermined, PermissionStatus.denied will be used instead.
+* Removed PermissionStatus.undetermined, PermissionStatus.denied will be used instead (see our "[Changes in 6.0.0](https://github.com/Baseflow/flutter-permission-handler/wiki/Changes-in-6.0.0)" wiki page for more details).
 
 ## 5.1.0+2
 
