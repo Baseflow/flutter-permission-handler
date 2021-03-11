@@ -5,12 +5,18 @@ part of permission_handler_platform_interface;
 /// the related service.
 class PermissionWithService extends Permission {
   const PermissionWithService._(int value) : super._(value);
+
+  @visibleForTesting
+  const PermissionWithService.private(int value) : super._(value);
 }
 
 /// Defines the permissions which can be checked and requested.
 class Permission {
   const Permission._(this.value);
   factory Permission.byValue(int value) => values[value];
+
+  @visibleForTesting
+  const Permission.private(this.value);
 
   /// Integer representation of the [Permission].
   final int value;

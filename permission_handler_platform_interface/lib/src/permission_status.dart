@@ -28,17 +28,15 @@ enum PermissionStatus {
 extension PermissionStatusValue on PermissionStatus {
   int get value {
     switch (this) {
-      case PermissionStatus.denied:
-        return 0;
       case PermissionStatus.granted:
+        return 0;
+      case PermissionStatus.denied:
         return 1;
       case PermissionStatus.restricted:
         return 2;
-      case PermissionStatus.denied:
+      case PermissionStatus.limited:
         return 3;
       case PermissionStatus.permanentlyDenied:
-        return 5;
-      case PermissionStatus.limited:
         return 4;
       default:
         throw UnimplementedError();
@@ -47,8 +45,8 @@ extension PermissionStatusValue on PermissionStatus {
 
   static PermissionStatus statusByValue(int value) {
     return [
-      PermissionStatus.denied,
       PermissionStatus.granted,
+      PermissionStatus.denied,
       PermissionStatus.restricted,
       PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
