@@ -160,6 +160,9 @@ final class PermissionManager {
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
         }
+        if(permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH){
+            return checkBluetoothPermissionStatus(context);
+        }
 
         final List<String> names = PermissionUtils.getManifestNames(context, permission);
 
@@ -242,6 +245,16 @@ final class PermissionManager {
             return PermissionConstants.PERMISSION_STATUS_GRANTED;
         }
         return PermissionConstants.PERMISSION_STATUS_DENIED;
+    }
+
+    private int checkBluetoothPermissionStatus(Context context) {
+        List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
+        boolean missingInManifest = names == null || names.isEmpty();
+        if(missingInManifest) {
+            Log.d(PermissionConstants.LOG_TAG, "Bluetooth permission missing in manifest");
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+        return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
     @VisibleForTesting

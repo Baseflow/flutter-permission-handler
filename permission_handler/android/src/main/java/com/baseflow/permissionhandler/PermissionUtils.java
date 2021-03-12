@@ -193,6 +193,10 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
                 break;
 
+            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH:
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH))
+                    permissionNames.add(Manifest.permission.BLUETOOTH);
+                break;
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
