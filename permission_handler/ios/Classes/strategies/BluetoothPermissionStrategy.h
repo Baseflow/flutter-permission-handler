@@ -6,9 +6,20 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <CoreBluetooth/CoreBluetooth.h>
 #import "PermissionStrategy.h"
 
+#if PERMISSION_BLUETOOTH
+
+#import <CoreBluetooth/CoreBluetooth.h>
 
 @interface BluetoothPermissionStrategy : NSObject <PermissionStrategy>
 @end
+
+#else
+
+#import "UnknownPermissionStrategy.h"
+
+@interface BluetoothPermissionStrategy : UnknownPermissionStrategy
+@end
+
+#endif

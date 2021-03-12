@@ -7,6 +7,7 @@
 
 #import "BluetoothPermissionStrategy.h"
 
+#if PERMISSION_BLUETOOTH
 
 @implementation BluetoothPermissionStrategy
 
@@ -48,3 +49,10 @@
     }
 }
 @end
+
+#else
+
+@implementation BluetoothPermissionStrategy
+@end
+
+#endif
