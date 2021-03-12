@@ -1,3 +1,8 @@
+## 6.1.0
+
+* Added support for bluetooth permissions;
+* Workaround for ignore battery optimizations on pre-M Android devices (see PR [#376](https://github.com/Baseflow/flutter-permission-handler/pull/376)). 
+
 ## 6.0.1+1
 
 * Fixed content of the README.md file.
