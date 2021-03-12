@@ -1,3 +1,7 @@
+## 6.0.1+1
+
+* Fixed content of the README.md file.
+
 ## 6.0.1
 
 * Fixed deprecation warning when building Android project.
