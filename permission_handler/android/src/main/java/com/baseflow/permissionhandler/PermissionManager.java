@@ -104,7 +104,13 @@ final class PermissionManager {
             // if we can't add as unknown and continue
             if (names == null || names.isEmpty()) {
                 if (!requestResults.containsKey(permission)) {
-                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
+                    // On Android below M, the android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS flag in AndroidManifest.xml
+                    // may be ignored and not visible to the App as it's a new permission setting as a whole.
+                    if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_RESTRICTED);
+                    } else {
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
+                    }
                 }
 
                 continue;
@@ -175,6 +181,15 @@ final class PermissionManager {
         //if no permissions were found then there is an issue and permission is not set in Android manifest
         if (names.size() == 0) {
             Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission);
+
+            // On Android below M, the android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS flag in AndroidManifest.xml
+            // may be ignored and not visible to the App as it's a new permission setting as a whole.
+            if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                }
+            }
+
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
