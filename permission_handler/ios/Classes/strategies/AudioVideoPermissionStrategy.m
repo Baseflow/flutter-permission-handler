@@ -19,7 +19,7 @@
         return [AudioVideoPermissionStrategy permissionStatus:AVMediaTypeAudio];
         #endif
     }
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -29,7 +29,7 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
 
-    if (status != PermissionStatusNotDetermined) {
+    if (status != PermissionStatusDenied) {
         completionHandler(status);
         return;
     }
@@ -40,18 +40,18 @@
         #if PERMISSION_CAMERA
         mediaType = AVMediaTypeVideo;
         #else
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else if (permission == PermissionGroupMicrophone) {
         #if PERMISSION_MICROPHONE
         mediaType = AVMediaTypeAudio;
         #else
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else {
-        completionHandler(PermissionStatusNotDetermined);
+        completionHandler(PermissionStatusDenied);
         return;
     }
 
@@ -59,7 +59,7 @@
         if (granted) {
             completionHandler(PermissionStatusGranted);
         } else {
-            completionHandler(PermissionStatusDenied);
+            completionHandler(PermissionStatusPermanentlyDenied);
         }
     }];
 }
@@ -69,16 +69,16 @@
 
     switch (status) {
         case AVAuthorizationStatusNotDetermined:
-            return PermissionStatusNotDetermined;
+            return PermissionStatusDenied;
         case AVAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case AVAuthorizationStatusDenied:
-            return PermissionStatusDenied;
+            return PermissionStatusPermanentlyDenied;
         case AVAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
     }
 
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 @end

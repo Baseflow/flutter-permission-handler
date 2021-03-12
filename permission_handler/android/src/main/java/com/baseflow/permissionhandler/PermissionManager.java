@@ -109,7 +109,7 @@ final class PermissionManager {
                     if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                         requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_RESTRICTED);
                     } else {
-                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED);
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
                 }
 
@@ -118,7 +118,7 @@ final class PermissionManager {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
                 activityRegistry.addListener(
-                    new ActivityResultListener(successCallback)
+                        new ActivityResultListener(successCallback)
                 );
 
                 String packageName = activity.getPackageName();
@@ -187,7 +187,7 @@ final class PermissionManager {
                 }
             }
 
-            return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
         final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
@@ -210,21 +210,11 @@ final class PermissionManager {
                     }
                 }
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                if (permissionStatus == PackageManager.PERMISSION_DENIED) {
-                    if (!PermissionUtils.getRequestedPermissionBefore(context, name)) {
-                        return PermissionConstants.PERMISSION_STATUS_NOT_DETERMINED;
-                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            PermissionUtils.isNeverAskAgainSelected(activity, name)) {
-                        return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
-                    } else {
-                        return PermissionConstants.PERMISSION_STATUS_DENIED;
-                    }
-                } else if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                     return PermissionConstants.PERMISSION_STATUS_DENIED;
                 }
             }
         }
-
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
@@ -271,7 +261,7 @@ final class PermissionManager {
 
     @VisibleForTesting
     static final class ActivityResultListener
-        implements PluginRegistry.ActivityResultListener {
+            implements PluginRegistry.ActivityResultListener {
 
         // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
         // duplicate times in cases where the user denies and then grants a permission. Keep track of if
@@ -288,7 +278,7 @@ final class PermissionManager {
 
         @Override
         public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-            if(alreadyCalled || requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
+            if (alreadyCalled || requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
                 return false;
             }
 
@@ -306,7 +296,7 @@ final class PermissionManager {
 
     @VisibleForTesting
     static final class RequestPermissionsListener
-        implements PluginRegistry.RequestPermissionsResultListener {
+            implements PluginRegistry.RequestPermissionsResultListener {
 
         // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
         // duplicate times in cases where the user denies and then grants a permission. Keep track of if
@@ -329,8 +319,7 @@ final class PermissionManager {
         }
 
         @Override
-        public boolean onRequestPermissionsResult(int id, String[] permissions, int[] grantResults)
-        {
+        public boolean onRequestPermissionsResult(int id, String[] permissions, int[] grantResults) {
             if (alreadyCalled || id != PermissionConstants.PERMISSION_CODE) {
                 return false;
             }

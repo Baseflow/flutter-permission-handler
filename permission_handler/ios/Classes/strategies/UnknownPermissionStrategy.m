@@ -9,7 +9,7 @@
 @implementation UnknownPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    return PermissionStatusNotDetermined;
+    return PermissionStatusDenied;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
@@ -17,6 +17,6 @@
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
-    completionHandler(PermissionStatusNotDetermined);
+    completionHandler(PermissionStatusPermanentlyDenied);
 }
 @end

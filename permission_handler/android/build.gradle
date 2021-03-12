@@ -1,5 +1,6 @@
 group 'com.baseflow.permissionhandler'
 version '1.0-SNAPSHOT'
+def args = ["-Xlint:deprecation","-Xlint:unchecked","-Werror"]
 
 buildscript {
     repositories {
@@ -18,6 +19,10 @@ rootProject.allprojects {
         google()
         jcenter()
     }
+}
+
+project.getTasks().withType(JavaCompile){
+    options.compilerArgs.addAll(args)
 }
 
 apply plugin: 'com.android.library'

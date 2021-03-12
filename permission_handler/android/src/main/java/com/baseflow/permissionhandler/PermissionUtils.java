@@ -3,7 +3,6 @@ package com.baseflow.permissionhandler;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -262,10 +261,6 @@ public class PermissionUtils {
         if (names == null || names.isEmpty()) {
             return;
         }
-
-        for (String name : names) {
-            PermissionUtils.setRequestedPermission(activity, name);
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -274,25 +269,7 @@ public class PermissionUtils {
             return false;
         }
 
-        return PermissionUtils.neverAskAgainSelected(activity, name);
+        final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, name);
+        return !shouldShowRequestPermissionRationale;
     }
-
-  @RequiresApi(api = Build.VERSION_CODES.M)
-  static boolean neverAskAgainSelected(final Activity activity, final String permission) {
-    final boolean hasRequestedPermissionBefore = getRequestedPermissionBefore(activity, permission);
-    final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
-    return hasRequestedPermissionBefore && !shouldShowRequestPermissionRationale;
-  }
-
-  static void setRequestedPermission(final Context context, final String permission) {
-    SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
-    SharedPreferences.Editor editor = genPrefs.edit();
-    editor.putBoolean(permission, true);
-    editor.apply();
-  }
-
-  static boolean getRequestedPermissionBefore(final Context context, final String permission) {
-    SharedPreferences genPrefs = context.getSharedPreferences("GENERIC_PREFERENCES", Context.MODE_PRIVATE);
-    return genPrefs.getBoolean(permission, false);
-  }
 }

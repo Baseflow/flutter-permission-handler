@@ -35,7 +35,7 @@
     PermissionStatus status = [self checkPermissionStatus:permission];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
         // don't do anything and continue requesting permissions
-    } else if (status != PermissionStatusNotDetermined) {
+    } else if (status != PermissionStatusDenied) {
         completionHandler(status);
     }
     
@@ -105,12 +105,12 @@
         if (permission == PermissionGroupLocationAlways) {
             switch (authorizationStatus) {
                 case kCLAuthorizationStatusNotDetermined:
-                    return PermissionStatusNotDetermined;
+                    return PermissionStatusDenied;
                 case kCLAuthorizationStatusRestricted:
                     return PermissionStatusRestricted;
                 case kCLAuthorizationStatusAuthorizedWhenInUse:
                 case kCLAuthorizationStatusDenied:
-                    return PermissionStatusDenied;
+                    return PermissionStatusPermanentlyDenied;
                 case kCLAuthorizationStatusAuthorizedAlways:
                     return PermissionStatusGranted;
             }
@@ -118,11 +118,11 @@
         
         switch (authorizationStatus) {
             case kCLAuthorizationStatusNotDetermined:
-                return PermissionStatusNotDetermined;
+                return PermissionStatusDenied;
             case kCLAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
             case kCLAuthorizationStatusDenied:
-                return PermissionStatusDenied;
+                return PermissionStatusPermanentlyDenied;
             case kCLAuthorizationStatusAuthorizedWhenInUse:
             case kCLAuthorizationStatusAuthorizedAlways:
                 return PermissionStatusGranted;
@@ -134,15 +134,15 @@
 
     switch (authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
-            return PermissionStatusNotDetermined;
+            return PermissionStatusDenied;
         case kCLAuthorizationStatusRestricted:
             return PermissionStatusRestricted;
         case kCLAuthorizationStatusDenied:
-            return PermissionStatusDenied;
+            return PermissionStatusPermanentlyDenied;
         case kCLAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
         default:
-            return PermissionStatusNotDetermined;
+            return PermissionStatusDenied;
     }
 
 #pragma clang diagnostic pop

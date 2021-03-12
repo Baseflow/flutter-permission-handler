@@ -11,7 +11,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * Platform implementation of the permission_handler Flutter plugin.
@@ -19,8 +18,8 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  * <p>Instantiate this in an add to app scenario to gracefully handle activity and context changes.
  * See {@code com.example.permissionhandlerexample.MainActivity} for an example.
  *
- * <p>Call {@link #registerWith(Registrar)} to register an implementation of this that uses the
- * stable {@code io.flutter.plugin.common} package.
+ * <p>Call {@link #registerWith(io.flutter.plugin.common.PluginRegistry.Registrar)} to register an
+ * implementation of this that uses the stable {@code io.flutter.plugin.common} package.
  */
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 
@@ -36,7 +35,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
      * <p>Calling this automatically initializes the plugin. However plugins initialized this way
      * won't react to changes in activity or context, unlike {@link PermissionHandlerPlugin}.
      */
-    public static void registerWith(Registrar registrar) {
+    @SuppressWarnings("deprecation")
+    public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
         final PermissionHandlerPlugin plugin = new PermissionHandlerPlugin();
         plugin.startListening(registrar.context(), registrar.messenger());
 
