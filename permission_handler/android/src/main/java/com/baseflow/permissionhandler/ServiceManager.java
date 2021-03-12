@@ -1,5 +1,6 @@
 package com.baseflow.permissionhandler;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,6 +43,13 @@ final class ServiceManager {
 
             successCallback.onSuccess(serviceStatus);
             return;
+        }
+        if(permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH){
+            final int serviceStatus = isBluetoothServiceEnabled()
+                    ? PermissionConstants.SERVICE_STATUS_ENABLED
+                    : PermissionConstants.SERVICE_STATUS_DISABLED;
+
+            successCallback.onSuccess(serviceStatus);
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {
@@ -138,5 +146,10 @@ final class ServiceManager {
                 context.getContentResolver(),
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         return !TextUtils.isEmpty(locationProviders);
+    }
+
+    private boolean isBluetoothServiceEnabled() {
+        final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        return bluetoothAdapter.isEnabled();
     }
 }

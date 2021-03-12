@@ -32,6 +32,7 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_ACCESS_MEDIA_LOCATION = 18;
     static final int PERMISSION_GROUP_ACTIVITY_RECOGNITION = 19;
     static final int PERMISSION_GROUP_UNKNOWN = 20;
+    static final int PERMISSION_GROUP_BLUETOOTH = 21;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -55,6 +56,7 @@ final class PermissionConstants {
             PERMISSION_GROUP_ACCESS_MEDIA_LOCATION,
             PERMISSION_GROUP_ACTIVITY_RECOGNITION,
             PERMISSION_GROUP_UNKNOWN,
+            PERMISSION_GROUP_BLUETOOTH,
     })
     @interface PermissionGroup {
     }

@@ -10,6 +10,7 @@
 #import <UIKit/UIKit.h>
 
 #import "AudioVideoPermissionStrategy.h"
+#import "BluetoothPermissionStrategy.h"
 #import "ContactPermissionStrategy.h"
 #import "EventPermissionStrategy.h"
 #import "LocationPermissionStrategy.h"
