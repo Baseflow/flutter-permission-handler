@@ -68,7 +68,7 @@ void main() {
         'Default implementation of requestPermissions should throw unimplemented error',
         () {
       final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
-      List<Permission> permission = [Permission.accessMediaLocation];
+      var permission = <Permission>[Permission.accessMediaLocation];
 
       expect(() {
         permissionHandlerPlatform.requestPermissions(permission);
@@ -97,6 +97,7 @@ class ExtendsPermissionHandlerPlatform extends PermissionHandlerPlatform {}
 
 class MockPermissionHandlerPlatform extends Mock // ignore: prefer_mixin
     with
+        // ignore: prefer_mixin
         MockPlatformInterfaceMixin
     implements
         PermissionHandlerPlatform {}

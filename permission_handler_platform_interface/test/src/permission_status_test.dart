@@ -18,7 +18,9 @@ void main() {
     expect(values[4], PermissionStatus.permanentlyDenied);
   });
 
+
   test(
+      // ignore: lines_longer_than_80_chars
       'statusByValue should return right index int that corresponds with the right PermissionStatus',
       () {
     expect(PermissionStatusValue.statusByValue(0), PermissionStatus.granted);

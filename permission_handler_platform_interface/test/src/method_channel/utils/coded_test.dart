@@ -28,7 +28,7 @@ void main() {
     test('encodePermissions should return a list of integers', () {
       var permissions = [Permission.accessMediaLocation];
 
-      List<int> integers = Codec.encodePermissions(permissions);
+      var integers = Codec.encodePermissions(permissions);
 
       expect(integers.first, isA<int>());
     });
