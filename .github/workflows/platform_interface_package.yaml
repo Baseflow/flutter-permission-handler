@@ -6,11 +6,11 @@ name: platform_interface_package
 # events but only for the develop branch
 on:
   push:
-    branches: [ master, develop ]
+    branches: [ master ]
     paths:
     - 'permission_handler_platform_interface/**'
   pull_request:
-    branches: [ master, develop ]
+    branches: [ master ]
     paths:
     - 'permission_handler_platform_interface/**'
 
@@ -31,7 +31,7 @@ jobs:
       # Make sure the stable version of Flutter is available
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'beta'
+          channel: 'stable'
 
       # Download all Flutter packages the permission_handler_platform_interface depends on
       - name: Download dependencies
