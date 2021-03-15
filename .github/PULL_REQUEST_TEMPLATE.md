@@ -18,7 +18,9 @@
 
 ### :thinking: Checklist before submitting
 
-- [ ] All projects build
-- [ ] Follows style guide lines ([code style guide](https://github.com/Baseflow/flutter-permission-handler/blob/develop/CONTRIBUTING.md))
-- [ ] Relevant documentation was updated
-- [ ] Rebased onto current develop
+- [ ] I made sure all projects build.
+- [ ] I updated pubspec.yaml with an appropriate new version according to the pub versioning philosophy.
+- [ ] I updated CHANGELOG.md to add a description of the change.
+- [ ] I followed the style guide lines ([code style guide](https://github.com/Baseflow/flutter-permission-handler/blob/develop/CONTRIBUTING.md)).
+- [ ] I updated the relevant documentation.
+- [ ] I rebased onto current `master`.
