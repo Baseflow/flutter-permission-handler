@@ -16,4 +16,10 @@ void main() {
       expect(values[i], Permission.byValue(i));
     }
   });
+
+  test('check if byValue returns corresponding PermissionGroup value', () {
+    var permissionWithService = PermissionWithService.private(0);
+    var permissionName = permissionWithService.toString();
+    expect(permissionName, 'Permission.calendar');
+  });
 }

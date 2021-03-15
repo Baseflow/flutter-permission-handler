@@ -6,6 +6,8 @@ import 'method_channel_mock.dart';
 List<Permission> get mockPermissions => List.of(
     <Permission>{Permission.calendar, Permission.camera, Permission.contacts});
 
+Map<Permission, PermissionStatus> get mockPermissionMap => {};
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -160,6 +162,23 @@ void main() {
           await MethodChannelPermissionHandler().openAppSettings();
 
       expect(hasOpenedAppSettings, false);
+    });
+  });
+
+  group('requestPermissions: When requesting for permission', () {
+    // ignore: lines_longer_than_80_chars
+    test('returns a Map with all the PermissionStatus of the given permissions',
+        () async {
+      MethodChannelMock(
+        channelName: 'flutter.baseflow.com/permissions/methods',
+        method: 'requestPermissions',
+        result: mockPermissionMap,
+      );
+
+      final result = await MethodChannelPermissionHandler()
+          .requestPermissions(mockPermissions);
+
+      expect(result, isA<Map<Permission, PermissionStatus>>());
     });
   });
 

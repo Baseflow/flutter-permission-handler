@@ -60,4 +60,6 @@ void main() {
       expect(PermissionStatus.permanentlyDenied.isDenied, false);
     });
   });
+
+  test('test', () {});
 }
