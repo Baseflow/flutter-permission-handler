@@ -104,7 +104,13 @@ final class PermissionManager {
             // if we can't add as unknown and continue
             if (names == null || names.isEmpty()) {
                 if (!requestResults.containsKey(permission)) {
-                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
+                    // On Android below M, the android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS flag in AndroidManifest.xml
+                    // may be ignored and not visible to the App as it's a new permission setting as a whole.
+                    if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_RESTRICTED);
+                    } else {
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
+                    }
                 }
 
                 continue;
@@ -160,6 +166,9 @@ final class PermissionManager {
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
         }
+        if(permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH){
+            return checkBluetoothPermissionStatus(context);
+        }
 
         final List<String> names = PermissionUtils.getManifestNames(context, permission);
 
@@ -172,6 +181,15 @@ final class PermissionManager {
         //if no permissions were found then there is an issue and permission is not set in Android manifest
         if (names.size() == 0) {
             Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission);
+
+            // On Android below M, the android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS flag in AndroidManifest.xml
+            // may be ignored and not visible to the App as it's a new permission setting as a whole.
+            if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                }
+            }
+
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
@@ -242,6 +260,16 @@ final class PermissionManager {
             return PermissionConstants.PERMISSION_STATUS_GRANTED;
         }
         return PermissionConstants.PERMISSION_STATUS_DENIED;
+    }
+
+    private int checkBluetoothPermissionStatus(Context context) {
+        List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
+        boolean missingInManifest = names == null || names.isEmpty();
+        if(missingInManifest) {
+            Log.d(PermissionConstants.LOG_TAG, "Bluetooth permission missing in manifest");
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+        return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
     @VisibleForTesting

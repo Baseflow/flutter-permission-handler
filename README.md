@@ -101,6 +101,9 @@ You can remove permissions you don't use:
   
            ## dart: PermissionGroup.sensors
            # 'PERMISSION_SENSORS=0'
+           
+           ## dart: PermissionGroup.bluetooth
+           # 'PERMISSION_BLUETOOTH=0'
          ]
   
        end
@@ -128,6 +131,7 @@ You can remove permissions you don't use:
    | PermissionGroup.notification                                                                | PermissionGroupNotification                                                                                   | PERMISSION_NOTIFICATIONS     |
    | PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMediaLibrary                                                         | PERMISSION_MEDIA_LIBRARY     |
    | PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                      | PERMISSION_SENSORS           |
+   | PermissionGroup.bluetooth                                                                     | NSBluetoothAlwaysUsageDescription,             NSBluetoothPeripheralUsageDescription           | PERMISSION_BLUETOOTH           |
 4. Clean & Rebuild
 
 </details>

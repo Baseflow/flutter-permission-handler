@@ -88,6 +88,13 @@
     #define PERMISSION_SENSORS 1
 #endif
 
+// ios: PermissionGroupBluetooth
+// Info.plist: [NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription]
+// dart: PermissionGroup.bluetooth
+#ifndef PERMISSION_BLUETOOTH
+    #define PERMISSION_BLUETOOTH 1
+#endif
+
 typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupCalendar = 0,
     PermissionGroupCamera,
@@ -108,7 +115,9 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupIgnoreBatteryOptimizations,
     PermissionGroupNotification,
     PermissionGroupAccessMediaLocation,
+    PermissionGroupActivityRecognition,
     PermissionGroupUnknown,
+    PermissionGroupBluetooth,
 };
 
 typedef NS_ENUM(int, PermissionStatus) {
