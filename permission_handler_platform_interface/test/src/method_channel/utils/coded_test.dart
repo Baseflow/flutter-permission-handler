@@ -5,7 +5,7 @@ import 'package:permission_handler_platform_interface/src/method_channel/utils/c
 void main() {
   group('Codec', () {
     test('decodePermissionStatus should return a PermissionStatus', () {
-      expect(Codec.decodePermissionStatus(0), PermissionStatus.granted);
+      expect(Codec.decodePermissionStatus(0), PermissionStatus.denied);
     });
 
     test('decodeServiceStatus should a corresponding ServiceStatus', () {

@@ -15,9 +15,6 @@ class Permission {
   const Permission._(this.value);
   factory Permission.byValue(int value) => values[value];
 
-  @visibleForTesting
-  const Permission.private(this.value);
-
   /// Integer representation of the [Permission].
   final int value;
 
