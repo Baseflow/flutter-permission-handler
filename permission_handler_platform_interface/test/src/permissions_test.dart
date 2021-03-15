@@ -6,7 +6,7 @@ void main() {
       () {
     final values = Permission.values;
 
-    expect(values.length, 21);
+    expect(values.length, 22);
   });
 
   test('check if byValue returns corresponding PermissionGroup value', () {
