@@ -25,7 +25,8 @@ void main() {
     expect(PermissionStatusValue.statusByValue(1), PermissionStatus.denied);
     expect(PermissionStatusValue.statusByValue(2), PermissionStatus.restricted);
     expect(PermissionStatusValue.statusByValue(3), PermissionStatus.limited);
-    expect(PermissionStatusValue.statusByValue(4), PermissionStatus.permanentlyDenied);
+    expect(PermissionStatusValue.statusByValue(4),
+        PermissionStatus.permanentlyDenied);
   });
 
   //TODO: Kan je de Getters testen?

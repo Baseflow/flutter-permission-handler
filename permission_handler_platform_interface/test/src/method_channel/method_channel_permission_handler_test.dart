@@ -1,8 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:permission_handler_platform_interface/src/method_channel/method_channel_permission_handler.dart';
 import 'method_channel_mock.dart';
+
+List<Permission> get mockPermissions => List.of(
+    <Permission>{Permission.calendar, Permission.camera, Permission.contacts});
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -141,8 +143,8 @@ void main() {
         result: true,
       );
 
-      final hasOpenedAppSettings = await
-          MethodChannelPermissionHandler().openAppSettings();
+      final hasOpenedAppSettings =
+          await MethodChannelPermissionHandler().openAppSettings();
 
       expect(hasOpenedAppSettings, true);
     });
@@ -154,16 +156,10 @@ void main() {
         result: false,
       );
 
-      final hasOpenedAppSettings = await
-          MethodChannelPermissionHandler().openAppSettings();
+      final hasOpenedAppSettings =
+          await MethodChannelPermissionHandler().openAppSettings();
 
       expect(hasOpenedAppSettings, false);
-    });
-  });
-
-  group('requestPermissions: When requesting for permission', (){
-    test('requestPermission', (){
-
     });
   });
 }
