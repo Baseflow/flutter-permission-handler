@@ -84,7 +84,7 @@ class MockPermissionHandlerPlatform extends Mock
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) {
-    var permissionsMap = <Permission, PermissionStatus>{Permission.calendar: PermissionStatus.granted};
+    var permissionsMap = <Permission, PermissionStatus>{};
     return Future.value(permissionsMap);
   }
 
