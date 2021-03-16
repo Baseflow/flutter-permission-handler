@@ -10,6 +10,12 @@ void main() {
       PermissionHandlerPlatform.instance = MockPermissionHandlerPlatform();
     });
 
+    test('openAppSettings', () async {
+      final hasOpened = await openAppSettings();
+
+      expect(hasOpened, true);
+    });
+
     test('PermissionActions on Permission: get status', () async {
       final permissionStatus = await Permission.calendar.status;
 
@@ -25,9 +31,9 @@ void main() {
     });
 
     test('PermissionActions on Permission: request()', () async {
-      final permissionRequestMap = Permission.calendar.request();
+      final permissionRequest = Permission.calendar.request();
 
-      expect(permissionRequestMap, isA<Future<PermissionStatus>>());
+      expect(permissionRequest, isA<Future<PermissionStatus>>());
     });
 
     test('PermissionCheckShortcuts on Permission: get isGranted', () async {
@@ -45,15 +51,15 @@ void main() {
       expect(isRestricted, false);
     });
 
+    test('PermissionCheckShortcuts on Permission: get isLimited', () async {
+      final isLimited = await Permission.calendar.isLimited;
+      expect(isLimited, false);
+    });
+
     test('PermissionCheckShortcuts on Permission: get isPermanentlyDenied',
         () async {
       final isPermanentlyDenied = await Permission.calendar.isPermanentlyDenied;
       expect(isPermanentlyDenied, false);
-    });
-
-    test('ServicePermissionActions on PermissionWithService: get serviceStatus',
-        () async {
-      //TODO: Implement
     });
   });
 }
@@ -78,7 +84,7 @@ class MockPermissionHandlerPlatform extends Mock
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) {
-    var permissionsMap = <Permission, PermissionStatus>{};
+    var permissionsMap = <Permission, PermissionStatus>{Permission.calendar: PermissionStatus.granted};
     return Future.value(permissionsMap);
   }
 
