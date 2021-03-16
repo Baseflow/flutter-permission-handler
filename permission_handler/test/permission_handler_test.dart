@@ -59,9 +59,11 @@ void main() {
 }
 
 class MockPermissionHandlerPlatform extends Mock
-    // ignore: prefer_mixin
-    with MockPlatformInterfaceMixin
-    implements PermissionHandlerPlatform {
+    with
+        // ignore: prefer_mixin
+        MockPlatformInterfaceMixin
+    implements
+        PermissionHandlerPlatform {
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) =>
       Future.value(PermissionStatus.granted);
