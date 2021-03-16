@@ -5,7 +5,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:mockito/mockito.dart';
 
 void main() {
-  group('PermissionHandler', (){
+  group('PermissionHandler', () {
     setUp(() {
       PermissionHandlerPlatform.instance = MockPermissionHandlerPlatform();
     });
@@ -17,9 +17,9 @@ void main() {
     });
 
     test('PermissionActions on Permission: get shouldShowRequestRationale',
-            () async {
+        () async {
       final requestRationale =
-            await Permission.calendar.shouldShowRequestRationale;
+          await Permission.calendar.shouldShowRequestRationale;
 
       expect(requestRationale, false);
     });
@@ -45,28 +45,26 @@ void main() {
       expect(isRestricted, false);
     });
 
-    test('PermissionCheckShortcuts on Permission: get isPermanentlyDenied', () async {
+    test('PermissionCheckShortcuts on Permission: get isPermanentlyDenied',
+        () async {
       final isPermanentlyDenied = await Permission.calendar.isPermanentlyDenied;
       expect(isPermanentlyDenied, false);
     });
 
-    test('ServicePermissionActions on PermissionWithService: get serviceStatus', () async {
+    test('ServicePermissionActions on PermissionWithService: get serviceStatus',
+        () async {
       //TODO: Implement
     });
-
   });
 }
 
 class MockPermissionHandlerPlatform extends Mock
-    with
-        MockPlatformInterfaceMixin
-    implements
-        PermissionHandlerPlatform {
-
+    // ignore: prefer_mixin
+    with MockPlatformInterfaceMixin
+    implements PermissionHandlerPlatform {
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) =>
       Future.value(PermissionStatus.granted);
-
 
   @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) =>
@@ -76,8 +74,9 @@ class MockPermissionHandlerPlatform extends Mock
   Future<bool> openAppSettings() => Future.value(true);
 
   @override
-  Future<Map<Permission, PermissionStatus>> requestPermissions(List<Permission> permissions) {
-    Map<Permission, PermissionStatus> permissionsMap = {};
+  Future<Map<Permission, PermissionStatus>> requestPermissions(
+      List<Permission> permissions) {
+    var permissionsMap = <Permission, PermissionStatus>{};
     return Future.value(permissionsMap);
   }
 
