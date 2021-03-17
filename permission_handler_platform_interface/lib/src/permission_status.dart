@@ -2,10 +2,10 @@ part of permission_handler_platform_interface;
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
-  /// The user granted access to the requested feature.
+  /// The user denied access to the requested feature.
   denied,
 
-  /// The user denied access to the requested feature.
+  /// The user granted access to the requested feature.
   granted,
 
   /// The OS denied access to the requested feature. The user cannot change
