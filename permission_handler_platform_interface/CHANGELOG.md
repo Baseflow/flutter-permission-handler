@@ -1,3 +1,8 @@
+## 3.1.1
+
+* Fixed conversion issue where `PermissionStatus.denied` was not translated to the correct index.
+* Added unit-tests to guard API against breaking changes.
+
 ## 3.1.0
 
 * Added support for bluetooth permissions. 

@@ -17,7 +17,7 @@ void main() {
     }
   });
 
-  test('check if byValue returns corresponding PermissionGroup value', () {
+  test('check if toString method returns the corresponding name', () {
     var permissionWithService = PermissionWithService.private(0);
     var permissionName = permissionWithService.toString();
     expect(permissionName, 'Permission.calendar');
