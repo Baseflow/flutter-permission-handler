@@ -61,6 +61,16 @@ void main() {
       final isPermanentlyDenied = await Permission.calendar.isPermanentlyDenied;
       expect(isPermanentlyDenied, false);
     });
+
+    test(
+        // ignore: lines_longer_than_80_chars
+        'PermissionCheckShortcuts on Permission: request() on  a list returns a Map<Permission, PermissionStatus>',
+        () async {
+      var permissionList = <Permission>[];
+      final permissionMap = await permissionList.request();
+
+      expect(permissionMap, isA<Map<Permission, PermissionStatus>>());
+    });
   });
 }
 
