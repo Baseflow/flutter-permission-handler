@@ -64,7 +64,16 @@ void main() {
 
     test(
         // ignore: lines_longer_than_80_chars
-        'PermissionCheckShortcuts on Permission: request() on  a list returns a Map<Permission, PermissionStatus>',
+        'ServicePermissionActions on PermissionWithService: get ServiceStatus returns the right service status',
+        () async {
+      var serviceStatus = await Permission.phone.serviceStatus;
+
+      expect(serviceStatus, ServiceStatus.enabled);
+    });
+
+    test(
+        // ignore: lines_longer_than_80_chars
+        'PermissionListActions on List<Permission>: request() on  a list returns a Map<Permission, PermissionStatus>',
         () async {
       var permissionList = <Permission>[];
       final permissionMap = await permissionList.request();
