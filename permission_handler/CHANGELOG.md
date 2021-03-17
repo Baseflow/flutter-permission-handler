@@ -1,3 +1,7 @@
+## 6.1.1
+
+* Added unit-tests to guard API against breaking changes.
+
 ## 6.1.0
 
 * Added support for bluetooth permissions;
