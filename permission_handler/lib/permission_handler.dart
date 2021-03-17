@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
+import 'dart:io';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 export 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart'
@@ -34,7 +33,7 @@ extension PermissionActions on Permission {
   /// This is only implemented on Android, calling this on iOS always returns
   /// [false].
   Future<bool> get shouldShowRequestRationale async {
-    if (defaultTargetPlatform != TargetPlatform.android) {
+    if (!Platform.isAndroid) {
       return false;
     }
 
