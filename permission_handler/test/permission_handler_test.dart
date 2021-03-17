@@ -22,12 +22,21 @@ void main() {
       expect(permissionStatus, PermissionStatus.granted);
     });
 
-    test('PermissionActions on Permission: get shouldShowRequestRationale',
+    test(
+        // ignore: lines_longer_than_80_chars
+        'PermissionActions on Permission: get shouldShowRequestRationale should return true when on android',
         () async {
-      final requestRationale =
-          await Permission.calendar.shouldShowRequestRationale;
+      final mockPermissionHandlerPlatform = PermissionHandlerPlatform.instance;
 
-      expect(requestRationale, false);
+      when(mockPermissionHandlerPlatform
+              .shouldShowRequestPermissionRationale(Permission.calendar))
+          .thenAnswer((_) => Future.value(true));
+
+      await Permission.calendar.shouldShowRequestRationale;
+
+      verify(mockPermissionHandlerPlatform
+              .shouldShowRequestPermissionRationale(Permission.calendar))
+          .called(1);
     });
 
     test('PermissionActions on Permission: request()', () async {
@@ -108,6 +117,13 @@ class MockPermissionHandlerPlatform extends Mock
   }
 
   @override
-  Future<bool> shouldShowRequestPermissionRationale(Permission permission) =>
-      Future.value(true);
+  Future<bool> shouldShowRequestPermissionRationale(Permission? permission) {
+    return super.noSuchMethod(
+      Invocation.method(
+        #shouldShowPermissionRationale,
+        [permission],
+      ),
+      returnValue: Future.value(true),
+    );
+  }
 }
