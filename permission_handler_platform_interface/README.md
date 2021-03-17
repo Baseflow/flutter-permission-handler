@@ -1,6 +1,6 @@
 # permission_handler_platform_interface
 
-[![pub package](https://img.shields.io/pub/v/permission_handler_platform_interface.svg)](https://pub.dartlang.org/packages/permission_handler_platform_interface) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/platform_interface_package/badge.svg?branch=master) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)
+[![pub package](https://img.shields.io/pub/v/permission_handler_platform_interface.svg)](https://pub.dartlang.org/packages/permission_handler_platform_interface) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/platform_interface_package/badge.svg?branch=master) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart)[![codecov](https://codecov.io/gh/Baseflow/flutter-permission-handler/branch/master/graph/badge.svg)](https://codecov.io/gh/Baseflow/flutter-permission-handler)
 
 A common platform interface for the [`permission_handler`][1] plugin.
 

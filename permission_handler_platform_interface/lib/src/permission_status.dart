@@ -2,11 +2,11 @@ part of permission_handler_platform_interface;
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
-  /// The user granted access to the requested feature.
-  granted,
-
   /// The user denied access to the requested feature.
   denied,
+
+  /// The user granted access to the requested feature.
+  granted,
 
   /// The OS denied access to the requested feature. The user cannot change
   /// this app's status, possibly due to active restrictions such as parental
@@ -34,11 +34,9 @@ extension PermissionStatusValue on PermissionStatus {
         return 1;
       case PermissionStatus.restricted:
         return 2;
-      case PermissionStatus.denied:
+      case PermissionStatus.limited:
         return 3;
       case PermissionStatus.permanentlyDenied:
-        return 5;
-      case PermissionStatus.limited:
         return 4;
       default:
         throw UnimplementedError();
@@ -57,11 +55,11 @@ extension PermissionStatusValue on PermissionStatus {
 }
 
 extension PermissionStatusGetters on PermissionStatus {
-  /// If the user granted access to the requested feature.
-  bool get isGranted => this == PermissionStatus.granted;
-
   /// If the user denied access to the requested feature.
   bool get isDenied => this == PermissionStatus.denied;
+
+  /// If the user granted access to the requested feature.
+  bool get isGranted => this == PermissionStatus.granted;
 
   /// If the OS denied access to the requested feature. The user cannot change
   /// this app's status, possibly due to active restrictions such as parental

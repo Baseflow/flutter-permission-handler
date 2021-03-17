@@ -5,6 +5,9 @@ part of permission_handler_platform_interface;
 /// the related service.
 class PermissionWithService extends Permission {
   const PermissionWithService._(int value) : super._(value);
+
+  @visibleForTesting
+  const PermissionWithService.private(int value) : super._(value);
 }
 
 /// Defines the permissions which can be checked and requested.
