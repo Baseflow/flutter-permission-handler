@@ -1,3 +1,7 @@
+## 6.1.2
+
+* Correctly handle the ACCESS_MEDIA_LOCATION and ACCESS_ACTIVITY_RECOGNITION permissions on pre Android Q devices (permissions should be implicitly granted on pre Android Q). 
+
 ## 6.1.1
 
 * Added unit-tests to guard API against breaking changes.

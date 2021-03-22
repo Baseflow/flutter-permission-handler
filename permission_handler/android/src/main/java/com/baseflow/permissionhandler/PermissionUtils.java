@@ -93,11 +93,14 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS:
+                // Note that the LOCATION_ALWAYS will deliberately fallthrough to the LOCATION
+                // case on pre Android Q devices. The ACCESS_BACKGROUND_LOCATION permission was only
+                // introduced in Android Q, before it should be treated as the ACCESS_COARSE_LOCATION or
+                // ACCESS_FINE_LOCATION.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_BACKGROUND_LOCATION))
                         permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                 }
-
             case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
             case PermissionConstants.PERMISSION_GROUP_LOCATION:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_COARSE_LOCATION))
@@ -184,12 +187,22 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_ACCESS_MEDIA_LOCATION:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
+                // The ACCESS_MEDIA_LOCATION permission is introduced in Android Q, meaning we should
+                // not handle permissions on pre Android Q devices.
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                    return null;
+
+                if(hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACTIVITY_RECOGNITION))
+                // The ACCESS_MEDIA_LOCATION permission is introduced in Android Q, meaning we should
+                // not handle permissions on pre Android Q devices.
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                    return null;
+
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACTIVITY_RECOGNITION))
                     permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
                 break;
 
