@@ -100,7 +100,7 @@ You can remove permissions you don't use:
            # 'PERMISSION_MEDIA_LIBRARY=0',
   
            ## dart: PermissionGroup.sensors
-           # 'PERMISSION_SENSORS=0'
+           # 'PERMISSION_SENSORS=0',
            
            ## dart: PermissionGroup.bluetooth
            # 'PERMISSION_BLUETOOTH=0'
