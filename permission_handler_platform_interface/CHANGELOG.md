@@ -1,3 +1,7 @@
+## 3.1.2
+
+* Allow checking serviceStatus for notification permission.
+
 ## 3.1.1
 
 * Fixed conversion issue where `PermissionStatus.denied` was not translated to the correct index.

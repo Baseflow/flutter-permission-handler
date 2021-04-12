@@ -92,7 +92,7 @@ class Permission {
 
   /// Android: Notification
   /// iOS: Notification
-  static const notification = Permission._(17);
+  static const notification = PermissionWithService._(17);
 
   /// Android: Allows an application to access any geographic locations
   /// persisted in the user's shared collection.
