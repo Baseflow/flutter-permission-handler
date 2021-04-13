@@ -17,9 +17,10 @@ class PermissionList extends StatelessWidget {
                 if (Platform.isIOS) {
                   return permission != Permission.unknown &&
                       permission != Permission.sms &&
-                      //permission != Permission.storage &&
+                      permission != Permission.storage &&
                       permission != Permission.ignoreBatteryOptimizations &&
-                      permission != Permission.accessMediaLocation;
+                      permission != Permission.accessMediaLocation &&
+                      permission != Permission.activityRecognition;
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&
