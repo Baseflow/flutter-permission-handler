@@ -1,3 +1,8 @@
+## 3.1.3 
+
+* Implemented equality operator for `Permission` class;
+* Reverted services status check for notification permission. Turns out implementation does not fit with idea's of permission_handler plugin.
+
 ## 3.1.2
 
 * Allow checking serviceStatus for notification permission.
