@@ -22,4 +22,59 @@ void main() {
     var permissionName = permissionWithService.toString();
     expect(permissionName, 'Permission.calendar');
   });
+
+  test(
+      // ignore: lines_longer_than_80_chars
+      'equality operator should return true for two instances with the same values',
+      () {
+    // Arrange
+    final firstPermission = Permission.byValue(1);
+    final secondPermission = Permission.byValue(1);
+
+    // Act & Assert
+    expect(
+      firstPermission == secondPermission,
+      true,
+    );
+  });
+
+  test(
+      // ignore: lines_longer_than_80_chars
+      'equality operator should return false for two instances with different values',
+      () {
+    // Arrange
+    final firstPermission = Permission.byValue(1);
+    final secondPermission = Permission.byValue(2);
+
+    // Act & Assert
+    expect(
+      firstPermission == secondPermission,
+      false,
+    );
+  });
+
+  test('hashCode should be the same for two instances with the same values',
+      () {
+    // Arrange
+    final firstPermission = Permission.byValue(1);
+    final secondPermission = Permission.byValue(1);
+
+    // Act & Assert
+    expect(
+      firstPermission.hashCode,
+      secondPermission.hashCode,
+    );
+  });
+
+  test('hashCode should not match for two instances with different values', () {
+    // Arrange
+    final firstPermission = Permission.byValue(1);
+    final secondPermission = Permission.byValue(2);
+
+    // Act & Assert
+    expect(
+      firstPermission.hashCode != secondPermission.hashCode,
+      true,
+    );
+  });
 }
