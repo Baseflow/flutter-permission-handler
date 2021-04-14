@@ -1,3 +1,9 @@
+## 6.1.3
+
+* Implement equality operator on the `Permission` class;
+* Updated the README.md with instructions on enabling/ disabling the bluetooth permissions on iOS;
+* Corrected some spelling mistakes in the `CHANGELOG.md`.
+
 ## 6.1.2
 
 * Correctly handle the ACCESS_MEDIA_LOCATION and ACCESS_ACTIVITY_RECOGNITION permissions on pre Android Q devices (permissions should be implicitly granted on pre Android Q). 
