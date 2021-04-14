@@ -64,7 +64,7 @@ This release includes the following **breaking changes**:
 
 ## 5.0.0+hotfix.8
 
-* Solved an issue on iOS where requesting notifcation permissions returned prematurely (see pull-request [#297](https://github.com/Baseflow/flutter-permission-handler/pull/297))
+* Solved an issue on iOS where requesting notification permissions returned prematurely (see pull-request [#297](https://github.com/Baseflow/flutter-permission-handler/pull/297))
 
 ## 5.0.0+hotfix.7
 
@@ -84,7 +84,7 @@ This release includes the following **breaking changes**:
 
 ## 5.0.0+hotfix.3
 
-* Includes the changes of 4.4.0+hotfix.4 (which was released to be backwardscompatible).
+* Includes the changes of 4.4.0+hotfix.4 (which was released to be backwards compatible).
 
 ## 5.0.0+hotfix.2
 
@@ -157,7 +157,7 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 ## 4.0.0
 
 * iOS: Added support for requesting permissions on the DOCUMENTS and DOWNLOADS folder (thanks to @phranck);
-* Androis: Fix the PROCESS_OUTGOING_CALLS permissions which have been deprecated in API 29.
+* Android: Fix the PROCESS_OUTGOING_CALLS permissions which have been deprecated in API 29.
 
 ## 3.3.0
 
@@ -174,7 +174,7 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 ## 3.2.1
 
-* Updated dependecy on 'meta' to latest version.
+* Updated dependency on 'meta' to latest version.
 
 ## 3.2.0
 
@@ -221,7 +221,7 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 * Update to the latest version of Swift (4.2);
 * Make sure that the correct Swift version is set in the `Podfile` of consuming Apps;
-* Updated configuration for statis code analyses, so it complies with the Flutter recommendations.
+* Updated configuration for static code analyses, so it complies with the Flutter recommendations.
 
 ## 2.1.0
 
