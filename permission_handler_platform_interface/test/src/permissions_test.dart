@@ -73,8 +73,8 @@ void main() {
 
     // Act & Assert
     expect(
-      firstPermission.hashCode != secondPermission.hashCode,
-      true,
+      firstPermission.hashCode == secondPermission.hashCode,
+      false,
     );
   });
 }
