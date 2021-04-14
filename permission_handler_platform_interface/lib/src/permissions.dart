@@ -11,6 +11,7 @@ class PermissionWithService extends Permission {
 }
 
 /// Defines the permissions which can be checked and requested.
+@immutable
 class Permission {
   const Permission._(this.value);
   factory Permission.byValue(int value) => values[value];
@@ -92,7 +93,7 @@ class Permission {
 
   /// Android: Notification
   /// iOS: Notification
-  static const notification = PermissionWithService._(17);
+  static const notification = Permission._(17);
 
   /// Android: Allows an application to access any geographic locations
   /// persisted in the user's shared collection.
@@ -163,4 +164,18 @@ class Permission {
 
   @override
   String toString() => 'Permission.${_names[value]}';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is Permission && other.value == value;
+  }
+
+  @override
+  int get hashCode => value.hashCode;
 }
