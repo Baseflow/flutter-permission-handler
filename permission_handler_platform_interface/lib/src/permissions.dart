@@ -120,9 +120,9 @@ class Permission {
   /// For more information: https://developer.android.com/training/data-storage/manage-all-files
   ///
   /// If the usage of the Manage External Storage permission is needed,
-  /// the user has to declare permissions for the app before release.
-  /// Information on how to declare permissions
-  /// can be found here: https://support.google.com/googleplay/android-developer/answer/9214102#zippy=
+  /// you have to fill out the Permission Declaration Form upon submitting
+  /// your app to the Google Play Store. More details can be found here:
+  /// https://support.google.com/googleplay/android-developer/answer/9214102#zippy=
   static const manageExternalStorage = Permission._(22);
 
   /// Returns a list of all possible [PermissionGroup] values.
