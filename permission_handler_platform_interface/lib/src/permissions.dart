@@ -119,8 +119,9 @@ class Permission {
   /// your app cannot effectively make use of the more privacy-friendly APIs.
   /// For more information: https://developer.android.com/training/data-storage/manage-all-files
   ///
-  /// When the privacy-friendly APIs is all your app needs the
-  //  [PermissionGroup.storage] are the only permissions you need to request.
+  /// When the privacy-friendly APIs (i.e. [Storage Access Framework](https://developer.android.com/guide/topics/providers/document-provider)
+  /// or the [MediaStore](https://developer.android.com/training/data-storage/shared/media) APIs) is all your app needs the
+  /// [PermissionGroup.storage] are the only permissions you need to request.
   ///
   /// If the usage of the Manage External Storage permission is needed,
   /// you have to fill out the Permission Declaration Form upon submitting
