@@ -1,4 +1,4 @@
-## 3.1.4
+## 3.2.0
 
 * Added support for manage external storage permission available on Android 10 and up.
 
