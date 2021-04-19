@@ -1,3 +1,7 @@
+## 3.2.0
+
+* Added support for manage external storage permission available on Android 10 and up.
+
 ## 3.1.3 
 
 * Implemented equality operator for `Permission` class;
