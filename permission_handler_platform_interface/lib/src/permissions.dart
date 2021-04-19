@@ -111,6 +111,20 @@ class Permission {
   /// When running < iOS 13 or Android this is always allowed.
   static const bluetooth = Permission._(21);
 
+  /// Android: Allows an application a broad access to external storage in
+  /// scoped storage.
+  /// iOS: Nothing
+  ///
+  /// You should request the Manage External Storage permission only when
+  /// your app cannot effectively make use of the more privacy-friendly APIs.
+  /// For more information: https://developer.android.com/training/data-storage/manage-all-files
+  ///
+  /// If the usage of the Manage External Storage permission is needed,
+  /// the user has to declare permissions for the app before release.
+  /// Information on how to declare permissions
+  /// can be found here: https://support.google.com/googleplay/android-developer/answer/9214102#zippy=
+  static const manageExternalStorage = Permission._(22);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -134,7 +148,8 @@ class Permission {
     accessMediaLocation,
     activityRecognition,
     unknown,
-    bluetooth
+    bluetooth,
+    manageExternalStorage,
   ];
 
   static const List<String> _names = <String>[
@@ -160,6 +175,7 @@ class Permission {
     'activity_recognition',
     'unknown',
     'bluetooth',
+    'manageExternalStorage'
   ];
 
   @override
