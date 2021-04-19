@@ -153,7 +153,7 @@ class Permission {
     activityRecognition,
     unknown,
     bluetooth,
-    manageExternalStorage,
+    manageExternalStorage
   ];
 
   static const List<String> _names = <String>[
