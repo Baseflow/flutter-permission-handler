@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.RequiresApi;
@@ -60,6 +61,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_ACCESS_MEDIA_LOCATION;
             case Manifest.permission.ACTIVITY_RECOGNITION:
                 return PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION;
+            case Manifest.permission.MANAGE_EXTERNAL_STORAGE:
+                return PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -177,8 +180,11 @@ public class PermissionUtils {
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_EXTERNAL_STORAGE))
                     permissionNames.add(Manifest.permission.READ_EXTERNAL_STORAGE);
 
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                    permissionNames.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q || (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q && Environment.isExternalStorageLegacy())) {
+                    if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                        permissionNames.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                    break;
+                }
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS:
@@ -197,7 +203,7 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION:
-                // The ACCESS_MEDIA_LOCATION permission is introduced in Android Q, meaning we should
+                // The ACTIVITY_RECOGNITION permission is introduced in Android Q, meaning we should
                 // not handle permissions on pre Android Q devices.
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
                     return null;
@@ -210,6 +216,14 @@ public class PermissionUtils {
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH))
                     permissionNames.add(Manifest.permission.BLUETOOTH);
                 break;
+
+            case PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE:
+                // The MANAGE_EXTERNAL_STORAGE permission is introduced in Android R, meaning we should
+                // not handle permissions on pre Android R devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasPermissionInManifest(context, permissionNames, Manifest.permission.MANAGE_EXTERNAL_STORAGE ))
+                    permissionNames.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+                break;
+
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:

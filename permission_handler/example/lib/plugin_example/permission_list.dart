@@ -20,7 +20,8 @@ class PermissionList extends StatelessWidget {
                       permission != Permission.storage &&
                       permission != Permission.ignoreBatteryOptimizations &&
                       permission != Permission.accessMediaLocation &&
-                      permission != Permission.activityRecognition;
+                      permission != Permission.activityRecognition &&
+                      permission != Permission.manageExternalStorage;
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&

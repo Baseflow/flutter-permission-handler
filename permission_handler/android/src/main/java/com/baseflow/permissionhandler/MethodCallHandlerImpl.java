@@ -6,12 +6,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 
 import androidx.annotation.Nullable;
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
-import com.baseflow.permissionhandler.PermissionManager.ActivityRegistry;
-import com.baseflow.permissionhandler.PermissionManager.PermissionRegistry;
 
 import java.util.List;
 
@@ -35,24 +32,8 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     @Nullable
     private Activity activity;
 
-    @Nullable
-    private ActivityRegistry activityRegistry;
-
-    @Nullable
-    private PermissionRegistry permissionRegistry;
-
     public void setActivity(@Nullable Activity activity) {
       this.activity = activity;
-    }
-
-    public void setActivityRegistry(
-        @Nullable ActivityRegistry activityRegistry) {
-      this.activityRegistry = activityRegistry;
-    }
-
-    public void setPermissionRegistry(
-        @Nullable PermissionRegistry permissionRegistry) {
-      this.permissionRegistry = permissionRegistry;
     }
 
   @Override
@@ -91,8 +72,6 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 permissionManager.requestPermissions(
                         permissions,
                         activity,
-                        activityRegistry,
-                        permissionRegistry,
                         result::success,
                         (String errorCode, String errorDescription) -> result.error(
                                 errorCode,

@@ -1,3 +1,10 @@
+## 7.0.0
+
+This release contains the following **breaking changes**: 
+* Updated compile SDK version to 30 in the build.gradle for handling the MANAGE_EXTERNAL_STORAGE permission;
+* Added the MANAGE_EXTERNAL_STORAGE permission for Android R and up;
+* Registered listeners on the plugin level to prevent memory leaks or unwanted behaviour.
+
 ## 6.1.3
 
 * Implement equality operator on the `Permission` class;
