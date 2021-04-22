@@ -226,17 +226,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                String packageName = activity.getPackageName();
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setData(Uri.parse("package:" + packageName));
-                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+                executeIntent(
+                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
-                String packageName = activity.getPackageName();
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                intent.setData(Uri.parse("package:" + packageName));
-                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE);
+                executeIntent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -339,6 +335,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             }
         }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    private void executeIntent(String action, int requestCode) {
+        String packageName = activity.getPackageName();
+        Intent intent = new Intent();
+        intent.setAction(action);
+        intent.setData(Uri.parse("package:" + packageName));
+        activity.startActivityForResult(intent, requestCode);
     }
 
     void shouldShowRequestPermissionRationale(
