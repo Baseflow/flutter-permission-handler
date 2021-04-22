@@ -1,3 +1,7 @@
+## 3.3.0
+
+* Added support for system alert window permission.
+
 ## 3.2.0
 
 * Added support for manage external storage permission available on Android 10 and up.

@@ -129,6 +129,10 @@ class Permission {
   /// https://support.google.com/googleplay/android-developer/answer/9214102#zippy=
   static const manageExternalStorage = Permission._(22);
 
+  ///Android: Allows an app to create windows shown on top of all other apps
+  ///iOS: Nothing
+  static const systemAlertWindow = Permission._(23);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -153,7 +157,8 @@ class Permission {
     activityRecognition,
     unknown,
     bluetooth,
-    manageExternalStorage
+    manageExternalStorage,
+    systemAlertWindow
   ];
 
   static const List<String> _names = <String>[
@@ -179,7 +184,8 @@ class Permission {
     'activity_recognition',
     'unknown',
     'bluetooth',
-    'manageExternalStorage'
+    'manageExternalStorage',
+    'systemAlertWindow'
   ];
 
   @override
