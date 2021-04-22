@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
@@ -23,15 +23,115 @@ import java.util.Map;
 
 import io.flutter.plugin.common.PluginRegistry;
 
-final class PermissionManager {
-    @FunctionalInterface
-    interface ActivityRegistry {
-        void addListener(PluginRegistry.ActivityResultListener handler);
+final class PermissionManager implements PluginRegistry.ActivityResultListener, PluginRegistry.RequestPermissionsResultListener {
+
+    @Nullable
+    private ErrorCallback errorCallback;
+
+    @Nullable
+    private RequestPermissionsSuccessCallback successCallback;
+
+    @Nullable
+    private Activity activity;
+
+    private Map<Integer, Integer> requestResults;
+
+    @Override
+    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS && requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE) {
+            return false;
+        }
+
+        int status = resultCode == Activity.RESULT_OK
+                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                : PermissionConstants.PERMISSION_STATUS_DENIED;
+
+        int permission;
+
+        if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
+            permission = PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS;
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE) {
+            status = Environment.isExternalStorageManager()
+                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+            permission = PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE;
+        } else {
+            return false;
+        }
+
+        HashMap<Integer, Integer> results = new HashMap<>();
+        results.put(permission, status);
+        successCallback.onSuccess(results);
+        return true;
     }
 
-    @FunctionalInterface
-    interface PermissionRegistry {
-        void addListener(PluginRegistry.RequestPermissionsResultListener handler);
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode != PermissionConstants.PERMISSION_CODE) {
+            ongoing = false;
+            return false;
+        }
+
+        for (int i = 0; i < permissions.length; i++) {
+            final String permissionName = permissions[i];
+
+            @PermissionConstants.PermissionGroup final int permission =
+                    PermissionUtils.parseManifestName(permissionName);
+
+            if (permission == PermissionConstants.PERMISSION_GROUP_UNKNOWN)
+                continue;
+
+            final int result = grantResults[i];
+
+            if (permission == PermissionConstants.PERMISSION_GROUP_MICROPHONE) {
+                if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
+                    requestResults.put(
+                            PermissionConstants.PERMISSION_GROUP_MICROPHONE,
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
+                }
+                if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_SPEECH)) {
+                    requestResults.put(
+                            PermissionConstants.PERMISSION_GROUP_SPEECH,
+                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
+                }
+            } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) {
+                @PermissionConstants.PermissionStatus int permissionStatus =
+                        PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+
+                if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
+                    requestResults.put(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
+                }
+            } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
+                @PermissionConstants.PermissionStatus int permissionStatus =
+                        PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
+                        requestResults.put(
+                                PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS,
+                                permissionStatus);
+                    }
+                }
+
+                if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE)) {
+                    requestResults.put(
+                            PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE,
+                            permissionStatus);
+                }
+
+                requestResults.put(permission, permissionStatus);
+            } else if (!requestResults.containsKey(permission)) {
+                requestResults.put(
+                        permission,
+                        PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
+            }
+
+            PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
+        }
+
+        this.successCallback.onSuccess(requestResults);
+        ongoing = false;
+        return true;
     }
 
     @FunctionalInterface
@@ -67,8 +167,6 @@ final class PermissionManager {
     void requestPermissions(
             List<Integer> permissions,
             Activity activity,
-            ActivityRegistry activityRegistry,
-            PermissionRegistry permissionRegistry,
             RequestPermissionsSuccessCallback successCallback,
             ErrorCallback errorCallback) {
         if (ongoing) {
@@ -87,7 +185,11 @@ final class PermissionManager {
             return;
         }
 
-        Map<Integer, Integer> requestResults = new HashMap<>();
+        this.errorCallback = errorCallback;
+        this.successCallback = successCallback;
+        this.activity = activity;
+        this.requestResults = new HashMap<>();
+
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
             @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity, activity);
@@ -111,21 +213,26 @@ final class PermissionManager {
                     } else {
                         requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
+                    // On Android below R, the android.permission.MANAGE_EXTERNAL_STORAGE flag in AndroidManifest.xml
+                    // may be ignored and not visible to the App as it's a new permission setting as a whole.
+                    if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE && Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_RESTRICTED);
+                    } else {
+                        requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
+                    }
                 }
 
                 continue;
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                activityRegistry.addListener(
-                        new ActivityResultListener(successCallback)
-                );
-
-                String packageName = activity.getPackageName();
-                Intent intent = new Intent();
-                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
-                intent.setData(Uri.parse("package:" + packageName));
-                activity.startActivityForResult(intent, PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+                executeIntent(
+                        Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
+                executeIntent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -133,16 +240,6 @@ final class PermissionManager {
 
         final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
         if (permissionsToRequest.size() > 0) {
-            permissionRegistry.addListener(
-                    new RequestPermissionsListener(
-                            activity,
-                            requestResults,
-                            (Map<Integer, Integer> results) -> {
-                                ongoing = false;
-                                successCallback.onSuccess(results);
-                            })
-            );
-
             ongoing = true;
 
             ActivityCompat.requestPermissions(
@@ -166,7 +263,7 @@ final class PermissionManager {
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
         }
-        if(permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH){
+        if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH) {
             return checkBluetoothPermissionStatus(context);
         }
 
@@ -186,6 +283,14 @@ final class PermissionManager {
             // may be ignored and not visible to the App as it's a new permission setting as a whole.
             if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                }
+            }
+
+            // On Android below R, the android.permission.MANAGE_EXTERNAL_STORAGE flag in AndroidManifest.xml
+            // may be ignored and not visible to the App as it's a new permission setting as a whole.
+            if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                     return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
                 }
             }
@@ -212,6 +317,17 @@ final class PermissionManager {
                         return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
                     }
                 }
+
+                if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
+                        return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                    }
+
+                    return Environment.isExternalStorageManager()
+                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                            : PermissionConstants.PERMISSION_STATUS_DENIED;
+                }
+
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                     return PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -219,6 +335,14 @@ final class PermissionManager {
             }
         }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    private void executeIntent(String action, int requestCode) {
+        String packageName = activity.getPackageName();
+        Intent intent = new Intent();
+        intent.setAction(action);
+        intent.setData(Uri.parse("package:" + packageName));
+        activity.startActivityForResult(intent, requestCode);
     }
 
     void shouldShowRequestPermissionRationale(
@@ -265,139 +389,10 @@ final class PermissionManager {
     private int checkBluetoothPermissionStatus(Context context) {
         List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
         boolean missingInManifest = names == null || names.isEmpty();
-        if(missingInManifest) {
+        if (missingInManifest) {
             Log.d(PermissionConstants.LOG_TAG, "Bluetooth permission missing in manifest");
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
-    }
-
-    @VisibleForTesting
-    static final class ActivityResultListener
-            implements PluginRegistry.ActivityResultListener {
-
-        // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
-        // duplicate times in cases where the user denies and then grants a permission. Keep track of if
-        // we've responded before and bail out of handling the callback manually if this is a repeat
-        // call.
-        boolean alreadyCalled = false;
-
-        final RequestPermissionsSuccessCallback callback;
-
-        @VisibleForTesting
-        ActivityResultListener(RequestPermissionsSuccessCallback callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (alreadyCalled || requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
-                return false;
-            }
-
-            alreadyCalled = true;
-            final int status = resultCode == Activity.RESULT_OK
-                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
-
-            HashMap<Integer, Integer> results = new HashMap<>();
-            results.put(PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS, status);
-            callback.onSuccess(results);
-            return true;
-        }
-    }
-
-    @VisibleForTesting
-    static final class RequestPermissionsListener
-            implements PluginRegistry.RequestPermissionsResultListener {
-
-        // There's no way to unregister permission listeners in the v1 embedding, so we'll be called
-        // duplicate times in cases where the user denies and then grants a permission. Keep track of if
-        // we've responded before and bail out of handling the callback manually if this is a repeat
-        // call.
-        boolean alreadyCalled = false;
-
-        final Activity activity;
-        final RequestPermissionsSuccessCallback callback;
-        final Map<Integer, Integer> requestResults;
-
-        @VisibleForTesting
-        RequestPermissionsListener(
-                Activity activity,
-                Map<Integer, Integer> requestResults,
-                RequestPermissionsSuccessCallback callback) {
-            this.activity = activity;
-            this.callback = callback;
-            this.requestResults = requestResults;
-        }
-
-        @Override
-        public boolean onRequestPermissionsResult(int id, String[] permissions, int[] grantResults) {
-            if (alreadyCalled || id != PermissionConstants.PERMISSION_CODE) {
-                return false;
-            }
-
-            alreadyCalled = true;
-
-            for (int i = 0; i < permissions.length; i++) {
-                final String permissionName = permissions[i];
-
-                @PermissionConstants.PermissionGroup final int permission =
-                        PermissionUtils.parseManifestName(permissionName);
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_UNKNOWN)
-                    continue;
-
-                final int result = grantResults[i];
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_MICROPHONE) {
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
-                        requestResults.put(
-                                PermissionConstants.PERMISSION_GROUP_MICROPHONE,
-                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
-                    }
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_SPEECH)) {
-                        requestResults.put(
-                                PermissionConstants.PERMISSION_GROUP_SPEECH,
-                                PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
-                    }
-                } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) {
-                    @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
-
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
-                        requestResults.put(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
-                    }
-                } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
-                    @PermissionConstants.PermissionStatus int permissionStatus =
-                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
-
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                        if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
-                            requestResults.put(
-                                    PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS,
-                                    permissionStatus);
-                        }
-                    }
-
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE)) {
-                        requestResults.put(
-                                PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE,
-                                permissionStatus);
-                    }
-
-                    requestResults.put(permission, permissionStatus);
-                } else if (!requestResults.containsKey(permission)) {
-                    requestResults.put(
-                            permission,
-                            PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
-                }
-
-                PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
-            }
-
-            this.callback.onSuccess(requestResults);
-            return true;
-        }
     }
 }

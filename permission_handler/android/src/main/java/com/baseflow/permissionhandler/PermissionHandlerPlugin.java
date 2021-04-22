@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.baseflow.permissionhandler.PermissionManager.ActivityRegistry;
-import com.baseflow.permissionhandler.PermissionManager.PermissionRegistry;
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
@@ -23,10 +21,20 @@ import io.flutter.plugin.common.MethodChannel;
  */
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 
+    private final PermissionManager permissionManager;
     private MethodChannel methodChannel;
+
+    @SuppressWarnings("deprecation")
+    @Nullable private io.flutter.plugin.common.PluginRegistry.Registrar pluginRegistrar;
+
+    @Nullable private ActivityPluginBinding pluginBinding;
 
     @Nullable
     private MethodCallHandlerImpl methodCallHandler;
+
+    public PermissionHandlerPlugin() {
+        this.permissionManager = new PermissionManager();
+    }
 
     /**
      * Registers a plugin implementation that uses the stable {@code io.flutter.plugin.common}
@@ -38,13 +46,15 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @SuppressWarnings("deprecation")
     public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
         final PermissionHandlerPlugin plugin = new PermissionHandlerPlugin();
+
+        plugin.pluginRegistrar = registrar;
+        plugin.registerListeners();
+
         plugin.startListening(registrar.context(), registrar.messenger());
 
         if (registrar.activeContext() instanceof Activity) {
             plugin.startListeningToActivity(
-                registrar.activity(),
-                registrar::addActivityResultListener,
-                registrar::addRequestPermissionsResultListener
+                registrar.activity()
             );
         }
     }
@@ -65,10 +75,11 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         startListeningToActivity(
-            binding.getActivity(),
-            binding::addActivityResultListener,
-            binding::addRequestPermissionsResultListener
+            binding.getActivity()
         );
+
+        this.pluginBinding = binding;
+        registerListeners();
     }
 
     @Override
@@ -79,6 +90,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onDetachedFromActivity() {
         stopListeningToActivity();
+
+        deregisterListeners();
     }
 
     @Override
@@ -95,7 +108,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         methodCallHandler = new MethodCallHandlerImpl(
             applicationContext,
             new AppSettingsManager(),
-            new PermissionManager(),
+            this.permissionManager,
             new ServiceManager()
         );
 
@@ -109,22 +122,33 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     }
 
     private void startListeningToActivity(
-        Activity activity,
-        ActivityRegistry activityRegistry,
-        PermissionRegistry permissionRegistry
+        Activity activity
     ) {
         if (methodCallHandler != null) {
             methodCallHandler.setActivity(activity);
-            methodCallHandler.setActivityRegistry(activityRegistry);
-            methodCallHandler.setPermissionRegistry(permissionRegistry);
         }
     }
 
     private void stopListeningToActivity() {
         if (methodCallHandler != null) {
             methodCallHandler.setActivity(null);
-            methodCallHandler.setActivityRegistry(null);
-            methodCallHandler.setPermissionRegistry(null);
+        }
+    }
+
+    private void registerListeners() {
+        if (this.pluginRegistrar != null) {
+            this.pluginRegistrar.addActivityResultListener(this.permissionManager);
+            this.pluginRegistrar.addRequestPermissionsResultListener(this.permissionManager);
+        } else if (pluginBinding != null) {
+            this.pluginBinding.addActivityResultListener(this.permissionManager);
+            this.pluginBinding.addRequestPermissionsResultListener(this.permissionManager);
+        }
+    }
+
+    private void deregisterListeners() {
+        if (this.pluginBinding != null) {
+            this.pluginBinding.removeActivityResultListener(this.permissionManager);
+            this.pluginBinding.removeRequestPermissionsResultListener(this.permissionManager);
         }
     }
 }
