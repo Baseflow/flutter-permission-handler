@@ -1,3 +1,7 @@
+## 7.1.0
+
+* Added support for the "SYSTEM_ALERT_WINDOW" permission on Android.
+
 ## 7.0.0
 
 This release contains the following **breaking changes**: 

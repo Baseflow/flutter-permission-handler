@@ -63,6 +63,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION;
             case Manifest.permission.MANAGE_EXTERNAL_STORAGE:
                 return PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE;
+            case Manifest.permission.SYSTEM_ALERT_WINDOW:
+                return PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -222,6 +224,11 @@ public class PermissionUtils {
                 // not handle permissions on pre Android R devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasPermissionInManifest(context, permissionNames, Manifest.permission.MANAGE_EXTERNAL_STORAGE ))
                     permissionNames.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
+                break;
+
+            case PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW:
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW ))
+                    permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:

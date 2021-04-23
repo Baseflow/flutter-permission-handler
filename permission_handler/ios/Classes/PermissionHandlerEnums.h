@@ -118,7 +118,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupActivityRecognition,
     PermissionGroupUnknown,
     PermissionGroupBluetooth,
-    PermissionGroupManageExternalStorage
+    PermissionGroupManageExternalStorage,
+    PermissionGroupSystemAlertWindow
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

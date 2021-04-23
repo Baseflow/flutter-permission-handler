@@ -58,13 +58,7 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 permissionManager.checkPermissionStatus(
                         permission,
                         applicationContext,
-						activity,
-                        result::success,
-                        (String errorCode, String errorDescription) -> result.error(
-                                errorCode,
-                                errorDescription,
-                                null));
-
+                        result::success);
                 break;
             }
             case "requestPermissions":
