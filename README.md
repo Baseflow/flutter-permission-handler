@@ -31,7 +31,7 @@ android.enableJetifier=true
 2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 28:
 ```
 android {
-  compileSdkVersion 28
+  compileSdkVersion 30
   ...
 }
 ```
