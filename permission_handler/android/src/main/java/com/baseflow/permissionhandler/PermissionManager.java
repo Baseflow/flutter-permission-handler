@@ -26,9 +26,6 @@ import io.flutter.plugin.common.PluginRegistry;
 final class PermissionManager implements PluginRegistry.ActivityResultListener, PluginRegistry.RequestPermissionsResultListener {
 
     @Nullable
-    private ErrorCallback errorCallback;
-
-    @Nullable
     private RequestPermissionsSuccessCallback successCallback;
 
     @Nullable
@@ -38,7 +35,9 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS && requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE) {
+        if (requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS &&
+                requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE &&
+                requestCode != PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW) {
             return false;
         }
 
@@ -55,6 +54,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
             permission = PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE;
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                status = Settings.canDrawOverlays(activity)
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                permission = PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
+            } else {
+                return false;
+            }
         } else {
             return false;
         }
@@ -154,14 +162,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
             Context context,
-            Activity activity,
-            CheckPermissionsSuccessCallback successCallback,
-            ErrorCallback errorCallback) {
+            CheckPermissionsSuccessCallback successCallback) {
 
         successCallback.onSuccess(determinePermissionStatus(
                 permission,
-                context,
-                activity));
+                context));
     }
 
     void requestPermissions(
@@ -185,14 +190,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return;
         }
 
-        this.errorCallback = errorCallback;
         this.successCallback = successCallback;
         this.activity = activity;
         this.requestResults = new HashMap<>();
 
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
-            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity, activity);
+            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity);
             if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
                 if (!requestResults.containsKey(permission)) {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
@@ -233,6 +237,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 executeIntent(
                         Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
                         PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                executeIntent(
+                        Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                        PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -257,8 +265,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     @PermissionConstants.PermissionStatus
     private int determinePermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
-            Context context,
-            @Nullable Activity activity) {
+            Context context) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
@@ -326,6 +333,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     return Environment.isExternalStorageManager()
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
+                }
+
+                if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        return Settings.canDrawOverlays(context)
+                                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                                : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    }
                 }
 
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
