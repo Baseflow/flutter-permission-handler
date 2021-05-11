@@ -196,6 +196,20 @@ On Android, you can show a rationale for using a permission:
 bool isShown = await Permission.contacts.shouldShowRequestRationale;
 ```
 
+Some permissions will not show a dialog asking the user to allow or deny the requested permission.  
+This is because the OS setting(s) of the app are being retrieved for the corresponding permission.  
+The status of the setting will determine whether the permission is `granted` or `denied`.  
+
+The following permissions will show no dialog:  
+
+- Notification
+- Bluetooth
+
+The following permissions will show no dialog, but will open the corrseponding setting intent for the user to change the permission status:  
+
+- manageExternalStorage
+- systemAlertWindow
+
 ## Issues
 
 Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).
