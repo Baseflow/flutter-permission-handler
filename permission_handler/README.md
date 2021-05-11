@@ -144,7 +144,7 @@ You can get a `Permission`'s `status`, which is either `granted`, `denied`, `res
 
 ```dart
 var status = await Permission.camera.status;
-if (status.denied) {
+if (status.isDenied) {
   // We didn't ask for permission yet or the permission has been denied before but not permanently.
 }
 
