@@ -1,155 +1,141 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
-import 'template/globals.dart';
+import 'dart:io';
+import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
-  runApp(BaseflowPluginExample());
+  runApp(BaseflowPluginExample(
+      pluginName: 'Permission Handler',
+      githubURL: 'https://github.com/Baseflow/flutter-permission-handler',
+      pubDevURL: 'https://pub.dev/packages/permission_handler',
+      pages: [PermissionHandlerWidget.createPage()]));
 }
+
+///Defines the main theme color
+final MaterialColor themeMaterialColor =
+    BaseflowPluginExample.createMaterialColor(
+        const Color.fromRGBO(48, 49, 60, 1));
 
 /// A Flutter application demonstrating the functionality of this plugin
-class BaseflowPluginExample extends StatelessWidget {
-  /// [MaterialColor] to be used in the app [ThemeData]
-  final MaterialColor themeMaterialColor =
-      createMaterialColor(const Color.fromRGBO(48, 49, 60, 1));
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Baseflow $pluginName',
-      theme: ThemeData(
-        accentColor: Colors.white60,
-        backgroundColor: const Color.fromRGBO(48, 49, 60, 0.8),
-        buttonTheme: ButtonThemeData(
-          buttonColor: themeMaterialColor.shade500,
-          disabledColor: themeMaterialColor.withRed(200),
-          splashColor: themeMaterialColor.shade50,
-          textTheme: ButtonTextTheme.primary,
-        ),
-        bottomAppBarColor: const Color.fromRGBO(57, 58, 71, 1),
-        hintColor: themeMaterialColor.shade500,
-        primarySwatch: createMaterialColor(const Color.fromRGBO(48, 49, 60, 1)),
-        textTheme: TextTheme(
-          bodyText1: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            height: 1.3,
-          ),
-          bodyText2: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            height: 1.2,
-          ),
-          button: TextStyle(color: Colors.white),
-          headline1: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
-        ),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        inputDecorationTheme: InputDecorationTheme(
-          fillColor: const Color.fromRGBO(37, 37, 37, 1),
-          filled: true,
-        ),
-      ),
-      home: AppHome(title: 'Baseflow $pluginName example app'),
-    );
+class PermissionHandlerWidget extends StatefulWidget {
+  static ExamplePage createPage() {
+    return ExamplePage(
+        Icons.location_on, (context) => PermissionHandlerWidget());
   }
 
-  /// Creates a [MaterialColor] based on the supplied [Color]
-  static MaterialColor createMaterialColor(Color color) {
-    List strengths = <double>[.05];
-    Map swatch = <int, Color>{};
-    final r = color.red, g = color.green, b = color.blue;
+  @override
+  _PermissionHandlerWidgetState createState() =>
+      _PermissionHandlerWidgetState();
+}
 
-    for (var i = 1; i < 10; i++) {
-      strengths.add(0.1 * i);
-    }
-    for (var strength in strengths) {
-      final ds = 0.5 - strength;
-      swatch[(strength * 1000).round()] = Color.fromRGBO(
-        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
-        g + ((ds < 0 ? g : (255 - g)) * ds).round(),
-        b + ((ds < 0 ? b : (255 - b)) * ds).round(),
-        1,
-      );
-    }
-    return MaterialColor(color.value, swatch as Map<int, Color>);
+class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ListView(
+          children: Permission.values
+              .where((permission) {
+                if (Platform.isIOS) {
+                  return permission != Permission.unknown &&
+                      permission != Permission.sms &&
+                      permission != Permission.storage &&
+                      permission != Permission.ignoreBatteryOptimizations &&
+                      permission != Permission.accessMediaLocation &&
+                      permission != Permission.activityRecognition &&
+                      permission != Permission.manageExternalStorage &&
+                      permission != Permission.systemAlertWindow;
+                } else {
+                  return permission != Permission.unknown &&
+                      permission != Permission.mediaLibrary &&
+                      permission != Permission.photos &&
+                      permission != Permission.reminders;
+                }
+              })
+              .map((permission) => PermissionWidget(permission))
+              .toList()),
+    );
   }
 }
 
-/// A Flutter example demonstrating how the [pluginName] plugin could be used
-class AppHome extends StatefulWidget {
-  /// Constructs the [AppHome] class
-  AppHome({Key? key, this.title}) : super(key: key);
+class PermissionWidget extends StatefulWidget {
+  /// Constructs a [PermissionWidget] for the supplied [Permission].
+  const PermissionWidget(this._permission);
 
-  /// The [title] of the application, which is shown in the application's
-  /// title bar.
-  final String? title;
+  final Permission _permission;
 
   @override
-  _AppHomeState createState() => _AppHomeState();
+  _PermissionState createState() => _PermissionState(_permission);
 }
 
-class _AppHomeState extends State<AppHome> {
-  static final PageController _pageController = PageController(initialPage: 0);
-  int _currentPage = 0;
+class _PermissionState extends State<PermissionWidget> {
+  _PermissionState(this._permission);
+
+  final Permission _permission;
+  PermissionStatus _permissionStatus = PermissionStatus.denied;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _listenForPermissionStatus();
+  }
+
+  void _listenForPermissionStatus() async {
+    final status = await _permission.status;
+    setState(() => _permissionStatus = status);
+  }
+
+  Color getPermissionColor() {
+    switch (_permissionStatus) {
+      case PermissionStatus.denied:
+        return Colors.red;
+      case PermissionStatus.granted:
+        return Colors.green;
+      case PermissionStatus.limited:
+        return Colors.orange;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).bottomAppBarColor,
-        title: Center(
-          child: Image.asset(
-            'res/images/baseflow_logo_def_light-02.png',
-            width: 140,
+    return ListTile(
+      title: Text(
+        _permission.toString(),
+        style: Theme.of(context).textTheme.bodyText1,
+      ),
+      subtitle: Text(
+        _permissionStatus.toString(),
+        style: TextStyle(color: getPermissionColor()),
+      ),
+      trailing: IconButton(
+          icon: const Icon(
+            Icons.info,
+            color: Colors.white,
           ),
-        ),
-      ),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: PageView(
-        controller: _pageController,
-        children: pages,
-        onPageChanged: (page) {
-          setState(() {
-            _currentPage = page;
-          });
-        },
-      ),
-      bottomNavigationBar: _bottomAppBar(),
+          onPressed: () {
+            checkServiceStatus(context, _permission);
+          }),
+      onTap: () {
+        requestPermission(_permission);
+      },
     );
   }
 
-  BottomAppBar _bottomAppBar() {
-    return BottomAppBar(
-      elevation: 5,
-      color: Theme.of(context).bottomAppBarColor,
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.unmodifiable(() sync* {
-          for (var i = 0; i < pages.length; i++) {
-            yield Expanded(
-              child: IconButton(
-                iconSize: 30,
-                icon: Icon(icons.elementAt(i)),
-                color: _bottomAppBarIconColor(i),
-                onPressed: () => _animateToPage(i),
-              ),
-            );
-          }
-        }()),
-      ),
-    );
+  void checkServiceStatus(BuildContext context, Permission permission) async {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text((await permission.status).toString()),
+    ));
   }
 
-  void _animateToPage(int page) {
-    _pageController.animateToPage(page,
-        duration: Duration(milliseconds: 200), curve: Curves.linear);
-  }
+  Future<void> requestPermission(Permission permission) async {
+    final status = await permission.request();
 
-  Color _bottomAppBarIconColor(int page) {
-    return _currentPage == page ? Colors.white : Theme.of(context).accentColor;
+    setState(() {
+      print(status);
+      _permissionStatus = status;
+      print(_permissionStatus);
+    });
   }
 }

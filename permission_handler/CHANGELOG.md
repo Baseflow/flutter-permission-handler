@@ -1,3 +1,7 @@
+## 7.1.1
+
+* Improved the example app by using the Baseflow Plugin Template and move all the functionality to the `main.dart` file.
+
 ## 7.1.0
 
 * Added support for the "SYSTEM_ALERT_WINDOW" permission on Android.
