@@ -43,11 +43,13 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                       permission != Permission.accessMediaLocation &&
                       permission != Permission.activityRecognition &&
                       permission != Permission.manageExternalStorage &&
-                      permission != Permission.systemAlertWindow;
+                      permission != Permission.systemAlertWindow &&
+                      permission != Permission.requestInstallPackages;
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&
                       permission != Permission.photos &&
+                      permission != Permission.photosAddOnly &&
                       permission != Permission.reminders;
                 }
               })

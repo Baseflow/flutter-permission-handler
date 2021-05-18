@@ -1,3 +1,7 @@
+## 7.2.0
+
+* Added support for the "REQUEST_INSTALL_PACKAGES" permission on Android.
+
 ## 7.1.1
 
 * Improved the example app by using the Baseflow Plugin Template and move all the functionality to the `main.dart` file.

@@ -37,7 +37,8 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS &&
                 requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE &&
-                requestCode != PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW) {
+                requestCode != PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW &&
+                requestCode != PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES) {
             return false;
         }
 
@@ -60,6 +61,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
                 permission = PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
+            } else {
+                return false;
+            }
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                status = activity.getPackageManager().canRequestPackageInstalls()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                permission = PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES;
             } else {
                 return false;
             }
@@ -241,6 +251,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 executeIntent(
                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
+                executeIntent(
+                        Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                        PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -338,6 +352,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         return Settings.canDrawOverlays(context)
+                                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                                : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    }
+                }
+
+                if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        return context.getPackageManager().canRequestPackageInstalls()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
