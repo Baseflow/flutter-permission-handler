@@ -137,7 +137,6 @@ class Permission {
   ///iOS: Nothing
   static const requestInstallPackages = Permission._(24);
 
-
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
