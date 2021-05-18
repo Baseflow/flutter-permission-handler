@@ -133,6 +133,11 @@ class Permission {
   ///iOS: Nothing
   static const systemAlertWindow = Permission._(23);
 
+  ///Android: Allows an app to request installing packages.
+  ///iOS: Nothing
+  static const requestInstallPackages = Permission._(24);
+
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -158,7 +163,8 @@ class Permission {
     unknown,
     bluetooth,
     manageExternalStorage,
-    systemAlertWindow
+    systemAlertWindow,
+    requestInstallPackages
   ];
 
   static const List<String> _names = <String>[
@@ -185,7 +191,8 @@ class Permission {
     'unknown',
     'bluetooth',
     'manageExternalStorage',
-    'systemAlertWindow'
+    'systemAlertWindow',
+    'requestInstallPackages'
   ];
 
   @override
