@@ -1,3 +1,7 @@
+## 3.4.0
+
+*Added support request install packages permission.
+
 ## 3.3.0
 
 * Added support for system alert window permission.
