@@ -251,7 +251,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 executeIntent(
                         Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                 executeIntent(
                         Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                         PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES);
