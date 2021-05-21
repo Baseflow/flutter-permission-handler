@@ -1,3 +1,7 @@
+## 3.5.0
+
+*Added support for app tracking transparency permission.
+
 ## 3.4.0
 
 *Added support request install packages permission.
