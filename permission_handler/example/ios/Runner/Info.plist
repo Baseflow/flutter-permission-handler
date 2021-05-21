@@ -90,5 +90,14 @@
     <key>NSRemindersUsageDescription</key>
     <string>reminders</string>
 
+    <!-- Permission options for the `bluetooth` -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>bluetooth</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>bluetooth</string>
+
+    <!-- Permission options for the `appTrackingTransparency` -->
+    <key>NSUserTrackingUsageDescription</key>
+    <string>appTrackingTransparency</string>
 </dict>
 </plist>

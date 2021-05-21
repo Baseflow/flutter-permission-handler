@@ -50,7 +50,8 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                       permission != Permission.mediaLibrary &&
                       permission != Permission.photos &&
                       permission != Permission.photosAddOnly &&
-                      permission != Permission.reminders;
+                      permission != Permission.reminders &&
+                      permission != Permission.appTrackingTransparency;
                 }
               })
               .map((permission) => PermissionWidget(permission))
