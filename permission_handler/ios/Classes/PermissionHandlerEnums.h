@@ -95,6 +95,13 @@
     #define PERMISSION_BLUETOOTH 1
 #endif
 
+// ios: PermissionGroupAppTrackingTransparency
+// Info.plist: [NSUserTrackingUsageDescription]
+// dart: PermissionGroup.appTrackingTransparency
+#ifndef PERMISSION_APP_TRACKING_TRANSPARENCY
+    #define PERMISSION_APP_TRACKING_TRANSPARENCY 1
+#endif
+
 typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupCalendar = 0,
     PermissionGroupCamera,
@@ -119,7 +126,9 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupUnknown,
     PermissionGroupBluetooth,
     PermissionGroupManageExternalStorage,
-    PermissionGroupSystemAlertWindow
+    PermissionGroupSystemAlertWindow,
+    PermissionGroupRequestInstallPackages,
+    PermissionGroupAppTrackingTransparency
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

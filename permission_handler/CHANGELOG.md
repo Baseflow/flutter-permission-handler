@@ -1,3 +1,7 @@
+## 7.3.0
+
+* Added support for the "AppTrackingTransparency" permission on iOS.
+
 ## 7.2.0
 
 * Added support for the "REQUEST_INSTALL_PACKAGES" permission on Android.

@@ -125,6 +125,8 @@
             return [StoragePermissionStrategy new];
         case PermissionGroupBluetooth:
             return [BluetoothPermissionStrategy new];
+        case PermissionGroupAppTrackingTransparency:
+            return [AppTrackingTransparencyPermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }
