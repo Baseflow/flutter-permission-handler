@@ -1,3 +1,7 @@
+## 8.0.0+1
+
+* Updated the README.md setup section about the Podfile and changed a minor spelling mistake.
+
 ## 8.0.0
 
 This release contains the following **breaking changes**: 
