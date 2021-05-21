@@ -137,6 +137,12 @@ class Permission {
   ///iOS: Nothing
   static const requestInstallPackages = Permission._(24);
 
+  ///Android: Nothing
+  ///iOS: Allows user to accept that your app collects data about end users and
+  ///shares it with other companies for purposes of tracking across apps and
+  ///websites.
+  static const appTrackingTransparency = Permission._(25);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -163,7 +169,8 @@ class Permission {
     bluetooth,
     manageExternalStorage,
     systemAlertWindow,
-    requestInstallPackages
+    requestInstallPackages,
+    appTrackingTransparency
   ];
 
   static const List<String> _names = <String>[
@@ -191,7 +198,8 @@ class Permission {
     'bluetooth',
     'manageExternalStorage',
     'systemAlertWindow',
-    'requestInstallPackages'
+    'requestInstallPackages',
+    'appTrackingTransparency'
   ];
 
   @override
