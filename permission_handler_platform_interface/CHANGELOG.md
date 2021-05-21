@@ -1,6 +1,6 @@
 ## 3.5.0
 
-*A dded support for app tracking transparency permission.
+* Added support for app tracking transparency permission.
 
 ## 3.4.0
 
