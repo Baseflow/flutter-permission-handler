@@ -209,6 +209,7 @@ The following permissions will show no dialog, but will open the corrseponding s
 
 - manageExternalStorage
 - systemAlertWindow
+- requestInstallPackages
 
 ## Issues
 

@@ -65,6 +65,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE;
             case Manifest.permission.SYSTEM_ALERT_WINDOW:
                 return PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
+            case Manifest.permission.REQUEST_INSTALL_PACKAGES:
+                return PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -229,6 +231,13 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW ))
                     permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
+                break;
+
+            case PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES:
+                // The REQUEST_INSTALL_PACKAGES permission is introduced in Android M, meaning we should
+                // not handle permissions on pre Android M devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_INSTALL_PACKAGES ))
+                    permissionNames.add(Manifest.permission.REQUEST_INSTALL_PACKAGES);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
