@@ -138,9 +138,9 @@ class Permission {
   static const requestInstallPackages = Permission._(24);
 
   ///Android: Nothing
-  ///iOS: Allows user to accept that your app collects data about end users
-  ///and shares it with other companies
-  ///for purposes of tracking across apps and web sites.
+  ///iOS: Allows user to accept that your app collects data about end users and
+  ///shares it with other companies for purposes of tracking across apps and
+  ///websites.
   static const appTrackingTransparency = Permission._(25);
 
   /// Returns a list of all possible [PermissionGroup] values.
