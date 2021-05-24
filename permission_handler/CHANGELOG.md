@@ -1,3 +1,8 @@
+## 8.0.0+2
+
+* Fix broken Podfile link noted at `8.0.0`.
+* Fix the information link noted at [Podfile](permission_handler/example/ios/Podfile).
+
 ## 8.0.0+1
 
 * Updated the README.md setup section about the Podfile and changed a minor spelling mistake.
