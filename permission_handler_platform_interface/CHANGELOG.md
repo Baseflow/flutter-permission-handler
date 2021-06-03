@@ -1,3 +1,7 @@
+## 3.5.1
+
+* Updated API documentation for the `PermissionStatus.permanentlyDenied` status.
+
 ## 3.5.0
 
 * Added support for app tracking transparency permission.
