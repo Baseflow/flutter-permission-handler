@@ -18,10 +18,9 @@ enum PermissionStatus {
   /// *Only supported on iOS (iOS14+).*
   limited,
 
-  /// The user denied access to the requested feature and selected to never
-  /// again show a request for this permission. The user may still change the
-  /// permission status in the settings.
-  /// *Only supported on Android.*
+  /// Permission to the requested feature is permanently denied, the permission
+  /// dialog will not be shown when requesting this permission. The user may
+  /// still change the permission status in the settings.
   permanentlyDenied,
 }
 
