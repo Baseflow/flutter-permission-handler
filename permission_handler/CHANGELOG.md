@@ -1,3 +1,7 @@
+## 8.0.1
+
+* Updated API documentation for the `PermissionStatus.permanentlyDenied` status.
+
 ## 8.0.0+2
 
 * Fix broken Podfile link noted at `8.0.0`.
