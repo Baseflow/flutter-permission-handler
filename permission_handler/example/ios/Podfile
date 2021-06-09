@@ -72,6 +72,9 @@ post_install do |installer|
         ## dart: PermissionGroup.notification
         'PERMISSION_NOTIFICATIONS=1',
 
+        ## dart: PermissionGroup.criticalAlerts
+        'PERMISSION_CRITICAL_ALERTS=1',
+
         ## dart: PermissionGroup.mediaLibrary
         'PERMISSION_MEDIA_LIBRARY=1',
 

@@ -102,6 +102,13 @@
     #define PERMISSION_APP_TRACKING_TRANSPARENCY 0
 #endif
 
+
+// ios: PermissionGroupCriticalAlerts
+// dart: PermissionGroup.criticalAlerts
+#ifndef PERMISSION_CRITICAL_ALERTS
+    #define PERMISSION_CRITICAL_ALERTS 0
+#endif
+
 typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupCalendar = 0,
     PermissionGroupCamera,
@@ -128,7 +135,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupManageExternalStorage,
     PermissionGroupSystemAlertWindow,
     PermissionGroupRequestInstallPackages,
-    PermissionGroupAppTrackingTransparency
+    PermissionGroupAppTrackingTransparency,
+    PermissionGroupCriticalAlerts
 };
 
 typedef NS_ENUM(int, PermissionStatus) {
