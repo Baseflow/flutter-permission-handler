@@ -139,11 +139,11 @@ You must list permission you want to use in your application :
    | PermissionGroup.photos                                                                      | NSPhotoLibraryUsageDescription                                                                                | PERMISSION_PHOTOS                    |
    | PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse | NSLocationUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationWhenInUseUsageDescription | PERMISSION_LOCATION                  |
    | PermissionGroup.notification                                                                | PermissionGroupNotification                                                                                   | PERMISSION_NOTIFICATIONS             |
-   | PermissionGroup.criticalAlerts                                                              | PermissionGroupCriticalAlerts                                                                                 | PERMISSION_CRITICAL_ALERTS           |
    | PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMediaLibrary                                                         | PERMISSION_MEDIA_LIBRARY             |
    | PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                      | PERMISSION_SENSORS                   |
    | PermissionGroup.bluetooth                                                                   | NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription                                      | PERMISSION_BLUETOOTH                 |
    | PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                | PERMISSION_APP_TRACKING_TRANSPARENCY |   
+   | PermissionGroup.criticalAlerts                                                              | PermissionGroupCriticalAlerts                                                                                 | PERMISSION_CRITICAL_ALERTS           |
 4. Clean & Rebuild
 
 </details>
@@ -223,6 +223,7 @@ The following permissions will show no dialog, but will open the corresponding s
 - manageExternalStorage
 - systemAlertWindow
 - requestInstallPackages
+- accessNotificationPolicy
 
 ## Issues
 

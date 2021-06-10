@@ -147,7 +147,6 @@ class Permission {
   ///iOS: Notifications that override your ringer
   static const criticalAlerts = Permission._(26);
 
-
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,

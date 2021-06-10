@@ -1,7 +1,9 @@
 ## 8.1.0
 
 * Added support for iOS 12+ Critical Alerts permission requesting.
-* NOTE: This requires applying to Apple and recieving a special entitlement from them inorder to work. See [this article](https://medium.com/@shashidharyamsani/implementing-ios-critical-alerts-7d82b4bb5026) for an explination on how to use Critical Alerts. 
+    * NOTE: This requires applying to Apple and recieving a special entitlement from them inorder to work. See [this article](https://medium.com/@shashidharyamsani/implementing-ios-critical-alerts-7d82b4bb5026) for an explination on how to use Critical Alerts.
+* Added support for Android M+ Access Notification Policy permission requesting (ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).
+    * Note: This opens a general page in settings, not specific to the package. 
 
 ## 8.0.1
 

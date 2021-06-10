@@ -104,6 +104,7 @@
 
 
 // ios: PermissionGroupCriticalAlerts
+// Info.plist: UNAuthorizationOptionCriticalAlert
 // dart: PermissionGroup.criticalAlerts
 #ifndef PERMISSION_CRITICAL_ALERTS
     #define PERMISSION_CRITICAL_ALERTS 0
@@ -136,7 +137,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupSystemAlertWindow,
     PermissionGroupRequestInstallPackages,
     PermissionGroupAppTrackingTransparency,
-    PermissionGroupCriticalAlerts
+    PermissionGroupCriticalAlerts,
+    PermissionGroupAccessNotificationPolicy,
 };
 
 typedef NS_ENUM(int, PermissionStatus) {
