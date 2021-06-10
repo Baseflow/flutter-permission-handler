@@ -143,6 +143,15 @@ class Permission {
   ///websites.
   static const appTrackingTransparency = Permission._(25);
 
+  ///Android: Nothing
+  ///iOS: Notifications that override your ringer
+  static const criticalAlerts = Permission._(26);
+
+  ///Android: Allows the user to access the notification policy of the phone.
+  /// EX: Allows app to turn on and off do-not-disturb.
+  ///iOS: Nothing
+  static const accessNotificationPolicy = Permission._(27);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -170,7 +179,9 @@ class Permission {
     manageExternalStorage,
     systemAlertWindow,
     requestInstallPackages,
-    appTrackingTransparency
+    appTrackingTransparency,
+    criticalAlerts,
+    accessNotificationPolicy,
   ];
 
   static const List<String> _names = <String>[
@@ -199,7 +210,9 @@ class Permission {
     'manageExternalStorage',
     'systemAlertWindow',
     'requestInstallPackages',
-    'appTrackingTransparency'
+    'appTrackingTransparency',
+    'criticalAlerts',
+    'accessNotificationPolicy',
   ];
 
   @override
