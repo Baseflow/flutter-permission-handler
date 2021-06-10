@@ -1,3 +1,7 @@
+## 3.6.0
+
+* Add support for iOS Critical alerts and Android Access Notification Policy.
+
 ## 3.5.1
 
 * Updated API documentation for the `PermissionStatus.permanentlyDenied` status.
