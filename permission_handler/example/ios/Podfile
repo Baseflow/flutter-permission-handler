@@ -82,7 +82,7 @@ post_install do |installer|
         'PERMISSION_BLUETOOTH=1',
 
         ## dart: PermissionGroup.appTrackingTransparency
-        'PERMISSION_APP_TRACKING_TRANSPARENCY=1'
+        'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
 
         ## dart: PermissionGroup.criticalAlerts
         'PERMISSION_CRITICAL_ALERTS=1',
