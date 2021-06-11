@@ -1,6 +1,9 @@
 package com.baseflow.permissionhandler;
 
 import android.app.Activity;
+import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -38,7 +41,8 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS &&
                 requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE &&
                 requestCode != PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW &&
-                requestCode != PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES) {
+                requestCode != PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES &&
+                requestCode != PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY) {
             return false;
         }
 
@@ -70,6 +74,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
                 permission = PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES;
+            } else {
+                return false;
+            }
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Application.NOTIFICATION_SERVICE);
+                status = notificationManager.isNotificationPolicyAccessGranted()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                permission = PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY;
             } else {
                 return false;
             }
@@ -255,6 +269,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 executeIntent(
                         Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                         PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
+                executeSimpleIntent(
+                        Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
+                        PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY);
             } else {
                 permissionsToRequest.addAll(names);
             }
@@ -298,7 +316,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         //if no permissions were found then there is an issue and permission is not set in Android manifest
         if (names.size() == 0) {
-            Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + permission);
+            Log.d(PermissionConstants.LOG_TAG, "No permissions found in manifest for: " + names + permission);
 
             // On Android below M, the android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS flag in AndroidManifest.xml
             // may be ignored and not visible to the App as it's a new permission setting as a whole.
@@ -365,6 +383,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }
                 }
 
+                if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
+                        return notificationManager.isNotificationPolicyAccessGranted()
+                                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                                : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    }
+                }
+
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                     return PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -380,6 +407,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         intent.setAction(action);
         intent.setData(Uri.parse("package:" + packageName));
         activity.startActivityForResult(intent, requestCode);
+    }
+
+    private void executeSimpleIntent(String action, int requestCode) {
+        activity.startActivityForResult(new Intent(action), requestCode);
     }
 
     void shouldShowRequestPermissionRationale(

@@ -67,6 +67,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW;
             case Manifest.permission.REQUEST_INSTALL_PACKAGES:
                 return PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES;
+            case Manifest.permission.ACCESS_NOTIFICATION_POLICY:
+                return PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -239,7 +241,12 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_INSTALL_PACKAGES ))
                     permissionNames.add(Manifest.permission.REQUEST_INSTALL_PACKAGES);
                 break;
-
+            case PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY:
+                // The REQUEST_NOTIFICATION_POLICY permission is introduced in Android M, meaning we should
+                // not handle permissions on pre Android M devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_NOTIFICATION_POLICY ))
+                    permissionNames.add(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
+                break;
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:

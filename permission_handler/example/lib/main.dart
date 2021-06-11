@@ -44,14 +44,16 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                       permission != Permission.activityRecognition &&
                       permission != Permission.manageExternalStorage &&
                       permission != Permission.systemAlertWindow &&
-                      permission != Permission.requestInstallPackages;
+                      permission != Permission.requestInstallPackages &&
+                      permission != Permission.accessNotificationPolicy;
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&
                       permission != Permission.photos &&
                       permission != Permission.photosAddOnly &&
                       permission != Permission.reminders &&
-                      permission != Permission.appTrackingTransparency;
+                      permission != Permission.appTrackingTransparency &&
+                      permission != Permission.criticalAlerts;
                 }
               })
               .map((permission) => PermissionWidget(permission))

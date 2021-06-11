@@ -110,7 +110,10 @@ You must list permission you want to use in your application :
            # 'PERMISSION_BLUETOOTH=1',
    
            ## dart: PermissionGroup.appTrackingTransparency
-           # 'PERMISSION_APP_TRACKING_TRANSPARENCY=1'
+           # 'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
+   
+           ## dart: PermissionGroup.criticalAlerts
+           # 'PERMISSION_CRITICAL_ALERTS=1'
          ]
   
        end
@@ -140,6 +143,7 @@ You must list permission you want to use in your application :
    | PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                      | PERMISSION_SENSORS                   |
    | PermissionGroup.bluetooth                                                                   | NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription                                      | PERMISSION_BLUETOOTH                 |
    | PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                | PERMISSION_APP_TRACKING_TRANSPARENCY |   
+   | PermissionGroup.criticalAlerts                                                              | PermissionGroupCriticalAlerts                                                                                 | PERMISSION_CRITICAL_ALERTS           |
 4. Clean & Rebuild
 
 </details>
@@ -219,6 +223,7 @@ The following permissions will show no dialog, but will open the corresponding s
 - manageExternalStorage
 - systemAlertWindow
 - requestInstallPackages
+- accessNotificationPolicy
 
 ## Issues
 
