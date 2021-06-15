@@ -1,3 +1,7 @@
+## 8.1.1
+
+* Fixed deprecation issue when checking phone capabilities on iOS (see issue [#597](https://github.com/Baseflow/flutter-permission-handler/issues/597)).
+
 ## 8.1.0
 
 * Added support for iOS 12+ Critical Alerts permission requesting.
