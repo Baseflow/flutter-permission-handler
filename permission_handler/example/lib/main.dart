@@ -114,23 +114,27 @@ class _PermissionState extends State<PermissionWidget> {
         _permissionStatus.toString(),
         style: TextStyle(color: getPermissionColor()),
       ),
-      trailing: IconButton(
-          icon: const Icon(
-            Icons.info,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            checkServiceStatus(context, _permission);
-          }),
+      trailing: (_permission is PermissionWithService)
+          ? IconButton(
+              icon: const Icon(
+                Icons.info,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                checkServiceStatus(
+                    context, _permission as PermissionWithService);
+              })
+          : null,
       onTap: () {
         requestPermission(_permission);
       },
     );
   }
 
-  void checkServiceStatus(BuildContext context, Permission permission) async {
+  void checkServiceStatus(
+      BuildContext context, PermissionWithService permission) async {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text((await permission.status).toString()),
+      content: Text((await permission.serviceStatus).toString()),
     ));
   }
 
