@@ -13,40 +13,55 @@
 @implementation PhonePermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    return PermissionStatusDenied;
+  return PermissionStatusDenied;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    // https://stackoverflow.com/a/5095058
-    if (![[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel://"]]) {
-        return ServiceStatusNotApplicable;
-    }
-
-    return [self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled;
+  // https://stackoverflow.com/a/5095058
+  if (![[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel://"]]) {
+    return ServiceStatusNotApplicable;
+  }
+  
+  return [self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled;
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
-    completionHandler(PermissionStatusPermanentlyDenied);
+  completionHandler(PermissionStatusPermanentlyDenied);
 }
 
 
-// https://stackoverflow.com/a/11595365
+/**
+ * Returns YES if the device can place a phone call.
+ */
 -(bool) canDevicePlaceAPhoneCall {
-    /*
-     * Returns YES if the device can place a phone call
-     */
-
-    // Device supports phone calls, lets confirm it can place one right now
-    CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
-    CTCarrier *carrier = [netInfo subscriberCellularProvider];
-    NSString *mnc = [carrier mobileNetworkCode];
-    if (([mnc length] == 0) || ([mnc isEqualToString:@"65535"])) {
-        // Device cannot place a call at this time.  SIM might be removed.
-        return NO;
-    } else {
-        // Device can place a phone call
+  CTTelephonyNetworkInfo *netInfo = [[CTTelephonyNetworkInfo alloc] init];
+  
+  if(@available(iOS 12.0, *)) {
+    NSDictionary<NSString *, CTCarrier *> *providers = [netInfo serviceSubscriberCellularProviders];
+    for (NSString *key in providers) {
+      CTCarrier *carrier = [providers objectForKey:key];
+      if ([self canPlacePhoneCallWithCarrier:carrier]) {
         return YES;
+      }
     }
+    
+    return NO;
+  } else {
+    CTCarrier *carrier = [netInfo subscriberCellularProvider];
+    return [self canPlacePhoneCallWithCarrier:carrier];
+  }
+}
+
+-(bool)canPlacePhoneCallWithCarrier:(CTCarrier *)carrier {
+  // https://stackoverflow.com/a/11595365
+  NSString *mnc = [carrier mobileNetworkCode];
+  if (([mnc length] == 0) || ([mnc isEqualToString:@"65535"])) {
+    // Device cannot place a call at this time.  SIM might be removed.
+    return NO;
+  } else {
+    // Device can place a phone call
+    return YES;
+  }
 }
 
 @end
