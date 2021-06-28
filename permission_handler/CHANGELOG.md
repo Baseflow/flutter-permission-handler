@@ -1,3 +1,7 @@
+## 8.1.2
+
+* Suppress deprecation warnings on iOS for code that specifically targets older iOS versions (see issue [#607](https://github.com/Baseflow/flutter-permission-handler/issues/607)). 
+
 ## 8.1.1
 
 * Fixed deprecation issue when checking phone capabilities on iOS (see issue [#597](https://github.com/Baseflow/flutter-permission-handler/issues/597)).
