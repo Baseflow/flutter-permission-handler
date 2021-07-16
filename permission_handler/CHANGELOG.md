@@ -1,3 +1,8 @@
+## 8.1.3
+
+* Fix bug where `locationAlways` returns `PermanentlyDenied`;
+* Updated the `README.md` for requesting the `locationAlways` permission the correct way.
+
 ## 8.1.2
 
 * Suppress deprecation warnings on iOS for code that specifically targets older iOS versions (see issue [#607](https://github.com/Baseflow/flutter-permission-handler/issues/607)). 

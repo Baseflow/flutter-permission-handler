@@ -81,7 +81,11 @@
     if (_permissionStatusHandler == nil || @(_requestedPermission) == nil) {
         return;
     }
-    
+
+    if ((_requestedPermission == PermissionGroupLocationAlways && status == kCLAuthorizationStatusAuthorizedWhenInUse)) {
+            return;
+    }
+
     PermissionStatus permissionStatus = [LocationPermissionStrategy
                                          determinePermissionStatus:_requestedPermission authorizationStatus:status];
     
