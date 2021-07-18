@@ -225,6 +225,10 @@ The following permissions will show no dialog, but will open the corresponding s
 - requestInstallPackages
 - accessNotificationPolicy
 
+The `locationAlways` permission can not be requested directly, the user has to request the `locationWhenInUse` permission first.
+Accepting this permission by clicking on the 'Allow While Using App' gives the user the possibility to request the `locationAlways` permission.
+This will then bring up another permission popup asking you to `Keep Only While Using` or to `Change To Always Allow`.
+
 ## Issues
 
 Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).
