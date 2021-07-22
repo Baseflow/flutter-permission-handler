@@ -46,7 +46,7 @@
         int rawValue = rawNumberValue.intValue;
         PermissionGroup permission = (PermissionGroup) rawValue;
         
-        id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
+        __block id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
         [_strategyInstances addObject:permissionStrategy];
         
         
@@ -55,6 +55,7 @@
             [requestQueue removeObject:@(permission)];
             
             [self->_strategyInstances removeObject:permissionStrategy];
+            permissionStrategy = nil;
             
             if (requestQueue.count == 0) {
                 completion(permissionStatusResult);
