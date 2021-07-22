@@ -1,6 +1,6 @@
 ## 8.1.4
 
-* Fix bug where `locationAlways` returned sometimes `PermissionStatus.Denied` instead of `PermissionStatus.Granted`.
+* Fix bug where requesting `locationAlways` permission sometimes returns `PermissionStatus.Denied` instead of `PermissionStatus.Granted`.
 
 ## 8.1.3
 
