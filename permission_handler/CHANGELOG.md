@@ -1,3 +1,7 @@
+## 8.1.4
+
+* Fix bug where requesting `locationAlways` permission sometimes returns `PermissionStatus.Denied` instead of `PermissionStatus.Granted`.
+
 ## 8.1.3
 
 * Fix bug where `locationAlways` returns `PermanentlyDenied`;
