@@ -37,6 +37,7 @@
         // don't do anything and continue requesting permissions
     } else if (status != PermissionStatusDenied) {
         completionHandler(status);
+        return;
     }
     
     _permissionStatusHandler = completionHandler;
