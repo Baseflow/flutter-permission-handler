@@ -22,6 +22,7 @@
 
     if (status != PermissionStatusDenied) {
         completionHandler(status);
+        return;
     }
 
     if (@available(iOS 9.0, *)) {

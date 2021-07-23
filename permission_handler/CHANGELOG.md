@@ -1,3 +1,7 @@
+## 8.1.4+1
+
+*Fix a bug where after allowing the `location` permission and requesting it again would lead to a memory error.
+
 ## 8.1.4
 
 * Fix bug where requesting `locationAlways` permission sometimes returns `PermissionStatus.Denied` instead of `PermissionStatus.Granted`.
