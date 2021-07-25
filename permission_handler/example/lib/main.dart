@@ -35,7 +35,7 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
       child: ListView(
           children: Permission.values
               .where((permission) {
-                if (Platform.isIOS) {
+                if (!Platform.isIOS) {
                   return permission != Permission.unknown &&
                       permission != Permission.sms &&
                       permission != Permission.storage &&
