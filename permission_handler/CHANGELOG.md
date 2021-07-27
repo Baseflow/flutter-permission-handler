@@ -1,3 +1,7 @@
+## 8.1.4+2
+
+* iOS: fixed memory error that occurred on iOS 12.2 and below (see issue [#638](https://github.com/Baseflow/flutter-permission-handler/issues/638)).
+
 ## 8.1.4+1
 
 * Fix a bug where after allowing the `location` permission and requesting it again would lead to a memory error.
