@@ -55,12 +55,16 @@
             [requestQueue removeObject:@(permission)];
             
             [self->_strategyInstances removeObject:permissionStrategy];
-            permissionStrategy = nil;
             
             if (requestQueue.count == 0) {
                 completion(permissionStatusResult);
-                return;
             }
+          
+            // Make sure `completion` is called before cleaning up the reference
+            // otherwise the `completion` block is also dereferenced on iOS 12 and
+            // below (this is most likely a bug in Objective-C which is solved in
+            // later versions of the runtime).
+            permissionStrategy = nil;
         }];
     }
 }
