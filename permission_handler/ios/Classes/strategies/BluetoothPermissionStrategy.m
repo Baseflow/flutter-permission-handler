@@ -9,31 +9,50 @@
 
 #if PERMISSION_BLUETOOTH
 
-@implementation BluetoothPermissionStrategy
+@implementation BluetoothPermissionStrategy {
+    CBCentralManager *_centralManager;
+    PermissionStatusHandler _permissionStatusHandler;
+    PermissionGroup _requestedPermission;
+}
+
+- (instancetype)initWithBluetoothManager {
+    self = [super init];
+    if (self) {
+        _centralManager = [[CBCentralManager alloc] init];
+        _centralManager.delegate = self;
+    }
+    
+    return self;
+}
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
     if (@available(iOS 13.1, *)) {
-        CBManagerAuthorization blePermission = [CBCentralManager authorization];
+        CBManagerAuthorization blePermission = [_centralManager authorization];
         return [BluetoothPermissionStrategy parsePermission:blePermission];
     } else if (@available(iOS 13.0, *)){
-        CBCentralManager* manager = [[CBCentralManager alloc] init];
-        CBManagerAuthorization blePermission =  [manager authorization];
+        CBManagerAuthorization blePermission =  [_centralManager authorization];
         return [BluetoothPermissionStrategy parsePermission:blePermission];
     }
     return PermissionStatusGranted;
 }
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    CBCentralManager* manager = [[CBCentralManager alloc] init];
     if (@available(iOS 10, *)) {
-        return [manager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
+        return [_centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
     }
-    return [manager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
-    
+    return [_centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
-    completionHandler([self checkPermissionStatus:permission]);
+    PermissionStatus status = [self checkPermissionStatus:permission];
+    
+    if (status != PermissionStatusDenied) {
+        completionHandler(status);
+        return;
+    }
+    
+    _permissionStatusHandler = completionHandler;
+    _requestedPermission = permission;
 }
 
 + (PermissionStatus)parsePermission:(CBManagerAuthorization)bluetoothPermission API_AVAILABLE(ios(13)){
@@ -48,6 +67,12 @@
             return PermissionStatusGranted;
     }
 }
+
+- (void)centralManagerDidUpdateState:(nonnull CBCentralManager *)centralManager {
+    PermissionStatus permissionStatus = [self checkPermissionStatus:_requestedPermission];
+    _permissionStatusHandler(permissionStatus);
+}
+
 @end
 
 #else
