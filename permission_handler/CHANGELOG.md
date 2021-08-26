@@ -1,6 +1,6 @@
 ## 8.1.5
 
-* iOS: Enhanced the `bluetooth` permission for iOS 13 and up, so the user gets prompted with the `bluetooth` permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591))
+* iOS: Enhanced the `bluetooth` permission for iOS 13 and up, so the user gets prompted with the "bluetooth" permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
 
 ## 8.1.4+2
 
