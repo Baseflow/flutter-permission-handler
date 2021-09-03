@@ -150,7 +150,8 @@ final class ServiceManager {
                 Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
         return !TextUtils.isEmpty(locationProviders);
     }
-
+    // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
+    // pre S versions of Android
     @SuppressWarnings("deprecation")
     private boolean isBluetoothServiceEnabled(Context context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
