@@ -1,3 +1,6 @@
+## 8.1.5
+* Android: Fixed deprecation warnings/errors when `compileSdkVersion` was set to 31 (Android S/12).
+
 ## 8.1.4+2
 
 * iOS: fixed memory error that occurred on iOS 12.2 and below (see issue [#638](https://github.com/Baseflow/flutter-permission-handler/issues/638)).
