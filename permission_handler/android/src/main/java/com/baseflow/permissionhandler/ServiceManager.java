@@ -154,12 +154,13 @@ final class ServiceManager {
     // pre S versions of Android
     @SuppressWarnings("deprecation")
     private boolean isBluetoothServiceEnabled(Context context) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            BluetoothManager manager = (BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return BluetoothAdapter.getDefaultAdapter().isEnabled();
+           
+        }
+             BluetoothManager manager = (BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE);
             final BluetoothAdapter adapter = manager.getAdapter();
             return adapter.isEnabled();
-        } else {
-            return BluetoothAdapter.getDefaultAdapter().isEnabled();
-        }
+        
     }
 }
