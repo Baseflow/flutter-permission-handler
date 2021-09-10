@@ -1,3 +1,7 @@
+## 8.1.5
+
+* Android: Fixed a NullPointerException in release mode, which caused applications to crash when changing settings in the Location Settings intent.
+
 ## 8.1.4+2
 
 * iOS: fixed memory error that occurred on iOS 12.2 and below (see issue [#638](https://github.com/Baseflow/flutter-permission-handler/issues/638)).
