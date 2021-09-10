@@ -104,6 +104,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
+        if (requestResults == null) {
+           return false;
+        }
+
         for (int i = 0; i < permissions.length; i++) {
             final String permissionName = permissions[i];
 
