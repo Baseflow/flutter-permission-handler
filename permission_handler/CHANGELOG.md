@@ -1,6 +1,9 @@
-## 8.1.5
+## 8.1.6
 
-* Android: Fixed a NullPointerException in release mode, which caused applications to crash when changing settings in the Location Settings intent.
+* Android: Fixed a `NullPointerException` when changing permissions in the Location Settings intent.
+
+## 8.1.5
+* Android: Fixed deprecation warnings/errors when `compileSdkVersion` was set to 31 (Android S/12).
 
 ## 8.1.4+2
 

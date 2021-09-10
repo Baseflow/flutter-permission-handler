@@ -18,6 +18,7 @@ final MaterialColor themeMaterialColor =
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
+  /// Create a page containing the functionality of this plugin
   static ExamplePage createPage() {
     return ExamplePage(
         Icons.location_on, (context) => PermissionHandlerWidget());
@@ -62,8 +63,9 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   }
 }
 
+/// Permission widget containing information about the passed [Permission]
 class PermissionWidget extends StatefulWidget {
-  /// Constructs a [PermissionWidget] for the supplied [Permission].
+  /// Constructs a [PermissionWidget] for the supplied [Permission]
   const PermissionWidget(this._permission);
 
   final Permission _permission;
