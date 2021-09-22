@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+
 import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -46,7 +47,10 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                       permission != Permission.manageExternalStorage &&
                       permission != Permission.systemAlertWindow &&
                       permission != Permission.requestInstallPackages &&
-                      permission != Permission.accessNotificationPolicy;
+                      permission != Permission.accessNotificationPolicy &&
+                      permission != Permission.bluetoothScan &&
+                      permission != Permission.bluetoothAdvertise &&
+                      permission != Permission.bluetoothConnect;
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&

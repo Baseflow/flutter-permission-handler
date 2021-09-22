@@ -1,3 +1,10 @@
+## 8.2.0
+
+* Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
+* Updated Android compile and target SDK to 31 (Android 12 (S)).
+* Updated Gradle and dependencies of Android project.
+* Updated applicationID of example app
+
 ## 8.1.6
 
 * Android: Fixed a `NullPointerException` when changing permissions in the Location Settings intent.
