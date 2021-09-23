@@ -1,3 +1,7 @@
+## 3.6.2
+
+* Updated the MethodChannelMock due to breaking changes in the platform channel test interface.
+
 ## 3.6.1
 
 * Updated `meta` dependency to version `^1.3.0`.
