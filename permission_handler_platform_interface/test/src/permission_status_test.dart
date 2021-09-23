@@ -4,13 +4,13 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 void main() {
   group('PermissionSatus', () {
     test('PermissionStatus should contain 5 options', () {
-      final values = PermissionStatus.values;
+      const values = PermissionStatus.values;
 
       expect(values.length, 5);
     });
 
     test('PermissionStatus enum should have items in correct index', () {
-      final values = PermissionStatus.values;
+      const values = PermissionStatus.values;
 
       expect(values[0], PermissionStatus.denied);
       expect(values[1], PermissionStatus.granted);

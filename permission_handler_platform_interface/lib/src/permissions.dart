@@ -6,6 +6,9 @@ part of permission_handler_platform_interface;
 class PermissionWithService extends Permission {
   const PermissionWithService._(int value) : super._(value);
 
+  /// Creates a [PermissionWithService] instance.
+  ///
+  /// This constructor is marked public for testing purposes only.
   @visibleForTesting
   const PermissionWithService.private(int value) : super._(value);
 }
@@ -14,6 +17,8 @@ class PermissionWithService extends Permission {
 @immutable
 class Permission {
   const Permission._(this.value);
+
+  /// Creates a [Permission] using the supplied integer value.
   factory Permission.byValue(int value) => values[value];
 
   /// Integer representation of the [Permission].

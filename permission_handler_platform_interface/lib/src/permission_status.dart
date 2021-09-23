@@ -25,7 +25,9 @@ enum PermissionStatus {
   permanentlyDenied,
 }
 
+/// Conversion extension methods for the [PermissionStatus] type.
 extension PermissionStatusValue on PermissionStatus {
+  /// Converts the [PermissionStatus] value into an integer.
   int get value {
     switch (this) {
       case PermissionStatus.denied:
@@ -43,6 +45,7 @@ extension PermissionStatusValue on PermissionStatus {
     }
   }
 
+  /// Converts the supplied integer value into a [PermissionStatus] enum.
   static PermissionStatus statusByValue(int value) {
     return [
       PermissionStatus.denied,
@@ -54,6 +57,7 @@ extension PermissionStatusValue on PermissionStatus {
   }
 }
 
+/// Utility getter extensions for the [PermissionStatus] type.
 extension PermissionStatusGetters on PermissionStatus {
   /// If the user denied access to the requested feature.
   bool get isDenied => this == PermissionStatus.denied;
@@ -76,9 +80,11 @@ extension PermissionStatusGetters on PermissionStatus {
   /// Therefore make a `request` call first.
   bool get isPermanentlyDenied => this == PermissionStatus.permanentlyDenied;
 
+  /// Indicates that permission for limited use of the resource is granted.
   bool get isLimited => this == PermissionStatus.limited;
 }
 
+/// Utility getter extensions for the `Future<PermissionStatus>` type.
 extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// If the user granted access to the requested feature.
   Future<bool> get isGranted async => (await this).isGranted;
@@ -99,5 +105,6 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   Future<bool> get isPermanentlyDenied async =>
       (await this).isPermanentlyDenied;
 
+  /// Indicates that permission for limited use of the resource is granted.
   Future<bool> get isLimited async => (await this).isLimited;
 }
