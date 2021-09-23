@@ -1,5 +1,6 @@
 part of permission_handler_platform_interface;
 
+/// Defines the different states a service can be in.
 enum ServiceStatus {
   /// The service for the permission is disabled.
   disabled,
@@ -12,7 +13,9 @@ enum ServiceStatus {
   notApplicable,
 }
 
+/// Conversion extension methods for the [ServiceStatus] type.
 extension ServiceStatusValue on ServiceStatus {
+  /// Converts the [ServiceStatus] value into an integer.
   int get value {
     switch (this) {
       case ServiceStatus.disabled:
@@ -26,6 +29,7 @@ extension ServiceStatusValue on ServiceStatus {
     }
   }
 
+  /// Converts the supplied integer value into a [ServiceStatus] enum.
   static ServiceStatus statusByValue(int value) {
     return [
       ServiceStatus.disabled,
@@ -35,6 +39,7 @@ extension ServiceStatusValue on ServiceStatus {
   }
 }
 
+/// Utility getter extensions for the [ServiceStatus] type.
 extension ServiceStatusGetters on ServiceStatus {
   /// If the service for the permission is disabled.
   bool get isDisabled => this == ServiceStatus.disabled;
@@ -47,6 +52,7 @@ extension ServiceStatusGetters on ServiceStatus {
   bool get isNotApplicable => this == ServiceStatus.notApplicable;
 }
 
+/// Utility getter extensions for the `Future<ServiceStatus>` type.
 extension FutureServiceStatusGetters on Future<ServiceStatus> {
   /// If the service for the permission is disabled.
   Future<bool> get isDisabled async => (await this).isDisabled;
