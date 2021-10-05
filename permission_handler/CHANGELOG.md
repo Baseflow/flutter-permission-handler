@@ -1,3 +1,8 @@
+## 8.2.1
+
+* Resolved an issue where checking permissions on pre Android M devices always resolved to `PermissionStatus.denied` (see issue [#60](https://github.com/Baseflow/flutter-permission-plugins/issues/60));
+* Updated the url_launcher dependency in the example App to `^6.0.12`.
+
 ## 8.2.0
 
 * Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
