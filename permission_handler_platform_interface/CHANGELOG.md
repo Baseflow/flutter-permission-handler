@@ -1,3 +1,7 @@
+## 3.7.0
+
+* Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
+
 ## 3.6.2
 
 * Updated the MethodChannelMock due to breaking changes in the platform channel test interface.
