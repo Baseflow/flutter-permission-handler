@@ -1,9 +1,16 @@
+## 8.2.2
+
+* Updated the README.md to mention setting the `compileSdkVersion` to `31`;
+* Added an additional note to version 8.2.0 release notes to inform people to update the `compileSdkVersion`.
+
 ## 8.2.1
 
 * Resolved an issue where checking permissions on pre Android M devices always resolved to `PermissionStatus.denied` (see issue [#60](https://github.com/Baseflow/flutter-permission-plugins/issues/60));
 * Updated the url_launcher dependency in the example App to `^6.0.12`.
 
 ## 8.2.0
+
+> **IMPORTANT:** when updating to version 8.2.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `31`.
 
 * Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
 * Updated Android compile and target SDK to 31 (Android 12 (S)).
