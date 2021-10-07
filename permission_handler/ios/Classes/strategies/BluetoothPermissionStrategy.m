@@ -18,8 +18,7 @@
 - (instancetype)initWithBluetoothManager {
     self = [super init];
     if (self) {
-        _centralManager = [[CBCentralManager alloc] init];
-        _centralManager.delegate = self;
+        _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
     }
     
     return self;
@@ -62,7 +61,7 @@
         case CBManagerAuthorizationRestricted:
             return PermissionStatusRestricted;
         case CBManagerAuthorizationDenied:
-            return PermissionStatusDenied;
+            return PermissionStatusPermanentlyDenied;
         case CBManagerAuthorizationAllowedAlways:
             return PermissionStatusGranted;
     }
