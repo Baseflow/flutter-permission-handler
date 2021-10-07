@@ -1,3 +1,7 @@
+## 8.2.3
+
+* iOS: Enhanced the `bluetooth` permission for iOS 13 and up, so the user gets prompted with the "bluetooth" permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
+
 ## 8.2.2
 
 * Updated the README.md to mention setting the `compileSdkVersion` to `31`;
@@ -52,7 +56,7 @@
 ## 8.1.0
 
 * Added support for iOS 12+ Critical Alerts permission requesting.
-    * NOTE: This requires applying to Apple and recieving a special entitlement from them inorder to work. See [this article](https://medium.com/@shashidharyamsani/implementing-ios-critical-alerts-7d82b4bb5026) for an explination on how to use Critical Alerts.
+    * NOTE: This requires applying to Apple and receiving a special entitlement from them inorder to work. See [this article](https://medium.com/@shashidharyamsani/implementing-ios-critical-alerts-7d82b4bb5026) for an explination on how to use Critical Alerts.
 * Added support for Android M+ Access Notification Policy permission requesting (ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).
     * Note: This opens a general page in settings, not specific to the package. 
 
