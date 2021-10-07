@@ -1,6 +1,32 @@
-## 8.1.5
+## 8.2.3
 
 * iOS: Enhanced the `bluetooth` permission for iOS 13 and up, so the user gets prompted with the "bluetooth" permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
+
+## 8.2.2
+
+* Updated the README.md to mention setting the `compileSdkVersion` to `31`;
+* Added an additional note to version 8.2.0 release notes to inform people to update the `compileSdkVersion`.
+
+## 8.2.1
+
+* Resolved an issue where checking permissions on pre Android M devices always resolved to `PermissionStatus.denied` (see issue [#60](https://github.com/Baseflow/flutter-permission-plugins/issues/60));
+* Updated the url_launcher dependency in the example App to `^6.0.12`.
+
+## 8.2.0
+
+> **IMPORTANT:** when updating to version 8.2.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `31`.
+
+* Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
+* Updated Android compile and target SDK to 31 (Android 12 (S)).
+* Updated Gradle and dependencies of Android project.
+* Updated applicationID of example app
+
+## 8.1.6
+
+* Android: Fixed a `NullPointerException` when changing permissions in the Location Settings intent.
+
+## 8.1.5
+* Android: Fixed deprecation warnings/errors when `compileSdkVersion` was set to 31 (Android S/12).
 
 ## 8.1.4+2
 

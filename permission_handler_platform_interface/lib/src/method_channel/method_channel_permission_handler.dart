@@ -11,11 +11,12 @@ const MethodChannel _methodChannel =
 /// An implementation of [PermissionHandlerPlatform] that uses [MethodChannel]s.
 class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// Checks the current status of the given [Permission].
+  @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
         'checkPermissionStatus', permission.value);
 
-    return Codec.decodePermissionStatus(status);
+    return decodePermissionStatus(status);
   }
 
   /// Checks the current status of the service associated with the given
@@ -39,17 +40,19 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   ///   - **PLEASE NOTE that this is still not a perfect indication** of the
   ///     device's capability to place & connect phone calls as it also depends
   ///     on the network condition.
+  @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
         'checkServiceStatus', permission.value);
 
-    return Codec.decodeServiceStatus(status);
+    return decodeServiceStatus(status);
   }
 
   /// Opens the app settings page.
   ///
   /// Returns [true] if the app settings page could be opened, otherwise
   /// [false].
+  @override
   Future<bool> openAppSettings() async {
     final wasOpened = await _methodChannel.invokeMethod('openAppSettings');
 
@@ -60,19 +63,21 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// they have not already been granted before.
   ///
   /// Returns a [Map] containing the status per requested [Permission].
+  @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) async {
-    final data = Codec.encodePermissions(permissions);
+    final data = encodePermissions(permissions);
     final status =
         await _methodChannel.invokeMethod('requestPermissions', data);
 
-    return Codec.decodePermissionRequestResult(Map<int, int>.from(status));
+    return decodePermissionRequestResult(Map<int, int>.from(status));
   }
 
   /// Checks if you should show a rationale for requesting permission.
   ///
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
+  @override
   Future<bool> shouldShowRequestPermissionRationale(
       Permission permission) async {
     final shouldShowRationale = await _methodChannel.invokeMethod(

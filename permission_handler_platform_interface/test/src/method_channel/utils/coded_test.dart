@@ -5,11 +5,11 @@ import 'package:permission_handler_platform_interface/src/method_channel/utils/c
 void main() {
   group('Codec', () {
     test('decodePermissionStatus should return a PermissionStatus', () {
-      expect(Codec.decodePermissionStatus(0), PermissionStatus.denied);
+      expect(decodePermissionStatus(0), PermissionStatus.denied);
     });
 
     test('decodeServiceStatus should a corresponding ServiceStatus', () {
-      expect(Codec.decodeServiceStatus(0), ServiceStatus.disabled);
+      expect(decodeServiceStatus(0), ServiceStatus.disabled);
     });
 
     test(
@@ -19,7 +19,7 @@ void main() {
         1: 1,
       };
 
-      var permissionMap = Codec.decodePermissionRequestResult(value);
+      var permissionMap = decodePermissionRequestResult(value);
 
       expect(permissionMap.keys.first, isA<Permission>());
       expect(permissionMap.values.first, isA<PermissionStatus>());
@@ -28,7 +28,7 @@ void main() {
     test('encodePermissions should return a list of integers', () {
       var permissions = [Permission.accessMediaLocation];
 
-      var integers = Codec.encodePermissions(permissions);
+      var integers = encodePermissions(permissions);
 
       expect(integers.first, isA<int>());
     });

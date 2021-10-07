@@ -10,7 +10,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:4.0.2'
     }
 }
 
@@ -28,7 +28,7 @@ project.getTasks().withType(JavaCompile){
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         minSdkVersion 16
@@ -44,8 +44,8 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.1.0'
-    implementation 'androidx.core:core:1.1.0'
+    implementation 'androidx.annotation:annotation:1.2.0'
+    implementation 'androidx.core:core:1.6.0'
 }
 
 repositories {

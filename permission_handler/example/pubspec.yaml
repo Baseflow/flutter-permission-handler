@@ -19,7 +19,7 @@ dev_dependencies:
   permission_handler:
     path: ../
 
-  url_launcher: ^6.0.0
+  url_launcher: ^6.0.12
 
 flutter:
   uses-material-design: true

@@ -104,6 +104,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
+        if (requestResults == null) {
+           return false;
+        }
+
         for (int i = 0; i < permissions.length; i++) {
             final String permissionName = permissions[i];
 
@@ -334,7 +338,9 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 }
             }
 
-            return PermissionConstants.PERMISSION_STATUS_DENIED;
+            return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
         final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;

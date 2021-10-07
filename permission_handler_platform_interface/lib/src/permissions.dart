@@ -6,6 +6,9 @@ part of permission_handler_platform_interface;
 class PermissionWithService extends Permission {
   const PermissionWithService._(int value) : super._(value);
 
+  /// Creates a [PermissionWithService] instance.
+  ///
+  /// This constructor is marked public for testing purposes only.
   @visibleForTesting
   const PermissionWithService.private(int value) : super._(value);
 }
@@ -14,6 +17,8 @@ class PermissionWithService extends Permission {
 @immutable
 class Permission {
   const Permission._(this.value);
+
+  /// Creates a [Permission] using the supplied integer value.
   factory Permission.byValue(int value) => values[value];
 
   /// Integer representation of the [Permission].
@@ -157,6 +162,20 @@ class Permission {
   ///iOS: Nothing
   static const accessNotificationPolicy = Permission._(27);
 
+  ///Android: Allows the user to look for Bluetooth devices
+  ///(e.g. BLE peripherals).
+  ///iOS: Nothing
+  static const bluetoothScan = Permission._(28);
+
+  ///Android: Allows the user to make this device discoverable to other
+  ///Bluetooth devices.
+  ///iOS: Nothing
+  static const bluetoothAdvertise = Permission._(29);
+
+  ///Android: Allows the user to connect with already paired Bluetooth devices.
+  ///iOS: Nothing
+  static const bluetoothConnect = Permission._(30);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -187,6 +206,9 @@ class Permission {
     appTrackingTransparency,
     criticalAlerts,
     accessNotificationPolicy,
+    bluetoothScan,
+    bluetoothAdvertise,
+    bluetoothConnect,
   ];
 
   static const List<String> _names = <String>[
@@ -218,6 +240,9 @@ class Permission {
     'appTrackingTransparency',
     'criticalAlerts',
     'accessNotificationPolicy',
+    'bluetoothScan',
+    'bluetoothAdvertise',
+    'bluetoothConnect',
   ];
 
   @override
