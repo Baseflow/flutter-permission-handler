@@ -253,24 +253,39 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_NOTIFICATION_POLICY ))
                     permissionNames.add(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
                 break;
-            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN:
+            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN: {
                 // The BLUETOOTH_SCAN permission is introduced in Android S, meaning we should
                 // not handle permissions on pre Android S devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH_SCAN ))
-                    permissionNames.add(Manifest.permission.BLUETOOTH_SCAN);
+                String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_SCAN);
+
+                if (result != null) {
+                    permissionNames.add(result);
+                }
+
                 break;
-            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE:
+            }
+            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE: {
                 // The BLUETOOTH_ADVERTISE permission is introduced in Android S, meaning we should
                 // not handle permissions on pre Android S devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH_ADVERTISE ))
-                    permissionNames.add(Manifest.permission.BLUETOOTH_ADVERTISE);
+                String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE);
+
+                if (result != null) {
+                    permissionNames.add(result);
+                }
+
                 break;
-            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT:
+            }
+            case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT: {
                 // The BLUETOOTH_CONNECT permission is introduced in Android S, meaning we should
                 // not handle permissions on pre Android S devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH_CONNECT ))
-                    permissionNames.add(Manifest.permission.BLUETOOTH_CONNECT);
+                String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_CONNECT);
+
+                if (result != null) {
+                    permissionNames.add(result);
+                }
+
                 break;
+            }
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
@@ -349,5 +364,23 @@ public class PermissionUtils {
 
         final boolean shouldShowRequestPermissionRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, name);
         return !shouldShowRequestPermissionRationale;
+    }
+
+    private static String determineBluetoothPermission(Context context, String permission) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, null, permission )) {
+            return permission;
+        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            if(hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)){
+                return Manifest.permission.ACCESS_FINE_LOCATION;
+            } else if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_COARSE_LOCATION)){
+                return Manifest.permission.ACCESS_COARSE_LOCATION;
+            }
+
+            return  null;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            return Manifest.permission.ACCESS_FINE_LOCATION;
+        }
+
+        return null;
     }
 }

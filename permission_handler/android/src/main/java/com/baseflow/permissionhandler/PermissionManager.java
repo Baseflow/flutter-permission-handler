@@ -55,9 +55,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
             permission = PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS;
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE) {
-            status = Environment.isExternalStorageManager()
-                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                status = Environment.isExternalStorageManager()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+            } else {
+                return false;
+            }
             permission = PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE;
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -306,8 +310,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
         }
+
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH) {
             return checkBluetoothPermissionStatus(context);
+        }
+
+        if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT
+                || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN
+                || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+                return checkBluetoothPermissionStatus(context);
+            }
         }
 
         final List<String> names = PermissionUtils.getManifestNames(context, permission);
