@@ -1,6 +1,6 @@
 name: permission_handler
 description: Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.
-version: 8.2.4
+version: 8.2.5
 homepage: https://github.com/baseflowit/flutter-permission-handler
 
 flutter:
