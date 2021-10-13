@@ -1,3 +1,7 @@
+## 8.2.5
+
+* Fixed broken link in the README.md.
+
 ## 8.2.4
 
 * Solved bug where output would log that there is no permission in manifest for BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT on Android 11 devices and lower(see issue [#691](https://github.com/Baseflow/flutter-permission-handler/issues/691)).
