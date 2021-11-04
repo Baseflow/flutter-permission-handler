@@ -1,3 +1,7 @@
+## 8.2.6
+
+* Fixed broken androidx migration link in the README.md.
+
 ## 8.2.5
 
 * Fixed broken link in the README.md.
