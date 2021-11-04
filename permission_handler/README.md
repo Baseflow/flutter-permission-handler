@@ -35,7 +35,7 @@ android {
   ...
 }
 ```
-3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate).
+3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate ).
 
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
