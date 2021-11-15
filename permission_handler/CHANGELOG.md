@@ -1,3 +1,7 @@
+## 8.3.0
+
+* Updated Android Gradle Plugin to 4.1.0 and Gradle Wrapper to 6.7 which is inline with the current Flutter stable version (Flutter 2.5.3).
+
 ## 8.2.6
 
 * Fixed broken androidx migration link in the README.md.
