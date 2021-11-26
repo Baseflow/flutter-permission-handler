@@ -132,11 +132,7 @@
         case PermissionGroupStorage:
             return [StoragePermissionStrategy new];
         case PermissionGroupBluetooth:
-            #if PERMISSION_BLUETOOTH
-            return [[BluetoothPermissionStrategy alloc] initWithBluetoothManager];
-            #else
             return [BluetoothPermissionStrategy new];
-            #endif
         case PermissionGroupAppTrackingTransparency:
             return [AppTrackingTransparencyPermissionStrategy new];
         case PermissionGroupCriticalAlerts:

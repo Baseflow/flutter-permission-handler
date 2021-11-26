@@ -1,3 +1,8 @@
+## 9.0.0
+
+* iOS: Bluetooth permission dialog now appears when requested instead of when the app is initialized.
+Note: Requesting Bluetooth status will also prompt the permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
+
 ## 8.3.0
 
 * Updated Android Gradle Plugin to 4.1.0 and Gradle Wrapper to 6.7 which is inline with the current Flutter stable version (Flutter 2.5.3).
