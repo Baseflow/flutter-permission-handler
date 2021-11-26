@@ -13,7 +13,7 @@
 #import <CoreBluetooth/CoreBluetooth.h>
 
 @interface BluetoothPermissionStrategy : NSObject <PermissionStrategy, CBCentralManagerDelegate>
--(instancetype)initWithBluetoothManager;
+- (void)initManagerIfNeeded;
 @end
 
 #else
