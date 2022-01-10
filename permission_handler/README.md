@@ -23,19 +23,24 @@ Since version 4.4.0 this plugin is implemented using the Flutter 1.12 Android pl
 As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
 
 The TL;DR version is:
+
 1. Add the following to your "gradle.properties" file:
-```
+
+```properties
 android.useAndroidX=true
 android.enableJetifier=true
 ```
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 31:
-```
+
+1. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 31:
+
+```gradle
 android {
   compileSdkVersion 31
   ...
 }
 ```
-3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found here: https://developer.android.com/jetpack/androidx/migrate ).
+
+1. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found [here](https://developer.android.com/jetpack/androidx/migrate)).
 
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
@@ -57,6 +62,7 @@ The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflo
 You must list permission you want to use in your application :
 
 1. Add the following to your `Podfile` file:
+
    ```ruby
    post_install do |installer|
      installer.pods_project.targets.each do |target|
@@ -120,14 +126,18 @@ You must list permission you want to use in your application :
      end
    end
    ```
+
 2. Remove the `#` character in front of the permission you do want to use. For example if you need access to the calendar make sure the code looks like this:
+
    ```ruby
            ## dart: PermissionGroup.calendar
            'PERMISSION_EVENTS=1',
    ```
+
 3. Delete the corresponding permission description in `Info.plist`
    e.g. when you don't need camera permission, just delete 'NSCameraUsageDescription'
    The following lists the relationship between `Permission` and `The key of Info.plist`:
+
    | Permission                                                                                  | Info.plist                                                                                                    | Macro                                |
    | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
    | PermissionGroup.calendar                                                                    | NSCalendarsUsageDescription                                                                                   | PERMISSION_EVENTS                    |
@@ -142,13 +152,11 @@ You must list permission you want to use in your application :
    | PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMediaLibrary                                                         | PERMISSION_MEDIA_LIBRARY             |
    | PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                      | PERMISSION_SENSORS                   |
    | PermissionGroup.bluetooth                                                                   | NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription                                      | PERMISSION_BLUETOOTH                 |
-   | PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                | PERMISSION_APP_TRACKING_TRANSPARENCY |   
+   | PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                | PERMISSION_APP_TRACKING_TRANSPARENCY |  
    | PermissionGroup.criticalAlerts                                                              | PermissionGroupCriticalAlerts                                                                                 | PERMISSION_CRITICAL_ALERTS           |
 4. Clean & Rebuild
 
 </details>
-
-
 
 ## How to use
 
