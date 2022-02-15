@@ -116,6 +116,7 @@ public class PermissionUtils {
                     if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_BACKGROUND_LOCATION))
                         permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                 }
+                break;
             case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
             case PermissionConstants.PERMISSION_GROUP_LOCATION:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_COARSE_LOCATION))
