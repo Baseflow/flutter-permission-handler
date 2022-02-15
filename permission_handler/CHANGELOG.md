@@ -1,3 +1,8 @@
+## 9.0.1
+
+* Fixes bug when requesting `locationAlways` permissions on Android.
+* Solves a compilation error when building the example App on Android.
+
 ## 9.0.0
 
 * iOS: Bluetooth permission dialog now appears when requested instead of when the app is initialized.
