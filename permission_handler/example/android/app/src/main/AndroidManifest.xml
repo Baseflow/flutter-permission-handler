@@ -79,7 +79,7 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 
     <application
-        android:name="io.flutter.app.FlutterApplication"
+        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:label="permission_handler_example"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
