@@ -226,8 +226,19 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_BLUETOOTH:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH_SCAN)) {
+                        permissionNames.add(Manifest.permission.BLUETOOTH_SCAN);
+                    }
+                    if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH_CONNECT)) {
+                        permissionNames.add(Manifest.permission.BLUETOOTH_CONNECT);
+                    }
+                    if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH_ADVERTISE)) {
+                        permissionNames.add(Manifest.permission.BLUETOOTH_ADVERTISE);
+                    }
+                } else if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BLUETOOTH)) {
                     permissionNames.add(Manifest.permission.BLUETOOTH);
+                }
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE:
