@@ -3,9 +3,6 @@ description: Permission plugin for Flutter. This plugin provides a cross-platfor
 version: 9.1.0
 homepage: https://github.com/baseflow/flutter-permission-handler
 
-# TODO (mvanbeusekom): Remove as soon as path references have been removed
-publish_to: none
-
 environment:
   sdk: ">=2.15.0 <3.0.0"
   flutter: ">=2.8.0"
@@ -22,12 +19,8 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.7.0
-  permission_handler_android:
-    # TODO (mvanbeusekom): convert to pub dependency once permission_handler_android is published.
-    path: ../permission_handler_android
-  permission_handler_apple:
-    # TODO (mvanbeusekom): convert to pub dependency once permission_handler_apple is published.
-    path: ../permission_handler_apple
+  permission_handler_android: ^9.0.2
+  permission_handler_apple: ^9.0.2
   permission_handler_platform_interface: ^3.7.0
 
 dev_dependencies:
