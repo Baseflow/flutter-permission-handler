@@ -2,8 +2,8 @@
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 Pod::Spec.new do |s|
-  s.name             = 'permission_handler'
-  s.version          = '5.1.0+2'
+  s.name             = 'permission_handler_apple'
+  s.version          = '9.0.2'
   s.summary          = 'Permission plugin for Flutter.'
   s.description      = <<-DESC
 Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Android) API to request and check permissions.

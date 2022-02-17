@@ -1,3 +1,7 @@
+## 9.1.0
+
+* Moved out Android and iOS implementations into their own packages.
+
 ## 9.0.2
 
 * Fixes regression when requesting 'locationAlways' permission on Andriod 9 (Pie) and earlier.

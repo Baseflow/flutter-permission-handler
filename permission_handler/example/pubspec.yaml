@@ -2,7 +2,7 @@ name: permission_handler_example
 description: Demonstrates how to use the permission_handler plugin.
 
 environment:
-  sdk: ">=2.12.0-259.9.beta <3.0.0"
+  sdk: ">=2.15.0 <3.0.0"
 
 dependencies:
   baseflow_plugin_template:
@@ -17,6 +17,11 @@ dev_dependencies:
     sdk: flutter
 
   permission_handler:
+    # When depending on this package from a real application you should use:
+    #   permission_handler: ^x.y.z
+    # See https://dart.dev/tools/pub/dependencies#version-constraints
+    # The example app is bundled with the plugin so we use a path dependency on
+    # the parent directory to use the current plugin's version.
     path: ../
 
   url_launcher: ^6.0.12
