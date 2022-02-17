@@ -1,5 +1,5 @@
-name: permission_handler_example
-description: Demonstrates how to use the permission_handler plugin.
+name: permission_handler_apple_example
+description: Demonstrates how to use the permission_handler_apple plugin.
 
 environment:
   sdk: ">=2.15.0 <3.0.0"
@@ -16,7 +16,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  permission_handler:
+  permission_handler_apple:
     # When depending on this package from a real application you should use:
     #   permission_handler: ^x.y.z
     # See https://dart.dev/tools/pub/dependencies#version-constraints

@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: permission_handler_platform_interface
+name: permission_handler_apple
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -8,11 +8,11 @@ on:
   push:
     branches: [ master ]
     paths:
-    - 'permission_handler_platform_interface/**'
+    - 'permission_handler_apple/**'
   pull_request:
     branches: [ master ]
     paths:
-    - 'permission_handler_platform_interface/**'
+    - 'permission_handler_apple/**'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -20,10 +20,11 @@ jobs:
     name: Format
 
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     env:
-      source-directory: ./permission_handler_platform_interface 
+      source-directory: ./permission_handler_apple
+      example-directory: ./permission_handler_apple/example 
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -44,20 +45,14 @@ jobs:
       - name: Run Flutter Format
         run: flutter format --set-exit-if-changed .
         working-directory: ${{env.source-directory}}
-   
+
       # Run Flutter Analyzer
       - name: Run Flutter Analyzer
         run: flutter analyze
         working-directory: ${{env.source-directory}}
-      
-      # Run all unit-tests with code coverage
-      - name: Run unit tests
-        run: flutter test --coverage
-        working-directory: ${{env.source-directory}}
 
-      # Upload code coverage information
-      - uses: codecov/codecov-action@v1
-        with:
-          file: ${{env.source-directory}}/coverage/lcov.info # optional
-          name: permission_handler_platform_interface (Platform Interface Package) # optional
-          fail_ci_if_error: true
+      # Build iOS version of the example App
+      - name: Run Android build
+        run: flutter build ios --no-codesign --release
+        working-directory: ${{env.example-directory}}
+        
