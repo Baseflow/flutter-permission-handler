@@ -1,3 +1,7 @@
+## 9.0.2
+
+* Fixes regression when requesting 'locationAlways' permission on Andriod 9 (Pie) and earlier.
+
 ## 9.0.1
 
 * Fixes bug when requesting `locationAlways` permissions on Android.
