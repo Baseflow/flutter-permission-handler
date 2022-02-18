@@ -1,3 +1,7 @@
+## 9.2.0
+
+* Federated permission_handler_windows for the Windows version.
+
 ## 9.1.0
 
 * Moved out Android and iOS implementations into their own packages.
