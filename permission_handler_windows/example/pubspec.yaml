@@ -1,0 +1,37 @@
+name: permission_handler_windows_example
+description: Demonstrates how to use the permission_handler_windows plugin.
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+
+dependencies:
+  baseflow_plugin_template:
+    git:
+      url: git://github.com/Baseflow/baseflow_plugin_template.git
+      ref: v2.0.0-nullsafety
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  permission_handler_windows:
+    # When depending on this package from a real application you should use:
+    #   permission_handler_windows: ^x.y.z
+    # See https://dart.dev/tools/pub/dependencies#version-constraints
+    # The example app is bundled with the plugin so we use a path dependency on
+    # the parent directory to use the current plugin's version.
+    path: ../
+
+  url_launcher: ^6.0.12
+  
+flutter:
+  uses-material-design: true
+
+  assets:
+    - res/images/baseflow_logo_def_light-02.png
+    - res/images/poweredByBaseflowLogoLight@3x.png
+    - packages/baseflow_plugin_template/logo.png
+    - packages/baseflow_plugin_template/poweredByBaseflow.png
+
