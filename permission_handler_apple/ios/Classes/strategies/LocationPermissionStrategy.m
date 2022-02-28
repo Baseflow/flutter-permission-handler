@@ -7,6 +7,10 @@
 
 #if PERMISSION_LOCATION
 
+@interface LocationPermissionStrategy ()
+- (void) receiveActivityNotification:(NSNotification *)notification;
+@end
+
 @implementation LocationPermissionStrategy {
     CLLocationManager *_locationManager;
     PermissionStatusHandler _permissionStatusHandler;

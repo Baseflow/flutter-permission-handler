@@ -12,7 +12,6 @@
 
 @interface LocationPermissionStrategy : NSObject <PermissionStrategy, CLLocationManagerDelegate>
 - (instancetype)initWithLocationManager;
-- (void) receiveActivityNotification:(NSNotification *)notification;
 @end
 
 #else
