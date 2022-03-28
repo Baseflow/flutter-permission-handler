@@ -38,8 +38,12 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
-        // don't do anything and continue requesting permissions
-    } else if (status != PermissionStatusDenied) {
+        BOOL alreadyRequested = [[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]; // check if already requested the permantent permission
+        if(alreadyRequested) {
+            completionHandler(status);
+            return;
+        }
+    } else if (status != PermissionStatusDenied) { // handles undetermined always permission and denied whenInUse permission
         completionHandler(status);
         return;
     }
@@ -59,6 +63,7 @@
         if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveActivityNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
             [_locationManager requestAlwaysAuthorization];
+            [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:UserDefaultPermissionRequestedKey];
         } else {
             [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
         }
