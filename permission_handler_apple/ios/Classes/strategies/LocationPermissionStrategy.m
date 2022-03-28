@@ -7,6 +7,8 @@
 
 #if PERMISSION_LOCATION
 
+NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_handler_apple.permission_requested";
+
 @interface LocationPermissionStrategy ()
 - (void) receiveActivityNotification:(NSNotification *)notification;
 @end
