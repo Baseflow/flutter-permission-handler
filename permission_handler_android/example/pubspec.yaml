@@ -7,7 +7,7 @@ environment:
 dependencies:
   baseflow_plugin_template:
     git:
-      url: git://github.com/Baseflow/baseflow_plugin_template.git
+      url: https://github.com/Baseflow/baseflow_plugin_template.git
       ref: v2.0.0-nullsafety
   flutter:
     sdk: flutter
