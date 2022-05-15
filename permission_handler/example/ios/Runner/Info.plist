@@ -99,5 +99,10 @@
     <!-- Permission options for the `appTrackingTransparency` -->
     <key>NSUserTrackingUsageDescription</key>
     <string>appTrackingTransparency</string>
+        
+    <!-- Permission options for the `notification` -->
+    <key>PermissionGroupNotification</key>
+    <string>Notification</string>
+        
 </dict>
 </plist>
