@@ -75,6 +75,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE;
             case Manifest.permission.BLUETOOTH_CONNECT:
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT;
+            case "android.permission.POST_NOTIFICATIONS":
+                return PermissionConstants.PERMISSION_GROUP_NOTIFICATION;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -288,6 +290,11 @@ public class PermissionUtils {
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
+                // The POST_NOTIFICATIONS permission is introduced in Android 13, meaning we should
+                // not handle permissions on pre Android 13 devices.
+                if (context.getApplicationInfo().targetSdkVersion >= 33 && hasPermissionInManifest(context, permissionNames, "android.permission.POST_NOTIFICATIONS" ))
+                    permissionNames.add("android.permission.POST_NOTIFICATIONS");
+                break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:

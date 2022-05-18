@@ -465,12 +465,18 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     private int checkNotificationPermissionStatus(Context context) {
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        boolean isGranted = manager.areNotificationsEnabled();
-        if (isGranted) {
-            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        if (android.os.Build.VERSION.SDK_INT < 33 || context.getApplicationInfo().targetSdkVersion < 33) {
+            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            boolean isGranted = manager.areNotificationsEnabled();
+            if (isGranted) {
+                return PermissionConstants.PERMISSION_STATUS_GRANTED;
+            }
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
-        return PermissionConstants.PERMISSION_STATUS_DENIED;
+
+        return context.checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED
+            ? PermissionConstants.PERMISSION_STATUS_GRANTED
+            : PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     private int checkBluetoothPermissionStatus(Context context) {
