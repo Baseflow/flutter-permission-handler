@@ -1,5 +1,6 @@
 package com.baseflow.permissionhandler;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -465,7 +466,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     private int checkNotificationPermissionStatus(Context context) {
-        if (android.os.Build.VERSION.SDK_INT < 33 || context.getApplicationInfo().targetSdkVersion < 33) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             NotificationManagerCompat manager = NotificationManagerCompat.from(context);
             boolean isGranted = manager.areNotificationsEnabled();
             if (isGranted) {
@@ -474,7 +475,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        return context.checkSelfPermission("android.permission.POST_NOTIFICATIONS") == PackageManager.PERMISSION_GRANTED
+        return context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
             ? PermissionConstants.PERMISSION_STATUS_GRANTED
             : PermissionConstants.PERMISSION_STATUS_DENIED;
     }
