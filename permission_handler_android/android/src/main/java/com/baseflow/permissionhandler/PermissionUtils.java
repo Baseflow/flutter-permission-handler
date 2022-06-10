@@ -320,9 +320,7 @@ public class PermissionUtils {
                 return false;
             }
 
-            PackageInfo info = context
-                    .getPackageManager()
-                    .getPackageInfo(context.getPackageName(), PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+            PackageInfo info = getPackageInfo(context);
 
             if (info == null) {
                 Log.d(PermissionConstants.LOG_TAG, "Unable to get Package info, will not be able to determine permissions to request.");
@@ -390,5 +388,18 @@ public class PermissionUtils {
         }
 
         return null;
+    }
+
+    // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
+    // pre TIRAMISU versions of Android
+    @SuppressWarnings("deprecation")
+    private static PackageInfo getPackageInfo(Context context) throws PackageManager.NameNotFoundException {
+        final PackageManager pm = context.getPackageManager();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return pm.getPackageInfo(context.getPackageName(), PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+        } else {
+            return pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+        }
     }
 }
