@@ -1,3 +1,10 @@
+## 9.3.0
+
+> **IMPORTANT:** when updating to version 9.3.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `33`.
+
+* Added support for the new Android 13 Notification permission (POST_NOTIFICATIONS) on example app.
+* Updated Android compile and target SDK to 33 (Android 13 (Tiramisu)) on example app.
+
 ## 9.2.0
 
 * Federated permission_handler_windows for the Windows version.
