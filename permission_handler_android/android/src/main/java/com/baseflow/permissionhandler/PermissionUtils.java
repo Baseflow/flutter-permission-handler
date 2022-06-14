@@ -75,6 +75,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE;
             case Manifest.permission.BLUETOOTH_CONNECT:
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT;
+            case Manifest.permission.POST_NOTIFICATIONS:
+                return PermissionConstants.PERMISSION_GROUP_NOTIFICATION;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -211,7 +213,7 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
                     return null;
 
-                if(hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
                 break;
 
@@ -233,25 +235,25 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE:
                 // The MANAGE_EXTERNAL_STORAGE permission is introduced in Android R, meaning we should
                 // not handle permissions on pre Android R devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasPermissionInManifest(context, permissionNames, Manifest.permission.MANAGE_EXTERNAL_STORAGE ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasPermissionInManifest(context, permissionNames, Manifest.permission.MANAGE_EXTERNAL_STORAGE))
                     permissionNames.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW ))
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW))
                     permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES:
                 // The REQUEST_INSTALL_PACKAGES permission is introduced in Android M, meaning we should
                 // not handle permissions on pre Android M devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_INSTALL_PACKAGES ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_INSTALL_PACKAGES))
                     permissionNames.add(Manifest.permission.REQUEST_INSTALL_PACKAGES);
                 break;
             case PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY:
                 // The REQUEST_NOTIFICATION_POLICY permission is introduced in Android M, meaning we should
                 // not handle permissions on pre Android M devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_NOTIFICATION_POLICY ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_NOTIFICATION_POLICY))
                     permissionNames.add(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
                 break;
             case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN: {
@@ -288,6 +290,15 @@ public class PermissionUtils {
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
+                // The POST_NOTIFICATIONS permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+                    return null;
+
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS))
+                    permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
+                break;
+
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
@@ -313,9 +324,12 @@ public class PermissionUtils {
                 return false;
             }
 
-            PackageInfo info = context
-                    .getPackageManager()
-                    .getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+            PackageManager pm = context.getPackageManager();
+
+            @SuppressWarnings("deprecation")
+            PackageInfo info = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    ? pm.getPackageInfo(context.getPackageName(), PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS))
+                    : pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
 
             if (info == null) {
                 Log.d(PermissionConstants.LOG_TAG, "Unable to get Package info, will not be able to determine permissions to request.");
@@ -368,16 +382,16 @@ public class PermissionUtils {
     }
 
     private static String determineBluetoothPermission(Context context, String permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, null, permission )) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, null, permission)) {
             return permission;
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            if(hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)){
+            if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 return Manifest.permission.ACCESS_FINE_LOCATION;
-            } else if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_COARSE_LOCATION)){
+            } else if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 return Manifest.permission.ACCESS_COARSE_LOCATION;
             }
 
-            return  null;
+            return null;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
             return Manifest.permission.ACCESS_FINE_LOCATION;
         }

@@ -72,7 +72,11 @@ final class ServiceManager {
 
             Intent callIntent = new Intent(Intent.ACTION_CALL);
             callIntent.setData(Uri.parse("tel:123123"));
-            List<ResolveInfo> callAppsList = pm.queryIntentActivities(callIntent, 0);
+
+            @SuppressWarnings("deprecation")
+            List<ResolveInfo> callAppsList = Build.VERSION.SDK_INT >= VERSION_CODES.TIRAMISU
+                    ? pm.queryIntentActivities(callIntent, PackageManager.ResolveInfoFlags.of(0))
+                    : pm.queryIntentActivities(callIntent, 0);
 
             if (callAppsList.isEmpty()) {
                 successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE);
