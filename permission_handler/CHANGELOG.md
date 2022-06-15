@@ -1,3 +1,8 @@
+## 10.0.0
+
+* __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
+> When updating to version 10.0.0 make sure to update the `android/app/build.gradle` file and set the `compileSdkVersion` to `33`.
+
 ## 9.2.0
 
 * Federated permission_handler_windows for the Windows version.
