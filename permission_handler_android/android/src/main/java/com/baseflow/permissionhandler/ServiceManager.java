@@ -70,9 +70,7 @@ final class ServiceManager {
                 return;
             }
 
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:123123"));
-            List<ResolveInfo> callAppsList = pm.queryIntentActivities(callIntent, 0);
+            List<ResolveInfo> callAppsList = getCallAppsList(pm);
 
             if (callAppsList.isEmpty()) {
                 successCallback.onSuccess(PermissionConstants.SERVICE_STATUS_NOT_APPLICABLE);
@@ -161,5 +159,19 @@ final class ServiceManager {
         BluetoothManager manager = (BluetoothManager) context.getSystemService(BLUETOOTH_SERVICE);
         final BluetoothAdapter adapter = manager.getAdapter();
         return adapter.isEnabled();
+    }
+
+    // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
+    // pre TIRAMISU versions of Android
+    @SuppressWarnings("deprecation")
+    private List<ResolveInfo> getCallAppsList(PackageManager pm) {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:123123"));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return pm.queryIntentActivities(callIntent, PackageManager.ResolveInfoFlags.of(0));
+        } else {
+            return pm.queryIntentActivities(callIntent, 0);
+        }
     }
 }
