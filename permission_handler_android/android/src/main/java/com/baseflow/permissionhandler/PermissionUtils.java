@@ -75,6 +75,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE;
             case Manifest.permission.BLUETOOTH_CONNECT:
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT;
+            case Manifest.permission.POST_NOTIFICATIONS:
+                return PermissionConstants.PERMISSION_GROUP_NOTIFICATION;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -288,6 +290,11 @@ public class PermissionUtils {
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
+                // The POST_NOTIFICATIONS permission is introduced in Android 13, meaning we should
+                // not handle permissions on pre Android 13 devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS ))
+                    permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
+                break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
@@ -313,9 +320,7 @@ public class PermissionUtils {
                 return false;
             }
 
-            PackageInfo info = context
-                    .getPackageManager()
-                    .getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+            PackageInfo info = getPackageInfo(context);
 
             if (info == null) {
                 Log.d(PermissionConstants.LOG_TAG, "Unable to get Package info, will not be able to determine permissions to request.");
@@ -383,5 +388,18 @@ public class PermissionUtils {
         }
 
         return null;
+    }
+
+    // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
+    // pre TIRAMISU versions of Android
+    @SuppressWarnings("deprecation")
+    private static PackageInfo getPackageInfo(Context context) throws PackageManager.NameNotFoundException {
+        final PackageManager pm = context.getPackageManager();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return pm.getPackageInfo(context.getPackageName(), PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS));
+        } else {
+            return pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
+        }
     }
 }

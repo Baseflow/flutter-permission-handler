@@ -1,5 +1,6 @@
 package com.baseflow.permissionhandler;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
@@ -465,12 +466,18 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     private int checkNotificationPermissionStatus(Context context) {
-        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-        boolean isGranted = manager.areNotificationsEnabled();
-        if (isGranted) {
-            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            boolean isGranted = manager.areNotificationsEnabled();
+            if (isGranted) {
+                return PermissionConstants.PERMISSION_STATUS_GRANTED;
+            }
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
-        return PermissionConstants.PERMISSION_STATUS_DENIED;
+
+        return context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+            ? PermissionConstants.PERMISSION_STATUS_GRANTED
+            : PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     private int checkBluetoothPermissionStatus(Context context) {
