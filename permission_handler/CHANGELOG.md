@@ -1,7 +1,3 @@
-## 10.0.0
-
-* __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
-
 ## 9.2.0
 
 * Federated permission_handler_windows for the Windows version.
