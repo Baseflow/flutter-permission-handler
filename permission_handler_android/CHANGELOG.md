@@ -1,3 +1,6 @@
+## 10.0.1
+
+* Fixes missing POST_NOTIFICATIONS permission in Android example project.
 ## 10.0.0
 
  * __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
