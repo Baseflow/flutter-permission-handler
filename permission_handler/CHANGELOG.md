@@ -5,6 +5,11 @@
 * Added support for the new Android 13 Notification permission (POST_NOTIFICATIONS) on example app.
 * Updated Android compile and target SDK to 33 (Android 13 (Tiramisu)) on example app.
 
+## 10.0.0
+
+* __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
+> When updating to version 10.0.0 make sure to update the `android/app/build.gradle` file and set the `compileSdkVersion` to `33`.
+
 ## 9.2.0
 
 * Federated permission_handler_windows for the Windows version.
