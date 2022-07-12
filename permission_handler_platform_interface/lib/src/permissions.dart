@@ -67,7 +67,8 @@ class Permission {
   /// iOS: Nothing
   static const phone = PermissionWithService._(8);
 
-  /// Android: Nothing
+  /// When running on Android T and above: Photos
+  /// When running on Android < T: Nothing
   /// iOS: Photos
   /// iOS 14+ read & write access level
   static const photos = Permission._(9);

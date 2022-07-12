@@ -54,7 +54,6 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&
-                      permission != Permission.photos &&
                       permission != Permission.photosAddOnly &&
                       permission != Permission.reminders &&
                       permission != Permission.appTrackingTransparency &&

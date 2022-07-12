@@ -295,8 +295,13 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS ))
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
                 break;
-            case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
+                // The READ_MEDIA_IMAGES permission is introduced in Android 13, meaning we should
+                // not handle permissions on pre Android 13 devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_IMAGES ))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_IMAGES);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
             case PermissionConstants.PERMISSION_GROUP_UNKNOWN:
                 return null;
