@@ -1,3 +1,7 @@
+## 10.1.0
+
+* Added support for the new Android 13 granular media permissions: READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO.
+
 ## 10.0.0
 
 * __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.

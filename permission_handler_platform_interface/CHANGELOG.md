@@ -1,3 +1,7 @@
+## 3.8.0
+
+* Added support for the new Android 13 granular media permissions: READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO.
+
 ## 3.7.0
 
 * Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
