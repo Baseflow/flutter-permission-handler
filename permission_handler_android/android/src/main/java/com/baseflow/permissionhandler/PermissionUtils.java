@@ -77,6 +77,12 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT;
             case Manifest.permission.POST_NOTIFICATIONS:
                 return PermissionConstants.PERMISSION_GROUP_NOTIFICATION;
+            case Manifest.permission.READ_MEDIA_IMAGES:
+                return PermissionConstants.PERMISSION_GROUP_PHOTOS;
+            case Manifest.permission.READ_MEDIA_VIDEO:
+                return PermissionConstants.PERMISSION_GROUP_VIDEOS;
+            case Manifest.permission.READ_MEDIA_AUDIO:
+                return PermissionConstants.PERMISSION_GROUP_AUDIO;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -300,6 +306,18 @@ public class PermissionUtils {
                 // not handle permissions on pre Android 13 devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_IMAGES ))
                     permissionNames.add(Manifest.permission.READ_MEDIA_IMAGES);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_VIDEOS:
+                // The READ_MEDIA_IMAGES permission is introduced in Android 13, meaning we should
+                // not handle permissions on pre Android 13 devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VIDEO ))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_VIDEO);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_AUDIO:
+                // The READ_MEDIA_IMAGES permission is introduced in Android 13, meaning we should
+                // not handle permissions on pre Android 13 devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_AUDIO ))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_AUDIO);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:

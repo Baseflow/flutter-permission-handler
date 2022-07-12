@@ -177,6 +177,16 @@ class Permission {
   ///iOS: Nothing
   static const bluetoothConnect = Permission._(30);
 
+  /// When running on Android T and above: Videos
+  /// When running on Android < T: Nothing
+  /// iOS: Nothing
+  static const videos = Permission._(31);
+
+  /// When running on Android T and above: Audio files
+  /// When running on Android < T: Nothing
+  /// iOS: Nothing
+  static const audio = Permission._(32);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -210,6 +220,8 @@ class Permission {
     bluetoothScan,
     bluetoothAdvertise,
     bluetoothConnect,
+    videos,
+    audio,
   ];
 
   static const List<String> _names = <String>[
@@ -244,6 +256,8 @@ class Permission {
     'bluetoothScan',
     'bluetoothAdvertise',
     'bluetoothConnect',
+    'videos',
+    'audio',
   ];
 
   @override
