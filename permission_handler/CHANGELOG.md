@@ -1,3 +1,7 @@
+## 10.0.0+1
+
+* Update pub.dev links
+
 ## 10.0.0
 
 * __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
