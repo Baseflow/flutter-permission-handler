@@ -17,7 +17,7 @@ void main() {
       expect(() {
         PermissionHandlerPlatform.instance =
             ImplementsPermissionHandlerPlatform();
-      }, throwsNoSuchMethodError);
+      }, throwsA(anything));
     });
 
     test('Can be extended with `extend`', () {
