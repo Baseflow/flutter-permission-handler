@@ -2,7 +2,7 @@ part of permission_handler_platform_interface;
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
-  /// The user denied access to the requested feature or
+  /// The user denied access to the requested feature,
   /// permission needs to be asked first.
   denied,
 
@@ -19,14 +19,9 @@ enum PermissionStatus {
   /// *Only supported on iOS (iOS14+).*
   limited,
 
-  /// *On Android:*
   /// Permission to the requested feature is permanently denied, the permission
   /// dialog will not be shown when requesting this permission. The user may
   /// still change the permission status in the settings.
-  ///
-  /// *On iOs:*
-  /// Permission to the requested feature has been denied. The user may still
-  /// change the permission status in the settings.
   permanentlyDenied,
 }
 
@@ -64,7 +59,7 @@ extension PermissionStatusValue on PermissionStatus {
 
 /// Utility getter extensions for the [PermissionStatus] type.
 extension PermissionStatusGetters on PermissionStatus {
-  /// If the user denied access to the requested feature or
+  /// If the user denied access to the requested feature,
   /// permission needs to be asked first.
   bool get isDenied => this == PermissionStatus.denied;
 
@@ -79,7 +74,7 @@ extension PermissionStatusGetters on PermissionStatus {
 
   /// *On Android:*
   /// If the user denied access to the requested feature and selected to never
-  /// again show a request for this permission,(pre API 30) or the user denied
+  /// again show a request for this permission (pre API 30) or the user denied
   /// permissions for a second time (API 30 and higher).
   /// The user may still change the permission status in the settings.
   ///
