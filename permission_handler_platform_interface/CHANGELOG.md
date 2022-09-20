@@ -1,6 +1,6 @@
 ## 3.7.1
 
-* Update the documentation on permissions in `permission_status.dart`
+* Updated the documentation on permissions in `permission_status.dart`
 
 ## 3.7.0
 
