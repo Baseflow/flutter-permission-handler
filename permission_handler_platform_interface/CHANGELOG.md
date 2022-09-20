@@ -1,3 +1,7 @@
+## 3.7.1
+
+* Update the documentation on permissions in `permission_status.dart`
+
 ## 3.7.0
 
 * Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
