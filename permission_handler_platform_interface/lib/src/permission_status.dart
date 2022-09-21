@@ -2,7 +2,8 @@ part of permission_handler_platform_interface;
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
-  /// The user denied access to the requested feature.
+  /// The user denied access to the requested feature,
+  /// permission needs to be asked first.
   denied,
 
   /// The user granted access to the requested feature.
@@ -21,7 +22,6 @@ enum PermissionStatus {
   /// Permission to the requested feature is permanently denied, the permission
   /// dialog will not be shown when requesting this permission. The user may
   /// still change the permission status in the settings.
-  /// *Only supported on Android.*
   permanentlyDenied,
 }
 
@@ -59,7 +59,8 @@ extension PermissionStatusValue on PermissionStatus {
 
 /// Utility getter extensions for the [PermissionStatus] type.
 extension PermissionStatusGetters on PermissionStatus {
-  /// If the user denied access to the requested feature.
+  /// If the user denied access to the requested feature,
+  /// permission needs to be asked first.
   bool get isDenied => this == PermissionStatus.denied;
 
   /// If the user granted access to the requested feature.
@@ -71,10 +72,15 @@ extension PermissionStatusGetters on PermissionStatus {
   /// *Only supported on iOS.*
   bool get isRestricted => this == PermissionStatus.restricted;
 
+  /// *On Android:*
   /// If the user denied access to the requested feature and selected to never
-  /// again show a request for this permission. The user may still change the
-  /// permission status in the settings.
-  /// *Only supported on Android.*
+  /// again show a request for this permission (pre API 30) or the user denied
+  /// permissions for a second time (API 30 and higher).
+  /// The user may still change the permission status in the settings.
+  ///
+  /// *On iOS:*
+  /// If the user has denied acces to the requested feature.
+  /// The user may still change the permission status in the settings
   ///
   /// WARNING: This can only be determined AFTER requesting this permission.
   /// Therefore make a `request` call first.
@@ -98,10 +104,15 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// *Only supported on iOS.*
   Future<bool> get isRestricted async => (await this).isRestricted;
 
+  /// *On Android:*
   /// If the user denied access to the requested feature and selected to never
-  /// again show a request for this permission. The user may still change the
-  /// permission status in the settings.
-  /// *Only supported on Android.*
+  /// again show a request for this permission (pre API 30) or the user denied
+  /// permissions for a second time (API 30 and higher).
+  /// The user may still change the permission status in the settings.
+  ///
+  /// *On iOS:*
+  /// If the user has denied acces to the requested feature.
+  /// The user may still change the permission status in the settings
   Future<bool> get isPermanentlyDenied async =>
       (await this).isPermanentlyDenied;
 

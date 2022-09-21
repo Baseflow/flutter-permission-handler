@@ -1,6 +1,10 @@
-## 10.0.0+1
+## 10.0.1+1
 
 * Update pub.dev links
+
+## 10.0.1
+
+- Fix PermissionHandlerEnums link in the README.md
 
 ## 10.0.0
 

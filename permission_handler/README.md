@@ -57,7 +57,7 @@ Add permission to your `Info.plist` file.
 
 > IMPORTANT: ~~You will have to include all permission options when you want to submit your App.~~ This is because the `permission_handler` plugin touches all different SDKs and because the static code analyser (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).
 
-The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/ios/Classes/PermissionHandlerEnums.h) to control whether a permission is enabled.
+The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h) to control whether a permission is enabled.
 
 You must list permission you want to use in your application :
 
