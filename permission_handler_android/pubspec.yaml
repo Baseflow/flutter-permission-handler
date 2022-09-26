@@ -7,6 +7,8 @@ environment:
   sdk: ">=2.15.0 <3.0.0"
   flutter: ">=2.8.0"
 
+publish_to: none
+
 flutter:
   plugin:
     implements: permission_handler
@@ -18,7 +20,9 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler_platform_interface: ^3.7.0
+  # permission_handler_platform_interface: ^3.7.0
+  permission_handler_platform_interface: 
+    path: ../permission_handler_platform_interface
 
 dev_dependencies:
   flutter_lints: ^1.0.4

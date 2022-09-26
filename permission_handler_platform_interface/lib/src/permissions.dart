@@ -176,6 +176,10 @@ class Permission {
   ///iOS: Nothing
   static const bluetoothConnect = Permission._(30);
 
+  ///Android: Allows the user to connect to nearby devices via Wi-Fi
+  ///iOS: Nothing
+  static const nearbyWifiDevices = Permission._(31);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -209,6 +213,7 @@ class Permission {
     bluetoothScan,
     bluetoothAdvertise,
     bluetoothConnect,
+    nearbyWifiDevices
   ];
 
   static const List<String> _names = <String>[
@@ -243,6 +248,7 @@ class Permission {
     'bluetoothScan',
     'bluetoothAdvertise',
     'bluetoothConnect',
+    'nearbyWifiDevices'
   ];
 
   @override

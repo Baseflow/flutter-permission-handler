@@ -8,6 +8,8 @@ dependencies:
   baseflow_plugin_template: ^2.1.1
   flutter:
     sdk: flutter
+  permission_handler_platform_interface:
+    path: ../../permission_handler_platform_interface
 
 dev_dependencies:
   flutter_test:
@@ -20,6 +22,12 @@ dev_dependencies:
     # The example app is bundled with the plugin so we use a path dependency on
     # the parent directory to use the current plugin's version.
     path: ../
+
+# dependency_overrides:
+#   permission_handler_platform_interface: 
+#     path: ../../permission_handler_plaftorm_interface
+
+  
 
   url_launcher: ^6.0.12
 

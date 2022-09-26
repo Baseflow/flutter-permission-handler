@@ -77,6 +77,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT;
             case Manifest.permission.POST_NOTIFICATIONS:
                 return PermissionConstants.PERMISSION_GROUP_NOTIFICATION;
+            case Manifest.permission.NEARBY_WIFI_DEVICES:
+                return PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -294,6 +296,10 @@ public class PermissionUtils {
                 // not handle permissions on pre Android 13 devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS ))
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES )){
+                    permissionNames.add(Manifest.permission.NEARBY_WIFI_DEVICES);}
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
