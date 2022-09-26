@@ -1,3 +1,7 @@
+## 10.1.0
+
+* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+
 ## 10.0.1
 
 - Fix PermissionHandlerEnums link in the README.md
