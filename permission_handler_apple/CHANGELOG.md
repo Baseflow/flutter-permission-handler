@@ -1,3 +1,7 @@
+## UNRELEASED
+
+* Prevent appearing popup that asks to turn on Bluetooth on iOS
+
 ## 9.0.4
 
 * Add flag inside `UserDefaults` to save whether locationAlways has already been requested and prevent further requests, which would be left unanswered by the system.
