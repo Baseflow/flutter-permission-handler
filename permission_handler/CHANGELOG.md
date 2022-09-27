@@ -1,6 +1,6 @@
-## 10.0.1+1
+## 10.0.2
 
-* Update pub.dev links
+* Adds a link to the issue tracker which shows up as "View/report issues" on pub.dev.
 
 ## 10.0.1
 
