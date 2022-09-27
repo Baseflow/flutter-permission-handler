@@ -17,7 +17,8 @@
 
 - (void)initManagerIfNeeded {
     if (_centralManager == nil) {
-        _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil];
+        NSDictionary *options = @{CBCentralManagerOptionShowPowerAlertKey: @NO};
+        _centralManager = [[CBCentralManager alloc] initWithDelegate:self queue:nil options:options];
     }
 }
 
