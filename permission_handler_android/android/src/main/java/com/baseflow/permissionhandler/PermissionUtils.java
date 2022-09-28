@@ -117,7 +117,9 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_BACKGROUND_LOCATION))
                         permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-                    break;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+                        break;
                 }
             case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
             case PermissionConstants.PERMISSION_GROUP_LOCATION:

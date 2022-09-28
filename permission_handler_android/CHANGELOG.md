@@ -1,3 +1,7 @@
+## 10.0.1
+
+* Fix locationAlways does not work on Android 10.
+
 ## 10.0.0
 
  * __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
