@@ -298,7 +298,7 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
                 break;
             case PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES:
-                if(Build.VERSION.SDK.INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES )) 
+                if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES )) 
                     permissionNames.add(Manifest.permission.NEARBY_WIFI_DEVICES);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
