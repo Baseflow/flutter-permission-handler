@@ -1,3 +1,7 @@
+## 3.8.0
+
+* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+
 ## 3.7.1
 
 * Updated the documentation on permissions in `permission_status.dart`
