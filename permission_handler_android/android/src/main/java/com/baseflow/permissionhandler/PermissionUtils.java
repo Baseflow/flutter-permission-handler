@@ -297,7 +297,7 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS ))
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
                 break;
-            case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
+            case PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES:
             // The NEARBY_WIFI_DEVICES permission is introduced in Android 13, meaning we should
             // not handle permissions on pre Android 13 devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES ))
