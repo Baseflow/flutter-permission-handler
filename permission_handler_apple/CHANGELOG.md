@@ -1,3 +1,7 @@
+## 9.0.5
+
+* Added new Android 13 NEARBY_WIFI_DEVICES permission to PermissionHandlerEnums.h
+
 ## 9.0.4
 
 * Add flag inside `UserDefaults` to save whether locationAlways has already been requested and prevent further requests, which would be left unanswered by the system.
