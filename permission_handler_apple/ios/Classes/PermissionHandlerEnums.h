@@ -142,6 +142,7 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupBluetoothScan,
     PermissionGroupBluetoothAdvertise,
     PermissionGroupBluetoothConnect,
+    PermissionGroupNearbyWifiDevices
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

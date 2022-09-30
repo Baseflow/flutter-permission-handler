@@ -46,6 +46,7 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_BLUETOOTH_SCAN = 28;
     static final int PERMISSION_GROUP_BLUETOOTH_ADVERTISE = 29;
     static final int PERMISSION_GROUP_BLUETOOTH_CONNECT = 30;
+    static final int PERMISSION_GROUP_NEARBY_WIFI_DEVICES = 31;
 
 
     @Retention(RetentionPolicy.SOURCE)
@@ -77,7 +78,8 @@ final class PermissionConstants {
             PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY,
             PERMISSION_GROUP_BLUETOOTH_SCAN,
             PERMISSION_GROUP_BLUETOOTH_ADVERTISE,
-            PERMISSION_GROUP_BLUETOOTH_CONNECT
+            PERMISSION_GROUP_BLUETOOTH_CONNECT,
+            PERMISSION_GROUP_NEARBY_WIFI_DEVICES
     })
     @interface PermissionGroup {
     }

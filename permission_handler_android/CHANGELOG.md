@@ -1,3 +1,7 @@
+## 10.1.0
+
+* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+
 ## 10.0.0
 
  * __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
