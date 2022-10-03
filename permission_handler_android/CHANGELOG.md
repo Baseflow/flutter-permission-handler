@@ -1,3 +1,7 @@
+## 10.2.0
+
+* Added support for the new Android 13 granular permissions: READ_MEDIA_IMAGES, READ_MEDIA_VIDEO & READ_MEDIA_AUDIO.
+
 ## 10.1.0
 
 * Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
