@@ -1,3 +1,7 @@
+## 10.1.0
+
+* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+
 ## 10.0.2
 
 * Adds a link to the issue tracker which shows up as "View/report issues" on pub.dev.
