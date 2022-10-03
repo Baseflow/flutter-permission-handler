@@ -1,7 +1,3 @@
-## 10.0.3 
-
-* Added support for the new Android 13 granular permissions: READ_MEDIA_IMAGES, READ_MEDIA_VIDEO & READ_MEDIA_AUDIO.
-
 ## 10.0.2
 
 * Adds a link to the issue tracker which shows up as "View/report issues" on pub.dev.
