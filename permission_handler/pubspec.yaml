@@ -22,10 +22,10 @@ dependencies:
   flutter:
     sdk: flutter
   meta: ^1.7.0
-  permission_handler_android: ^10.0.0
-  permission_handler_apple: ^9.0.2
-  permission_handler_windows: ^0.1.0
-  permission_handler_platform_interface: ^3.7.0
+  permission_handler_android: ^10.1.0
+  permission_handler_apple: ^9.0.5
+  permission_handler_windows: ^0.1.1
+  permission_handler_platform_interface: ^3.8.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4
