@@ -1,3 +1,7 @@
+## 9.0.6
+
+* Prevent appearing popup that asks to turn on Bluetooth on iOS
+
 ## 9.0.5
 
 * Added new Android 13 NEARBY_WIFI_DEVICES permission to PermissionHandlerEnums.h
