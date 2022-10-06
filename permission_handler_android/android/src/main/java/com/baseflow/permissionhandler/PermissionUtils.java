@@ -306,8 +306,8 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
                 break;
             case PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES:
-            // The NEARBY_WIFI_DEVICES permission is introduced in Android T, meaning we should
-            // not handle permissions on pre Android T devices.
+                // The NEARBY_WIFI_DEVICES permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES ))
                     permissionNames.add(Manifest.permission.NEARBY_WIFI_DEVICES);
                 break;
@@ -317,7 +317,7 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_IMAGES ))
                     permissionNames.add(Manifest.permission.READ_MEDIA_IMAGES);
                 break;
-                case PermissionConstants.PERMISSION_GROUP_VIDEOS:
+            case PermissionConstants.PERMISSION_GROUP_VIDEOS:
                 // The READ_MEDIA_VIDEOS permission is introduced in Android T, meaning we should
                 // not handle permissions on pre Android T devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VIDEO ))
