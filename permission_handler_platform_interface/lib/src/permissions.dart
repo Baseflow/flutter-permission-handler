@@ -67,7 +67,8 @@ class Permission {
   /// iOS: Nothing
   static const phone = PermissionWithService._(8);
 
-  /// Android: Nothing
+  /// When running on Android T and above: Read image files from external storage
+  /// When running on Android < T: Nothing
   /// iOS: Photos
   /// iOS 14+ read & write access level
   static const photos = Permission._(9);
@@ -180,6 +181,21 @@ class Permission {
   ///iOS: Nothing
   static const nearbyWifiDevices = Permission._(31);
 
+  /// When running on Android T and above: Read video files from external storage
+  /// When running on Android < T: Nothing
+  /// iOS: Nothing
+  static const videos = Permission._(32);
+
+  /// When running on Android T and above: Read audio files from external storage
+  /// When running on Android < T: Nothing
+  /// iOS: Nothing
+  static const audio = Permission._(33);
+
+  /// When running on Android S and above: Allows exact alarm functionality
+  /// When running on Android < S: Nothing
+  ///iOS: Nothing
+  static const scheduleExactAlarm = Permission._(34);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -213,7 +229,10 @@ class Permission {
     bluetoothScan,
     bluetoothAdvertise,
     bluetoothConnect,
-    nearbyWifiDevices
+    nearbyWifiDevices,
+    videos,
+    audio,
+    scheduleExactAlarm
   ];
 
   static const List<String> _names = <String>[
@@ -248,7 +267,10 @@ class Permission {
     'bluetoothScan',
     'bluetoothAdvertise',
     'bluetoothConnect',
-    'nearbyWifiDevices'
+    'nearbyWifiDevices',
+    'videos',
+    'audio',
+    'scheduleExactAlarm'
   ];
 
   @override
