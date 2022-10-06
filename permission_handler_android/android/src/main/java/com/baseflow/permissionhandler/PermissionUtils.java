@@ -333,7 +333,7 @@ public class PermissionUtils {
                 // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, meaning we should
                 // not handle permissions on pre Android S devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM ))
-                    permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM)
+                    permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
