@@ -42,7 +42,10 @@ public:
         BLUETOOTH_SCAN = 28,
         BLUETOOTH_ADVERTISE = 29,
         BLUETOOTH_CONNECT = 30,
-        NEARBY_WIFI_DEVICES = 31
+        NEARBY_WIFI_DEVICES = 31,
+        VIDEOS = 32,
+        AUDIO = 33,
+        SCHEDULE_EXACT_ALARM = 34
     };
 
     //PERMISSION_STATUS
