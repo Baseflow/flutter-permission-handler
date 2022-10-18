@@ -120,7 +120,7 @@ class Permission {
 
   /// iOS 13 and above: The authorization state of Core Bluetooth manager.
   /// When running < iOS 13 or Android this is always allowed.
-  static const bluetooth = Permission._(21);
+  static const bluetooth = PermissionWithService._(21);
 
   /// Android: Allows an application a broad access to external storage in
   /// scoped storage.
