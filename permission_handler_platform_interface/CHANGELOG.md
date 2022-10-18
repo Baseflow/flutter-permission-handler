@@ -1,3 +1,7 @@
+## 3.9.1
+
+* Changed `Permission.bluetooth` into an instance of `PermissionWithService` instead of `Permission` in order to determine iOS native's `CBManagerStatePoweredOn`.
+
 ## 3.9.0
 
 * Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
