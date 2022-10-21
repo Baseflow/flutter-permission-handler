@@ -25,15 +25,16 @@
         return;
     }
 
-    if (@available(iOS 9.0, *)) {
+    if (@available(macOS 10.11, *)) {
         [ContactPermissionStrategy requestPermissionsFromContactStore:completionHandler];
     } else {
-        [ContactPermissionStrategy requestPermissionsFromAddressBook:completionHandler];
+        completionHandler(PermissionStatusPermanentlyDenied);
+        return;
     }
 }
 
 + (PermissionStatus)permissionStatus {
-    if (@available(iOS 9.0, *)) {
+    if (@available(macOS 10.11, *)) {
         CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
 
         switch (status) {
@@ -48,27 +49,13 @@
         }
 
     } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();
-
-        switch (status) {
-            case kABAuthorizationStatusNotDetermined:
-                return PermissionStatusDenied;
-            case kABAuthorizationStatusRestricted:
-                return PermissionStatusRestricted;
-            case kABAuthorizationStatusDenied:
-                return PermissionStatusPermanentlyDenied;
-            case kABAuthorizationStatusAuthorized:
-                return PermissionStatusGranted;
-#pragma clang diagnostic pop
-        }
+        return PermissionStatusPermanentlyDenied;
     }
 
     return PermissionStatusDenied;
 }
 
-+ (void)requestPermissionsFromContactStore:(PermissionStatusHandler)completionHandler API_AVAILABLE(ios(9)) {
++ (void)requestPermissionsFromContactStore:(PermissionStatusHandler)completionHandler API_AVAILABLE(macosx(10.13)) {
     CNContactStore *contactStore = [CNContactStore new];
 
     [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError *__nullable error) {

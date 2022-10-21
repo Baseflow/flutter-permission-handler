@@ -33,7 +33,7 @@
 
 - (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
     [self initManagerIfNeeded];
-    if (@available(iOS 10, *)) {
+    if (@available(macOS 10.14, *)) {
         return [_centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
     }
     return [_centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;

@@ -26,7 +26,7 @@
     return;
   }
   dispatch_async(dispatch_get_main_queue(), ^{
-    if(@available(iOS 12.0, *)) {
+    if(@available(macOS 10.14, *)) {
       UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
       UNAuthorizationOptions authorizationOptions = 0;
       authorizationOptions += UNAuthorizationOptionCriticalAlert;
@@ -49,7 +49,7 @@
 
 + (PermissionStatus)permissionStatus {
   __block PermissionStatus permissionStatus = PermissionStatusGranted;
-  if (@available(iOS 12 , *)) {
+  if (@available(macOS 10.14 , *)) {
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
       if (settings.criticalAlertSetting == UNAuthorizationStatusDenied) {

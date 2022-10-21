@@ -12,7 +12,7 @@
 @implementation AppTrackingTransparencyPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    if (@available(macOS 11, *)) {
+    if (@available(macOS 11.0, *)) {
         ATTrackingManagerAuthorizationStatus attPermission = [ATTrackingManager trackingAuthorizationStatus];
         return [AppTrackingTransparencyPermissionStrategy parsePermission:attPermission];
     }
@@ -31,7 +31,7 @@
         return;
     }
     
-    if (@available(macOS 11, *)){
+    if (@available(macOS 11.0, *)){
         [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
             PermissionStatus permissionStatus = [AppTrackingTransparencyPermissionStrategy parsePermission:status];
             completionHandler(permissionStatus);
