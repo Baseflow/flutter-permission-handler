@@ -18,46 +18,13 @@
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
-    PermissionStatus status = [self checkPermissionStatus:permission];
-    if (status != PermissionStatusDenied) {
-        completionHandler(status);
-        return;
-    }
-
-    if (@available(iOS 9.3, *)) {
-        [MPMediaLibrary requestAuthorization:^(MPMediaLibraryAuthorizationStatus status) {
-            completionHandler([MediaLibraryPermissionStrategy determinePermissionStatus:status]);
-        }];
-    } else {
-        completionHandler(PermissionStatusPermanentlyDenied);
-        return;
-    }
+    completionHandler(PermissionStatusDenied);
 }
 
 + (PermissionStatus)permissionStatus {
-    if (@available(iOS 9.3, *)) {
-        MPMediaLibraryAuthorizationStatus status = [MPMediaLibrary authorizationStatus];
-
-        return [MediaLibraryPermissionStrategy determinePermissionStatus:status];
-    }
-
     return PermissionStatusDenied;
 }
 
-+ (PermissionStatus)determinePermissionStatus:(MPMediaLibraryAuthorizationStatus)authorizationStatus  API_AVAILABLE(ios(9.3)){
-    switch (authorizationStatus) {
-        case MPMediaLibraryAuthorizationStatusNotDetermined:
-            return PermissionStatusDenied;
-        case MPMediaLibraryAuthorizationStatusDenied:
-            return PermissionStatusPermanentlyDenied;
-        case MPMediaLibraryAuthorizationStatusRestricted:
-            return PermissionStatusRestricted;
-        case MPMediaLibraryAuthorizationStatusAuthorized:
-            return PermissionStatusGranted;
-    }
-
-    return PermissionStatusDenied;
-}
 
 @end
 

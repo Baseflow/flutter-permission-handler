@@ -33,7 +33,8 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: ListView(
-          children: Permission.values
+        children: [
+          ...Permission.values
               .where((permission) {
                 return permission != Permission.unknown &&
                     permission != Permission.sms &&
@@ -50,7 +51,22 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                     permission != Permission.bluetoothConnect;
               })
               .map((permission) => PermissionWidget(permission))
-              .toList()),
+              .toList(),
+          ListTile(
+            title: Text(
+              "Open app settings",
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+            trailing: Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onTap: () {
+              PermissionHandlerPlatform.instance.openAppSettings();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

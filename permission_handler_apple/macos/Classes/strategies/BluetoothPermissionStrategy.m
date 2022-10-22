@@ -52,7 +52,7 @@
     _requestedPermission = permission;
 }
 
-+ (PermissionStatus)parsePermission:(CBManagerAuthorization)bluetoothPermission API_AVAILABLE(ios(13)){
++ (PermissionStatus)parsePermission:(CBManagerAuthorization)bluetoothPermission API_AVAILABLE(macosx(10.15)){
     switch(bluetoothPermission){
         case CBManagerAuthorizationNotDetermined:
             return PermissionStatusDenied;

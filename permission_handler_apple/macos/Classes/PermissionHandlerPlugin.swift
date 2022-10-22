@@ -37,7 +37,7 @@ public class PermissionHandlerPlugin: NSObject, FlutterPlugin {
             let permission: PermissionGroup = Codec.decodePermissionGroup(from: number)
             PermissionManager.checkServiceStatus(permission, result: result)
         case "requestPermissions":
-            guard methodResult != nil else {
+            guard methodResult == nil else {
                 result(FlutterError(code: "ERROR_ALREADY_REQUESTING_PERMISSIONS", message: "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).", details: nil))
                 return
             }

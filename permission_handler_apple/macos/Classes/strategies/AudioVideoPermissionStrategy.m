@@ -55,27 +55,33 @@
         return;
     }
 
-    [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-        if (granted) {
-            completionHandler(PermissionStatusGranted);
-        } else {
-            completionHandler(PermissionStatusPermanentlyDenied);
-        }
-    }];
+    if (@available(macOS 10.14, *)) {
+        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+            if (granted) {
+                completionHandler(PermissionStatusGranted);
+            } else {
+                completionHandler(PermissionStatusPermanentlyDenied);
+            }
+        }];
+    } else {
+        // Fallback on earlier versions
+        completionHandler(PermissionStatusPermanentlyDenied);
+    }
 }
 
 + (PermissionStatus)permissionStatus:(AVMediaType const)mediaType {
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
-
-    switch (status) {
-        case AVAuthorizationStatusNotDetermined:
-            return PermissionStatusDenied;
-        case AVAuthorizationStatusRestricted:
-            return PermissionStatusRestricted;
-        case AVAuthorizationStatusDenied:
-            return PermissionStatusPermanentlyDenied;
-        case AVAuthorizationStatusAuthorized:
-            return PermissionStatusGranted;
+    if (@available(macOS 10.14, *)) {
+        AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+        switch (status) {
+            case AVAuthorizationStatusNotDetermined:
+                return PermissionStatusDenied;
+            case AVAuthorizationStatusRestricted:
+                return PermissionStatusRestricted;
+            case AVAuthorizationStatusDenied:
+                return PermissionStatusPermanentlyDenied;
+            case AVAuthorizationStatusAuthorized:
+                return PermissionStatusGranted;
+        }
     }
 
     return PermissionStatusDenied;

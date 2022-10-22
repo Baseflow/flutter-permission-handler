@@ -39,8 +39,8 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
-    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
-        BOOL alreadyRequested = [[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]; // check if already requested the permantent permission
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized && permission == PermissionGroupLocationAlways) {
+        BOOL alreadyRequested = [[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]; // check if already requested the permanent permission
         if(alreadyRequested) {
             completionHandler(status);
             return;
@@ -53,45 +53,42 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     _permissionStatusHandler = completionHandler;
     _requestedPermission = permission;
     
-    if (permission == PermissionGroupLocation) {
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
-            [_locationManager requestAlwaysAuthorization];
-        } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
-            [_locationManager requestWhenInUseAuthorization];
+    if (permission == PermissionGroupLocation || permission == PermissionGroupLocationAlways || permission == PermissionGroupLocationWhenInUse) {
+        
+        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationUsageDescription"] != nil) {
+            if (@available(macOS 10.15, *)) {
+                [_locationManager requestAlwaysAuthorization];
+            } else {
+                [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"You need macOS 10.15 to request Always Authroization" userInfo:nil] raise];
+                
+            }
         } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
-        }
-    } else if (permission == PermissionGroupLocationAlways) {
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveActivityNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
-            [_locationManager requestAlwaysAuthorization];
-            [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:UserDefaultPermissionRequestedKey];
-        } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
-        }
-    } else if (permission == PermissionGroupLocationWhenInUse) {
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
-            [_locationManager requestWhenInUseAuthorization];
-        } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define NSLocationWhenInUseUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in macOS 10.14 you need to define either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
         }
     }
 }
 
 - (void) receiveActivityNotification:(NSNotification *) notification {
     CLAuthorizationStatus status;
-    if(@available(iOS 14.0, *)){
+    if(@available(macOS 11.0, *)){
         status = _locationManager.authorizationStatus;
     } else {
         status = [CLLocationManager authorizationStatus];
     }
 
-    if ((_requestedPermission == PermissionGroupLocationAlways && status != kCLAuthorizationStatusAuthorizedAlways)) {
-        PermissionStatus permissionStatus = [LocationPermissionStrategy determinePermissionStatus:_requestedPermission authorizationStatus:status];
-
-        _permissionStatusHandler(permissionStatus);
+    if (@available(macOS 10.12, *)) {
+        if (((_requestedPermission == PermissionGroupLocationAlways || _requestedPermission == PermissionGroupLocationWhenInUse || _requestedPermission == PermissionGroupLocation) && status != kCLAuthorizationStatusAuthorizedAlways)) {
+            PermissionStatus permissionStatus = [LocationPermissionStrategy determinePermissionStatus:_requestedPermission authorizationStatus:status];
+            
+            _permissionStatusHandler(permissionStatus);
+        } else {
+            _permissionStatusHandler(PermissionStatusGranted);
+        }
+    } else {
+        // Fallback on earlier versions
+        _permissionStatusHandler(PermissionStatusDenied);
     }
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];    
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidBecomeActiveNotification object:nil];
 }
 
 // {WARNING}
@@ -111,8 +108,9 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
         return;
     }
 
-    if ((_requestedPermission == PermissionGroupLocationAlways && status == kCLAuthorizationStatusAuthorizedWhenInUse)) {
-            return;
+    if ((_requestedPermission == PermissionGroupLocationAlways && status == kCLAuthorizationStatusAuthorized)) {
+        _permissionStatusHandler(PermissionStatusGranted);
+        return;
     }
 
     PermissionStatus permissionStatus = [LocationPermissionStrategy
@@ -134,37 +132,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 
 
 + (PermissionStatus)determinePermissionStatus:(PermissionGroup)permission authorizationStatus:(CLAuthorizationStatus)authorizationStatus {
-    if (@available(iOS 8.0, *)) {
-        if (permission == PermissionGroupLocationAlways) {
-            switch (authorizationStatus) {
-                case kCLAuthorizationStatusNotDetermined:
-                    return PermissionStatusDenied;
-                case kCLAuthorizationStatusRestricted:
-                    return PermissionStatusRestricted;
-                case kCLAuthorizationStatusAuthorizedWhenInUse:
-                case kCLAuthorizationStatusDenied:
-                    return PermissionStatusPermanentlyDenied;
-                case kCLAuthorizationStatusAuthorizedAlways:
-                    return PermissionStatusGranted;
-            }
-        }
-        
-        switch (authorizationStatus) {
-            case kCLAuthorizationStatusNotDetermined:
-                return PermissionStatusDenied;
-            case kCLAuthorizationStatusRestricted:
-                return PermissionStatusRestricted;
-            case kCLAuthorizationStatusDenied:
-                return PermissionStatusPermanentlyDenied;
-            case kCLAuthorizationStatusAuthorizedWhenInUse:
-            case kCLAuthorizationStatusAuthorizedAlways:
-                return PermissionStatusGranted;
-        }
-    }
-    
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
     switch (authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;
@@ -174,12 +141,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
             return PermissionStatusPermanentlyDenied;
         case kCLAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
-        default:
-            return PermissionStatusDenied;
     }
-
-#pragma clang diagnostic pop
-
 }
 
 @end

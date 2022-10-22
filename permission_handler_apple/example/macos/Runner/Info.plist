@@ -28,5 +28,27 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Calendar example</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Contacts example</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Photo Library Additions example</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo Library Usage example</string>
+	<key>NSLocationUsageDescription</key>
+	<string>Location example</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Location Always example</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location When In Use example</string>
+	<key>NSRemindersUsageDescription</key>
+	<string>Reminders example</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Speech example</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Bluetooth example</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone example</string>
 </dict>
 </plist>

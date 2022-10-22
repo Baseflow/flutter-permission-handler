@@ -41,7 +41,7 @@
     }
 }
 
-+ (PermissionStatus)parsePermission:(ATTrackingManagerAuthorizationStatus)attPermission API_AVAILABLE(ios(14)){
++ (PermissionStatus)parsePermission:(ATTrackingManagerAuthorizationStatus)attPermission API_AVAILABLE(macosx(11.0)){
     switch(attPermission){
         case ATTrackingManagerAuthorizationStatusAuthorized:
             return PermissionStatusGranted;

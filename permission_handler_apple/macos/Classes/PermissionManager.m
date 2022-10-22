@@ -70,11 +70,8 @@
 }
 
 + (void)openAppSettings:(FlutterResult)result {
-    if (@available(macOS 13, *)) {
-        BOOL res = [[NSApplication sharedApplication] sendAction:NSSelectorFromString(@"showSettingsWindow:") to:nil from:nil];
-        result([[NSNumber alloc] initWithBool:res]);
-    } else if (@available(macOS 10, *)) {
-        BOOL res = [[NSApplication sharedApplication] sendAction:NSSelectorFromString(@"showPreferencesWindow:") to:nil from:nil];
+    if (@available(macOS 10, *)) {
+        BOOL res = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security"]];
         result([[NSNumber alloc] initWithBool:res]);
     } else {
         result(@false);

@@ -25,7 +25,7 @@
         return;
     }
 
-    if (@available(macOS 10.11, *)) {
+    if (@available(macOS 10.13, *)) {
         [ContactPermissionStrategy requestPermissionsFromContactStore:completionHandler];
     } else {
         completionHandler(PermissionStatusPermanentlyDenied);
@@ -68,16 +68,7 @@
 }
 
 + (void)requestPermissionsFromAddressBook:(PermissionStatusHandler)completionHandler {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    ABAddressBookRequestAccessWithCompletion(ABAddressBookCreate(), ^(bool granted, CFErrorRef error) {
-        if (granted) {
-            completionHandler(PermissionStatusGranted);
-        } else {
-            completionHandler(PermissionStatusPermanentlyDenied);
-        }
-    });
-#pragma clang diagnostic pop
+    completionHandler(PermissionStatusPermanentlyDenied);
 }
 @end
 

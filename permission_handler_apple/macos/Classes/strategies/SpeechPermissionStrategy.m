@@ -24,7 +24,7 @@
         return;
     }
     
-    if (@available(iOS 10.0, *)) {
+    if (@available(macOS 10.15, *)) {
         [SFSpeechRecognizer requestAuthorization:^(SFSpeechRecognizerAuthorizationStatus authorizationStatus) {
             completionHandler([SpeechPermissionStrategy determinePermissionStatus:authorizationStatus]);
         }];
@@ -34,7 +34,7 @@
 }
 
 + (PermissionStatus)permissionStatus {
-    if (@available(iOS 10.0, *)) {
+    if (@available(macOS 10.15, *)) {
         SFSpeechRecognizerAuthorizationStatus status = [SFSpeechRecognizer authorizationStatus];
         
         return [SpeechPermissionStrategy determinePermissionStatus:status];
@@ -43,7 +43,7 @@
     return PermissionStatusDenied;
 }
 
-+ (PermissionStatus)determinePermissionStatus:(SFSpeechRecognizerAuthorizationStatus)authorizationStatus  API_AVAILABLE(ios(10.0)){
++ (PermissionStatus)determinePermissionStatus:(SFSpeechRecognizerAuthorizationStatus)authorizationStatus  API_AVAILABLE(macosx(10.15)){
     switch (authorizationStatus) {
         case SFSpeechRecognizerAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;

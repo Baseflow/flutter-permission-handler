@@ -36,29 +36,28 @@
         return;
     }
 
-    if(@available(iOS 14, *)) {
+    if(@available(macOS 11.0, *)) {
         [PHPhotoLibrary requestAuthorizationForAccessLevel:(addOnlyAccessLevel)?PHAccessLevelAddOnly:PHAccessLevelReadWrite handler:^(PHAuthorizationStatus authorizationStatus) {
             completionHandler([PhotoPermissionStrategy determinePermissionStatus:authorizationStatus]);
         }];
     }else {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus authorizationStatus) {
-        completionHandler([PhotoPermissionStrategy determinePermissionStatus:authorizationStatus]);
-    }];
+        completionHandler(PermissionStatusPermanentlyDenied);
     }
 }
 
 + (PermissionStatus)permissionStatus:(BOOL) addOnlyAccessLevel {
-    PHAuthorizationStatus status;
-    if(@available(iOS 14, *)){
+    
+    if(@available(macOS 11.0, *)){
+        PHAuthorizationStatus status;
         status = [PHPhotoLibrary authorizationStatusForAccessLevel:(addOnlyAccessLevel)?PHAccessLevelAddOnly:PHAccessLevelReadWrite];
-    }else {
-        status = [PHPhotoLibrary authorizationStatus];
+        return [PhotoPermissionStrategy determinePermissionStatus:status];
+    } else {
+        return PermissionStatusDenied;
     }
 
-    return [PhotoPermissionStrategy determinePermissionStatus:status];
 }
 
-+ (PermissionStatus)determinePermissionStatus:(PHAuthorizationStatus)authorizationStatus {
++ (PermissionStatus)determinePermissionStatus:(PHAuthorizationStatus)authorizationStatus  API_AVAILABLE(macos(10.13)){
     switch (authorizationStatus) {
         case PHAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;
