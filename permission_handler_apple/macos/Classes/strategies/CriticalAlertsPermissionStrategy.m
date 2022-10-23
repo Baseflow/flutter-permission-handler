@@ -21,7 +21,7 @@
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
   PermissionStatus status = [self checkPermissionStatus:permission];
-  if (status != PermissionStatusDenied) {
+  if (status != PermissionStatusDenied && status != PermissionStatusPermanentlyDenied) {
     completionHandler(status);
     return;
   }

@@ -60,18 +60,14 @@
                 completion(permissionStatusResult);
             }
           
-            // Make sure `completion` is called before cleaning up the reference
-            // otherwise the `completion` block is also dereferenced on iOS 12 and
-            // below (this is most likely a bug in Objective-C which is solved in
-            // later versions of the runtime).
             permissionStrategy = nil;
         }];
     }
 }
 
 + (void)openAppSettings:(FlutterResult)result {
-    if (@available(macOS 10, *)) {
-        BOOL res = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security"]];
+    if (@available(macOS 10.10, *)) {
+        BOOL res = [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"x-apple.systempreferences:com.apple.preference.security?Privacy_LocationServices"]];
         result([[NSNumber alloc] initWithBool:res]);
     } else {
         result(@false);

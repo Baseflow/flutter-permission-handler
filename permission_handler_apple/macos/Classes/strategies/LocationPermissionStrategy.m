@@ -53,19 +53,35 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     _permissionStatusHandler = completionHandler;
     _requestedPermission = permission;
     
-    if (permission == PermissionGroupLocation || permission == PermissionGroupLocationAlways || permission == PermissionGroupLocationWhenInUse) {
-        
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationUsageDescription"] != nil) {
-            if (@available(macOS 10.15, *)) {
+    if (@available(macOS 10.15, *)) {
+        if (permission == PermissionGroupLocation) {
+            if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
                 [_locationManager requestAlwaysAuthorization];
+            } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
+                [_locationManager requestWhenInUseAuthorization];
             } else {
-                [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"You need macOS 10.15 to request Always Authroization" userInfo:nil] raise];
-                
+                [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in macOS 10.15 you need to define either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
             }
-        } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in macOS 10.14 you need to define either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+        } else if (permission == PermissionGroupLocationAlways) {
+            if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveActivityNotification:) name:NSApplicationDidBecomeActiveNotification object:nil];
+                [_locationManager requestAlwaysAuthorization];
+                [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:UserDefaultPermissionRequestedKey];
+            } else {
+                [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in macOS 10.15 you need to define NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+            }
+        } else if (permission == PermissionGroupLocationWhenInUse) {
+            if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
+                [_locationManager requestWhenInUseAuthorization];
+            } else {
+                [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in macOS 10.15 you need to define NSLocationWhenInUseUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+            }
         }
+    } else {
+        // on macOS 10.14 and previous version, requesting a location update will trigger the system alert for the location
+        completionHandler(PermissionStatusGranted);
     }
+    
 }
 
 - (void) receiveActivityNotification:(NSNotification *) notification {
@@ -77,7 +93,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     }
 
     if (@available(macOS 10.12, *)) {
-        if (((_requestedPermission == PermissionGroupLocationAlways || _requestedPermission == PermissionGroupLocationWhenInUse || _requestedPermission == PermissionGroupLocation) && status != kCLAuthorizationStatusAuthorizedAlways)) {
+        if (_requestedPermission == PermissionGroupLocationAlways && status != kCLAuthorizationStatusAuthorizedAlways) {
             PermissionStatus permissionStatus = [LocationPermissionStrategy determinePermissionStatus:_requestedPermission authorizationStatus:status];
             
             _permissionStatusHandler(permissionStatus);
@@ -85,8 +101,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
             _permissionStatusHandler(PermissionStatusGranted);
         }
     } else {
-        // Fallback on earlier versions
-        _permissionStatusHandler(PermissionStatusDenied);
+        _permissionStatusHandler(PermissionStatusGranted);
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSApplicationDidBecomeActiveNotification object:nil];
 }
@@ -132,6 +147,11 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 
 
 + (PermissionStatus)determinePermissionStatus:(PermissionGroup)permission authorizationStatus:(CLAuthorizationStatus)authorizationStatus {
+    if (@available(macOS 10.12, *)) {
+        if(authorizationStatus == kCLAuthorizationStatusAuthorizedAlways) {
+            return PermissionStatusGranted;
+        }
+    }
     switch (authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;
