@@ -1,3 +1,7 @@
+## 10.2.1
+
+* Fixed an issue where App Tracking Transparency prompt may not show correctly on iOS in some situations.
+
 ## 10.2.0
 
 * Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
