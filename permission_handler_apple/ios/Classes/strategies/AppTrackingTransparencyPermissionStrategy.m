@@ -11,6 +11,27 @@
 
 @implementation AppTrackingTransparencyPermissionStrategy
 
+PermissionStatusHandler storedCompletionHandler = nil;
+
++ (void)load {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleAppBecomeActive)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+}
+
++ (void)handleAppBecomeActive {
+    if (@available(iOS 14, *)){
+        if (storedCompletionHandler != nil) {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                PermissionStatus permissionStatus = [AppTrackingTransparencyPermissionStrategy parsePermission:status];
+                storedCompletionHandler(permissionStatus);
+                storedCompletionHandler = nil;
+            }];
+        }
+    }
+}
+
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
     if (@available(iOS 14, *)) {
         ATTrackingManagerAuthorizationStatus attPermission = [ATTrackingManager trackingAuthorizationStatus];
@@ -32,10 +53,17 @@
     }
     
     if (@available(iOS 14, *)){
-        [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
-            PermissionStatus permissionStatus = [AppTrackingTransparencyPermissionStrategy parsePermission:status];
-            completionHandler(permissionStatus);
-        }];
+        UIApplicationState state = [[UIApplication sharedApplication] applicationState];
+        if (state == UIApplicationStateActive) {
+            [ATTrackingManager requestTrackingAuthorizationWithCompletionHandler:^(ATTrackingManagerAuthorizationStatus status) {
+                PermissionStatus permissionStatus = [AppTrackingTransparencyPermissionStrategy parsePermission:status];
+                completionHandler(permissionStatus);
+            }];
+        } else {
+            // If state is not UIApplicationStateActive, iOS will not show the dialog for requesting AppTrackingTransperancy permission.
+            // Store the completion handler and only start requesting when the app become Active again.
+            storedCompletionHandler = completionHandler;
+        }
     } else {
         completionHandler(PermissionStatusGranted);
     }
