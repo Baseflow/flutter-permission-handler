@@ -23,7 +23,7 @@ dependencies:
     sdk: flutter
   meta: ^1.7.0
   permission_handler_android: ^10.2.0
-  permission_handler_apple: ^9.0.7
+  permission_handler_apple: ^9.0.8
   permission_handler_windows: ^0.1.2
   permission_handler_platform_interface: ^3.9.0
 
