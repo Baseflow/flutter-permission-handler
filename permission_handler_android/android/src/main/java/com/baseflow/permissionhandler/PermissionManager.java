@@ -99,7 +99,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         HashMap<Integer, Integer> results = new HashMap<>();
         results.put(permission, status);
-        successCallback.onSuccess(results);
+        if (successCallback != null) {
+            successCallback.onSuccess(results);
+            successCallback = null;
+        }
         return true;
     }
 
@@ -171,7 +174,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
         }
 
-        this.successCallback.onSuccess(requestResults);
+        if (successCallback != null) {
+            successCallback.onSuccess(requestResults);
+            successCallback = null;
+        }
         ongoing = false;
         return true;
     }
