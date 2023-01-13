@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -192,6 +193,8 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     private boolean ongoing = false;
 
+    private int intentStartCount = 0;
+
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
             Context context,
@@ -262,6 +265,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 continue;
             }
 
+            intentStartCount = 0;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
                 executeIntent(
                         Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
@@ -289,6 +293,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
         if (permissionsToRequest.size() > 0) {
+            if(intentStartCount > 0){
+                throw new InvalidParameterException("Trying to get regular and intent permissions simultaneously! This will not work");
+            }
+
             ongoing = true;
 
             ActivityCompat.requestPermissions(
@@ -422,6 +430,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     private void executeIntent(String action, int requestCode) {
+        intentStartCount++;
+        if(intentStartCount > 1){
+            throw new InvalidParameterException("Trying to start multiple activities at a time! This will not work");
+        }
+
         String packageName = activity.getPackageName();
         Intent intent = new Intent();
         intent.setAction(action);
@@ -430,6 +443,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     private void executeSimpleIntent(String action, int requestCode) {
+        intentStartCount++;
+        if(intentStartCount > 1){
+            throw new InvalidParameterException("Trying to start multiple activities at a time! This will not work");
+        }
+
         activity.startActivityForResult(new Intent(action), requestCode);
     }
 

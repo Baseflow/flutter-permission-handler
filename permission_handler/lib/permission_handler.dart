@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
+import 'package:synchronized/extension.dart';
 
 export 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart'
     show
@@ -13,6 +14,8 @@ export 'package:permission_handler_platform_interface/permission_handler_platfor
         FutureServiceStatusGetters;
 
 PermissionHandlerPlatform get _handler => PermissionHandlerPlatform.instance;
+
+const _lock = Object();
 
 /// Opens the app settings page.
 ///
@@ -40,10 +43,10 @@ extension PermissionActions on Permission {
   /// been grant access before.
   ///
   /// Returns the new [PermissionStatus].
-  Future<PermissionStatus> request() async {
+  Future<PermissionStatus> request() => _lock.synchronized(() async {
     final permissionStatus = (await [this].request())[this];
     return permissionStatus ?? PermissionStatus.denied;
-  }
+  });
 }
 
 /// Shortcuts for checking the [status] of a [Permission].
