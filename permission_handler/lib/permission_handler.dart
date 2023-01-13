@@ -44,9 +44,9 @@ extension PermissionActions on Permission {
   ///
   /// Returns the new [PermissionStatus].
   Future<PermissionStatus> request() => _lock.synchronized(() async {
-    final permissionStatus = (await [this].request())[this];
-    return permissionStatus ?? PermissionStatus.denied;
-  });
+        final permissionStatus = (await [this].request())[this];
+        return permissionStatus ?? PermissionStatus.denied;
+      });
 }
 
 /// Shortcuts for checking the [status] of a [Permission].
