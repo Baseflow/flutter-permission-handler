@@ -67,5 +67,32 @@ void main() {
     });
   });
 
+  group('FuturePermissionStatusGetters', () {
+    mockFuture(PermissionStatus status) => Future.value(status);
+
+    test('Getters should return true if statement is met', () async {
+      expect(await mockFuture(PermissionStatus.denied).isDenied, true);
+      expect(await mockFuture(PermissionStatus.granted).isGranted, true);
+      expect(await mockFuture(PermissionStatus.restricted).isRestricted, true);
+      expect(await mockFuture(PermissionStatus.limited).isLimited, true);
+      expect(
+          await mockFuture(PermissionStatus.permanentlyDenied)
+              .isPermanentlyDenied,
+          true);
+      expect(
+          await mockFuture(PermissionStatus.provisional).isProvisional, true);
+    });
+
+    test('Getters should return false if statement is not met', () async {
+      expect(await mockFuture(PermissionStatus.denied).isGranted, false);
+      expect(await mockFuture(PermissionStatus.granted).isDenied, false);
+      expect(await mockFuture(PermissionStatus.restricted).isDenied, false);
+      expect(await mockFuture(PermissionStatus.limited).isDenied, false);
+      expect(
+          await mockFuture(PermissionStatus.permanentlyDenied).isDenied, false);
+      expect(await mockFuture(PermissionStatus.provisional).isDenied, false);
+    });
+  });
+
   test('test', () {});
 }
