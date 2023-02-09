@@ -70,6 +70,10 @@ extension PermissionCheckShortcuts on Permission {
   /// be showed to the user. Consuming Apps should redirect the user to the
   /// App settings to change permissions.
   Future<bool> get isPermanentlyDenied => status.isPermanentlyDenied;
+
+  /// If the application is provisionally authorized to post noninterruptive user notifications.
+  /// *Only supported on iOS.*
+  Future<bool> get isProvisional => status.isProvisional;
 }
 
 /// Actions that apply only to permissions that have an associated service.
