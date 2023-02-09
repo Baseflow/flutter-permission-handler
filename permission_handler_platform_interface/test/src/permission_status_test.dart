@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 void main() {
-  group('PermissionSatus', () {
-    test('PermissionStatus should contain 5 options', () {
+  group('PermissionStatus', () {
+    test('PermissionStatus should contain 6 options', () {
       const values = PermissionStatus.values;
 
-      expect(values.length, 5);
+      expect(values.length, 6);
     });
 
     test('PermissionStatus enum should have items in correct index', () {
@@ -17,16 +17,18 @@ void main() {
       expect(values[2], PermissionStatus.restricted);
       expect(values[3], PermissionStatus.limited);
       expect(values[4], PermissionStatus.permanentlyDenied);
+      expect(values[5], PermissionStatus.provisional);
     });
   });
 
   group('PermissionStatusValue', () {
-    test('PermissonStatusValue returns right integer', () {
+    test('PermissionStatusValue returns right integer', () {
       expect(PermissionStatus.denied.value, 0);
       expect(PermissionStatus.granted.value, 1);
       expect(PermissionStatus.restricted.value, 2);
       expect(PermissionStatus.limited.value, 3);
       expect(PermissionStatus.permanentlyDenied.value, 4);
+      expect(PermissionStatus.provisional.value, 5);
     });
 
     test(
@@ -40,6 +42,8 @@ void main() {
       expect(PermissionStatusValue.statusByValue(3), PermissionStatus.limited);
       expect(PermissionStatusValue.statusByValue(4),
           PermissionStatus.permanentlyDenied);
+      expect(
+          PermissionStatusValue.statusByValue(5), PermissionStatus.provisional);
     });
   });
 
@@ -50,6 +54,7 @@ void main() {
       expect(PermissionStatus.restricted.isRestricted, true);
       expect(PermissionStatus.limited.isLimited, true);
       expect(PermissionStatus.permanentlyDenied.isPermanentlyDenied, true);
+      expect(PermissionStatus.provisional.isProvisional, true);
     });
 
     test('Getters should return false if statement is not met', () {
@@ -58,6 +63,7 @@ void main() {
       expect(PermissionStatus.restricted.isDenied, false);
       expect(PermissionStatus.limited.isDenied, false);
       expect(PermissionStatus.permanentlyDenied.isDenied, false);
+      expect(PermissionStatus.provisional.isDenied, false);
     });
   });
 
