@@ -481,12 +481,36 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     private int checkBluetoothPermissionStatus(Context context) {
-        List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
-        boolean missingInManifest = names == null || names.isEmpty();
-        if (missingInManifest) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            // BLUETOOTH permission was removed in Android S in favor of BLUETOOTH_SCAN,
+            // BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
+            // This means above version 30 we need to check if any one of those permissions
+            // are present instead.
+            boolean scanPermission = checkPermissionStatus(context,
+                    PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN);
+            boolean advertisePermission = checkPermissionStatus(context,
+                    PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE);
+            boolean connectPermission = checkPermissionStatus(context,
+                    PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT);
+
+            if (!scanPermission && !advertisePermission && !connectPermission) {
+                Log.d(PermissionConstants.LOG_TAG, "Of the bluetooth permissions (BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE or BLUETOOTH_CONNECT) missing in manifest");
+                return PermissionConstants.PERMISSION_STATUS_DENIED;
+            }
+            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        }
+        // legacy check for BLUETOOTH permission
+        boolean bluetoothPermission = checkPermissionStatus(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
+        if (!bluetoothPermission) {
             Log.d(PermissionConstants.LOG_TAG, "Bluetooth permission missing in manifest");
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
+
+    private boolean checkPermissionStatus(Context context, @PermissionConstants.PermissionGroup int permission) {
+        List<String> names = PermissionUtils.getManifestNames(context, permission);
+        return names != null || !names.isEmpty();
+    }
+}
 }
