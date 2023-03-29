@@ -98,7 +98,7 @@ class _PermissionState extends State<PermissionWidget> {
     return ListTile(
       title: Text(
         _permission.toString(),
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
         _permissionStatus.toString(),
