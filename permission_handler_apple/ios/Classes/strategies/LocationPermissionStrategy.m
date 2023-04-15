@@ -7,7 +7,8 @@
 
 #if PERMISSION_LOCATION
 
-NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_handler_apple.permission_requested";
+// Needed to avoid asking location always permission several times
+BOOL alreadyRequestedLocationAlways = NO;
 
 @interface LocationPermissionStrategy ()
 - (void) receiveActivityNotification:(NSNotification *)notification;
@@ -40,8 +41,8 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
-        BOOL alreadyRequested = [[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]; // check if already requested the permantent permission
-        if(alreadyRequested) {
+        // check if already requested the permantent permission
+        if(alreadyRequestedLocationAlways) {
             completionHandler(status);
             return;
         }
@@ -65,7 +66,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
         if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveActivityNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
             [_locationManager requestAlwaysAuthorization];
-            [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:UserDefaultPermissionRequestedKey];
+            alreadyRequestedLocationAlways = YES;
         } else {
             [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
         }
@@ -92,6 +93,10 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
         _permissionStatusHandler(permissionStatus);
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];    
+
+    if (alreadyRequestedLocationAlways) {
+        alreadyRequestedLocationAlways = NO;
+    }
 }
 
 // {WARNING}
@@ -119,6 +124,10 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
                                          determinePermissionStatus:_requestedPermission authorizationStatus:status];
     
     _permissionStatusHandler(permissionStatus);
+
+    if (alreadyRequestedLocationAlways) {
+        alreadyRequestedLocationAlways = NO;
+    }
 }
 
 

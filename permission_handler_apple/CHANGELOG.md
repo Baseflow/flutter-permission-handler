@@ -1,3 +1,7 @@
+## 9.0.8
+
+* Fixed location always bugs. 
+
 ## 9.0.7
 
 * Added new Android 13 permissions "SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO" to PermissionHandlerEnums.h
