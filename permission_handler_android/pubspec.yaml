@@ -1,6 +1,6 @@
 name: permission_handler_android
 description: Permission plugin for Flutter. This plugin provides the Android API to request and check permissions.
-version: 10.2.0
+version: 10.3.0
 homepage: https://github.com/baseflow/flutter-permission-handler
 
 environment:
@@ -18,7 +18,7 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler_platform_interface: ^3.7.0
+  permission_handler_platform_interface: ^3.10.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4
