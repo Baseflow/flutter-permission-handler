@@ -1,3 +1,6 @@
+## 9.1.1
+
+* Added new Android 13 permission "BODY_SENSORS_BACKGROUND" to PermissionHandlerEnums.h
 ## 9.1.0
 
 * Adds the "Provisional" permission status which is introduced in iOS 12+.

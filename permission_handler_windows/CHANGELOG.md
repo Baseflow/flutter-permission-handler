@@ -1,3 +1,7 @@
+## 0.1.3
+
+* Added new Android 13 permission "BODY_SENSORS_BACKGROUND" to PermissionHandlerEnums.h
+
 ## 0.1.2
 
 * Added new Android 13 permissions "SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO" to permission_constants.h
