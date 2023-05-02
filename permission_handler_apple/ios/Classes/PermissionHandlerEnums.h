@@ -124,6 +124,7 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupPhotosAddOnly,
     PermissionGroupReminders,
     PermissionGroupSensors,
+    PermissionGroupSensorsAlways,
     PermissionGroupSms,
     PermissionGroupSpeech,
     PermissionGroupStorage,
