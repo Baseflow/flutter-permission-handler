@@ -27,7 +27,10 @@ project.getTasks().withType(JavaCompile){
 apply plugin: 'com.android.library'
 
 android {
-    namespace 'com.baseflow.permissionhandler'
+    // Conditional for compatibility with AGP <4.2.
+    if (project.android.hasProperty("namespace")) {
+      namespace 'com.baseflow.permissionhandler'
+    }
     compileSdkVersion 33
 
     compileOptions {
