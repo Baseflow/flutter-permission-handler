@@ -25,6 +25,7 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
+    namespace 'com.baseflow.permissionhandler.example'
     compileSdkVersion 33
 
     compileOptions {

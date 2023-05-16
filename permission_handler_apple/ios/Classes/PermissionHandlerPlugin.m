@@ -34,6 +34,7 @@
     } else if ([@"requestPermissions" isEqualToString:call.method]) {
         if (_methodResult != nil) {
             result([FlutterError errorWithCode:@"ERROR_ALREADY_REQUESTING_PERMISSIONS" message:@"A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time)." details:nil]);
+            return;
         }
         
         _methodResult = result;
