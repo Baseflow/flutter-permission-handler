@@ -1,6 +1,9 @@
+## 10.2.2
+
+* Fixes the SCHEDULE_EXACT_ALARM status check on Android 12 and 13.
+
 ## 10.2.1
 
-* Fixed SCHEDULE_EXACT_ALARM status check on Android 12 and 13
 * Adds compatibility with Android Gradle Plugin 8.0.
 
 ## 10.2.0
