@@ -2,8 +2,8 @@ package com.baseflow.permissionhandler;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.Application;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
@@ -409,6 +409,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         return notificationManager.isNotificationPolicyAccessGranted()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    }
+                }
+
+                if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                        return alarmManager.canScheduleExactAlarms()
+                                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                                : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    } else {
+                        return PermissionConstants.PERMISSION_STATUS_GRANTED;
                     }
                 }
 
