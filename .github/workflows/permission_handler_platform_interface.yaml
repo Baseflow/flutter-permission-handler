@@ -3,21 +3,23 @@
 name: permission_handler_platform_interface
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# events but only for the main branch
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'permission_handler_platform_interface/**'
+    - '.github/workflows/permission_handler_platform_interface.yaml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'permission_handler_platform_interface/**'
+    - '.github/workflows/permission_handler_platform_interface.yaml'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   build:
-    name: Format
+    name: Platform interface package
 
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -40,9 +42,9 @@ jobs:
         run: flutter pub get
         working-directory: ${{env.source-directory}}
 
-      # Run Flutter Format to ensure formatting is valid
-      - name: Run Flutter Format
-        run: flutter format --set-exit-if-changed .
+      # Run Dart Format to ensure formatting is valid
+      - name: Run Dart Format
+        run: dart format --set-exit-if-changed .
         working-directory: ${{env.source-directory}}
    
       # Run Flutter Analyzer
