@@ -45,7 +45,7 @@ jobs:
 
       # Run Dart Format to ensure formatting is valid
       - name: Run Dart Format
-        run: Dart format --set-exit-if-changed .
+        run: dart format --set-exit-if-changed .
         working-directory: ${{env.source-directory}}
 
       # Run Flutter Analyzer
