@@ -1,3 +1,7 @@
+## 3.10.0
+
+* Added support for iOS 12+ Provisional Notification permissions.
+
 ## 3.9.0
 
 * Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO

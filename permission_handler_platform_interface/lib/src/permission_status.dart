@@ -23,6 +23,10 @@ enum PermissionStatus {
   /// dialog will not be shown when requesting this permission. The user may
   /// still change the permission status in the settings.
   permanentlyDenied,
+
+  /// The application is provisionally authorized to post noninterruptive user notifications.
+  /// *Only supported on iOS (iOS12+).*
+  provisional,
 }
 
 /// Conversion extension methods for the [PermissionStatus] type.
@@ -40,6 +44,8 @@ extension PermissionStatusValue on PermissionStatus {
         return 3;
       case PermissionStatus.permanentlyDenied:
         return 4;
+      case PermissionStatus.provisional:
+        return 5;
       default:
         throw UnimplementedError();
     }
@@ -53,6 +59,7 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.restricted,
       PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
+      PermissionStatus.provisional,
     ][value];
   }
 }
@@ -79,7 +86,7 @@ extension PermissionStatusGetters on PermissionStatus {
   /// The user may still change the permission status in the settings.
   ///
   /// *On iOS:*
-  /// If the user has denied acces to the requested feature.
+  /// If the user has denied access to the requested feature.
   /// The user may still change the permission status in the settings
   ///
   /// WARNING: This can only be determined AFTER requesting this permission.
@@ -88,6 +95,9 @@ extension PermissionStatusGetters on PermissionStatus {
 
   /// Indicates that permission for limited use of the resource is granted.
   bool get isLimited => this == PermissionStatus.limited;
+
+  /// If the application is provisionally authorized to post noninterruptive user notifications.
+  bool get isProvisional => this == PermissionStatus.provisional;
 }
 
 /// Utility getter extensions for the `Future<PermissionStatus>` type.
@@ -111,11 +121,15 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// The user may still change the permission status in the settings.
   ///
   /// *On iOS:*
-  /// If the user has denied acces to the requested feature.
+  /// If the user has denied access to the requested feature.
   /// The user may still change the permission status in the settings
   Future<bool> get isPermanentlyDenied async =>
       (await this).isPermanentlyDenied;
 
   /// Indicates that permission for limited use of the resource is granted.
   Future<bool> get isLimited async => (await this).isLimited;
+
+  /// If the application is provisionally authorized to post noninterruptive user notifications.
+  /// *Only supported on iOS.*
+  Future<bool> get isProvisional async => (await this).isProvisional;
 }
