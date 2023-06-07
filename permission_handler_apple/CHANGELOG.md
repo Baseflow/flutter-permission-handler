@@ -1,3 +1,7 @@
+## 9.1.0
+
+* Adds the "Provisional" permission status which is introduced in iOS 12+.
+
 ## 9.0.8
 
 * Adds missing return statement causing the permission_handler to freeze when already requesting permissions.
