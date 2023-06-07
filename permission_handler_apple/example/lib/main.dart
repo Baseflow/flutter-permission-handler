@@ -63,7 +63,7 @@ class PermissionWidget extends StatefulWidget {
   final Permission _permission;
 
   @override
-  _PermissionState createState() => _PermissionState(_permission);
+  State<PermissionWidget> createState() => _PermissionState(_permission);
 }
 
 class _PermissionState extends State<PermissionWidget> {
@@ -104,7 +104,7 @@ class _PermissionState extends State<PermissionWidget> {
     return ListTile(
       title: Text(
         _permission.toString(),
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
         _permissionStatus.toString(),
