@@ -1,94 +1,94 @@
 ## 3.10.0
 
-* Added support for iOS 12+ Provisional Notification permissions.
+* Adds support for the "Provisional" permission status introduced with iOS 12+.
 
 ## 3.9.0
 
-* Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
+* Adds support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
 
 ## 3.8.0
 
-* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+* Adds support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
 
 ## 3.7.1
 
-* Updated the documentation on permissions in `permission_status.dart`
+* Updates the documentation on permissions in `permission_status.dart`
 
 ## 3.7.0
 
-* Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
+* Adds support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
 
 ## 3.6.2
 
-* Updated the MethodChannelMock due to breaking changes in the platform channel test interface.
+* Updates the MethodChannelMock due to breaking changes in the platform channel test interface.
 
 ## 3.6.1
 
-* Updated `meta` dependency to version `^1.3.0`.
-* Updated documentation for the `locationAlways` permission
+* Updates the `meta` dependency to version `^1.3.0`.
+* Updates documentation for the `locationAlways` permission
 
 ## 3.6.0
 
-* Add support for iOS Critical alerts and Android Access Notification Policy.
+* Adds support for iOS Critical alerts and Android Access Notification Policy.
 
 ## 3.5.1
 
-* Updated API documentation for the `PermissionStatus.permanentlyDenied` status.
+* Updates API documentation for the `PermissionStatus.permanentlyDenied` status.
 
 ## 3.5.0
 
-* Added support for app tracking transparency permission.
+* Adds support for app tracking transparency permission.
 
 ## 3.4.0
 
-* Added support request install packages permission.
+* Adds support request install packages permission.
 
 ## 3.3.0
 
-* Added support for system alert window permission.
+* Adds support for system alert window permission.
 
 ## 3.2.0
 
-* Added support for manage external storage permission available on Android 10 and up.
+* Adds support for manage external storage permission available on Android 10 and up.
 
 ## 3.1.3 
 
-* Implemented equality operator for `Permission` class;
-* Reverted services status check for notification permission. Turns out implementation does not fit with idea's of permission_handler plugin.
+* Implements the equality operator for `Permission` class;
+* Reverts the services status check for notification permission. Turns out implementation does not fit with idea's of permission_handler plugin.
 
 ## 3.1.2
 
-* Allow checking serviceStatus for notification permission.
+* Allows checking serviceStatus for notification permission.
 
 ## 3.1.1
 
-* Fixed conversion issue where `PermissionStatus.denied` was not translated to the correct index.
-* Added unit-tests to guard API against breaking changes.
+* Fixes conversion issue where `PermissionStatus.denied` was not translated to the correct index.
+* Adds unit-tests to guard API against breaking changes.
 
 ## 3.1.0
 
-* Added support for bluetooth permissions. 
+* Adds support for bluetooth permissions. 
 
 ## 3.0.0+1
 
-* **BREAKING**: Removed PermissionStatus.undetermined. This is now replaced by PermissionStatus.denied.
+* **BREAKING**: Removes the PermissionStatus.undetermined. This is now replaced by PermissionStatus.denied.
 
 ## 3.0.0
 
-* Migrated to null safety.
+* Migrates to null safety.
 
 ## 2.0.2
 
-* Added support for the limited photos permission available on iOS 14 and up.
+* Adds support for the limited photos permission available on iOS 14 and up.
 
 ## 2.0.1
 
-* Update `platform_interface 1.0.2`
-* Fix bug which allows requesting is the device has phone capabilities.
+* Updates to `platform_interface 1.0.2`
+* Fixes bug which allows requesting is the device has phone capabilities.
 
 ## 2.0.0
 
-- **BREAKING**: Created a much more intuitive API using Dart's new extension methods ([#230](https://github.com/Baseflow/flutter-permission-handler/issues/230)). Big thank you to [@marcelgarus](https://github.com/marcelgarus) for the idea and doing all the grunt work.
+- **BREAKING**: Creates a much more intuitive API using Dart's new extension methods ([#230](https://github.com/Baseflow/flutter-permission-handler/issues/230)). Big thank you to [@marcelgarus](https://github.com/marcelgarus) for the idea and doing all the grunt work.
 
 ## 1.0.0
 
