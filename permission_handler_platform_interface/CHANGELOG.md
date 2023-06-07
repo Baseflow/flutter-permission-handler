@@ -1,3 +1,15 @@
+## 3.9.0
+
+* Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
+
+## 3.8.0
+
+* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+
+## 3.7.1
+
+* Updated the documentation on permissions in `permission_status.dart`
+
 ## 3.7.0
 
 * Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.

@@ -77,6 +77,16 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT;
             case Manifest.permission.POST_NOTIFICATIONS:
                 return PermissionConstants.PERMISSION_GROUP_NOTIFICATION;
+            case Manifest.permission.NEARBY_WIFI_DEVICES:
+                return PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES;
+            case Manifest.permission.READ_MEDIA_IMAGES:
+                return PermissionConstants.PERMISSION_GROUP_PHOTOS;
+            case Manifest.permission.READ_MEDIA_VIDEO:
+                return PermissionConstants.PERMISSION_GROUP_VIDEOS;
+            case Manifest.permission.READ_MEDIA_AUDIO:
+                return PermissionConstants.PERMISSION_GROUP_AUDIO;
+            case Manifest.permission.SCHEDULE_EXACT_ALARM:
+                return PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -290,13 +300,42 @@ public class PermissionUtils {
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
-                // The POST_NOTIFICATIONS permission is introduced in Android 13, meaning we should
-                // not handle permissions on pre Android 13 devices.
+                // The POST_NOTIFICATIONS permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS ))
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
                 break;
-            case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
+            case PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES:
+                // The NEARBY_WIFI_DEVICES permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES ))
+                    permissionNames.add(Manifest.permission.NEARBY_WIFI_DEVICES);
+                break;
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
+                // The READ_MEDIA_IMAGES permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.   
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_IMAGES ))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_IMAGES);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_VIDEOS:
+                // The READ_MEDIA_VIDEOS permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VIDEO ))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_VIDEO);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_AUDIO:
+                // The READ_MEDIA_AUDIO permission is introduced in Android T, meaning we should
+                // not handle permissions on pre Android T devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_AUDIO ))
+                    permissionNames.add(Manifest.permission.READ_MEDIA_AUDIO);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM:
+                // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, meaning we should
+                // not handle permissions on pre Android S devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM ))
+                    permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
             case PermissionConstants.PERMISSION_GROUP_UNKNOWN:
                 return null;
