@@ -1,3 +1,7 @@
+## 10.2.3
+
+* Fixes missing POST_NOTIFICATIONS permission in Android example project.
+
 ## 10.2.2
 
 * Fixes the SCHEDULE_EXACT_ALARM status check on Android 12 and 13.
