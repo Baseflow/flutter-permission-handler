@@ -1,3 +1,19 @@
+## 10.2.0
+
+* Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
+
+## 10.1.0
+
+* Added support for the new Android 13 permission: NEARBY_WIFI_DEVICES.
+
+## 10.0.2
+
+* Adds a link to the issue tracker which shows up as "View/report issues" on pub.dev.
+
+## 10.0.1
+
+- Fix PermissionHandlerEnums link in the README.md
+
 ## 10.0.0
 
 * __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
