@@ -5,7 +5,7 @@ issue_tracker: https://github.com/Baseflow/flutter-permission-handler/issues
 version: 10.2.1
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.15.0 <4.0.0"
   flutter: ">=2.8.0"
 
 flutter:
