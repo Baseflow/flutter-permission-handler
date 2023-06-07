@@ -1,6 +1,6 @@
 ## 3.10.0
 
-* Adds support for iOS 12+ Provisional Notification permissions.
+* Adds support for the "Provisional" permission status introduced with iOS 12+.
 
 ## 3.9.0
 

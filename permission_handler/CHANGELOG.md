@@ -1,3 +1,7 @@
+## 10.3.0
+
+* Adds support for the "Provisional" permission status introduced with iOS 12+.
+
 ## 10.2.1
 
 * Fixes missing POST_NOTIFICATIONS permission in Android example project.

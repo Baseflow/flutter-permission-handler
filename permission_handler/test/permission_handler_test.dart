@@ -71,6 +71,12 @@ void main() {
       expect(isPermanentlyDenied, false);
     });
 
+    test('PermissionCheckShortcuts on Permission: get isProvisional',
+            () async {
+          final isProvisional = await Permission.calendar.isProvisional;
+          expect(isProvisional, false);
+        });
+
     test(
         // ignore: lines_longer_than_80_chars
         'ServicePermissionActions on PermissionWithService: get ServiceStatus returns the right service status',
