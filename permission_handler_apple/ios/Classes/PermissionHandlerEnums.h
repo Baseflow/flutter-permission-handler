@@ -124,7 +124,6 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupPhotosAddOnly,
     PermissionGroupReminders,
     PermissionGroupSensors,
-    PermissionGroupSensorsAlways,
     PermissionGroupSms,
     PermissionGroupSpeech,
     PermissionGroupStorage,
@@ -146,7 +145,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupNearbyWifiDevices,
     PermissiongroupVideos,
     PermissionGroupAudio,
-    PermissionGroupScheduleExactAlarm
+    PermissionGroupScheduleExactAlarm,
+    PermissionGroupSensorsAlways
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

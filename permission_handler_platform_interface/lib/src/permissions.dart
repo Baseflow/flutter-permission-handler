@@ -86,47 +86,41 @@ class Permission {
   /// iOS: CoreMotion
   static const sensors = Permission._(12);
 
-  /// Android:
-  ///   When running on Android TIRAMISU and above: Background Sensors Permission
-  ///   When running on Android < TIRAMISU: Nothing
-  /// iOS: Nothing
-  static const sensorsAlways = Permission._(13);
-
   /// Android: Sms
   /// iOS: Nothing
-  static const sms = Permission._(14);
+  static const sms = Permission._(13);
 
   /// Android: Microphone
   /// iOS: Speech
-  static const speech = Permission._(15);
+  static const speech = Permission._(14);
 
   /// Android: External Storage
   /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly
   /// granted.
-  static const storage = Permission._(16);
+  static const storage = Permission._(15);
 
   /// Android: Ignore Battery Optimizations
-  static const ignoreBatteryOptimizations = Permission._(17);
+  static const ignoreBatteryOptimizations = Permission._(16);
 
   /// Android: Notification
   /// iOS: Notification
-  static const notification = Permission._(18);
+  static const notification = Permission._(17);
 
   /// Android: Allows an application to access any geographic locations
   /// persisted in the user's shared collection.
-  static const accessMediaLocation = Permission._(19);
+  static const accessMediaLocation = Permission._(18);
 
   /// When running on Android Q and above: Activity Recognition
   /// When running on Android < Q: Nothing
   /// iOS: Nothing
-  static const activityRecognition = Permission._(20);
+  static const activityRecognition = Permission._(19);
 
   /// The unknown only used for return type, never requested
-  static const unknown = Permission._(21);
+  static const unknown = Permission._(20);
 
   /// iOS 13 and above: The authorization state of Core Bluetooth manager.
   /// When running < iOS 13 or Android this is always allowed.
-  static const bluetooth = Permission._(22);
+  static const bluetooth = Permission._(21);
 
   /// Android: Allows an application a broad access to external storage in
   /// scoped storage.
@@ -144,63 +138,69 @@ class Permission {
   /// you have to fill out the Permission Declaration Form upon submitting
   /// your app to the Google Play Store. More details can be found here:
   /// https://support.google.com/googleplay/android-developer/answer/9214102#zippy=
-  static const manageExternalStorage = Permission._(23);
+  static const manageExternalStorage = Permission._(22);
 
   ///Android: Allows an app to create windows shown on top of all other apps
   ///iOS: Nothing
-  static const systemAlertWindow = Permission._(24);
+  static const systemAlertWindow = Permission._(23);
 
   ///Android: Allows an app to request installing packages.
   ///iOS: Nothing
-  static const requestInstallPackages = Permission._(25);
+  static const requestInstallPackages = Permission._(24);
 
   ///Android: Nothing
   ///iOS: Allows user to accept that your app collects data about end users and
   ///shares it with other companies for purposes of tracking across apps and
   ///websites.
-  static const appTrackingTransparency = Permission._(26);
+  static const appTrackingTransparency = Permission._(25);
 
   ///Android: Nothing
   ///iOS: Notifications that override your ringer
-  static const criticalAlerts = Permission._(27);
+  static const criticalAlerts = Permission._(26);
 
   ///Android: Allows the user to access the notification policy of the phone.
   /// EX: Allows app to turn on and off do-not-disturb.
   ///iOS: Nothing
-  static const accessNotificationPolicy = Permission._(28);
+  static const accessNotificationPolicy = Permission._(27);
 
   ///Android: Allows the user to look for Bluetooth devices
   ///(e.g. BLE peripherals).
   ///iOS: Nothing
-  static const bluetoothScan = Permission._(29);
+  static const bluetoothScan = Permission._(28);
 
   ///Android: Allows the user to make this device discoverable to other
   ///Bluetooth devices.
   ///iOS: Nothing
-  static const bluetoothAdvertise = Permission._(30);
+  static const bluetoothAdvertise = Permission._(29);
 
   ///Android: Allows the user to connect with already paired Bluetooth devices.
   ///iOS: Nothing
-  static const bluetoothConnect = Permission._(31);
+  static const bluetoothConnect = Permission._(30);
 
   ///Android: Allows the user to connect to nearby devices via Wi-Fi
   ///iOS: Nothing
-  static const nearbyWifiDevices = Permission._(32);
+  static const nearbyWifiDevices = Permission._(31);
 
   /// When running on Android TIRAMISU and above: Read video files from external storage
   /// When running on Android < TIRAMISU: Nothing
   /// iOS: Nothing
-  static const videos = Permission._(33);
+  static const videos = Permission._(32);
 
   /// When running on Android TIRAMISU and above: Read audio files from external storage
   /// When running on Android < TIRAMISU: Nothing
   /// iOS: Nothing
-  static const audio = Permission._(34);
+  static const audio = Permission._(33);
 
   /// When running on Android S and above: Allows exact alarm functionality
   /// When running on Android < S: Nothing
   ///iOS: Nothing
-  static const scheduleExactAlarm = Permission._(35);
+  static const scheduleExactAlarm = Permission._(34);
+
+  /// Android:
+  ///   When running on Android TIRAMISU and above: Background Sensors Permission
+  ///   When running on Android < TIRAMISU: Nothing
+  /// iOS: Nothing
+  static const sensorsAlways = Permission._(35);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
