@@ -1,3 +1,7 @@
+## 3.11.0
+
+* Added support for the new Android 13 permission: BODY_SENSORS_BACKGROUND
+
 ## 3.10.0
 
 * Adds support for the "Provisional" permission status introduced with iOS 12+.
