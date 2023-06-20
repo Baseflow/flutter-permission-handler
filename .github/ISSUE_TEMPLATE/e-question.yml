@@ -1,0 +1,45 @@
+name: Ask for help
+description: You have a question about the permission handler plugin and are looking for help.
+title: "[Question]: "
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        We are happy to help you out!
+        To help you effectively, we require some information. This will allow us to quickly understand your question.
+  - type: checkboxes
+    attributes:
+      label: Please check the following before submitting a new issue.
+      options:
+        - label: I have searched the [existing issues](https://github.com/baseflow/flutter-permission-handler/issues).
+          required: true
+        - label: I have carefully [read the documentation](https://github.com/baseflow/flutter-permission-handler/blob/main/permission_handler/README.md).
+          required: true
+  - type: checkboxes
+    attributes:
+      label: Please select for which platform(s) you need help
+      options:
+      - label: Android
+      - label: iOS
+      - label: Windows
+  - type: textarea
+    attributes:
+      label: Your question
+      description: |
+        Please describe your question as detailed as possible.
+
+        Please attach something to help us understand your question:
+         * code samples
+         * images
+         * videos
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Please specify which version of the plugin are you currently using.
+      placeholder: ex. 1.2.3
+    validations:
+      required: true

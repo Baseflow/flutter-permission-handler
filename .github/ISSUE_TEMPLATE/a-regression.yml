@@ -1,0 +1,105 @@
+name: Submit a regression
+description: You encountered unexpected behavior that worked in a previous version of the plugin.
+title: "[Regression]: "
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to submit a regression!
+        To effectively tackle it, we require as much information as possible. This will allow us to quickly get to the root of the regression.
+  - type: checkboxes
+    attributes:
+      label: Is there an existing issue for this?
+      description: Please search to see if an issue already exists for this regression.
+      options:
+        - label: I have searched the [existing issues](https://github.com/baseflow/flutter-permission-handler/issues).
+          required: true
+  - type: checkboxes
+    attributes:
+      label: Please select affected platform(s)
+      options:
+      - label: Android
+      - label: iOS
+      - label: Windows
+  - type: textarea
+    attributes:
+      label: Old behavior
+      description: |
+        Please provide a brief and precise description of the functionality that the permission handler plugin had before the regression occurred.
+        Understanding the previous capabilities will assist us in pinpointing the changes and addressing the regression effectively.
+        
+        Consider attaching something showing the old behavior:
+         * code samples
+         * images
+         * videos
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Current behavior
+      description: |
+        Please provide a brief and precise description of the functionality that the permission handler plugin has now.
+        Understanding the current capabilities will assist us in pinpointing the changes and addressing the regression effectively.
+        
+        Please attach something showing the current behavior:
+         * code samples
+         * images
+         * videos
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please provide specific steps to reproduce the situation in which the regression manifests.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Code sample
+      description: |
+        Please create a minimal reproducible sample that shows the regression
+        and attach it below between the lines with the backticks.
+        
+        IMPORTANT: Please do not upload screenshots of text. Instead, use code blocks
+        or the above mentioned ways to upload your code sample.
+      value: |
+        <details><summary>Code sample</summary>
+
+        ```dart
+        [Paste your code here]
+        ```
+
+        </details>
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshots or video
+      description: |
+        Please consider uploading any relevant screenshots or videos showcasing the regression, if available. These visual aids can greatly assist us in understanding and addressing the issue more effectively.
+      value: |
+        <details>
+        <summary>Screenshots or video demonstration</summary>
+
+        [Upload media here]
+
+        </details>
+  - type: input
+    attributes:
+      label: Current version
+      description: Please specify which version of the plugin are you currently using.
+      placeholder: ex. 1.2.3
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: Last version without regression
+      description: Please specify the version of the plugin in which the regression was not yet present.
+      placeholder: ex. 1.2.2
+    validations:
+      required: true
