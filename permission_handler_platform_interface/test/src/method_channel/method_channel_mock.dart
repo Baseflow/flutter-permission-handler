@@ -13,7 +13,7 @@ class MethodChannelMock {
     this.result,
     this.delay = Duration.zero,
   }) : methodChannel = MethodChannel(channelName) {
-    TestDefaultBinaryMessengerBinding.instance!.defaultBinaryMessenger
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(methodChannel, _handler);
   }
 

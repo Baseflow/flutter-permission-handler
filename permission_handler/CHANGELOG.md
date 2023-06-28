@@ -1,3 +1,11 @@
+## 10.3.0
+
+* Adds support for the "Provisional" permission status introduced with iOS 12+.
+
+## 10.2.1
+
+* Fixes missing POST_NOTIFICATIONS permission in Android example project.
+  
 ## 10.2.0
 
 * Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO

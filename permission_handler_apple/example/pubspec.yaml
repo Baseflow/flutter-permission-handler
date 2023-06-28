@@ -29,6 +29,3 @@ flutter:
   assets:
     - res/images/baseflow_logo_def_light-02.png
     - res/images/poweredByBaseflowLogoLight@3x.png
-    - packages/baseflow_plugin_template/logo.png
-    - packages/baseflow_plugin_template/poweredByBaseflow.png
-

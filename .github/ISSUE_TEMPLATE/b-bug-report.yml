@@ -1,0 +1,102 @@
+name: Report a bug
+description: You encountered a bug in the permission handler plugin resulting in application crashes, compilation errors or invalid/unexpected results.
+title: "[Bug]: "
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to submit an issue!
+        To effectively tackle it, we require as much information as possible. This might seem a lot of information but 
+        will allow us to quickly help you and resolve the issue you are facing.
+  - type: checkboxes
+    attributes:
+      label: Please check the following before submitting a new issue.
+      options:
+      - label: I have searched the [existing issues](https://github.com/baseflow/flutter-permission-handler/issues).
+      - label: I have carefully [read the documentation](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler/README.md) and verified I have added the required platform specific configuration.
+        required: true
+  - type: checkboxes
+    attributes:
+      label: Please select affected platform(s)
+      options:
+      - label: Android
+      - label: iOS
+      - label: Windows
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please provide specific steps to reproduce the issue.
+      placeholder: |
+        1. ...
+        2. ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected results
+      description: Please provide a description of the expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Actual results
+      description: Please provide a description of the current behavior.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Code sample
+      description: |
+        Please create a minimal reproducible sample that shows the problem
+        and attach it below between the lines with the backticks.
+        
+        IMPORTANT: Please do not upload screenshots of text. Instead, use code blocks
+        or the above mentioned ways to upload your code sample.
+      value: |
+        <details><summary>Code sample</summary>
+
+        ```dart
+        [Paste your code here]
+        ```
+
+        </details>
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Screenshots or video
+      description: |
+        Please consider uploading any relevant screenshots or videos showcasing the regression, if available.
+        These visual aids can greatly assist us in understanding and addressing the issue more effectively.
+      value: |
+        <details>
+        <summary>Screenshots or video demonstration</summary>
+
+        [Upload media here]
+
+        </details>
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Please specify in which version of the plugin the bug occurs.
+      placeholder: ex. 1.2.3
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Flutter Doctor output
+      description: |
+        Please provide the full output of running `flutter doctor -v`.
+      value: |
+        <details><summary>Doctor output</summary>
+
+        ```console
+        [Paste your output here]
+        ```
+
+        </details>
+    validations:
+      required: true

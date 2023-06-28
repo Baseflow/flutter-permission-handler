@@ -1,0 +1,47 @@
+name: Submit an enhancement proposal
+description: You have a proposal for code cleanup, a refactor, or other improvements.
+title: "[Enhancement proposal]: "
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to submit an enhancement proposal!
+        Please take the time to fill out the information below so that we can better evaluate the need for the enhancement.
+  - type: checkboxes
+    attributes:
+      label: Please check the following before submitting a new issue.
+      options:
+        - label: I have searched the [existing issues](https://github.com/baseflow/flutter-permission-handler/issues).
+          required: true
+        - label: I have carefully [read the documentation](https://github.com/baseflow/flutter-permission-handler/blob/main/permission_handler/README.md) and verified I have added the required platform specific configuration.
+          required: true
+  - type: checkboxes
+    attributes:
+      label: Please select affected platform(s)
+      options:
+      - label: Android
+      - label: iOS
+      - label: Windows
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: |
+        Please provide a clear and concise description of your proposed enhancement.
+
+        Please attach something showcasing your idea:
+         * code samples
+         * images
+         * videos
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Pitch
+      description: |
+        How will this refactor enhance the lives of contributors?
+        We would greatly appreciate it if you could provide us with as many details as possible.
+        Specifically, please describe the specific benefits, improvements, or advantages that contributors can expect to experience as a result of this refactor.
+        Your comprehensive input will help us better understand the impact and value of implementing this change.
+    validations:
+      required: true
