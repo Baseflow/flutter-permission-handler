@@ -67,8 +67,8 @@ class Permission {
   /// iOS: Nothing
   static const phone = PermissionWithService._(8);
 
-  /// When running on Android T and above: Read image files from external storage
-  /// When running on Android < T: Nothing
+  /// When running on Android TIRAMISU and above: Read image files from external storage
+  /// When running on Android < TIRAMISU: Nothing
   /// iOS: Photos
   /// iOS 14+ read & write access level
   static const photos = Permission._(9);
@@ -181,13 +181,13 @@ class Permission {
   ///iOS: Nothing
   static const nearbyWifiDevices = Permission._(31);
 
-  /// When running on Android T and above: Read video files from external storage
-  /// When running on Android < T: Nothing
+  /// When running on Android TIRAMISU and above: Read video files from external storage
+  /// When running on Android < TIRAMISU: Nothing
   /// iOS: Nothing
   static const videos = Permission._(32);
 
-  /// When running on Android T and above: Read audio files from external storage
-  /// When running on Android < T: Nothing
+  /// When running on Android TIRAMISU and above: Read audio files from external storage
+  /// When running on Android < TIRAMISU: Nothing
   /// iOS: Nothing
   static const audio = Permission._(33);
 
@@ -195,6 +195,12 @@ class Permission {
   /// When running on Android < S: Nothing
   ///iOS: Nothing
   static const scheduleExactAlarm = Permission._(34);
+
+  /// Android:
+  ///   When running on Android TIRAMISU and above: Background Sensors Permission
+  ///   When running on Android < TIRAMISU: Nothing
+  /// iOS: Nothing
+  static const sensorsAlways = Permission._(35);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
@@ -211,6 +217,7 @@ class Permission {
     photosAddOnly,
     reminders,
     sensors,
+    sensorsAlways,
     sms,
     speech,
     storage,
@@ -249,6 +256,7 @@ class Permission {
     'photosAddOnly',
     'reminders',
     'sensors',
+    'sensorsAlways',
     'sms',
     'speech',
     'storage',
