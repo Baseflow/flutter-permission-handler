@@ -48,6 +48,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_PHONE;
             case Manifest.permission.BODY_SENSORS:
                 return PermissionConstants.PERMISSION_GROUP_SENSORS;
+            case Manifest.permission.BODY_SENSORS_BACKGROUND:
+                return PermissionConstants.PERMISSION_GROUP_SENSORS_ALWAYS;
             case Manifest.permission.SEND_SMS:
             case Manifest.permission.RECEIVE_SMS:
             case Manifest.permission.READ_SMS:
@@ -183,6 +185,12 @@ public class PermissionUtils {
                     }
                 }
                 break;
+            case PermissionConstants.PERMISSION_GROUP_SENSORS_ALWAYS:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    if (hasPermissionInManifest(context, permissionNames, Manifest.permission.BODY_SENSORS_BACKGROUND)) {
+                        permissionNames.add(Manifest.permission.BODY_SENSORS_BACKGROUND);
+                    }
+                }
 
             case PermissionConstants.PERMISSION_GROUP_SMS:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SEND_SMS))
@@ -223,7 +231,7 @@ public class PermissionUtils {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
                     return null;
 
-                if(hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
                 break;
 
@@ -245,25 +253,25 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE:
                 // The MANAGE_EXTERNAL_STORAGE permission is introduced in Android R, meaning we should
                 // not handle permissions on pre Android R devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasPermissionInManifest(context, permissionNames, Manifest.permission.MANAGE_EXTERNAL_STORAGE ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && hasPermissionInManifest(context, permissionNames, Manifest.permission.MANAGE_EXTERNAL_STORAGE))
                     permissionNames.add(Manifest.permission.MANAGE_EXTERNAL_STORAGE);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW ))
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SYSTEM_ALERT_WINDOW))
                     permissionNames.add(Manifest.permission.SYSTEM_ALERT_WINDOW);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES:
                 // The REQUEST_INSTALL_PACKAGES permission is introduced in Android M, meaning we should
                 // not handle permissions on pre Android M devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_INSTALL_PACKAGES ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.REQUEST_INSTALL_PACKAGES))
                     permissionNames.add(Manifest.permission.REQUEST_INSTALL_PACKAGES);
                 break;
             case PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY:
                 // The REQUEST_NOTIFICATION_POLICY permission is introduced in Android M, meaning we should
                 // not handle permissions on pre Android M devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_NOTIFICATION_POLICY ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_NOTIFICATION_POLICY))
                     permissionNames.add(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
                 break;
             case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN: {
@@ -300,39 +308,39 @@ public class PermissionUtils {
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_NOTIFICATION:
-                // The POST_NOTIFICATIONS permission is introduced in Android T, meaning we should
-                // not handle permissions on pre Android T devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS ))
+                // The POST_NOTIFICATIONS permission is introduced in Android TIRAMISU, meaning we should
+                // not handle permissions on pre Android TIRAMISU devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.POST_NOTIFICATIONS))
                     permissionNames.add(Manifest.permission.POST_NOTIFICATIONS);
                 break;
             case PermissionConstants.PERMISSION_GROUP_NEARBY_WIFI_DEVICES:
-                // The NEARBY_WIFI_DEVICES permission is introduced in Android T, meaning we should
-                // not handle permissions on pre Android T devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES ))
+                // The NEARBY_WIFI_DEVICES permission is introduced in Android TIRAMISU, meaning we should
+                // not handle permissions on pre Android TIRAMISU devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.NEARBY_WIFI_DEVICES))
                     permissionNames.add(Manifest.permission.NEARBY_WIFI_DEVICES);
                 break;
             case PermissionConstants.PERMISSION_GROUP_PHOTOS:
-                // The READ_MEDIA_IMAGES permission is introduced in Android T, meaning we should
-                // not handle permissions on pre Android T devices.   
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_IMAGES ))
+                // The READ_MEDIA_IMAGES permission is introduced in Android TIRAMISU, meaning we should
+                // not handle permissions on pre Android TIRAMISU devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_IMAGES))
                     permissionNames.add(Manifest.permission.READ_MEDIA_IMAGES);
                 break;
             case PermissionConstants.PERMISSION_GROUP_VIDEOS:
-                // The READ_MEDIA_VIDEOS permission is introduced in Android T, meaning we should
-                // not handle permissions on pre Android T devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VIDEO ))
+                // The READ_MEDIA_VIDEOS permission is introduced in Android TIRAMISU, meaning we should
+                // not handle permissions on pre Android TIRAMISU devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VIDEO))
                     permissionNames.add(Manifest.permission.READ_MEDIA_VIDEO);
                 break;
             case PermissionConstants.PERMISSION_GROUP_AUDIO:
-                // The READ_MEDIA_AUDIO permission is introduced in Android T, meaning we should
-                // not handle permissions on pre Android T devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_AUDIO ))
+                // The READ_MEDIA_AUDIO permission is introduced in Android TIRAMISU, meaning we should
+                // not handle permissions on pre Android TIRAMISU devices.
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_AUDIO))
                     permissionNames.add(Manifest.permission.READ_MEDIA_AUDIO);
                 break;
             case PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM:
                 // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, meaning we should
                 // not handle permissions on pre Android S devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM ))
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
                     permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
@@ -412,16 +420,16 @@ public class PermissionUtils {
     }
 
     private static String determineBluetoothPermission(Context context, String permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, null, permission )) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, null, permission)) {
             return permission;
         } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            if(hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)){
+            if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 return Manifest.permission.ACCESS_FINE_LOCATION;
-            } else if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_COARSE_LOCATION)){
+            } else if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 return Manifest.permission.ACCESS_COARSE_LOCATION;
             }
 
-            return  null;
+            return null;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
             return Manifest.permission.ACCESS_FINE_LOCATION;
         }

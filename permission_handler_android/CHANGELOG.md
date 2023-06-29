@@ -1,3 +1,7 @@
+## 10.3.0
+
+* Adds support for the new Android 13 permission: BODY_SENSORS_BACKGROUND.
+
 ## 10.2.3
 
 * Fixes missing POST_NOTIFICATIONS permission in Android example project.

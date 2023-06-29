@@ -50,6 +50,7 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_VIDEOS = 32;
     static final int PERMISSION_GROUP_AUDIO = 33;
     static final int PERMISSION_GROUP_SCHEDULE_EXACT_ALARM = 34;
+    static final int PERMISSION_GROUP_SENSORS_ALWAYS = 35;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -65,6 +66,7 @@ final class PermissionConstants {
             PERMISSION_GROUP_PHOTOS,
             PERMISSION_GROUP_REMINDERS,
             PERMISSION_GROUP_SENSORS,
+            PERMISSION_GROUP_SENSORS_ALWAYS,
             PERMISSION_GROUP_SMS,
             PERMISSION_GROUP_SPEECH,
             PERMISSION_GROUP_STORAGE,
