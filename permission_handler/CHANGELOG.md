@@ -1,3 +1,9 @@
+## 10.4.0+1
+
+* Updates AndroidManifest documentation in the example application with regards
+  to the use of READ_EXTERNAL_STORAGE, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and
+  READ_MEDIA_AUDIO permissions.
+
 ## 10.4.0
 
 * Adds support for the new Android 13 permission: BODY_SENSORS_BACKGROUND.
