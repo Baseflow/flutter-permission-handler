@@ -103,16 +103,18 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 //    and the user doesn't allow for [kCLAuthorizationStatusAuthorizedAlways] this method is not called
 //    at all.
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    if (status == kCLAuthorizationStatusNotDetermined) {
+    if (_permissionStatusHandler == nil || @(_requestedPermission) == nil) {
         return;
     }
     
-    if (_permissionStatusHandler == nil || @(_requestedPermission) == nil) {
+    if (status == kCLAuthorizationStatusNotDetermined) {
+        _permissionStatusHandler(PermissionStatusDenied);
         return;
     }
 
     if ((_requestedPermission == PermissionGroupLocationAlways && status == kCLAuthorizationStatusAuthorizedWhenInUse)) {
-            return;
+        _permissionStatusHandler(PermissionStatusDenied);
+        return;
     }
 
     PermissionStatus permissionStatus = [LocationPermissionStrategy

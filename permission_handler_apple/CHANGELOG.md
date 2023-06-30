@@ -1,3 +1,7 @@
+## 9.1.2
+
+* Fixes an issue where the `Permission.locationAlways.request()` call hangs when the application was granted "Allow once" permissions for fetching location coordinates.
+
 ## 9.1.1
 
 * Adds the new Android 13 permission "BODY_SENSORS_BACKGROUND" to PermissionHandlerEnums.h.
