@@ -1,3 +1,7 @@
+## 3.11.0+1
+
+* **HOTFIX**: Fixes misalignment in the `Permission` enum after adding the new BODY_SENSORS_BACKGROUND permission.
+
 ## 3.11.0
 
 * Adds support for the new Android 13 permission: BODY_SENSORS_BACKGROUND.

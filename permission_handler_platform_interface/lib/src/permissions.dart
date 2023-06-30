@@ -217,7 +217,6 @@ class Permission {
     photosAddOnly,
     reminders,
     sensors,
-    sensorsAlways,
     sms,
     speech,
     storage,
@@ -239,7 +238,8 @@ class Permission {
     nearbyWifiDevices,
     videos,
     audio,
-    scheduleExactAlarm
+    scheduleExactAlarm,
+    sensorsAlways,
   ];
 
   static const List<String> _names = <String>[
@@ -256,7 +256,6 @@ class Permission {
     'photosAddOnly',
     'reminders',
     'sensors',
-    'sensorsAlways',
     'sms',
     'speech',
     'storage',
@@ -278,7 +277,8 @@ class Permission {
     'nearbyWifiDevices',
     'videos',
     'audio',
-    'scheduleExactAlarm'
+    'scheduleExactAlarm',
+    'sensorsAlways',
   ];
 
   @override
