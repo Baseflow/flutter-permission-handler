@@ -1,3 +1,7 @@
+## 9.1.3
+
+* Fixes an issue where the `Permission.location.request()`, `Permission.locationWhenInUse.request()` and `Permission.locationAlways.request()` calls returned `PermissionStatus.denied` regardless of the actual permission status.
+
 ## 9.1.2
 
 * Fixes an issue where the `Permission.locationAlways.request()` call hangs when the application was granted "Allow once" permissions for fetching location coordinates.

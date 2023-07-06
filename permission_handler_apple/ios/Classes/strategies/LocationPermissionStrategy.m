@@ -98,7 +98,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 // This is called when the location manager is first initialized and raises the following situations:
 // 1. When we first request [PermissionGroupLocationWhenInUse] and then [PermissionGroupLocationAlways]
 //    this will be called when the [CLLocationManager] is first initialized with
-//    [kCLAuthorizationStatusAuthorizedWhenInUse]. As a consequence we send back the result to early.
+//    [kCLAuthorizationStatusAuthorizedWhenInUse]. As a consequence we send back the result too early.
 // 2. When we first request [PermissionGroupLocationWhenInUse] and then [PermissionGroupLocationAlways]
 //    and the user doesn't allow for [kCLAuthorizationStatusAuthorizedAlways] this method is not called
 //    at all.
@@ -108,7 +108,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     }
     
     if (status == kCLAuthorizationStatusNotDetermined) {
-        _permissionStatusHandler(PermissionStatusDenied);
         return;
     }
 
