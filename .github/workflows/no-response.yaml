@@ -1,4 +1,4 @@
-name: No Response
+name: 'No Response'
 
 # Both `issue_comment` and `scheduled` event types are required for this Action
 # to work properly.
@@ -15,24 +15,16 @@ permissions:
   issues: write
 
 jobs:
-  noResponse:
+  stale:
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'baseflow/flutter-permission-handler' }}
     steps:
-      - uses: godofredoc/no-response@0ce2dc0e63e1c7d2b87752ceed091f6d32c9df09
+      - uses: actions/stale@v8
         with:
-          token: ${{ github.token }}
-          # Comment to post when closing an Issue for lack of response. Set to `false` to disable
-          closeComment: >
-            Without additional information, we are unfortunately not sure how to
-            resolve this issue. We are therefore reluctantly going to close this
-            bug for now.
-            If you find this problem please file a new issue with the same description,
-            what happens, logs and the output of 'flutter doctor -v'. All system setups
-            can be slightly different so it's always better to open new issues and reference
-            the related ones.
+          any-of-labels: 'status: needs more info'
+          close-issue-message: >
+            Without additional information, we are unfortunately not able to resolve this issue. 
+            Therefore, we reluctantly closed this issue for now. 
+            If you run into this issue later, feel free to file a new issue with a reference to this issue. 
+            Add a description of detailed steps to reproduce, expected and current behaviour, logs and the output of 'flutter doctor -v'. 
             Thanks for your contribution.
-          # Number of days of inactivity before an issue is closed for lack of response.
-          daysUntilClose: 14
-          # Label requiring a response.
-          responseRequiredLabel: "status: needs more info"
+          days-before-close: 14
