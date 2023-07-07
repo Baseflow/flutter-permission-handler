@@ -67,10 +67,10 @@ class Permission {
   /// iOS: Nothing
   static const phone = PermissionWithService._(8);
 
-  /// When running on Android TIRAMISU and above: Read image files from external storage
-  /// When running on Android < TIRAMISU: Nothing
-  /// iOS: Photos
-  /// iOS 14+ read & write access level
+  /// Android:
+  ///   When running on Android TIRAMISU and above: Read image files from external storage
+  ///   When running on Android < TIRAMISU: Nothing
+  /// iOS: Photos (iOS 14+ read & write access level).
   static const photos = Permission._(9);
 
   /// Android: Nothing
@@ -94,7 +94,14 @@ class Permission {
   /// iOS: Speech
   static const speech = Permission._(14);
 
-  /// Android: External Storage
+  /// Android:
+  ///   On Android < TIRAMISU the `READ_EXTERNAL_STORAGE` and
+  ///   `WRITE_EXTERNAL_STORAGE` permissions are requested (depending on the
+  ///   definitions in the AndroidManifest.xml) file.
+  ///   On Android TIRAMISU and higher this permission is deprecrated and
+  ///   always returns `PermissionStatus.denied`, instead use
+  ///   `Permission.photos`, `Permission.video`, `Permission.audio` or
+  ///   `Permission.manageExternalStorage`. For more information see our [FAQ](https://pub.dev/packages/permission_handler#faq).
   /// iOS: Access to folders like `Documents` or `Downloads`. Implicitly
   /// granted.
   static const storage = Permission._(15);
@@ -181,13 +188,15 @@ class Permission {
   ///iOS: Nothing
   static const nearbyWifiDevices = Permission._(31);
 
-  /// When running on Android TIRAMISU and above: Read video files from external storage
-  /// When running on Android < TIRAMISU: Nothing
+  /// Android:
+  ///   When running on Android TIRAMISU and above: Read video files from external storage
+  ///   When running on Android < TIRAMISU: Nothing
   /// iOS: Nothing
   static const videos = Permission._(32);
 
-  /// When running on Android TIRAMISU and above: Read audio files from external storage
-  /// When running on Android < TIRAMISU: Nothing
+  /// Android:
+  ///   When running on Android TIRAMISU and above: Read audio files from external storage
+  ///   When running on Android < TIRAMISU: Nothing
   /// iOS: Nothing
   static const audio = Permission._(33);
 
