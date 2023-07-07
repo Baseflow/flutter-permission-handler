@@ -7,6 +7,8 @@ This plugin provides a cross-platform (iOS, Android) API to request permissions 
 You can also open the device's app settings so users can grant a permission.  
 On Android, you can show a rationale for requesting a permission.
 
+See the [FAQ](#faq) section for more information on common questions when using the permission_handler plugin.
+
 ## Setup
 
 While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use. That requires adding permission configuration to Android- and iOS-specific files.
