@@ -240,6 +240,17 @@ The `locationAlways` permission can not be requested directly, the user has to r
 Accepting this permission by clicking on the 'Allow While Using App' gives the user the possibility to request the `locationAlways` permission.
 This will then bring up another permission popup asking you to `Keep Only While Using` or to `Change To Always Allow`.
 
+## FAQ
+
+### Requesting "storage" permissions always returns "denied" on Android 13, what can I do?
+
+On Android the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android SDK 29 (Android 10) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/ disabled since Android SDK 33 (Android 13). 
+
+If your application needs access to media files Google recommends using the `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEOS` or `READ_MEDIA_AUDIO` permissions instead. These can be requested using the `Permission.photos`, `Permission.videos` and `Permission.audio` respectively. To request these permissions make sure the `compileSdkVersion` in the `android/app/build.gradle` file is set to `33`.
+
+If your application needs access to Androids file system it is possible to request the `MANAGE_EXTERNAL_STORAGE` permission (using `Permission.manageExternalStorage`). As of Android SDK 30 (Android 11) the `MANAGE_EXTERNAL_STORAGE` permission is considered a high-risk or sensitive permission. There for it is required to [declare the use of these permissions](https://support.google.com/googleplay/android-developer/answer/9214102) if you intend to release the application via the Google Play Store. 
+
+
 ## Issues
 
 Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).

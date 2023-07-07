@@ -1,3 +1,7 @@
+## 3.11.1
+
+* Updates the documentation for the `Permission.storage` permission regarding its use on Android.
+
 ## 3.11.0+1
 
 * **HOTFIX**: Fixes misalignment in the `Permission` enum after adding the new BODY_SENSORS_BACKGROUND permission.

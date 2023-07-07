@@ -1,3 +1,7 @@
+## 10.4.2
+
+* Adds a [FAQ](https://pub.dev/packages/permission_handler#faq) section to the README.md file.
+
 ## 10.4.1
 
 * Updates AndroidManifest documentation in the example application with regards
