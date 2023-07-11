@@ -1,3 +1,7 @@
+## 10.4.3
+
+* Fixes checking status of Bluetooth service on Android.
+
 ## 10.4.2
 
 * Adds a [FAQ](https://pub.dev/packages/permission_handler#faq) section to the README.md file.
