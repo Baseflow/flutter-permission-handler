@@ -1,3 +1,7 @@
+## 10.3.1
+
+* Updates example app to show `Permission.photos` and hide `Permission.bluetooth`.
+
 ## 10.3.0
 
 * Adds support for the new Android 13 permission: BODY_SENSORS_BACKGROUND.
