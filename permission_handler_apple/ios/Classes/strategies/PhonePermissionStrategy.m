@@ -16,13 +16,12 @@
   return PermissionStatusDenied;
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
   // https://stackoverflow.com/a/5095058
   if (![[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel://"]]) {
-    return ServiceStatusNotApplicable;
+      completionHandler(ServiceStatusNotApplicable);
   }
-  
-  return [self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled;
+  completionHandler([self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {

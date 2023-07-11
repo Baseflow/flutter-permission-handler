@@ -1,3 +1,7 @@
+## 9.1.4
+
+* Adds checking whether Bluetooth service is enabled through `Permission.bluetooth.serviceStatus`.
+
 ## 9.1.3
 
 * Fixes an issue where the `Permission.location.request()`, `Permission.locationWhenInUse.request()` and `Permission.locationAlways.request()` calls returned `PermissionStatus.denied` regardless of the actual permission status.

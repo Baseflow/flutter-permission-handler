@@ -15,8 +15,8 @@
   return [NotificationPermissionStrategy permissionStatus];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-  return ServiceStatusNotApplicable;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler(ServiceStatusNotApplicable);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
