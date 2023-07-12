@@ -1,3 +1,7 @@
+## 3.11.3
+
+* Updates the documentation for the `Permission.bluetooth` permission regarding the limitations of the permission on iOS.
+
 ## 3.11.2
 
 * Changes `Permission.bluetooth` into an instance of `PermissionWithService` instead of `Permission` in order to determine iOS native's `CBManagerStatePoweredOn`.

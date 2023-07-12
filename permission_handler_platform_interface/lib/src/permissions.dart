@@ -179,6 +179,17 @@ class Permission {
   /// **iOS:**
   /// - iOS 13 and above: The authorization state of Core Bluetooth manager.
   /// - iOS below 13: always allowed.
+  ///
+  /// Limitations:
+  /// - iOS 13.0 only: [bluetooth.status] is always [PermissionStatus.denied],
+  /// regardless of the actual status. For the actual permission state, use
+  /// [bluetooth.request]. Note that this will show a permission dialog if the
+  /// permission was not yet requested.
+  /// - All iOS versions: [bluetooth.serviceStatus] will **always** return
+  /// [ServiceStatus.disabled] when the Bluetooth permission was denied by the
+  /// user. It is impossible to obtain the actual Bluetooth service status
+  /// without having the Bluetooth permission granted. The method will prompt
+  /// the user for Bluetooth permission if the permission was not yet requested.
   static const bluetooth = PermissionWithService._(21);
 
   /// Permission for accessing the device's external storage. (Android R+ only).
