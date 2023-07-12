@@ -53,6 +53,7 @@ final class ServiceManager {
                     : PermissionConstants.SERVICE_STATUS_DISABLED;
 
             successCallback.onSuccess(serviceStatus);
+            return;
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {

@@ -1,3 +1,7 @@
+## 3.11.2
+
+* Changes `Permission.bluetooth` into an instance of `PermissionWithService` instead of `Permission` in order to determine iOS native's `CBManagerStatePoweredOn`.
+
 ## 3.11.1
 
 * Updates the documentation for the `Permission.storage` permission regarding its use on Android.
