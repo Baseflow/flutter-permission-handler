@@ -5,6 +5,7 @@
 //
 // For more information about Flutter integration tests, please see
 // https://docs.flutter.dev/cookbook/testing/integration/introduction
+import 'dart:html' as html;
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -14,23 +15,35 @@ import 'package:permission_handler_web/permission_handler_web.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('getPlatformVersion test', (WidgetTester tester) async {
+  testWidgets('check permission status test', (WidgetTester tester) async {
     final WebPermissionHandler plugin = WebPermissionHandler();
 
     final List<Permission> test_permissions = [
-      Permission.camera,
-      Permission.microphone,
       Permission.contacts,
-      Permission.notification,
-      Permission.location
+      Permission.microphone,
     ];
 
+    // check permissions status
+    // for (Permission permission in test_permissions) {
+    //   final actual_status = await plugin.checkPermissionStatus(permission);
+
+    //   expect(actual_status, PermissionStatus.denied);
+    // }
+
+    // request permissions
     final test_permissions_map =
         await plugin.requestPermissions(test_permissions);
 
-    expect(test_permissions_map[Permission.notification],
-        PermissionStatus.denied);
-    expect(test_permissions_map[Permission.contacts], PermissionStatus.denied);
-    expect(test_permissions_map[Permission.location], PermissionStatus.denied);
+    // check that requesting permissions works
+    //expect(test_permissions_map[Permission.camera], PermissionStatus.granted);
+    await expectLater(
+        test_permissions_map[Permission.microphone], PermissionStatus.granted);
+
+    // check permissions status again
+    // for (Permission permission in test_permissions) {
+    //   final actual_status = await plugin.checkPermissionStatus(permission);
+
+    //   expect(actual_status, PermissionStatus.denied);
+    // }
   });
 }

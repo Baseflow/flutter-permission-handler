@@ -66,7 +66,8 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
           audioTracks[0].stop();
         }
       }
-    } on html.DomException {
+    } on html.DomException catch (e) {
+      print(e);
       return PermissionStatus.permanentlyDenied;
     }
     return PermissionStatus.granted;
@@ -82,7 +83,7 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
         permissionStatusMap[permission] =
             await _requestSingularPermission(permission);
       } on UnimplementedError {
-        permissionStatusMap[permission] = PermissionStatus.denied;
+        continue;
       }
     }
     return permissionStatusMap;
