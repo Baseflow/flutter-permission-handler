@@ -18,7 +18,7 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler_platform_interface: ^3.11.0
+  permission_handler_platform_interface: ^3.11.2
 
 dev_dependencies:
   flutter_lints: ^1.0.4

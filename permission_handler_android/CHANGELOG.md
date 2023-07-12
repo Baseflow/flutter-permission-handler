@@ -1,3 +1,7 @@
+## 10.3.2
+
+* Updates example app to show `Permission.photos` and hide `Permission.bluetooth`.
+
 ## 10.3.1
 
 * Fixes `java.lang.IllegalStateException: Reply already submitted` when checking status of Bluetooth service.
