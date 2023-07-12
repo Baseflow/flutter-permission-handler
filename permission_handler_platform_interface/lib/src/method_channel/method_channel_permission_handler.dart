@@ -43,11 +43,11 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// - **[Permission.bluetooth]**
   ///   - iOS:
   ///     - The method will **always** return [ServiceStatus.disabled] when the
-  ///       Bluetooth permission was denied by the user. It is impossible to
+  ///       Bluetooth permission was denied by the user. It is not possible
   ///       obtain the actual Bluetooth service status without having the
   ///       Bluetooth permission granted.
   ///     - The method will prompt the user for Bluetooth permission if the
-  ///       permission was not yet requested.
+  ///      permission was not requested before.
   @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
