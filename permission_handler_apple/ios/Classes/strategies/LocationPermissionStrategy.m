@@ -35,8 +35,8 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     return [LocationPermissionStrategy permissionStatus:permission];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    return [CLLocationManager locationServicesEnabled] ? ServiceStatusEnabled : ServiceStatusDisabled;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler([CLLocationManager locationServicesEnabled] ? ServiceStatusEnabled : ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {

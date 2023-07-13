@@ -12,14 +12,15 @@
     return [SensorPermissionStrategy permissionStatus];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
     if (@available(iOS 11.0, *)) {
-        return [CMMotionActivityManager isActivityAvailable]
-        ? ServiceStatusEnabled
-        : ServiceStatusDisabled;
+        completionHandler([CMMotionActivityManager isActivityAvailable]
+          ? ServiceStatusEnabled
+          : ServiceStatusDisabled
+        );
     }
     
-    return ServiceStatusDisabled;
+    completionHandler(ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {

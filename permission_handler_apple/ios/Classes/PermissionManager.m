@@ -26,9 +26,17 @@
 }
 
 + (void)checkServiceStatus:(enum PermissionGroup)permission result:(FlutterResult)result {
-    id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
-    ServiceStatus status = [permissionStrategy checkServiceStatus:permission];
-    result([Codec encodeServiceStatus:status]);
+    __block id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
+    
+    [permissionStrategy checkServiceStatus:permission completionHandler:^(ServiceStatus serviceStatus) {
+        result([Codec encodeServiceStatus:serviceStatus]);
+        
+        // Make sure `result` is called before cleaning up the reference
+        // otherwise the `result` block is also dereferenced on iOS 12 and
+        // below (this is most likely a bug in Objective-C which is solved in the
+        // later versions of the runtime).
+        permissionStrategy = nil;
+    }];
 }
 
 - (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion {
