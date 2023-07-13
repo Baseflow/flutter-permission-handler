@@ -23,14 +23,36 @@
     }
 }
 
+/// Reads the permission status of the Bluetooth service.
+///
+/// The behavior differs across iOS versions:
+/// - Starting with iOS 13.1, this function returns the expected result.
+/// - On iOS 13.0, applications are unable to check for the permission status without triggering a
+/// permission request. Therefore, `PermissionStatusDenied` is always returned. To obtain the
+/// actual permission status, the application should request permission using `requestPermission()`.
+/// If the permission was already granted, no dialog will pop up.
+/// - Below iOS 13.0, applications do not have to ask for permission to use Bluetooth. Therefore,
+/// `PermissionStatusGranted` is always returned.
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    if (@available(iOS 13.0, *)) {
-        CBManagerAuthorization blePermission = [_centralManager authorization];
+    if (@available(iOS 13.1, *)) {
+        CBManagerAuthorization blePermission = [CBCentralManager authorization];
+        
         return [BluetoothPermissionStrategy parsePermission:blePermission];
+    } else if (@available(iOS 13.0, *)) {
+        return PermissionStatusDenied;
     }
     return PermissionStatusGranted;
 }
 
+/// Asynchronously requests the status of the Bluetooth service.
+///
+/// The result will be fetched in `handleCheckServiceStatusCallback`, which will in turn call
+/// `completionHandler` with either `ServiceStatusEnabled` or `ServiceStatusDisabled`.
+///
+/// If the Bluetooth permission has been requested and was denied, this will return `ServiceStatusDisabled`,
+/// regardless of the actual state of the Bluetooth service.
+/// If the Bluetooth permission has not been granted or denied yet, this call will trigger a permission dialog, asking
+/// the user to give the application access to Bluetooth.
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
     [self initManagerIfNeeded];
     
@@ -38,13 +60,13 @@
     _requestedPermission = permission;
 }
 
-- (void)handleCheckServiceStatusCallback {
+- (void)handleCheckServiceStatusCallback:(CBCentralManager *)centralManager {
     if (@available(iOS 10, *)) {
-        ServiceStatus serviceStatus = [_centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
+        ServiceStatus serviceStatus = [centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
         _serviceStatusHandler(serviceStatus);
     }
     #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    ServiceStatus serviceStatus = [_centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
+    ServiceStatus serviceStatus = [centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
     _serviceStatusHandler(serviceStatus);
 }
 
@@ -61,9 +83,14 @@
     _requestedPermission = permission;
 }
 
-- (void)handleRequestPermissionCallback {
-    PermissionStatus permissionStatus = [self checkPermissionStatus:_requestedPermission];
-    _permissionStatusHandler(permissionStatus);
+- (void)handleRequestPermissionCallback:(CBCentralManager *)centralManager {
+    if (@available(iOS 13.0, *)) {
+        CBManagerAuthorization blePermission = [centralManager authorization];
+        PermissionStatus permissionStatus = [BluetoothPermissionStrategy parsePermission:blePermission];
+        _permissionStatusHandler(permissionStatus);
+    } else {
+        _permissionStatusHandler(PermissionStatusGranted);
+    }
 }
 
 + (PermissionStatus)parsePermission:(CBManagerAuthorization)bluetoothPermission API_AVAILABLE(ios(13)) {
@@ -81,11 +108,11 @@
 
 - (void)centralManagerDidUpdateState:(nonnull CBCentralManager *)centralManager {
     if (_permissionStatusHandler != nil) {
-        [self handleRequestPermissionCallback];
+        [self handleRequestPermissionCallback:centralManager];
     }
     
     if (_serviceStatusHandler != nil) {
-        [self handleCheckServiceStatusCallback];
+        [self handleCheckServiceStatusCallback:centralManager];
     }
 }
 
