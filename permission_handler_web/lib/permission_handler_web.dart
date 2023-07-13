@@ -1,4 +1,5 @@
 import 'dart:html' as html;
+import 'dart:async';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
@@ -9,6 +10,9 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
 
   /// The permission name to request access to the camera.
   static const _cameraPermissionName = 'camera';
+
+  /// The permission name to request notifications from the user.
+  static const _notificationsPermissionName = 'notifications';
 
   /// The status indicates that permission has been granted by the user.
   static const _grantedPermissionStatus = 'granted';
@@ -38,6 +42,7 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
   Future<PermissionStatus> _requestSingularPermission(
       Permission permission) async {
     html.MediaStream? mediaStream;
+    bool permissionGranted = false;
     try {
       switch (permission) {
         case Permission.microphone:
@@ -47,6 +52,11 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
         case Permission.camera:
           mediaStream = await html.window.navigator.mediaDevices
               ?.getUserMedia({'video': true});
+          break;
+        case Permission.notification:
+          html.Notification.requestPermission().then((permission) => {
+                if (permission == "granted") {permissionGranted = true}
+              });
           break;
         default:
           throw UnimplementedError(
@@ -68,6 +78,10 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
       }
     } on html.DomException catch (e) {
       print(e);
+      return PermissionStatus.permanentlyDenied;
+    }
+    if (!permissionGranted) {
+      print('Notification permission disallowed!');
       return PermissionStatus.permanentlyDenied;
     }
     return PermissionStatus.granted;
@@ -99,6 +113,8 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
       case Permission.camera:
         webPermissionName = _cameraPermissionName;
         break;
+      case Permission.notification:
+        webPermissionName = _notificationsPermissionName;
       default:
         throw UnimplementedError(
           '_requestSingularPermission() has not been implemented for ${permission.toString()} '
