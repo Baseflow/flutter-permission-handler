@@ -21,7 +21,15 @@ Future<bool> openAppSettings() => _handler.openAppSettings();
 
 /// Actions that can be executed on a permission.
 extension PermissionActions on Permission {
-  /// The current status of this permission.
+  /// Checks the current status of the given [Permission].
+  ///
+  /// Notes about specific permissions:
+  /// - **[Permission.bluetooth]**
+  ///   - iOS 13.0 only:
+  ///     - The method will **always** return [PermissionStatus.denied],
+  ///       regardless of the actual status. For the actual permission state,
+  ///       use [Permission.bluetooth.request]. Note that this will show a
+  ///       permission dialog if the permission was not yet requested.
   Future<PermissionStatus> get status => _handler.checkPermissionStatus(this);
 
   /// If you should show a rationale for requesting permission.
@@ -78,7 +86,8 @@ extension PermissionCheckShortcuts on Permission {
 
 /// Actions that apply only to permissions that have an associated service.
 extension ServicePermissionActions on PermissionWithService {
-  /// Checks the current status of the service associated with this permission.
+  /// Checks the current status of the service associated with the given
+  /// [Permission].
   ///
   /// Notes about specific permissions:
   /// - **[Permission.phone]**
@@ -98,6 +107,14 @@ extension ServicePermissionActions on PermissionWithService {
   ///   - **PLEASE NOTE that this is still not a perfect indication** of the
   ///     device's capability to place & connect phone calls as it also depends
   ///     on the network condition.
+  /// - **[Permission.bluetooth]**
+  ///   - iOS:
+  ///     - The method will **always** return [ServiceStatus.disabled] when the
+  ///       Bluetooth permission was denied by the user. It is impossible to
+  ///       obtain the actual Bluetooth service status without having the
+  ///       Bluetooth permission granted.
+  ///     - The method will prompt the user for Bluetooth permission if the
+  ///       permission was not yet requested.
   Future<ServiceStatus> get serviceStatus => _handler.checkServiceStatus(this);
 }
 

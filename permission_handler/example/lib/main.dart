@@ -39,8 +39,8 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
               .where((permission) {
                 if (Platform.isIOS) {
                   return permission != Permission.unknown &&
+                      permission != Permission.phone &&
                       permission != Permission.sms &&
-                      permission != Permission.storage &&
                       permission != Permission.ignoreBatteryOptimizations &&
                       permission != Permission.accessMediaLocation &&
                       permission != Permission.activityRecognition &&
@@ -50,13 +50,18 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                       permission != Permission.accessNotificationPolicy &&
                       permission != Permission.bluetoothScan &&
                       permission != Permission.bluetoothAdvertise &&
-                      permission != Permission.bluetoothConnect;
+                      permission != Permission.bluetoothConnect &&
+                      permission != Permission.nearbyWifiDevices &&
+                      permission != Permission.videos &&
+                      permission != Permission.audio &&
+                      permission != Permission.scheduleExactAlarm &&
+                      permission != Permission.sensorsAlways;
                 } else {
                   return permission != Permission.unknown &&
                       permission != Permission.mediaLibrary &&
-                      permission != Permission.photos &&
                       permission != Permission.photosAddOnly &&
                       permission != Permission.reminders &&
+                      permission != Permission.bluetooth &&
                       permission != Permission.appTrackingTransparency &&
                       permission != Permission.criticalAlerts;
                 }
