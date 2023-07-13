@@ -9,8 +9,6 @@
     NSMutableArray <id <PermissionStrategy>> *_strategyInstances;
 }
 
-static id <PermissionStrategy> _pendingPermissionStrategy;
-
 - (instancetype)initWithStrategyInstances {
     self = [super init];
     if (self) {
@@ -28,10 +26,16 @@ static id <PermissionStrategy> _pendingPermissionStrategy;
 }
 
 + (void)checkServiceStatus:(enum PermissionGroup)permission result:(FlutterResult)result {
-    _pendingPermissionStrategy = [PermissionManager createPermissionStrategy:permission];
+    __block id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
     
-    [_pendingPermissionStrategy checkServiceStatus:permission completionHandler:^(ServiceStatus serviceStatus) {
+    [permissionStrategy checkServiceStatus:permission completionHandler:^(ServiceStatus serviceStatus) {
         result([Codec encodeServiceStatus:serviceStatus]);
+        
+        // Make sure `result` is called before cleaning up the reference
+        // otherwise the `result` block is also dereferenced on iOS 12 and
+        // below (this is most likely a bug in Objective-C which is solved in the
+        // later versions of the runtime).
+        permissionStrategy = nil;
     }];
 }
 
