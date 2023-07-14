@@ -39,49 +39,91 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
     }
   }
 
-  Future<PermissionStatus> _requestSingularPermission(
-      Permission permission) async {
+  Future<bool> _requestMicrophonePermission(html.MediaDevices devices) async {
     html.MediaStream? mediaStream;
-    bool permissionGranted = false;
+
     try {
-      switch (permission) {
-        case Permission.microphone:
-          mediaStream = await html.window.navigator.mediaDevices
-              ?.getUserMedia({'audio': true});
-          break;
-        case Permission.camera:
-          mediaStream = await html.window.navigator.mediaDevices
-              ?.getUserMedia({'video': true});
-          break;
-        case Permission.notification:
-          html.Notification.requestPermission().then((permission) => {
-                if (permission == "granted") {permissionGranted = true}
-              });
-          break;
-        default:
-          throw UnimplementedError(
-            '_requestSingularPermission() has not been implemented for '
-            '${permission.toString()} on web.',
-          );
-      }
+      mediaStream = await devices.getUserMedia({'audio': true});
+
       // In browsers, calling [getUserMedia] will start the recording
-      // automatically right after. This is undesired bahavior as
+      // automatically right after. This is undesired behavior as
       // [requestPermission] is expected to request permission only.
       //
       // The manual stop action is then needed here for to stop the automatic
       // recording.
-      if (mediaStream != null && mediaStream.active!) {
+
+      if (mediaStream.active!) {
         final audioTracks = mediaStream.getAudioTracks();
         if (audioTracks.isNotEmpty) {
           audioTracks[0].stop();
         }
       }
-    } on html.DomException catch (e) {
-      print(e);
-      return PermissionStatus.permanentlyDenied;
+    } on html.DomException {
+      return false;
     }
+
+    return true;
+  }
+
+  Future<bool> _requestCameraPermission(html.MediaDevices devices) async {
+    html.MediaStream? mediaStream;
+
+    try {
+      mediaStream = await devices.getUserMedia({'video': true});
+
+      // In browsers, calling [getUserMedia] will start the recording
+      // automatically right after. This is undesired behavior as
+      // [requestPermission] is expected to request permission only.
+      //
+      // The manual stop action is then needed here for to stop the automatic
+      // recording.
+
+      if (mediaStream.active!) {
+        final videoTracks = mediaStream.getVideoTracks();
+        if (videoTracks.isNotEmpty) {
+          videoTracks[0].stop();
+        }
+      }
+    } on html.DomException {
+      return false;
+    }
+
+    return true;
+  }
+
+  Future<bool> _requestNotificationPermission() async {
+    bool granted = false;
+    html.Notification.requestPermission().then((permission) => {
+          if (permission == "granted") {granted = true}
+        });
+
+    return granted;
+  }
+
+  Future<PermissionStatus> _requestSingularPermission(
+      Permission permission) async {
+    bool permissionGranted = false;
+
+    switch (permission) {
+      case Permission.microphone:
+        permissionGranted = await _requestMicrophonePermission(
+            html.window.navigator.mediaDevices!);
+        break;
+      case Permission.camera:
+        permissionGranted =
+            await _requestCameraPermission(html.window.navigator.mediaDevices!);
+        break;
+      case Permission.notification:
+        permissionGranted = await _requestNotificationPermission();
+        break;
+      default:
+        throw UnimplementedError(
+          '_requestSingularPermission() has not been implemented for '
+          '${permission.toString()} on web.',
+        );
+    }
+
     if (!permissionGranted) {
-      print('Notification permission disallowed!');
       return PermissionStatus.permanentlyDenied;
     }
     return PermissionStatus.granted;
