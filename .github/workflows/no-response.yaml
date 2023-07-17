@@ -31,7 +31,8 @@ jobs:
       # 2. Set the `days-before-stale` parameter to `-1`. This will prevent the [stale](https://github.com/actions/stale) action 
       # from automatically marking issues as being "stale". As mentioned in step 1, at Baseflow we want to manually 
       # triage the issue and mark it to require more information.
-      # 3. Set the `close-issue-label` parameter to `status: needs more info` to make sure the label persists even after this
+      # 3. Set the `close-issue-label` parameter to `status: closed (missing info)` to easily allow us to track issues closed due 
+      # to a lack of information.
       # issue is closed. This will make sure the label is automatically removed when the issue is re-opened (most likely
       # this happend because someone added more information).
       # 4. Set the `days-before-close` parameter to `14` to indicate after how many days, since marking the issue with
@@ -42,7 +43,7 @@ jobs:
         with:
           stale-issue-label: 'status: needs more info'
           days-before-stale: -1
-          close-issue-label: 'status: needs more info'
+          close-issue-label: 'status: closed (missing info)'
           close-issue-message: >
             Without additional information, we are unfortunately not able to resolve this issue. 
             Therefore, we reluctantly closed this issue for now. 
