@@ -32,7 +32,7 @@ void main() {
 
   final List<Permission> testPermissions = [
     Permission.contacts,
-    //Permission.notification,
+    Permission.notification,
     Permission.microphone,
     Permission.camera,
   ];
@@ -42,7 +42,6 @@ void main() {
   when(permissions.query(any)).thenAnswer((_) async => permissionStatus);
 
   // camera stubs
-
   when(mediaStream.active).thenReturn(true);
   when(mediaStream.getVideoTracks()).thenReturn(List.empty());
 
