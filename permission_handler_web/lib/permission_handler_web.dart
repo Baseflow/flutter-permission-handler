@@ -39,6 +39,13 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
     }
   }
 
+  Future<PermissionStatus> _permissionStatusState(
+      String webPermissionName, html.Permissions? permissions) async {
+    final webPermissionStatus =
+        await permissions?.query({'name': webPermissionName});
+    return _toPermissionStatus(webPermissionStatus?.state);
+  }
+
   Future<bool> _requestMicrophonePermission(html.MediaDevices devices) async {
     html.MediaStream? mediaStream;
 
@@ -159,13 +166,12 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
         webPermissionName = _notificationsPermissionName;
       default:
         throw UnimplementedError(
-          '_requestSingularPermission() has not been implemented for ${permission.toString()} '
+          'checkPermissionStatus() has not been implemented for ${permission.toString()} '
           'on web.',
         );
     }
-    final webPermissionStatus = await html.window.navigator.permissions
-        ?.query({'name': webPermissionName});
-    return _toPermissionStatus(webPermissionStatus?.state);
+    return _permissionStatusState(
+        webPermissionName, html.window.navigator.permissions);
   }
 
   @override

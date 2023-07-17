@@ -183,6 +183,17 @@ class _FakeRelatedApplication_15 extends _i1.SmartFake
         );
 }
 
+class _FakePermissionStatus_16 extends _i1.SmartFake
+    implements _i2.PermissionStatus {
+  _FakePermissionStatus_16(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [Window].
 ///
 /// See the documentation for Mockito's code generation for more information.
@@ -1595,4 +1606,145 @@ class MockDomException extends _i1.Mock implements _i2.DomException {
         Invocation.getter(#name),
         returnValue: '',
       ) as String);
+}
+
+/// A class which mocks [Permissions].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPermissions extends _i1.Mock implements _i2.Permissions {
+  MockPermissions() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<_i2.PermissionStatus> query(Map<dynamic, dynamic>? permission) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #query,
+          [permission],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
+          this,
+          Invocation.method(
+            #query,
+            [permission],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+  @override
+  _i3.Future<_i2.PermissionStatus> request(
+          Map<dynamic, dynamic>? permissions) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #request,
+          [permissions],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
+          this,
+          Invocation.method(
+            #request,
+            [permissions],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+  @override
+  _i3.Future<_i2.PermissionStatus> requestAll(
+          List<Map<dynamic, dynamic>>? permissions) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #requestAll,
+          [permissions],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
+          this,
+          Invocation.method(
+            #requestAll,
+            [permissions],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+  @override
+  _i3.Future<_i2.PermissionStatus> revoke(Map<dynamic, dynamic>? permission) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #revoke,
+          [permission],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
+          this,
+          Invocation.method(
+            #revoke,
+            [permission],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+}
+
+/// A class which mocks [PermissionStatus].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPermissionStatus extends _i1.Mock implements _i2.PermissionStatus {
+  MockPermissionStatus() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<_i2.Event> get onChange => (super.noSuchMethod(
+        Invocation.getter(#onChange),
+        returnValue: _i3.Stream<_i2.Event>.empty(),
+      ) as _i3.Stream<_i2.Event>);
+  @override
+  _i2.Events get on => (super.noSuchMethod(
+        Invocation.getter(#on),
+        returnValue: _FakeEvents_7(
+          this,
+          Invocation.getter(#on),
+        ),
+      ) as _i2.Events);
+  @override
+  void addEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #addEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void removeEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #removeEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
+        Invocation.method(
+          #dispatchEvent,
+          [event],
+        ),
+        returnValue: false,
+      ) as bool);
 }

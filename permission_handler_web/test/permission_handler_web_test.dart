@@ -12,7 +12,9 @@ import './fake_permission_handler_web.dart';
   html.Navigator,
   html.MediaDevices,
   html.MediaStream,
-  html.DomException
+  html.DomException,
+  html.Permissions,
+  html.PermissionStatus
 ])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -22,19 +24,22 @@ void main() {
   final MockMediaDevices mediaDevices = MockMediaDevices();
   final MockMediaStream mediaStream = MockMediaStream();
   final MockDomException domException = MockDomException();
+  final MockPermissions permissions = MockPermissions();
+  final MockPermissionStatus permissionStatus = MockPermissionStatus();
 
   final FakeWebPermissionHandler fakePlugin =
-      FakeWebPermissionHandler(mediaDevices);
+      FakeWebPermissionHandler(mediaDevices, permissions);
 
   final List<Permission> testPermissions = [
     Permission.contacts,
     //Permission.notification,
-    //Permission.microphone,
+    Permission.microphone,
     Permission.camera,
   ];
 
   when(window.navigator).thenReturn(navigator);
   when(navigator.mediaDevices).thenReturn(mediaDevices);
+  when(permissions.query(any)).thenAnswer((_) async => permissionStatus);
 
   // camera stubs
 
@@ -51,18 +56,90 @@ void main() {
     when(mediaDevices.getUserMedia({'video': true}))
         .thenAnswer((_) async => mediaStream);
 
+    when(permissionStatus.state).thenReturn('prompt');
+
+    // check permissions status before requesting
+    final preActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.camera);
+
+    expect(preActualStatus, PermissionStatus.denied);
+
+    // request permission
     final permissionMap = await fakePlugin.requestPermissions(testPermissions);
 
     expect(permissionMap[Permission.camera], PermissionStatus.granted);
+
+    when(permissionStatus.state).thenReturn('granted');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.camera);
+
+    expect(postActualStatus, PermissionStatus.granted);
   });
 
   test('request permission works for camera if user does not grant permission',
       () async {
-    when(mediaDevices.getUserMedia({'video': true}))
-        .thenThrow(domException);
+    // stubs
+    when(mediaDevices.getUserMedia({'video': true})).thenThrow(domException);
 
+    // request permission
     final permissionMap = await fakePlugin.requestPermissions(testPermissions);
 
-    expect(permissionMap[Permission.camera], PermissionStatus.permanentlyDenied);
+    expect(
+        permissionMap[Permission.camera], PermissionStatus.permanentlyDenied);
+
+    when(permissionStatus.state).thenReturn('denied');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.camera);
+
+    expect(postActualStatus, PermissionStatus.permanentlyDenied);
+  });
+  test('request permission works for microphone if user grants permission',
+      () async {
+    when(mediaDevices.getUserMedia({'audio': true}))
+        .thenAnswer((_) async => mediaStream);
+
+    when(permissionStatus.state).thenReturn('prompt');
+
+    // check permissions status before requesting
+    final preActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.microphone);
+
+    expect(preActualStatus, PermissionStatus.denied);
+
+    // request permission
+    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
+
+    expect(permissionMap[Permission.microphone], PermissionStatus.granted);
+
+    when(permissionStatus.state).thenReturn('granted');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.microphone);
+
+    expect(postActualStatus, PermissionStatus.granted);
+  });
+  test('request permission works for camera if user does not grant permission',
+      () async {
+    // stubs
+    when(mediaDevices.getUserMedia({'audio': true})).thenThrow(domException);
+
+    // request permission
+    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
+
+    expect(permissionMap[Permission.microphone],
+        PermissionStatus.permanentlyDenied);
+
+    when(permissionStatus.state).thenReturn('denied');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.microphone);
+
+    expect(postActualStatus, PermissionStatus.permanentlyDenied);
   });
 }

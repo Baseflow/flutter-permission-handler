@@ -5,9 +5,28 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'package:permission_handler_web/permission_handler_web.dart';
 
 class FakeWebPermissionHandler extends WebPermissionHandler {
-  FakeWebPermissionHandler(this.devices);
+  /// The permission name to request access to the camera.
+  static const _microphonePermissionName = 'microphone';
+
+  /// The permission name to request access to the camera.
+  static const _cameraPermissionName = 'camera';
+
+  /// The permission name to request notifications from the user.
+  static const _notificationsPermissionName = 'notifications';
+
+  /// The status indicates that permission has been granted by the user.
+  static const _grantedPermissionStatus = 'granted';
+
+  /// The status indicates that permission has been denied by the user.
+  static const _deniedPermissionStatus = 'denied';
+
+  /// The status indicates that permission can be requested.
+  static const _promptPermissionStatus = 'prompt';
+
+  FakeWebPermissionHandler(this.devices, this.permissions);
 
   html.MediaDevices? devices;
+  html.Permissions? permissions;
 
   Future<bool> _requestMicrophonePermission(html.MediaDevices devices) async {
     html.MediaStream? mediaStream;
@@ -111,5 +130,46 @@ class FakeWebPermissionHandler extends WebPermissionHandler {
       }
     }
     return permissionStatusMap;
+  }
+
+  PermissionStatus _toPermissionStatus(String? webPermissionStatus) {
+    switch (webPermissionStatus) {
+      case _grantedPermissionStatus:
+        return PermissionStatus.granted;
+      case _deniedPermissionStatus:
+        return PermissionStatus.permanentlyDenied;
+      case _promptPermissionStatus:
+      default:
+        return PermissionStatus.denied;
+    }
+  }
+
+  Future<PermissionStatus> _permissionStatusState(
+      String webPermissionName, html.Permissions? permissions) async {
+    final html.PermissionStatus? webPermissionStatus =
+        await permissions?.query({'name': webPermissionName});
+    return _toPermissionStatus(webPermissionStatus?.state);
+  }
+
+  @override
+  Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
+    String webPermissionName;
+    switch (permission) {
+      case Permission.microphone:
+        webPermissionName = _microphonePermissionName;
+        break;
+      case Permission.camera:
+        webPermissionName = _cameraPermissionName;
+        break;
+      case Permission.notification:
+        webPermissionName = _notificationsPermissionName;
+      default:
+        throw UnimplementedError(
+          'checkPermissionStatus() has not been implemented for ${permission.toString()} '
+          'on web.',
+        );
+    }
+
+    return _permissionStatusState(webPermissionName, permissions);
   }
 }
