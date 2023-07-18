@@ -1,10 +1,11 @@
 import 'dart:html' as html;
 import 'dart:async';
 
-import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-class WebHandler extends PermissionHandlerPlatform {
+class WebHandler {
+  WebHandler(this.devices, this.permissions);
+
   html.MediaDevices? devices;
   html.Permissions? permissions;
 
@@ -25,10 +26,6 @@ class WebHandler extends PermissionHandlerPlatform {
 
   /// The status indicates that permission can be requested.
   static const _promptPermissionStatus = 'prompt';
-
-  static void registerWith(Registrar registrar) {
-    PermissionHandlerPlatform.instance = WebHandler();
-  }
 
   PermissionStatus _toPermissionStatus(String? webPermissionStatus) {
     switch (webPermissionStatus) {
@@ -137,7 +134,6 @@ class WebHandler extends PermissionHandlerPlatform {
     return PermissionStatus.granted;
   }
 
-  @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) async {
     final Map<Permission, PermissionStatus> permissionStatusMap = {};
@@ -153,7 +149,6 @@ class WebHandler extends PermissionHandlerPlatform {
     return permissionStatusMap;
   }
 
-  @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
     String webPermissionName;
     switch (permission) {
@@ -174,7 +169,6 @@ class WebHandler extends PermissionHandlerPlatform {
     return _permissionStatusState(webPermissionName, permissions);
   }
 
-  @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     try {
       final permissionStatus = await checkPermissionStatus(permission);
@@ -189,14 +183,12 @@ class WebHandler extends PermissionHandlerPlatform {
     }
   }
 
-  @override
   Future<bool> shouldShowRequestPermissionRationale(
       Permission permission) async {
     throw UnimplementedError(
         'shouldShowRequestPermissionRationale() has not been implemented for web.');
   }
 
-  @override
   Future<bool> openAppSettings() {
     throw UnimplementedError(
         'openAppSettings() has not been implemented for web.');
