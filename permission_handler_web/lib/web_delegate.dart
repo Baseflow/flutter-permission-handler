@@ -4,10 +4,10 @@ import 'dart:async';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 class WebDelegate {
-  WebDelegate(this.devices, this.permissions);
+  WebDelegate(this.devices, this.htmlPermissions);
 
   html.MediaDevices? devices;
-  html.Permissions? permissions;
+  html.Permissions? htmlPermissions;
 
   /// The permission name to request access to the camera.
   static const _microphonePermissionName = 'microphone';
@@ -166,7 +166,7 @@ class WebDelegate {
           'on web.',
         );
     }
-    return _permissionStatusState(webPermissionName, permissions);
+    return _permissionStatusState(webPermissionName, htmlPermissions);
   }
 
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {

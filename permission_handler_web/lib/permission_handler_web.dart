@@ -8,12 +8,9 @@ import 'package:permission_handler_web/web_delegate.dart';
 class WebPermissionHandler extends PermissionHandlerPlatform {
   WebDelegate? webDelegate;
 
-  html.MediaDevices? devices = html.window.navigator.mediaDevices!;
-  html.Permissions? permissions = html.window.navigator.permissions;
-
-  WebPermissionHandler() {
-    webDelegate = WebDelegate(devices, permissions);
-  }
+  static final html.MediaDevices devices = html.window.navigator.mediaDevices!;
+  static final html.Permissions? htmlPermissions =
+      html.window.navigator.permissions;
 
   static void registerWith(Registrar registrar) {
     PermissionHandlerPlatform.instance = WebPermissionHandler();
@@ -22,16 +19,19 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) async {
+    webDelegate ??= WebDelegate(devices, htmlPermissions);
     return webDelegate!.requestPermissions(permissions);
   }
 
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
+    webDelegate ??= WebDelegate(devices, htmlPermissions);
     return webDelegate!.checkPermissionStatus(permission);
   }
 
   @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
+    webDelegate ??= WebDelegate(devices, htmlPermissions);
     return webDelegate!.checkServiceStatus(permission);
   }
 
