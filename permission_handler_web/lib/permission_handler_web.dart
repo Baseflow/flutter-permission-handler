@@ -1,19 +1,18 @@
-// ignore_for_file: overridden_fields
 import 'dart:html' as html;
 import 'dart:async';
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
-import 'package:permission_handler_web/web_handler.dart';
+import 'package:permission_handler_web/web_delegate.dart';
 
 class WebPermissionHandler extends PermissionHandlerPlatform {
-  WebHandler? webHandler;
+  WebDelegate? webDelegate;
 
   html.MediaDevices? devices = html.window.navigator.mediaDevices!;
   html.Permissions? permissions = html.window.navigator.permissions;
 
   WebPermissionHandler() {
-    webHandler = WebHandler(devices, permissions);
+    webDelegate = WebDelegate(devices, permissions);
   }
 
   static void registerWith(Registrar registrar) {
@@ -23,27 +22,29 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) async {
-    return webHandler!.requestPermissions(permissions);
+    return webDelegate!.requestPermissions(permissions);
   }
 
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
-    return webHandler!.checkPermissionStatus(permission);
+    return webDelegate!.checkPermissionStatus(permission);
   }
 
   @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
-    return webHandler!.checkServiceStatus(permission);
+    return webDelegate!.checkServiceStatus(permission);
   }
 
   @override
   Future<bool> shouldShowRequestPermissionRationale(
       Permission permission) async {
-    return webHandler!.shouldShowRequestPermissionRationale(permission);
+    throw UnimplementedError(
+        'shouldShowRequestPermissionRationale() has not been implemented for web.');
   }
 
   @override
   Future<bool> openAppSettings() {
-    return webHandler!.openAppSettings();
+    throw UnimplementedError(
+        'openAppSettings() has not been implemented for web.');
   }
 }

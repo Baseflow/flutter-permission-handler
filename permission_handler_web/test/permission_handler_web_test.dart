@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
-import './permission_handler_web_test.mocks.dart';
-import './fake_permission_handler_web.dart';
+import 'package:permission_handler_web/web_delegate.dart';
+import 'permission_handler_web_test.mocks.dart';
 
 @GenerateMocks([
   html.Window,
@@ -27,8 +27,7 @@ void main() {
   final MockPermissions permissions = MockPermissions();
   final MockPermissionStatus permissionStatus = MockPermissionStatus();
 
-  final FakeWebPermissionHandler fakePlugin =
-      FakeWebPermissionHandler(mediaDevices, permissions);
+  final WebDelegate fakePlugin = WebDelegate(mediaDevices, permissions);
 
   final List<Permission> testPermissions = [
     Permission.contacts,

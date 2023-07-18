@@ -3,8 +3,8 @@ import 'dart:async';
 
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-class WebHandler {
-  WebHandler(this.devices, this.permissions);
+class WebDelegate {
+  WebDelegate(this.devices, this.permissions);
 
   html.MediaDevices? devices;
   html.Permissions? permissions;
@@ -181,16 +181,5 @@ class WebHandler {
     } on UnimplementedError {
       rethrow;
     }
-  }
-
-  Future<bool> shouldShowRequestPermissionRationale(
-      Permission permission) async {
-    throw UnimplementedError(
-        'shouldShowRequestPermissionRationale() has not been implemented for web.');
-  }
-
-  Future<bool> openAppSettings() {
-    throw UnimplementedError(
-        'openAppSettings() has not been implemented for web.');
   }
 }
