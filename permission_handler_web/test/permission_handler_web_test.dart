@@ -49,11 +49,9 @@ void main() {
       .thenAnswer((_) async => mediaStream);
   when(mediaStream.getAudioTracks()).thenReturn(List.empty());
 
-  test('request permission works for camera if user grants permission',
+  test(
+      'check permission works for camera before user is prompted for permission',
       () async {
-    when(mediaDevices.getUserMedia({'video': true}))
-        .thenAnswer((_) async => mediaStream);
-
     when(permissionStatus.state).thenReturn('prompt');
 
     // check permissions status before requesting
@@ -61,12 +59,9 @@ void main() {
         await fakePlugin.checkPermissionStatus(Permission.camera);
 
     expect(preActualStatus, PermissionStatus.denied);
-
-    // request permission
-    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
-
-    expect(permissionMap[Permission.camera], PermissionStatus.granted);
-
+  });
+  test('check permission works for camera after user accepts permission',
+      () async {
     when(permissionStatus.state).thenReturn('granted');
 
     // check permissions status after requesting
@@ -74,6 +69,27 @@ void main() {
         await fakePlugin.checkPermissionStatus(Permission.camera);
 
     expect(postActualStatus, PermissionStatus.granted);
+  });
+  test('check permission works for camera after user declines permission',
+      () async {
+    when(permissionStatus.state).thenReturn('denied');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.camera);
+
+    expect(postActualStatus, PermissionStatus.permanentlyDenied);
+  });
+
+  test('request permission works for camera if user grants permission',
+      () async {
+    when(mediaDevices.getUserMedia({'video': true}))
+        .thenAnswer((_) async => mediaStream);
+
+    // request permission
+    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
+
+    expect(permissionMap[Permission.camera], PermissionStatus.granted);
   });
 
   test('request permission works for camera if user does not grant permission',
@@ -86,20 +102,11 @@ void main() {
 
     expect(
         permissionMap[Permission.camera], PermissionStatus.permanentlyDenied);
-
-    when(permissionStatus.state).thenReturn('denied');
-
-    // check permissions status after requesting
-    final postActualStatus =
-        await fakePlugin.checkPermissionStatus(Permission.camera);
-
-    expect(postActualStatus, PermissionStatus.permanentlyDenied);
   });
-  test('request permission works for microphone if user grants permission',
-      () async {
-    when(mediaDevices.getUserMedia({'audio': true}))
-        .thenAnswer((_) async => mediaStream);
 
+  test(
+      'check permission works for microphone before user is prompted for permission',
+      () async {
     when(permissionStatus.state).thenReturn('prompt');
 
     // check permissions status before requesting
@@ -107,12 +114,9 @@ void main() {
         await fakePlugin.checkPermissionStatus(Permission.microphone);
 
     expect(preActualStatus, PermissionStatus.denied);
-
-    // request permission
-    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
-
-    expect(permissionMap[Permission.microphone], PermissionStatus.granted);
-
+  });
+  test('check permission works for microphone after user accepts permission',
+      () async {
     when(permissionStatus.state).thenReturn('granted');
 
     // check permissions status after requesting
@@ -121,7 +125,29 @@ void main() {
 
     expect(postActualStatus, PermissionStatus.granted);
   });
-  test('request permission works for camera if user does not grant permission',
+  test('check permission works for microphone after user declines permission',
+      () async {
+    when(permissionStatus.state).thenReturn('denied');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.microphone);
+
+    expect(postActualStatus, PermissionStatus.permanentlyDenied);
+  });
+
+  test('request permission works for microphone if user grants permission',
+      () async {
+    when(mediaDevices.getUserMedia({'audio': true}))
+        .thenAnswer((_) async => mediaStream);
+
+    // request permission
+    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
+
+    expect(permissionMap[Permission.microphone], PermissionStatus.granted);
+  });
+  test(
+      'request permission works for microphone if user does not grant permission',
       () async {
     // stubs
     when(mediaDevices.getUserMedia({'audio': true})).thenThrow(domException);
@@ -131,12 +157,36 @@ void main() {
 
     expect(permissionMap[Permission.microphone],
         PermissionStatus.permanentlyDenied);
+  });
 
+  test(
+      'check permission works for notification before user is prompted for permission',
+      () async {
+    when(permissionStatus.state).thenReturn('prompt');
+
+    // check permissions status before requesting
+    final preActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.notification);
+
+    expect(preActualStatus, PermissionStatus.denied);
+  });
+  test('check permission works for notification after user accepts permission',
+      () async {
+    when(permissionStatus.state).thenReturn('granted');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.notification);
+
+    expect(postActualStatus, PermissionStatus.granted);
+  });
+  test('check permission works for notification after user declines permission',
+      () async {
     when(permissionStatus.state).thenReturn('denied');
 
     // check permissions status after requesting
     final postActualStatus =
-        await fakePlugin.checkPermissionStatus(Permission.microphone);
+        await fakePlugin.checkPermissionStatus(Permission.notification);
 
     expect(postActualStatus, PermissionStatus.permanentlyDenied);
   });
