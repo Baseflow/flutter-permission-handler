@@ -16,6 +16,12 @@ allprojects {
     }
 }
 
+def args = ["-Xlint:deprecation","-Xlint:unchecked","-Werror"]
+
+project.getTasks().withType(JavaCompile){
+    options.compilerArgs.addAll(args)
+}
+
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
