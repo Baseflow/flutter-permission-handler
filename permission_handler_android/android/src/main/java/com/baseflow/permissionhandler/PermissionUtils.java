@@ -122,25 +122,24 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS:
+            case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
+            case PermissionConstants.PERMISSION_GROUP_LOCATION:
                 // Note that the LOCATION_ALWAYS will deliberately fallthrough to the LOCATION
                 // case on pre Android Q devices. The ACCESS_BACKGROUND_LOCATION permission was only
                 // introduced in Android Q, before it should be treated as the ACCESS_COARSE_LOCATION or
                 // ACCESS_FINE_LOCATION.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS && Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_BACKGROUND_LOCATION))
                         permissionNames.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION);
                     break;
                 }
-            case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
-            case PermissionConstants.PERMISSION_GROUP_LOCATION:
+
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_COARSE_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_COARSE_LOCATION);
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_FINE_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_FINE_LOCATION);
                 break;
-
-
             case PermissionConstants.PERMISSION_GROUP_SPEECH:
             case PermissionConstants.PERMISSION_GROUP_MICROPHONE:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.RECORD_AUDIO))
@@ -191,7 +190,7 @@ public class PermissionUtils {
                         permissionNames.add(Manifest.permission.BODY_SENSORS_BACKGROUND);
                     }
                 }
-
+                break;
             case PermissionConstants.PERMISSION_GROUP_SMS:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SEND_SMS))
                     permissionNames.add(Manifest.permission.SEND_SMS);
