@@ -1,3 +1,7 @@
+## 10.3.3
+
+* Migrates the Gradle compile arguments to the example app, so they are not enforced upon consumers of the plugin.
+
 ## 10.3.2
 
 * Updates example app to show `Permission.photos` and hide `Permission.bluetooth`.
