@@ -137,7 +137,7 @@ class Permission {
   /// different:
   ///
   /// **Android:**
-  /// - On Android TIRAMISU and higher this permission is deprecrated and always
+  /// - On Android TIRAMISU and higher this permission is deprecated and always
   /// returns `PermissionStatus.denied`, instead use `Permission.photos`,
   /// `Permission.video`, `Permission.audio` or
   /// `Permission.manageExternalStorage`. For more information see our
