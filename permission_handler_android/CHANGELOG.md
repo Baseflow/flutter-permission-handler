@@ -1,6 +1,6 @@
 ## 10.3.4
 
-* Added `TargetApi`` annotation to `getManifestNames` method in `PermissionUtils.java`.
+* Added `TargetApi` annotation to `getManifestNames` method in `PermissionUtils.java`.
 
 ## 10.3.3
 
