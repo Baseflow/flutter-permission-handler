@@ -1,6 +1,7 @@
 package com.baseflow.permissionhandler;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -94,6 +95,7 @@ public class PermissionUtils {
         }
     }
 
+    @TargetApi(22)
     static List<String> getManifestNames(Context context, @PermissionConstants.PermissionGroup int permission) {
         final ArrayList<String> permissionNames = new ArrayList<>();
 
@@ -122,6 +124,7 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS:
+            // fall through
             case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
             case PermissionConstants.PERMISSION_GROUP_LOCATION:
                 // Note that the LOCATION_ALWAYS will deliberately fallthrough to the LOCATION
