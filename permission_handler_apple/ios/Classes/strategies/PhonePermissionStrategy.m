@@ -7,6 +7,7 @@
 
 #import <CoreTelephony/CTTelephonyNetworkInfo.h>
 #import <CoreTelephony/CTCarrier.h>
+#import <UIKit/UIApplication.h>
 
 #import "PhonePermissionStrategy.h"
 

@@ -9,6 +9,7 @@
 #if PERMISSION_LOCATION
 
 #import <CoreLocation/CoreLocation.h>
+#import <UIKit/UIKit.h>
 
 @interface LocationPermissionStrategy : NSObject <PermissionStrategy, CLLocationManagerDelegate>
 - (instancetype)initWithLocationManager;

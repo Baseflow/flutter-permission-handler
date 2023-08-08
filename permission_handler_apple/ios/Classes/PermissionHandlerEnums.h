@@ -4,6 +4,7 @@
 //
 //  Created by Razvan Lung on 15/02/2019.
 //
+#import <Foundation/Foundation.h>
 
 // ios: PermissionGroupCalendar
 // Info.plist: NSCalendarsUsageDescription
