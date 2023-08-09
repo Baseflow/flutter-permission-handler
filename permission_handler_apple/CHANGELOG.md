@@ -1,8 +1,3 @@
-## 9.1.5
-
-* Adds UIKit, UIApplication and Foundation imports to various files which require them.
-* Also changes file import paths to relative paths.
-
 ## 9.1.4
 
 * Adds checking whether Bluetooth service is enabled through `Permission.bluetooth.serviceStatus`.

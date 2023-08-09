@@ -11,7 +11,6 @@
 #if PERMISSION_CRITICAL_ALERTS
 
 #import <UserNotifications/UserNotifications.h>
-#import <UIKit/UIApplication.h>
 
 @interface CriticalAlertsPermissionStrategy : NSObject <PermissionStrategy>
 
