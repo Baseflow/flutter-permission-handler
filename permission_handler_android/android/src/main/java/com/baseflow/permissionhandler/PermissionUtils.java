@@ -124,7 +124,6 @@ public class PermissionUtils {
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS:
-            // fall through
             case PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE:
             case PermissionConstants.PERMISSION_GROUP_LOCATION:
                 // Note that the LOCATION_ALWAYS will deliberately fallthrough to the LOCATION
