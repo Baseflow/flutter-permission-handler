@@ -399,17 +399,17 @@ public class PermissionUtils {
      * State machine diagram:
      * <p>
      * Dismissed
-     * ┌┐
+     *    ┌┐
      * ┌──┘▼─────┐  Granted ┌───────┐
      * │Not asked├──────────►Granted│
      * └─┬───────┘          └─▲─────┘
-     * │           Granted  │
-     * │Denied  ┌───────────┘
-     * │        │
+     *   │           Granted  │
+     *   │Denied  ┌───────────┘
+     *   │        │
      * ┌─▼────────┴┐        ┌────────────────────────────────┐
      * │Denied once├────────►Denied twice(permanently denied)│
      * └──▲┌───────┘ Denied └────────────────────────────────┘
-     * └┘
+     *    └┘
      * Dismissed
      * <p>
      * Scenario table listing output of
