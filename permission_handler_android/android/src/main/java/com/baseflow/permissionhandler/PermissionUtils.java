@@ -3,6 +3,7 @@ package com.baseflow.permissionhandler;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -17,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PermissionUtils {
+    final static String SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY = "sp_permission_handler_permission_was_denied_before";
 
     @PermissionConstants.PermissionGroup
     static int parseManifestName(String permission) {
@@ -227,8 +229,7 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_ACCESS_MEDIA_LOCATION:
                 // The ACCESS_MEDIA_LOCATION permission is introduced in Android Q, meaning we should
                 // not handle permissions on pre Android Q devices.
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-                    return null;
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null;
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACCESS_MEDIA_LOCATION))
                     permissionNames.add(Manifest.permission.ACCESS_MEDIA_LOCATION);
@@ -237,8 +238,7 @@ public class PermissionUtils {
             case PermissionConstants.PERMISSION_GROUP_ACTIVITY_RECOGNITION:
                 // The ACTIVITY_RECOGNITION permission is introduced in Android Q, meaning we should
                 // not handle permissions on pre Android Q devices.
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
-                    return null;
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return null;
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.ACTIVITY_RECOGNITION))
                     permissionNames.add(Manifest.permission.ACTIVITY_RECOGNITION);
@@ -385,12 +385,85 @@ public class PermissionUtils {
         return false;
     }
 
+    /**
+     * Returns a {@link PermissionConstants} for a given permission.
+     * <p>
+     * When {@link PackageManager#PERMISSION_DENIED} is received, we do not know if the permission was
+     * denied permanently. The OS does not tell us whether the user dismissed the dialog or pressed
+     * 'deny'. Therefore, we need a more sophisticated (read: hacky) approach to determine whether the
+     * permission status is {@link PermissionConstants#PERMISSION_STATUS_DENIED} or
+     * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
+     * <p>
+     * The OS behavior has been researched experimentally and is displayed in the following diagrams:
+     * <p>
+     * State machine diagram:
+     * <p>
+     * Dismissed
+     * ┌┐
+     * ┌──┘▼─────┐  Granted ┌───────┐
+     * │Not asked├──────────►Granted│
+     * └─┬───────┘          └─▲─────┘
+     * │           Granted  │
+     * │Denied  ┌───────────┘
+     * │        │
+     * ┌─▼────────┴┐        ┌────────────────────────────────┐
+     * │Denied once├────────►Denied twice(permanently denied)│
+     * └──▲┌───────┘ Denied └────────────────────────────────┘
+     * └┘
+     * Dismissed
+     * <p>
+     * Scenario table listing output of
+     * {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)}:
+     * ┌────────────┬────────────────┬─────────┬───────────────────────────────────┬─────────────────────────┐
+     * │ Scenario # │ Previous state │ Action  │ New state                         │ 'Show rationale' output │
+     * ├────────────┼────────────────┼─────────┼───────────────────────────────────┼─────────────────────────┤
+     * │ 1.         │ Not asked      │ Dismiss │ Not asked                         │ false                   │
+     * │ 2.         │ Not asked      │ Deny    │ Denied once                       │ true                    │
+     * │ 3.         │ Denied once    │ Dismiss │ Denied once                       │ true                    │
+     * │ 4.         │ Denied once    │ Deny    │ Denied twice (permanently denied) │ false                   │
+     * └────────────┴────────────────┴─────────┴───────────────────────────────────┴─────────────────────────┘
+     * <p>
+     * To distinguish between scenarios, we can use
+     * {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)}. If it returns
+     * true, we can safely return {@link PermissionConstants#PERMISSION_STATUS_DENIED}. To distinguish
+     * between scenarios 1 and 4, however, we need an extra mechanism. We opt to store a boolean
+     * stating whether permission has been requested before. Using a combination of checking for
+     * showing the permission rationale and the boolean, we can distinguish all scenarios and return
+     * the appropriate permission status.
+     * <p>
+     * Changing permissions via the app info screen, so outside of the application, changes the
+     * permission state to 'Granted' if the permission is allowed, or 'Denied once' if denied. This
+     * behavior should not require any additional logic.
+     *
+     * @param activity       the activity for context
+     * @param permissionName the name of the permission
+     * @param grantResult    the result of the permission intent
+     * @return {@link PermissionConstants#PERMISSION_STATUS_GRANTED},
+     * {@link PermissionConstants#PERMISSION_STATUS_DENIED}, or
+     * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
+     */
     @PermissionConstants.PermissionStatus
     static int toPermissionStatus(final Activity activity, final String permissionName, int grantResult) {
         if (grantResult == PackageManager.PERMISSION_DENIED) {
-            return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && PermissionUtils.isNeverAskAgainSelected(activity, permissionName)
-                    ? PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                return PermissionConstants.PERMISSION_STATUS_DENIED;
+            }
+
+            final boolean wasDeniedBefore = PermissionUtils.wasPermissionDeniedBefore(activity, permissionName);
+            final boolean shouldShowRational = !PermissionUtils.isNeverAskAgainSelected(activity, permissionName);
+
+            //noinspection SimplifiableConditionalExpression
+            final boolean isDenied = wasDeniedBefore ? !shouldShowRational : shouldShowRational;
+
+            if (!wasDeniedBefore && isDenied) {
+                setPermissionDenied(activity, permissionName);
+            }
+
+            if (wasDeniedBefore && isDenied) {
+                return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
+            }
+
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
@@ -447,5 +520,37 @@ public class PermissionUtils {
         } else {
             return pm.getPackageInfo(context.getPackageName(), PackageManager.GET_PERMISSIONS);
         }
+    }
+
+    /**
+     * Checks if permission was denied in the past by reading
+     * {@link PermissionUtils#SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY} from
+     * {@link SharedPreferences}.
+     * <p>
+     * Because the state is red from shared preferences, it is persistent across application
+     * sessions.
+     *
+     * @param context        context needed for accessing shared preferences
+     * @param permissionName the name of the permission
+     * @return whether the permission was denied in the past
+     */
+    private static boolean wasPermissionDeniedBefore(final Context context, final String permissionName) {
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(permissionName, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY, false);
+    }
+
+    /**
+     * Stores a boolean in {@link SharedPreferences} indicating the provided permission has been
+     * denied.
+     * <p>
+     * Because the state is stored in shared preferences, it is persistent across application
+     * sessions.
+     *
+     * @param context        context needed for accessing shared preferences.
+     * @param permissionName the name of the permission
+     */
+    private static void setPermissionDenied(final Context context, final String permissionName) {
+        final SharedPreferences sharedPreferences = context.getSharedPreferences(permissionName, Context.MODE_PRIVATE);
+        sharedPreferences.edit().putBoolean(SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY, true).apply();
     }
 }
