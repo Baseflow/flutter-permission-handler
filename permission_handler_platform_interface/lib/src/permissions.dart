@@ -56,8 +56,9 @@ class Permission {
   /// different:
   ///
   /// **Android:**
-  /// - When running on Android Q and above: Background Location Permission
-  /// - When running on Android < Q: Fine and Coarse Location
+  /// - When running on Android 10 (API 29) and above: Background Location
+  /// Permission
+  /// - When running below Android 10 (API 29): Fine and Coarse Location
   ///
   /// **iOS:** CoreLocation - Always
   /// - When requesting this permission, the user needs to grant permission for
@@ -92,9 +93,9 @@ class Permission {
   /// different:
   ///
   /// **Android:**
-  /// - When running on Android TIRAMISU and above: Read image files from
+  /// - When running on Android 13 (API 33) and above: Read image files from
   /// external storage
-  /// - When running on Android < TIRAMISU: Nothing
+  /// - When running below Android 13 (API 33): Nothing
   ///
   /// **iOS:**
   /// - When running Photos (iOS 14+ read & write access level)
@@ -137,12 +138,12 @@ class Permission {
   /// different:
   ///
   /// **Android:**
-  /// - On Android TIRAMISU and higher this permission is deprecated and always
-  /// returns `PermissionStatus.denied`, instead use `Permission.photos`,
+  /// - On Android 13 (API 33) and above, this permission is deprecated and
+  /// always returns `PermissionStatus.denied`. Instead use `Permission.photos`,
   /// `Permission.video`, `Permission.audio` or
   /// `Permission.manageExternalStorage`. For more information see our
   /// [FAQ](https://pub.dev/packages/permission_handler#faq).
-  /// - On Android < TIRAMISU the `READ_EXTERNAL_STORAGE` and
+  /// - Below Android 13 (API 33), the `READ_EXTERNAL_STORAGE` and
   /// `WRITE_EXTERNAL_STORAGE` permissions are requested (depending on the
   /// definitions in the AndroidManifest.xml) file.
   ///
@@ -156,13 +157,17 @@ class Permission {
   /// Permission for pushing notifications.
   static const notification = Permission._(17);
 
-  /// Permission for accessing the device's media library (Android Q+ only).
+  /// Permission for accessing the device's media library.
+  ///
+  /// Android 10+ (API 29+)
   ///
   /// Allows an application to access any geographic locations persisted in the
   /// user's shared collection.
   static const accessMediaLocation = Permission._(18);
 
-  /// Permission for accessing the activity recognition (Android Q+ only).
+  /// Permission for accessing the activity recognition.
+  ///
+  /// Android 10+ (API 29+)
   static const activityRecognition = Permission._(19);
 
   /// The unknown only used for return type, never requested.
@@ -192,7 +197,9 @@ class Permission {
   /// the user for Bluetooth permission if the permission was not yet requested.
   static const bluetooth = PermissionWithService._(21);
 
-  /// Permission for accessing the device's external storage. (Android R+ only).
+  /// Permission for accessing the device's external storage.
+  ///
+  /// Android 11+ (API 30+)
   ///
   /// Allows an application a broad access to external storage in scoped
   /// storage.
@@ -218,7 +225,9 @@ class Permission {
   /// Allows an app to create windows shown on top of all other apps.
   static const systemAlertWindow = Permission._(23);
 
-  /// Permission for requesting installing packages (Android M+ only).
+  /// Permission for requesting installing packages.
+  ///
+  /// Android Marshmallow+ (API 23+)
   static const requestInstallPackages = Permission._(24);
 
   /// Permission for accessing the device's tracking state (iOS only).
@@ -233,39 +242,57 @@ class Permission {
   /// Allow for sending notifications that override the ringer.
   static const criticalAlerts = Permission._(26);
 
-  /// Permission for accessing the device's notification policy (Android M+ only).
+  /// Permission for accessing the device's notification policy.
+  ///
+  /// Android Marshmallow+ (API 23+)
   ///
   /// Allows the user to access the notification policy of the phone.
   /// EX: Allows app to turn on and off do-not-disturb.
   static const accessNotificationPolicy = Permission._(27);
 
-  /// Permission for scanning for Bluetooth devices (Android S+ only).
+  /// Permission for scanning for Bluetooth devices.
+  ///
+  /// Android 12+ (API 31+)
   static const bluetoothScan = Permission._(28);
 
-  /// Permission for advertising Bluetooth devices (Android S+ only).
+  /// Permission for advertising Bluetooth devices
+  ///
+  /// Android 12+ (API 31+)
   ///
   /// Allows the user to make this device discoverable to other Bluetooth
   /// devices.
   static const bluetoothAdvertise = Permission._(29);
 
-  /// Permission for connecting to Bluetooth devices (Android S+ only).
+  /// Permission for connecting to Bluetooth devices.
+  ///
+  /// Android 12+ (API 31+)
   ///
   /// Allows the user to connect with already paired Bluetooth devices.
   static const bluetoothConnect = Permission._(30);
 
-  /// Permission for connecting to nearby devices via Wi-Fi (Android T+ only).
+  /// Permission for connecting to nearby devices via Wi-Fi.
+  ///
+  /// Android 13+ (API 33+)
   static const nearbyWifiDevices = Permission._(31);
 
-  /// Permission for accessing the device's video files from external storage (Android T+ only).
+  /// Permission for accessing the device's video files from external storage.
+  ///
+  /// Android 13+ (API 33+)
   static const videos = Permission._(32);
 
-  /// Permission for accessing the device's audio files from external storage (Android T+ only).
+  /// Permission for accessing the device's audio files from external storage.
+  ///
+  /// Android 13+ (API 33+)
   static const audio = Permission._(33);
 
-  /// Permission for scheduling exact alarms (Android S+ only).
+  /// Permission for scheduling exact alarms.
+  ///
+  /// Android 12+ (API 31+)
   static const scheduleExactAlarm = Permission._(34);
 
-  /// Permission for accessing the device's sensors in background (Android T+ only).
+  /// Permission for accessing the device's sensors in background.
+  ///
+  /// Android 13+ (API 33+)
   static const sensorsAlways = Permission._(35);
 
   /// Returns a list of all possible [PermissionGroup] values.
