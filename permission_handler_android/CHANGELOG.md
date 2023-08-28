@@ -1,3 +1,8 @@
+## 10.3.4
+
+* Fixes a bug where the permission status would return 'permanently denied'
+instead of 'denied' when the user would dismiss the permission dialog.
+
 ## 10.3.3
 
 * Migrates the Gradle compile arguments to the example app, so they are not enforced upon consumers of the plugin.
