@@ -1,3 +1,8 @@
+## 11.0.0
+
+* Fixes a bug where the permission status would return 'denied' regardless of
+whether the status was 'denied' or 'permanently denied'.
+
 ## 10.3.5
 
 * Fixes a bug where `Permission.ScheduleExactAlarm` was not opening the settings

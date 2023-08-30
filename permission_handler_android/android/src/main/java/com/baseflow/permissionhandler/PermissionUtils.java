@@ -437,7 +437,8 @@ public class PermissionUtils {
      *
      * @param activity       the activity for context
      * @param permissionName the name of the permission
-     * @param grantResult    the result of the permission intent
+     * @param grantResult    the result of the permission intent. Either
+     * {@link PackageManager#PERMISSION_DENIED} or {@link PackageManager#PERMISSION_GRANTED}.
      * @return {@link PermissionConstants#PERMISSION_STATUS_GRANTED},
      * {@link PermissionConstants#PERMISSION_STATUS_DENIED}, or
      * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
@@ -445,28 +446,33 @@ public class PermissionUtils {
     @PermissionConstants.PermissionStatus
     static int toPermissionStatus(final Activity activity, final String permissionName, int grantResult) {
         if (grantResult == PackageManager.PERMISSION_DENIED) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                return PermissionConstants.PERMISSION_STATUS_DENIED;
-            }
-
-            final boolean wasDeniedBefore = PermissionUtils.wasPermissionDeniedBefore(activity, permissionName);
-            final boolean shouldShowRational = !PermissionUtils.isNeverAskAgainSelected(activity, permissionName);
-
-            //noinspection SimplifiableConditionalExpression
-            final boolean isDenied = wasDeniedBefore ? !shouldShowRational : shouldShowRational;
-
-            if (!wasDeniedBefore && isDenied) {
-                setPermissionDenied(activity, permissionName);
-            }
-
-            if (wasDeniedBefore && isDenied) {
-                return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
-            }
-
-            return PermissionConstants.PERMISSION_STATUS_DENIED;
+            return determineDeniedVariant(activity, permissionName);
         }
 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    @PermissionConstants.PermissionStatus
+    static int determineDeniedVariant(final Activity activity, final String permissionName) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+
+        final boolean wasDeniedBefore = PermissionUtils.wasPermissionDeniedBefore(activity, permissionName);
+        final boolean shouldShowRational = !PermissionUtils.isNeverAskAgainSelected(activity, permissionName);
+
+        //noinspection SimplifiableConditionalExpression
+        final boolean isDenied = wasDeniedBefore ? !shouldShowRational : shouldShowRational;
+
+        if (!wasDeniedBefore && isDenied) {
+            setPermissionDenied(activity, permissionName);
+        }
+
+        if (wasDeniedBefore && isDenied) {
+            return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
+        }
+
+        return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     static void updatePermissionShouldShowStatus(final Activity activity, @PermissionConstants.PermissionGroup int permission) {

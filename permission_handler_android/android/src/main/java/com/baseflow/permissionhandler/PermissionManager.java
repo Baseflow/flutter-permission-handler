@@ -15,6 +15,7 @@ import android.os.PowerManager;
 import android.provider.Settings;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.AlarmManagerCompat;
@@ -115,7 +116,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     @Override
-    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public boolean onRequestPermissionsResult(
+        int requestCode,
+        @NonNull String[] permissions,
+        @NonNull int[] grantResults) {
+
         if (requestCode != PermissionConstants.PERMISSION_CODE) {
             ongoing = false;
             return false;
@@ -206,12 +211,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
-            Context context,
+            Activity activity,
             CheckPermissionsSuccessCallback successCallback) {
 
         successCallback.onSuccess(determinePermissionStatus(
                 permission,
-                context));
+                activity));
     }
 
     void requestPermissions(
@@ -322,25 +327,25 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     @PermissionConstants.PermissionStatus
     private int determinePermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
-            Context context) {
+            Activity activity) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
-            return checkNotificationPermissionStatus(context);
+            return checkNotificationPermissionStatus(activity);
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH) {
-            return checkBluetoothPermissionStatus(context);
+            return checkBluetoothPermissionStatus(activity);
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT
                 || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN
                 || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                return checkBluetoothPermissionStatus(context);
+                return checkBluetoothPermissionStatus(activity);
             }
         }
 
-        final List<String> names = PermissionUtils.getManifestNames(context, permission);
+        final List<String> names = PermissionUtils.getManifestNames(activity, permission);
 
         if (names == null) {
             Log.d(PermissionConstants.LOG_TAG, "No android specific permissions needed for: " + permission);
@@ -373,14 +378,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
+        final boolean targetsMOrHigher = activity.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
         for (String name : names) {
             // Only handle them if the client app actually targets a API level greater than M.
             if (targetsMOrHigher) {
                 if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                    String packageName = context.getPackageName();
-                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                    String packageName = activity.getPackageName();
+                    PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
                     // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -405,7 +410,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        return Settings.canDrawOverlays(context)
+                        return Settings.canDrawOverlays(activity)
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
@@ -413,7 +418,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        return context.getPackageManager().canRequestPackageInstalls()
+                        return activity.getPackageManager().canRequestPackageInstalls()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
@@ -421,7 +426,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Application.NOTIFICATION_SERVICE);
                         return notificationManager.isNotificationPolicyAccessGranted()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -430,7 +435,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
                         return alarmManager.canScheduleExactAlarms()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -439,9 +444,9 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }
                 }
 
-                final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                final int permissionStatus = ContextCompat.checkSelfPermission(activity, name);
                 if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionConstants.PERMISSION_STATUS_DENIED;
+                    return PermissionUtils.determineDeniedVariant(activity, name);
                 }
             }
         }
@@ -492,9 +497,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         successCallback.onSuccess(ActivityCompat.shouldShowRequestPermissionRationale(activity, names.get(0)));
     }
 
-    private int checkNotificationPermissionStatus(Context context) {
+    @PermissionConstants.PermissionStatus
+    private int checkNotificationPermissionStatus(Activity activity) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            NotificationManagerCompat manager = NotificationManagerCompat.from(activity);
             boolean isGranted = manager.areNotificationsEnabled();
             if (isGranted) {
                 return PermissionConstants.PERMISSION_STATUS_GRANTED;
@@ -502,11 +508,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        return context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-            : PermissionConstants.PERMISSION_STATUS_DENIED;
+        final int status = activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
+        return PermissionUtils.toPermissionStatus(
+            activity,
+            Manifest.permission.POST_NOTIFICATIONS,
+            status);
     }
 
+    @PermissionConstants.PermissionStatus
     private int checkBluetoothPermissionStatus(Context context) {
         List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
         boolean missingInManifest = names == null || names.isEmpty();
