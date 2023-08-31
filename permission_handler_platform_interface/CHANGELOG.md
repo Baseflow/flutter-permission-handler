@@ -1,3 +1,7 @@
+## 3.11.4
+* Clarifies the documentation on requesting background location permission
+through `Permission.locationAlways` on Android 10+ (API 29+).
+
 ## 3.11.3
 
 * Updates the documentation for the `Permission.bluetooth` permission regarding the limitations of the permission on iOS.

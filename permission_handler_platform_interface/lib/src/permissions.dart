@@ -56,15 +56,16 @@ class Permission {
   /// different:
   ///
   /// **Android:**
-  /// - When running on Android Q and above: Background Location Permission
+  /// - When running on Android Q and above: Background Location Permission.
+  /// <br>**Please note**: To request this permission, the user needs to grant foreground
+  /// location permissions first. You can do this by using either
+  /// [Permission.location] or [Permission.locationWhenInUse]. Then, requesting
+  /// [Permission.locationAlways] will show an additional dialog or open the
+  /// location permission app settings, allowing the user to change the location
+  /// access to 'allow all the time'.
   /// - When running on Android < Q: Fine and Coarse Location
   ///
   /// **iOS:** CoreLocation - Always
-  /// - When requesting this permission, the user needs to grant permission for
-  /// the `locationWhenInUse` permission first, clicking on the
-  /// `Allow While Using App` option on the popup. After allowing the
-  /// permission, the user can request the `locationAlways` permission and can
-  /// click on the `Change To Always Allow` option.
   static const locationAlways = PermissionWithService._(4);
 
   /// Permission for accessing the device's location when the app is running in
