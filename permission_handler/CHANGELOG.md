@@ -1,3 +1,7 @@
+## 10.4.4
+
+* Adds a section to the [FAQ](https://pub.dev/packages/permission_handler#faq) clarifying how to request background location permission on Android 10+ (API 29+).
+
 ## 10.4.3
 
 * Updates example app to show relevant permissions on Android and iOS platforms.
