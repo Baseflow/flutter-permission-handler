@@ -33,7 +33,7 @@ android.useAndroidX=true
 android.enableJetifier=true
 ```
 
-1. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 33:
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 33:
 
 ```gradle
 android {
@@ -42,7 +42,7 @@ android {
 }
 ```
 
-1. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found [here](https://developer.android.com/jetpack/androidx/migrate)).
+3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found [here](https://developer.android.com/jetpack/androidx/migrate)).
 
 Add permissions to your `AndroidManifest.xml` file.
 There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
@@ -61,7 +61,7 @@ Add permission to your `Info.plist` file.
 
 The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h) to control whether a permission is enabled.
 
-You must list permission you want to use in your application :
+You must list permission you want to use in your application:
 
 1. Add the following to your `Podfile` file:
 
@@ -171,7 +171,7 @@ You can get a `Permission`'s `status`, which is either `granted`, `denied`, `res
 ```dart
 var status = await Permission.camera.status;
 if (status.isDenied) {
-  // We didn't ask for permission yet or the permission has been denied before but not permanently.
+  // We didn't ask for permission yet or the permission has been denied before, but not permanently.
 }
 
 // You can can also directly ask the permission about its status.
@@ -246,11 +246,11 @@ This will then bring up another permission popup asking you to `Keep Only While 
 
 ### Requesting "storage" permissions always returns "denied" on Android 13+. What can I do?
 
-On Android the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android SDK 29 (Android 10) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/ disabled since Android SDK 33 (Android 13). 
+On Android the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android 10 (API 29) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/disabled since Android 13 (API 33).
 
 If your application needs access to media files Google recommends using the `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEOS` or `READ_MEDIA_AUDIO` permissions instead. These can be requested using the `Permission.photos`, `Permission.videos` and `Permission.audio` respectively. To request these permissions make sure the `compileSdkVersion` in the `android/app/build.gradle` file is set to `33`.
 
-If your application needs access to Androids file system it is possible to request the `MANAGE_EXTERNAL_STORAGE` permission (using `Permission.manageExternalStorage`). As of Android SDK 30 (Android 11) the `MANAGE_EXTERNAL_STORAGE` permission is considered a high-risk or sensitive permission. There for it is required to [declare the use of these permissions](https://support.google.com/googleplay/android-developer/answer/9214102) if you intend to release the application via the Google Play Store.
+If your application needs access to Android's file system, it is possible to request the `MANAGE_EXTERNAL_STORAGE` permission (using `Permission.manageExternalStorage`). As of Android 11 (API 30), the `MANAGE_EXTERNAL_STORAGE` permission is considered a high-risk or sensitive permission. Therefore it is required to [declare the use of these permissions](https://support.google.com/googleplay/android-developer/answer/9214102) if you intend to release the application via the Google Play Store.
 
 ### Requesting `Permission.locationAlways` always returns "denied" on Android 10+ (API 29+). What can I do?
 
