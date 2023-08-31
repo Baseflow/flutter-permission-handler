@@ -17,6 +17,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.AlarmManagerCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
@@ -43,7 +44,8 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE &&
                 requestCode != PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW &&
                 requestCode != PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES &&
-                requestCode != PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY) {
+                requestCode != PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY &&
+                requestCode != PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM) {
             return false;
         }
 
@@ -89,6 +91,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
                 permission = PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY;
+            } else {
+                return false;
+            }
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+                status = alarmManager.canScheduleExactAlarms()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                permission = PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
             } else {
                 return false;
             }
@@ -282,6 +294,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 executeSimpleIntent(
                         Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
                         PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
+                executeIntent(
+                        Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                        PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM);
             } else {
                 permissionsToRequest.addAll(names);
             }
