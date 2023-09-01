@@ -1,3 +1,7 @@
+## 10.3.5
+
+* Fixes a bug where requesting multiple permissions would crash the app if at least one of the permissions was a [special permission](https://developer.android.com/guide/topics/permissions/overview#special).
+
 ## 10.3.4
 
 * Fixes a bug where the permission status would return 'permanently denied'
