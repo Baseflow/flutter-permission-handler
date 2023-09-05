@@ -19,7 +19,8 @@ class WebDelegate {
   html.Permissions? htmlPermissions;
 
   /// Getter for WebDelegate.
-  WebDelegate get webDelegate => WebDelegate(devices, geolocation, htmlPermissions);
+  WebDelegate get webDelegate =>
+      WebDelegate(devices, geolocation, htmlPermissions);
 
   /// The permission name to request access to the camera.
   static const _microphonePermissionName = 'microphone';
