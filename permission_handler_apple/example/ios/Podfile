@@ -68,7 +68,7 @@ post_install do |installer|
 
         ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
         'PERMISSION_LOCATION=1',
-       
+
         ## dart: PermissionGroup.notification
         'PERMISSION_NOTIFICATIONS=1',
 
@@ -86,6 +86,9 @@ post_install do |installer|
 
         ## dart: PermissionGroup.criticalAlerts
         'PERMISSION_CRITICAL_ALERTS=1',
+
+        ## dart: PermissionGroup.criticalAlerts
+        'PERMISSION_ASSISTANT=1',
       ]
 
     end

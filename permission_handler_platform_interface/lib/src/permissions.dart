@@ -268,6 +268,10 @@ class Permission {
   /// Permission for accessing the device's sensors in background (Android T+ only).
   static const sensorsAlways = Permission._(35);
 
+  /// Android: Nothing
+  /// iOS: SiriKit
+  static const assistant = Permission._(36);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
@@ -306,6 +310,7 @@ class Permission {
     audio,
     scheduleExactAlarm,
     sensorsAlways,
+    assistant,
   ];
 
   static const List<String> _names = <String>[
@@ -345,6 +350,7 @@ class Permission {
     'audio',
     'scheduleExactAlarm',
     'sensorsAlways',
+    'assistant',
   ];
 
   @override

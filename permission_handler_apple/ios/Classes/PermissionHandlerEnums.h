@@ -110,6 +110,14 @@
     #define PERMISSION_CRITICAL_ALERTS 0
 #endif
 
+
+// ios: PermissionGroupAssistant
+// Info.plist: [NSSiriUsageDescription]
+// dart: PermissionGroup.assistant
+#ifndef PERMISSION_ASSISTANT
+    #define PERMISSION_ASSISTANT 0
+#endif
+
 typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupCalendar = 0,
     PermissionGroupCamera,
@@ -146,7 +154,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissiongroupVideos,
     PermissionGroupAudio,
     PermissionGroupScheduleExactAlarm,
-    PermissionGroupSensorsAlways
+    PermissionGroupSensorsAlways,
+    PermissionGroupAssistant
 };
 
 typedef NS_ENUM(int, PermissionStatus) {
