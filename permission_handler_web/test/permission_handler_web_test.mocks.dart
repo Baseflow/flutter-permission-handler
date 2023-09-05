@@ -20,8 +20,8 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeDocument_0 extends _i1.SmartFake implements _i2.Document {
-  _FakeDocument_0(
+class _FakeGeoposition_0 extends _i1.SmartFake implements _i2.Geoposition {
+  _FakeGeoposition_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -30,8 +30,8 @@ class _FakeDocument_0 extends _i1.SmartFake implements _i2.Document {
         );
 }
 
-class _FakeLocation_1 extends _i1.SmartFake implements _i2.Location {
-  _FakeLocation_1(
+class _FakeEvents_1 extends _i1.SmartFake implements _i2.Events {
+  _FakeEvents_1(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -40,8 +40,8 @@ class _FakeLocation_1 extends _i1.SmartFake implements _i2.Location {
         );
 }
 
-class _FakeConsole_2 extends _i1.SmartFake implements _i2.Console {
-  _FakeConsole_2(
+class _FakeMediaStream_2 extends _i1.SmartFake implements _i2.MediaStream {
+  _FakeMediaStream_2(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -50,8 +50,8 @@ class _FakeConsole_2 extends _i1.SmartFake implements _i2.Console {
         );
 }
 
-class _FakeHistory_3 extends _i1.SmartFake implements _i2.History {
-  _FakeHistory_3(
+class _FakeGeolocation_3 extends _i1.SmartFake implements _i2.Geolocation {
+  _FakeGeolocation_3(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -60,121 +60,9 @@ class _FakeHistory_3 extends _i1.SmartFake implements _i2.History {
         );
 }
 
-class _FakeStorage_4 extends _i1.SmartFake implements _i2.Storage {
-  _FakeStorage_4(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeNavigator_5 extends _i1.SmartFake implements _i2.Navigator {
-  _FakeNavigator_5(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakePerformance_6 extends _i1.SmartFake implements _i2.Performance {
-  _FakePerformance_6(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeEvents_7 extends _i1.SmartFake implements _i2.Events {
-  _FakeEvents_7(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeWindowBase_8 extends _i1.SmartFake implements _i2.WindowBase {
-  _FakeWindowBase_8(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeFileSystem_9 extends _i1.SmartFake implements _i2.FileSystem {
-  _FakeFileSystem_9(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeStylePropertyMapReadonly_10 extends _i1.SmartFake
-    implements _i2.StylePropertyMapReadonly {
-  _FakeStylePropertyMapReadonly_10(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeMediaQueryList_11 extends _i1.SmartFake
-    implements _i2.MediaQueryList {
-  _FakeMediaQueryList_11(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeEntry_12 extends _i1.SmartFake implements _i2.Entry {
-  _FakeEntry_12(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeGeolocation_13 extends _i1.SmartFake implements _i2.Geolocation {
-  _FakeGeolocation_13(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeMediaStream_14 extends _i1.SmartFake implements _i2.MediaStream {
-  _FakeMediaStream_14(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
-}
-
-class _FakeRelatedApplication_15 extends _i1.SmartFake
+class _FakeRelatedApplication_4 extends _i1.SmartFake
     implements _i2.RelatedApplication {
-  _FakeRelatedApplication_15(
+  _FakeRelatedApplication_4(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -183,15 +71,796 @@ class _FakeRelatedApplication_15 extends _i1.SmartFake
         );
 }
 
-class _FakePermissionStatus_16 extends _i1.SmartFake
+class _FakePermissionStatus_5 extends _i1.SmartFake
     implements _i2.PermissionStatus {
-  _FakePermissionStatus_16(
+  _FakePermissionStatus_5(
     Object parent,
     Invocation parentInvocation,
   ) : super(
           parent,
           parentInvocation,
         );
+}
+
+class _FakeDocument_6 extends _i1.SmartFake implements _i2.Document {
+  _FakeDocument_6(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeLocation_7 extends _i1.SmartFake implements _i2.Location {
+  _FakeLocation_7(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeConsole_8 extends _i1.SmartFake implements _i2.Console {
+  _FakeConsole_8(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeHistory_9 extends _i1.SmartFake implements _i2.History {
+  _FakeHistory_9(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeStorage_10 extends _i1.SmartFake implements _i2.Storage {
+  _FakeStorage_10(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeNavigator_11 extends _i1.SmartFake implements _i2.Navigator {
+  _FakeNavigator_11(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakePerformance_12 extends _i1.SmartFake implements _i2.Performance {
+  _FakePerformance_12(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeWindowBase_13 extends _i1.SmartFake implements _i2.WindowBase {
+  _FakeWindowBase_13(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeFileSystem_14 extends _i1.SmartFake implements _i2.FileSystem {
+  _FakeFileSystem_14(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeStylePropertyMapReadonly_15 extends _i1.SmartFake
+    implements _i2.StylePropertyMapReadonly {
+  _FakeStylePropertyMapReadonly_15(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeMediaQueryList_16 extends _i1.SmartFake
+    implements _i2.MediaQueryList {
+  _FakeMediaQueryList_16(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+class _FakeEntry_17 extends _i1.SmartFake implements _i2.Entry {
+  _FakeEntry_17(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
+/// A class which mocks [DomException].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockDomException extends _i1.Mock implements _i2.DomException {
+  MockDomException() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String get name => (super.noSuchMethod(
+        Invocation.getter(#name),
+        returnValue: '',
+      ) as String);
+}
+
+/// A class which mocks [Geolocation].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGeolocation extends _i1.Mock implements _i2.Geolocation {
+  MockGeolocation() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<_i2.Geoposition> getCurrentPosition({
+    bool? enableHighAccuracy,
+    Duration? timeout,
+    Duration? maximumAge,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getCurrentPosition,
+          [],
+          {
+            #enableHighAccuracy: enableHighAccuracy,
+            #timeout: timeout,
+            #maximumAge: maximumAge,
+          },
+        ),
+        returnValue: _i3.Future<_i2.Geoposition>.value(_FakeGeoposition_0(
+          this,
+          Invocation.method(
+            #getCurrentPosition,
+            [],
+            {
+              #enableHighAccuracy: enableHighAccuracy,
+              #timeout: timeout,
+              #maximumAge: maximumAge,
+            },
+          ),
+        )),
+      ) as _i3.Future<_i2.Geoposition>);
+  @override
+  _i3.Stream<_i2.Geoposition> watchPosition({
+    bool? enableHighAccuracy,
+    Duration? timeout,
+    Duration? maximumAge,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #watchPosition,
+          [],
+          {
+            #enableHighAccuracy: enableHighAccuracy,
+            #timeout: timeout,
+            #maximumAge: maximumAge,
+          },
+        ),
+        returnValue: _i3.Stream<_i2.Geoposition>.empty(),
+      ) as _i3.Stream<_i2.Geoposition>);
+}
+
+/// A class which mocks [Geoposition].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGeoposition extends _i1.Mock implements _i2.Geoposition {
+  MockGeoposition() {
+    _i1.throwOnMissingStub(this);
+  }
+}
+
+/// A class which mocks [MediaDevices].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockMediaDevices extends _i1.Mock implements _i2.MediaDevices {
+  MockMediaDevices() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.Events get on => (super.noSuchMethod(
+        Invocation.getter(#on),
+        returnValue: _FakeEvents_1(
+          this,
+          Invocation.getter(#on),
+        ),
+      ) as _i2.Events);
+  @override
+  _i3.Future<List<dynamic>> enumerateDevices() => (super.noSuchMethod(
+        Invocation.method(
+          #enumerateDevices,
+          [],
+        ),
+        returnValue: _i3.Future<List<dynamic>>.value(<dynamic>[]),
+      ) as _i3.Future<List<dynamic>>);
+  @override
+  Map<dynamic, dynamic> getSupportedConstraints() => (super.noSuchMethod(
+        Invocation.method(
+          #getSupportedConstraints,
+          [],
+        ),
+        returnValue: <dynamic, dynamic>{},
+      ) as Map<dynamic, dynamic>);
+  @override
+  _i3.Future<_i2.MediaStream> getUserMedia(
+          [Map<dynamic, dynamic>? constraints]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUserMedia,
+          [constraints],
+        ),
+        returnValue: _i3.Future<_i2.MediaStream>.value(_FakeMediaStream_2(
+          this,
+          Invocation.method(
+            #getUserMedia,
+            [constraints],
+          ),
+        )),
+      ) as _i3.Future<_i2.MediaStream>);
+  @override
+  void addEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #addEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void removeEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #removeEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
+        Invocation.method(
+          #dispatchEvent,
+          [event],
+        ),
+        returnValue: false,
+      ) as bool);
+}
+
+/// A class which mocks [MediaStream].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockMediaStream extends _i1.Mock implements _i2.MediaStream {
+  MockMediaStream() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<_i2.Event> get onAddTrack => (super.noSuchMethod(
+        Invocation.getter(#onAddTrack),
+        returnValue: _i3.Stream<_i2.Event>.empty(),
+      ) as _i3.Stream<_i2.Event>);
+  @override
+  _i3.Stream<_i2.Event> get onRemoveTrack => (super.noSuchMethod(
+        Invocation.getter(#onRemoveTrack),
+        returnValue: _i3.Stream<_i2.Event>.empty(),
+      ) as _i3.Stream<_i2.Event>);
+  @override
+  _i2.Events get on => (super.noSuchMethod(
+        Invocation.getter(#on),
+        returnValue: _FakeEvents_1(
+          this,
+          Invocation.getter(#on),
+        ),
+      ) as _i2.Events);
+  @override
+  void addTrack(_i2.MediaStreamTrack? track) => super.noSuchMethod(
+        Invocation.method(
+          #addTrack,
+          [track],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i2.MediaStream clone() => (super.noSuchMethod(
+        Invocation.method(
+          #clone,
+          [],
+        ),
+        returnValue: _FakeMediaStream_2(
+          this,
+          Invocation.method(
+            #clone,
+            [],
+          ),
+        ),
+      ) as _i2.MediaStream);
+  @override
+  List<_i2.MediaStreamTrack> getAudioTracks() => (super.noSuchMethod(
+        Invocation.method(
+          #getAudioTracks,
+          [],
+        ),
+        returnValue: <_i2.MediaStreamTrack>[],
+      ) as List<_i2.MediaStreamTrack>);
+  @override
+  _i2.MediaStreamTrack? getTrackById(String? trackId) =>
+      (super.noSuchMethod(Invocation.method(
+        #getTrackById,
+        [trackId],
+      )) as _i2.MediaStreamTrack?);
+  @override
+  List<_i2.MediaStreamTrack> getTracks() => (super.noSuchMethod(
+        Invocation.method(
+          #getTracks,
+          [],
+        ),
+        returnValue: <_i2.MediaStreamTrack>[],
+      ) as List<_i2.MediaStreamTrack>);
+  @override
+  List<_i2.MediaStreamTrack> getVideoTracks() => (super.noSuchMethod(
+        Invocation.method(
+          #getVideoTracks,
+          [],
+        ),
+        returnValue: <_i2.MediaStreamTrack>[],
+      ) as List<_i2.MediaStreamTrack>);
+  @override
+  void removeTrack(_i2.MediaStreamTrack? track) => super.noSuchMethod(
+        Invocation.method(
+          #removeTrack,
+          [track],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void addEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #addEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void removeEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #removeEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
+        Invocation.method(
+          #dispatchEvent,
+          [event],
+        ),
+        returnValue: false,
+      ) as bool);
+}
+
+/// A class which mocks [Navigator].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockNavigator extends _i1.Mock implements _i2.Navigator {
+  MockNavigator() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  String get language => (super.noSuchMethod(
+        Invocation.getter(#language),
+        returnValue: '',
+      ) as String);
+  @override
+  _i2.Geolocation get geolocation => (super.noSuchMethod(
+        Invocation.getter(#geolocation),
+        returnValue: _FakeGeolocation_3(
+          this,
+          Invocation.getter(#geolocation),
+        ),
+      ) as _i2.Geolocation);
+  @override
+  String get vendor => (super.noSuchMethod(
+        Invocation.getter(#vendor),
+        returnValue: '',
+      ) as String);
+  @override
+  String get vendorSub => (super.noSuchMethod(
+        Invocation.getter(#vendorSub),
+        returnValue: '',
+      ) as String);
+  @override
+  String get appCodeName => (super.noSuchMethod(
+        Invocation.getter(#appCodeName),
+        returnValue: '',
+      ) as String);
+  @override
+  String get appName => (super.noSuchMethod(
+        Invocation.getter(#appName),
+        returnValue: '',
+      ) as String);
+  @override
+  String get appVersion => (super.noSuchMethod(
+        Invocation.getter(#appVersion),
+        returnValue: '',
+      ) as String);
+  @override
+  String get product => (super.noSuchMethod(
+        Invocation.getter(#product),
+        returnValue: '',
+      ) as String);
+  @override
+  String get userAgent => (super.noSuchMethod(
+        Invocation.getter(#userAgent),
+        returnValue: '',
+      ) as String);
+  @override
+  List<_i2.Gamepad?> getGamepads() => (super.noSuchMethod(
+        Invocation.method(
+          #getGamepads,
+          [],
+        ),
+        returnValue: <_i2.Gamepad?>[],
+      ) as List<_i2.Gamepad?>);
+  @override
+  _i3.Future<_i2.MediaStream> getUserMedia({
+    dynamic audio = false,
+    dynamic video = false,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUserMedia,
+          [],
+          {
+            #audio: audio,
+            #video: video,
+          },
+        ),
+        returnValue: _i3.Future<_i2.MediaStream>.value(_FakeMediaStream_2(
+          this,
+          Invocation.method(
+            #getUserMedia,
+            [],
+            {
+              #audio: audio,
+              #video: video,
+            },
+          ),
+        )),
+      ) as _i3.Future<_i2.MediaStream>);
+  @override
+  void cancelKeyboardLock() => super.noSuchMethod(
+        Invocation.method(
+          #cancelKeyboardLock,
+          [],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i3.Future<dynamic> getBattery() => (super.noSuchMethod(
+        Invocation.method(
+          #getBattery,
+          [],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<_i2.RelatedApplication> getInstalledRelatedApps() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getInstalledRelatedApps,
+          [],
+        ),
+        returnValue:
+            _i3.Future<_i2.RelatedApplication>.value(_FakeRelatedApplication_4(
+          this,
+          Invocation.method(
+            #getInstalledRelatedApps,
+            [],
+          ),
+        )),
+      ) as _i3.Future<_i2.RelatedApplication>);
+  @override
+  _i3.Future<dynamic> getVRDisplays() => (super.noSuchMethod(
+        Invocation.method(
+          #getVRDisplays,
+          [],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+  @override
+  void registerProtocolHandler(
+    String? scheme,
+    String? url,
+    String? title,
+  ) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #registerProtocolHandler,
+          [
+            scheme,
+            url,
+            title,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  _i3.Future<dynamic> requestKeyboardLock([List<String>? keyCodes]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #requestKeyboardLock,
+          [keyCodes],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> requestMidiAccess([Map<dynamic, dynamic>? options]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #requestMidiAccess,
+          [options],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+  @override
+  _i3.Future<dynamic> requestMediaKeySystemAccess(
+    String? keySystem,
+    List<Map<dynamic, dynamic>>? supportedConfigurations,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #requestMediaKeySystemAccess,
+          [
+            keySystem,
+            supportedConfigurations,
+          ],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+  @override
+  bool sendBeacon(
+    String? url,
+    Object? data,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sendBeacon,
+          [
+            url,
+            data,
+          ],
+        ),
+        returnValue: false,
+      ) as bool);
+  @override
+  _i3.Future<dynamic> share([Map<dynamic, dynamic>? data]) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #share,
+          [data],
+        ),
+        returnValue: _i3.Future<dynamic>.value(),
+      ) as _i3.Future<dynamic>);
+}
+
+/// A class which mocks [Permissions].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPermissions extends _i1.Mock implements _i2.Permissions {
+  MockPermissions() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<_i2.PermissionStatus> query(Map<dynamic, dynamic>? permission) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #query,
+          [permission],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_5(
+          this,
+          Invocation.method(
+            #query,
+            [permission],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+  @override
+  _i3.Future<_i2.PermissionStatus> request(
+          Map<dynamic, dynamic>? permissions) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #request,
+          [permissions],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_5(
+          this,
+          Invocation.method(
+            #request,
+            [permissions],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+  @override
+  _i3.Future<_i2.PermissionStatus> requestAll(
+          List<Map<dynamic, dynamic>>? permissions) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #requestAll,
+          [permissions],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_5(
+          this,
+          Invocation.method(
+            #requestAll,
+            [permissions],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+  @override
+  _i3.Future<_i2.PermissionStatus> revoke(Map<dynamic, dynamic>? permission) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #revoke,
+          [permission],
+        ),
+        returnValue:
+            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_5(
+          this,
+          Invocation.method(
+            #revoke,
+            [permission],
+          ),
+        )),
+      ) as _i3.Future<_i2.PermissionStatus>);
+}
+
+/// A class which mocks [PermissionStatus].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPermissionStatus extends _i1.Mock implements _i2.PermissionStatus {
+  MockPermissionStatus() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Stream<_i2.Event> get onChange => (super.noSuchMethod(
+        Invocation.getter(#onChange),
+        returnValue: _i3.Stream<_i2.Event>.empty(),
+      ) as _i3.Stream<_i2.Event>);
+  @override
+  _i2.Events get on => (super.noSuchMethod(
+        Invocation.getter(#on),
+        returnValue: _FakeEvents_1(
+          this,
+          Invocation.getter(#on),
+        ),
+      ) as _i2.Events);
+  @override
+  void addEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #addEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  void removeEventListener(
+    String? type,
+    _i2.EventListener? listener, [
+    bool? useCapture,
+  ]) =>
+      super.noSuchMethod(
+        Invocation.method(
+          #removeEventListener,
+          [
+            type,
+            listener,
+            useCapture,
+          ],
+        ),
+        returnValueForMissingStub: null,
+      );
+  @override
+  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
+        Invocation.method(
+          #dispatchEvent,
+          [event],
+        ),
+        returnValue: false,
+      ) as bool);
+}
+
+/// A class which mocks [PositionError].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPositionError extends _i1.Mock implements _i2.PositionError {
+  MockPositionError() {
+    _i1.throwOnMissingStub(this);
+  }
 }
 
 /// A class which mocks [Window].
@@ -210,7 +879,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Document get document => (super.noSuchMethod(
         Invocation.getter(#document),
-        returnValue: _FakeDocument_0(
+        returnValue: _FakeDocument_6(
           this,
           Invocation.getter(#document),
         ),
@@ -218,7 +887,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Location get location => (super.noSuchMethod(
         Invocation.getter(#location),
-        returnValue: _FakeLocation_1(
+        returnValue: _FakeLocation_7(
           this,
           Invocation.getter(#location),
         ),
@@ -234,7 +903,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Console get console => (super.noSuchMethod(
         Invocation.getter(#console),
-        returnValue: _FakeConsole_2(
+        returnValue: _FakeConsole_8(
           this,
           Invocation.getter(#console),
         ),
@@ -263,7 +932,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.History get history => (super.noSuchMethod(
         Invocation.getter(#history),
-        returnValue: _FakeHistory_3(
+        returnValue: _FakeHistory_9(
           this,
           Invocation.getter(#history),
         ),
@@ -271,7 +940,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Storage get localStorage => (super.noSuchMethod(
         Invocation.getter(#localStorage),
-        returnValue: _FakeStorage_4(
+        returnValue: _FakeStorage_10(
           this,
           Invocation.getter(#localStorage),
         ),
@@ -287,7 +956,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Navigator get navigator => (super.noSuchMethod(
         Invocation.getter(#navigator),
-        returnValue: _FakeNavigator_5(
+        returnValue: _FakeNavigator_11(
           this,
           Invocation.getter(#navigator),
         ),
@@ -313,7 +982,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Performance get performance => (super.noSuchMethod(
         Invocation.getter(#performance),
-        returnValue: _FakePerformance_6(
+        returnValue: _FakePerformance_12(
           this,
           Invocation.getter(#performance),
         ),
@@ -321,7 +990,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Storage get sessionStorage => (super.noSuchMethod(
         Invocation.getter(#sessionStorage),
-        returnValue: _FakeStorage_4(
+        returnValue: _FakeStorage_10(
           this,
           Invocation.getter(#sessionStorage),
         ),
@@ -744,7 +1413,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
   @override
   _i2.Events get on => (super.noSuchMethod(
         Invocation.getter(#on),
-        returnValue: _FakeEvents_7(
+        returnValue: _FakeEvents_1(
           this,
           Invocation.getter(#on),
         ),
@@ -764,7 +1433,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
             options,
           ],
         ),
-        returnValue: _FakeWindowBase_8(
+        returnValue: _FakeWindowBase_13(
           this,
           Invocation.method(
             #open,
@@ -804,7 +1473,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
           [size],
           {#persistent: persistent},
         ),
-        returnValue: _i3.Future<_i2.FileSystem>.value(_FakeFileSystem_9(
+        returnValue: _i3.Future<_i2.FileSystem>.value(_FakeFileSystem_14(
           this,
           Invocation.method(
             #requestFileSystem,
@@ -898,7 +1567,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
             pseudoElement,
           ],
         ),
-        returnValue: _FakeStylePropertyMapReadonly_10(
+        returnValue: _FakeStylePropertyMapReadonly_15(
           this,
           Invocation.method(
             #getComputedStyleMap,
@@ -930,7 +1599,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
           #matchMedia,
           [query],
         ),
-        returnValue: _FakeMediaQueryList_11(
+        returnValue: _FakeMediaQueryList_16(
           this,
           Invocation.method(
             #matchMedia,
@@ -1089,7 +1758,7 @@ class MockWindow extends _i1.Mock implements _i2.Window {
           #resolveLocalFileSystemUrl,
           [url],
         ),
-        returnValue: _i3.Future<_i2.Entry>.value(_FakeEntry_12(
+        returnValue: _i3.Future<_i2.Entry>.value(_FakeEntry_17(
           this,
           Invocation.method(
             #resolveLocalFileSystemUrl,
@@ -1121,590 +1790,6 @@ class MockWindow extends _i1.Mock implements _i2.Window {
         ),
         returnValueForMissingStub: null,
       );
-  @override
-  void addEventListener(
-    String? type,
-    _i2.EventListener? listener, [
-    bool? useCapture,
-  ]) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #addEventListener,
-          [
-            type,
-            listener,
-            useCapture,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  void removeEventListener(
-    String? type,
-    _i2.EventListener? listener, [
-    bool? useCapture,
-  ]) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #removeEventListener,
-          [
-            type,
-            listener,
-            useCapture,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
-        Invocation.method(
-          #dispatchEvent,
-          [event],
-        ),
-        returnValue: false,
-      ) as bool);
-}
-
-/// A class which mocks [Navigator].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockNavigator extends _i1.Mock implements _i2.Navigator {
-  MockNavigator() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  String get language => (super.noSuchMethod(
-        Invocation.getter(#language),
-        returnValue: '',
-      ) as String);
-  @override
-  _i2.Geolocation get geolocation => (super.noSuchMethod(
-        Invocation.getter(#geolocation),
-        returnValue: _FakeGeolocation_13(
-          this,
-          Invocation.getter(#geolocation),
-        ),
-      ) as _i2.Geolocation);
-  @override
-  String get vendor => (super.noSuchMethod(
-        Invocation.getter(#vendor),
-        returnValue: '',
-      ) as String);
-  @override
-  String get vendorSub => (super.noSuchMethod(
-        Invocation.getter(#vendorSub),
-        returnValue: '',
-      ) as String);
-  @override
-  String get appCodeName => (super.noSuchMethod(
-        Invocation.getter(#appCodeName),
-        returnValue: '',
-      ) as String);
-  @override
-  String get appName => (super.noSuchMethod(
-        Invocation.getter(#appName),
-        returnValue: '',
-      ) as String);
-  @override
-  String get appVersion => (super.noSuchMethod(
-        Invocation.getter(#appVersion),
-        returnValue: '',
-      ) as String);
-  @override
-  String get product => (super.noSuchMethod(
-        Invocation.getter(#product),
-        returnValue: '',
-      ) as String);
-  @override
-  String get userAgent => (super.noSuchMethod(
-        Invocation.getter(#userAgent),
-        returnValue: '',
-      ) as String);
-  @override
-  List<_i2.Gamepad?> getGamepads() => (super.noSuchMethod(
-        Invocation.method(
-          #getGamepads,
-          [],
-        ),
-        returnValue: <_i2.Gamepad?>[],
-      ) as List<_i2.Gamepad?>);
-  @override
-  _i3.Future<_i2.MediaStream> getUserMedia({
-    dynamic audio = false,
-    dynamic video = false,
-  }) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getUserMedia,
-          [],
-          {
-            #audio: audio,
-            #video: video,
-          },
-        ),
-        returnValue: _i3.Future<_i2.MediaStream>.value(_FakeMediaStream_14(
-          this,
-          Invocation.method(
-            #getUserMedia,
-            [],
-            {
-              #audio: audio,
-              #video: video,
-            },
-          ),
-        )),
-      ) as _i3.Future<_i2.MediaStream>);
-  @override
-  void cancelKeyboardLock() => super.noSuchMethod(
-        Invocation.method(
-          #cancelKeyboardLock,
-          [],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  _i3.Future<dynamic> getBattery() => (super.noSuchMethod(
-        Invocation.method(
-          #getBattery,
-          [],
-        ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
-  @override
-  _i3.Future<_i2.RelatedApplication> getInstalledRelatedApps() =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getInstalledRelatedApps,
-          [],
-        ),
-        returnValue:
-            _i3.Future<_i2.RelatedApplication>.value(_FakeRelatedApplication_15(
-          this,
-          Invocation.method(
-            #getInstalledRelatedApps,
-            [],
-          ),
-        )),
-      ) as _i3.Future<_i2.RelatedApplication>);
-  @override
-  _i3.Future<dynamic> getVRDisplays() => (super.noSuchMethod(
-        Invocation.method(
-          #getVRDisplays,
-          [],
-        ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
-  @override
-  void registerProtocolHandler(
-    String? scheme,
-    String? url,
-    String? title,
-  ) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #registerProtocolHandler,
-          [
-            scheme,
-            url,
-            title,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  _i3.Future<dynamic> requestKeyboardLock([List<String>? keyCodes]) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #requestKeyboardLock,
-          [keyCodes],
-        ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
-  @override
-  _i3.Future<dynamic> requestMidiAccess([Map<dynamic, dynamic>? options]) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #requestMidiAccess,
-          [options],
-        ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
-  @override
-  _i3.Future<dynamic> requestMediaKeySystemAccess(
-    String? keySystem,
-    List<Map<dynamic, dynamic>>? supportedConfigurations,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #requestMediaKeySystemAccess,
-          [
-            keySystem,
-            supportedConfigurations,
-          ],
-        ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
-  @override
-  bool sendBeacon(
-    String? url,
-    Object? data,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #sendBeacon,
-          [
-            url,
-            data,
-          ],
-        ),
-        returnValue: false,
-      ) as bool);
-  @override
-  _i3.Future<dynamic> share([Map<dynamic, dynamic>? data]) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #share,
-          [data],
-        ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
-}
-
-/// A class which mocks [MediaDevices].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockMediaDevices extends _i1.Mock implements _i2.MediaDevices {
-  MockMediaDevices() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i2.Events get on => (super.noSuchMethod(
-        Invocation.getter(#on),
-        returnValue: _FakeEvents_7(
-          this,
-          Invocation.getter(#on),
-        ),
-      ) as _i2.Events);
-  @override
-  _i3.Future<List<dynamic>> enumerateDevices() => (super.noSuchMethod(
-        Invocation.method(
-          #enumerateDevices,
-          [],
-        ),
-        returnValue: _i3.Future<List<dynamic>>.value(<dynamic>[]),
-      ) as _i3.Future<List<dynamic>>);
-  @override
-  Map<dynamic, dynamic> getSupportedConstraints() => (super.noSuchMethod(
-        Invocation.method(
-          #getSupportedConstraints,
-          [],
-        ),
-        returnValue: <dynamic, dynamic>{},
-      ) as Map<dynamic, dynamic>);
-  @override
-  _i3.Future<_i2.MediaStream> getUserMedia(
-          [Map<dynamic, dynamic>? constraints]) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #getUserMedia,
-          [constraints],
-        ),
-        returnValue: _i3.Future<_i2.MediaStream>.value(_FakeMediaStream_14(
-          this,
-          Invocation.method(
-            #getUserMedia,
-            [constraints],
-          ),
-        )),
-      ) as _i3.Future<_i2.MediaStream>);
-  @override
-  void addEventListener(
-    String? type,
-    _i2.EventListener? listener, [
-    bool? useCapture,
-  ]) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #addEventListener,
-          [
-            type,
-            listener,
-            useCapture,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  void removeEventListener(
-    String? type,
-    _i2.EventListener? listener, [
-    bool? useCapture,
-  ]) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #removeEventListener,
-          [
-            type,
-            listener,
-            useCapture,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
-        Invocation.method(
-          #dispatchEvent,
-          [event],
-        ),
-        returnValue: false,
-      ) as bool);
-}
-
-/// A class which mocks [MediaStream].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockMediaStream extends _i1.Mock implements _i2.MediaStream {
-  MockMediaStream() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i3.Stream<_i2.Event> get onAddTrack => (super.noSuchMethod(
-        Invocation.getter(#onAddTrack),
-        returnValue: _i3.Stream<_i2.Event>.empty(),
-      ) as _i3.Stream<_i2.Event>);
-  @override
-  _i3.Stream<_i2.Event> get onRemoveTrack => (super.noSuchMethod(
-        Invocation.getter(#onRemoveTrack),
-        returnValue: _i3.Stream<_i2.Event>.empty(),
-      ) as _i3.Stream<_i2.Event>);
-  @override
-  _i2.Events get on => (super.noSuchMethod(
-        Invocation.getter(#on),
-        returnValue: _FakeEvents_7(
-          this,
-          Invocation.getter(#on),
-        ),
-      ) as _i2.Events);
-  @override
-  void addTrack(_i2.MediaStreamTrack? track) => super.noSuchMethod(
-        Invocation.method(
-          #addTrack,
-          [track],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  _i2.MediaStream clone() => (super.noSuchMethod(
-        Invocation.method(
-          #clone,
-          [],
-        ),
-        returnValue: _FakeMediaStream_14(
-          this,
-          Invocation.method(
-            #clone,
-            [],
-          ),
-        ),
-      ) as _i2.MediaStream);
-  @override
-  List<_i2.MediaStreamTrack> getAudioTracks() => (super.noSuchMethod(
-        Invocation.method(
-          #getAudioTracks,
-          [],
-        ),
-        returnValue: <_i2.MediaStreamTrack>[],
-      ) as List<_i2.MediaStreamTrack>);
-  @override
-  _i2.MediaStreamTrack? getTrackById(String? trackId) =>
-      (super.noSuchMethod(Invocation.method(
-        #getTrackById,
-        [trackId],
-      )) as _i2.MediaStreamTrack?);
-  @override
-  List<_i2.MediaStreamTrack> getTracks() => (super.noSuchMethod(
-        Invocation.method(
-          #getTracks,
-          [],
-        ),
-        returnValue: <_i2.MediaStreamTrack>[],
-      ) as List<_i2.MediaStreamTrack>);
-  @override
-  List<_i2.MediaStreamTrack> getVideoTracks() => (super.noSuchMethod(
-        Invocation.method(
-          #getVideoTracks,
-          [],
-        ),
-        returnValue: <_i2.MediaStreamTrack>[],
-      ) as List<_i2.MediaStreamTrack>);
-  @override
-  void removeTrack(_i2.MediaStreamTrack? track) => super.noSuchMethod(
-        Invocation.method(
-          #removeTrack,
-          [track],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  void addEventListener(
-    String? type,
-    _i2.EventListener? listener, [
-    bool? useCapture,
-  ]) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #addEventListener,
-          [
-            type,
-            listener,
-            useCapture,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  void removeEventListener(
-    String? type,
-    _i2.EventListener? listener, [
-    bool? useCapture,
-  ]) =>
-      super.noSuchMethod(
-        Invocation.method(
-          #removeEventListener,
-          [
-            type,
-            listener,
-            useCapture,
-          ],
-        ),
-        returnValueForMissingStub: null,
-      );
-  @override
-  bool dispatchEvent(_i2.Event? event) => (super.noSuchMethod(
-        Invocation.method(
-          #dispatchEvent,
-          [event],
-        ),
-        returnValue: false,
-      ) as bool);
-}
-
-/// A class which mocks [DomException].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockDomException extends _i1.Mock implements _i2.DomException {
-  MockDomException() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  String get name => (super.noSuchMethod(
-        Invocation.getter(#name),
-        returnValue: '',
-      ) as String);
-}
-
-/// A class which mocks [Permissions].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockPermissions extends _i1.Mock implements _i2.Permissions {
-  MockPermissions() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i3.Future<_i2.PermissionStatus> query(Map<dynamic, dynamic>? permission) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #query,
-          [permission],
-        ),
-        returnValue:
-            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
-          this,
-          Invocation.method(
-            #query,
-            [permission],
-          ),
-        )),
-      ) as _i3.Future<_i2.PermissionStatus>);
-  @override
-  _i3.Future<_i2.PermissionStatus> request(
-          Map<dynamic, dynamic>? permissions) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #request,
-          [permissions],
-        ),
-        returnValue:
-            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
-          this,
-          Invocation.method(
-            #request,
-            [permissions],
-          ),
-        )),
-      ) as _i3.Future<_i2.PermissionStatus>);
-  @override
-  _i3.Future<_i2.PermissionStatus> requestAll(
-          List<Map<dynamic, dynamic>>? permissions) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #requestAll,
-          [permissions],
-        ),
-        returnValue:
-            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
-          this,
-          Invocation.method(
-            #requestAll,
-            [permissions],
-          ),
-        )),
-      ) as _i3.Future<_i2.PermissionStatus>);
-  @override
-  _i3.Future<_i2.PermissionStatus> revoke(Map<dynamic, dynamic>? permission) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #revoke,
-          [permission],
-        ),
-        returnValue:
-            _i3.Future<_i2.PermissionStatus>.value(_FakePermissionStatus_16(
-          this,
-          Invocation.method(
-            #revoke,
-            [permission],
-          ),
-        )),
-      ) as _i3.Future<_i2.PermissionStatus>);
-}
-
-/// A class which mocks [PermissionStatus].
-///
-/// See the documentation for Mockito's code generation for more information.
-class MockPermissionStatus extends _i1.Mock implements _i2.PermissionStatus {
-  MockPermissionStatus() {
-    _i1.throwOnMissingStub(this);
-  }
-
-  @override
-  _i3.Stream<_i2.Event> get onChange => (super.noSuchMethod(
-        Invocation.getter(#onChange),
-        returnValue: _i3.Stream<_i2.Event>.empty(),
-      ) as _i3.Stream<_i2.Event>);
-  @override
-  _i2.Events get on => (super.noSuchMethod(
-        Invocation.getter(#on),
-        returnValue: _FakeEvents_7(
-          this,
-          Invocation.getter(#on),
-        ),
-      ) as _i2.Events);
   @override
   void addEventListener(
     String? type,

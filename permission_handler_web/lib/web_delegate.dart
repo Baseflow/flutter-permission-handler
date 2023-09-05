@@ -7,16 +7,19 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 /// Used for dependency injection of html.MediaDevices and html.Permissions objects
 class WebDelegate {
   /// Constructs a WebDelegate.
-  WebDelegate(this.devices, this.htmlPermissions);
+  WebDelegate(this.devices, this.geolocation, this.htmlPermissions);
 
   /// The html media devices object used to request camera and microphone permissions.
   html.MediaDevices? devices;
+
+  /// The html geolocation object used to request location permission.
+  html.Geolocation? geolocation;
 
   /// The html permissions object used to check permission status.
   html.Permissions? htmlPermissions;
 
   /// Getter for WebDelegate.
-  WebDelegate get webDelegate => WebDelegate(devices, htmlPermissions);
+  WebDelegate get webDelegate => WebDelegate(devices, geolocation, htmlPermissions);
 
   /// The permission name to request access to the camera.
   static const _microphonePermissionName = 'microphone';
@@ -26,6 +29,9 @@ class WebDelegate {
 
   /// The permission name to request notifications from the user.
   static const _notificationsPermissionName = 'notifications';
+
+  /// The permission name to request access to the user's location.
+  static const _locationPermissionName = 'location';
 
   /// The status indicates that permission has been granted by the user.
   static const _grantedPermissionStatus = 'granted';
@@ -116,6 +122,15 @@ class WebDelegate {
     return granted;
   }
 
+  Future<bool> _requestLocationPermission(html.Geolocation geolocation) async {
+    try {
+      await geolocation.getCurrentPosition();
+      return true;
+    } on html.PositionError {
+      return false;
+    }
+  }
+
   Future<PermissionStatus> _requestSingularPermission(
       Permission permission) async {
     bool permissionGranted = false;
@@ -129,6 +144,9 @@ class WebDelegate {
         break;
       case Permission.notification:
         permissionGranted = await _requestNotificationPermission();
+        break;
+      case Permission.location:
+        permissionGranted = await _requestLocationPermission(geolocation!);
         break;
       default:
         throw UnimplementedError(
@@ -174,6 +192,10 @@ class WebDelegate {
         break;
       case Permission.notification:
         webPermissionName = _notificationsPermissionName;
+        break;
+      case Permission.location:
+        webPermissionName = _locationPermissionName;
+        break;
       default:
         throw UnimplementedError(
           'checkPermissionStatus() has not been implemented for ${permission.toString()} '

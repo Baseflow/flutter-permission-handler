@@ -8,36 +8,45 @@ import 'package:permission_handler_web/web_delegate.dart';
 import 'permission_handler_web_test.mocks.dart';
 
 @GenerateMocks([
-  html.Window,
-  html.Navigator,
+  html.DomException,
+  html.Geolocation,
+  html.Geoposition,
   html.MediaDevices,
   html.MediaStream,
-  html.DomException,
+  html.Navigator,
   html.Permissions,
-  html.PermissionStatus
+  html.PermissionStatus,
+  html.PositionError,
+  html.Window,
 ])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  final MockWindow window = MockWindow();
-  final MockNavigator navigator = MockNavigator();
+  final MockDomException domException = MockDomException();
+  final MockGeolocation geolocation = MockGeolocation();
+  final MockGeoposition geoposition = MockGeoposition();
   final MockMediaDevices mediaDevices = MockMediaDevices();
   final MockMediaStream mediaStream = MockMediaStream();
-  final MockDomException domException = MockDomException();
+  final MockNavigator navigator = MockNavigator();
   final MockPermissions permissions = MockPermissions();
   final MockPermissionStatus permissionStatus = MockPermissionStatus();
+  final MockPositionError positionError = MockPositionError();
+  final MockWindow window = MockWindow();
 
-  final WebDelegate fakePlugin = WebDelegate(mediaDevices, permissions);
+  final WebDelegate fakePlugin =
+      WebDelegate(mediaDevices, geolocation, permissions);
 
   final List<Permission> testPermissions = [
-    Permission.contacts,
-    Permission.notification,
-    Permission.microphone,
     Permission.camera,
+    Permission.contacts,
+    Permission.location,
+    Permission.microphone,
+    Permission.notification,
   ];
 
   when(window.navigator).thenReturn(navigator);
   when(navigator.mediaDevices).thenReturn(mediaDevices);
+  when(navigator.geolocation).thenReturn(geolocation);
   when(permissions.query(any)).thenAnswer((_) async => permissionStatus);
 
   // camera stubs
@@ -48,6 +57,9 @@ void main() {
   when(mediaDevices.getUserMedia({'audio': true}))
       .thenAnswer((_) async => mediaStream);
   when(mediaStream.getAudioTracks()).thenReturn(List.empty());
+
+  // location stubs
+  when(geolocation.getCurrentPosition()).thenAnswer((_) async => geoposition);
 
   test(
       'check permission works for camera before user is prompted for permission',
@@ -189,5 +201,59 @@ void main() {
         await fakePlugin.checkPermissionStatus(Permission.notification);
 
     expect(postActualStatus, PermissionStatus.permanentlyDenied);
+  });
+
+  test(
+      'check permission works for location before user is prompted for permission',
+      () async {
+    when(permissionStatus.state).thenReturn('prompt');
+
+    // check permissions status before requesting
+    final preActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.location);
+
+    expect(preActualStatus, PermissionStatus.denied);
+  });
+  test('check permission works for location after user accepts permission',
+      () async {
+    when(permissionStatus.state).thenReturn('granted');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.location);
+
+    expect(postActualStatus, PermissionStatus.granted);
+  });
+  test('check permission works for location after user declines permission',
+      () async {
+    when(permissionStatus.state).thenReturn('denied');
+
+    // check permissions status after requesting
+    final postActualStatus =
+        await fakePlugin.checkPermissionStatus(Permission.location);
+
+    expect(postActualStatus, PermissionStatus.permanentlyDenied);
+  });
+
+  test('request permission works for location if user grants permission',
+      () async {
+    when(geolocation.getCurrentPosition()).thenAnswer((_) async => geoposition);
+
+    // request permission
+    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
+
+    expect(permissionMap[Permission.location], PermissionStatus.granted);
+  });
+  test(
+      'request permission works for location if user does not grant permission',
+      () async {
+    // stubs
+    when(geolocation.getCurrentPosition()).thenThrow(positionError);
+
+    // request permission
+    final permissionMap = await fakePlugin.requestPermissions(testPermissions);
+
+    expect(
+        permissionMap[Permission.location], PermissionStatus.permanentlyDenied);
   });
 }
