@@ -3,11 +3,20 @@ import 'dart:async';
 
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
+/// The delegate class for WebPermissionHandler.
+/// Used for dependency injection of html.MediaDevices and html.Permissions objects
 class WebDelegate {
+  /// Constructs a WebDelegate.
   WebDelegate(this.devices, this.htmlPermissions);
 
+  /// The html media devices object used to request camera and microphone permissions.
   html.MediaDevices? devices;
+
+  /// The html permissions object used to check permission status.
   html.Permissions? htmlPermissions;
+
+  /// Getter for WebDelegate.
+  WebDelegate get webDelegate => WebDelegate(devices, htmlPermissions);
 
   /// The permission name to request access to the camera.
   static const _microphonePermissionName = 'microphone';
@@ -134,6 +143,10 @@ class WebDelegate {
     return PermissionStatus.granted;
   }
 
+  /// Requests the user for access to the supplied list of [Permission]s, if
+  /// they have not already been granted before.
+  ///
+  /// Returns a [Map] containing the status per requested [Permission].
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) async {
     final Map<Permission, PermissionStatus> permissionStatusMap = {};
@@ -149,6 +162,7 @@ class WebDelegate {
     return permissionStatusMap;
   }
 
+  /// Checks the current status of the given [Permission].
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
     String webPermissionName;
     switch (permission) {
@@ -169,6 +183,8 @@ class WebDelegate {
     return _permissionStatusState(webPermissionName, htmlPermissions);
   }
 
+  /// Checks the current status of the service associated with the given
+  /// [Permission].
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     try {
       final permissionStatus = await checkPermissionStatus(permission);

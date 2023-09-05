@@ -1,50 +1,58 @@
 import 'dart:html' as html;
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:permission_handler_web/web_delegate.dart';
 
+/// Platform implementation of the permission_handler Flutter plugin.
 class WebPermissionHandler extends PermissionHandlerPlatform {
-  WebDelegate? webDelegate;
-
-  static final html.MediaDevices devices = html.window.navigator.mediaDevices!;
-  static final html.Permissions? htmlPermissions =
+  static final html.MediaDevices _devices = html.window.navigator.mediaDevices!;
+  static final html.Permissions? _htmlPermissions =
       html.window.navigator.permissions;
 
+  final WebDelegate _webDelegate;
+
+  /// Registers the web plugin implementation.
   static void registerWith(Registrar registrar) {
-    PermissionHandlerPlatform.instance = WebPermissionHandler();
+    PermissionHandlerPlatform.instance = WebPermissionHandler(
+      webDelegate: WebDelegate(
+        _devices,
+        _htmlPermissions,
+      ),
+    );
   }
+
+  /// Constructs a WebPermissionHandler.
+  WebPermissionHandler({
+    required WebDelegate webDelegate,
+  }) : _webDelegate = webDelegate;
 
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
       List<Permission> permissions) async {
-    webDelegate ??= WebDelegate(devices, htmlPermissions);
-    return webDelegate!.requestPermissions(permissions);
+    return _webDelegate.requestPermissions(permissions);
   }
 
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
-    webDelegate ??= WebDelegate(devices, htmlPermissions);
-    return webDelegate!.checkPermissionStatus(permission);
+    return _webDelegate.checkPermissionStatus(permission);
   }
 
   @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
-    webDelegate ??= WebDelegate(devices, htmlPermissions);
-    return webDelegate!.checkServiceStatus(permission);
+    return _webDelegate.checkServiceStatus(permission);
   }
 
   @override
   Future<bool> shouldShowRequestPermissionRationale(
       Permission permission) async {
-    throw UnimplementedError(
-        'shouldShowRequestPermissionRationale() has not been implemented for web.');
+    return SynchronousFuture(false);
   }
 
   @override
   Future<bool> openAppSettings() {
-    throw UnimplementedError(
-        'openAppSettings() has not been implemented for web.');
+    return SynchronousFuture(false);
   }
 }
