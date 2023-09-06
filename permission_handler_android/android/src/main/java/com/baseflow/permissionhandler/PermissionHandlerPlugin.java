@@ -59,6 +59,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+        this.permissionManager = new PermissionManager(binding.getApplicationContext());
+
         startListening(
             binding.getApplicationContext(),
             binding.getBinaryMessenger()
