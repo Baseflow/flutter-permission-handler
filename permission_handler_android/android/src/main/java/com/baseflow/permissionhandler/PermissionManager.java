@@ -211,12 +211,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     void checkPermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
-            Activity activity,
+            Context context,
             CheckPermissionsSuccessCallback successCallback) {
 
         successCallback.onSuccess(determinePermissionStatus(
                 permission,
-                activity));
+                context));
     }
 
     void requestPermissions(
@@ -327,25 +327,25 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     @PermissionConstants.PermissionStatus
     private int determinePermissionStatus(
             @PermissionConstants.PermissionGroup int permission,
-            Activity activity) {
+            Context context) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
-            return checkNotificationPermissionStatus(activity);
+            return checkNotificationPermissionStatus(context);
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH) {
-            return checkBluetoothPermissionStatus(activity);
+            return checkBluetoothPermissionStatus(context);
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT
                 || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN
                 || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE){
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                return checkBluetoothPermissionStatus(activity);
+                return checkBluetoothPermissionStatus(context);
             }
         }
 
-        final List<String> names = PermissionUtils.getManifestNames(activity, permission);
+        final List<String> names = PermissionUtils.getManifestNames(context, permission);
 
         if (names == null) {
             Log.d(PermissionConstants.LOG_TAG, "No android specific permissions needed for: " + permission);
@@ -378,14 +378,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        final boolean targetsMOrHigher = activity.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
+        final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
         for (String name : names) {
             // Only handle them if the client app actually targets a API level greater than M.
             if (targetsMOrHigher) {
                 if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                    String packageName = activity.getPackageName();
-                    PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+                    String packageName = context.getPackageName();
+                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
                     // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
@@ -410,7 +410,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        return Settings.canDrawOverlays(activity)
+                        return Settings.canDrawOverlays(context)
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
@@ -418,7 +418,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        return activity.getPackageManager().canRequestPackageInstalls()
+                        return context.getPackageManager().canRequestPackageInstalls()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
                     }
@@ -426,7 +426,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Application.NOTIFICATION_SERVICE);
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
                         return notificationManager.isNotificationPolicyAccessGranted()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -435,7 +435,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+                        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                         return alarmManager.canScheduleExactAlarms()
                                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                                 : PermissionConstants.PERMISSION_STATUS_DENIED;
@@ -444,9 +444,9 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }
                 }
 
-                final int permissionStatus = ContextCompat.checkSelfPermission(activity, name);
+                final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionUtils.determineDeniedVariant(activity, name);
+                    return PermissionUtils.determineDeniedVariant(context, name);
                 }
             }
         }
@@ -498,21 +498,21 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     @PermissionConstants.PermissionStatus
-    private int checkNotificationPermissionStatus(Activity activity) {
+    private int checkNotificationPermissionStatus(Context context) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            NotificationManagerCompat manager = NotificationManagerCompat.from(activity);
-            boolean isGranted = manager.areNotificationsEnabled();
+            NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+            final boolean isGranted = manager.areNotificationsEnabled();
             if (isGranted) {
                 return PermissionConstants.PERMISSION_STATUS_GRANTED;
             }
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        final int status = activity.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
-        return PermissionUtils.toPermissionStatus(
-            activity,
-            Manifest.permission.POST_NOTIFICATIONS,
-            status);
+        final int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
+        if (status == PackageManager.PERMISSION_GRANTED) {
+            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        }
+        return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     @PermissionConstants.PermissionStatus
