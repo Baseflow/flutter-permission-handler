@@ -244,14 +244,17 @@ This will then bring up another permission popup asking you to `Keep Only While 
 
 ## FAQ
 
-### Requesting "storage" permissions always returns "denied" on Android 13, what can I do?
+### Requesting "storage" permissions always returns "denied" on Android 13+. What can I do?
 
 On Android the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android SDK 29 (Android 10) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/ disabled since Android SDK 33 (Android 13). 
 
 If your application needs access to media files Google recommends using the `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEOS` or `READ_MEDIA_AUDIO` permissions instead. These can be requested using the `Permission.photos`, `Permission.videos` and `Permission.audio` respectively. To request these permissions make sure the `compileSdkVersion` in the `android/app/build.gradle` file is set to `33`.
 
-If your application needs access to Androids file system it is possible to request the `MANAGE_EXTERNAL_STORAGE` permission (using `Permission.manageExternalStorage`). As of Android SDK 30 (Android 11) the `MANAGE_EXTERNAL_STORAGE` permission is considered a high-risk or sensitive permission. There for it is required to [declare the use of these permissions](https://support.google.com/googleplay/android-developer/answer/9214102) if you intend to release the application via the Google Play Store. 
+If your application needs access to Androids file system it is possible to request the `MANAGE_EXTERNAL_STORAGE` permission (using `Permission.manageExternalStorage`). As of Android SDK 30 (Android 11) the `MANAGE_EXTERNAL_STORAGE` permission is considered a high-risk or sensitive permission. There for it is required to [declare the use of these permissions](https://support.google.com/googleplay/android-developer/answer/9214102) if you intend to release the application via the Google Play Store.
 
+### Requesting `Permission.locationAlways` always returns "denied" on Android 10+ (API 29+). What can I do?
+
+Starting with Android 10, apps are required to first obtain the permission to read the device's location in the foreground, before requesting to read the location in the background as well. When requesting for the 'location always' permission directly, or when requesting both permissions at the same time, the system will ignore the request. So, instead of calling only `Permission.location.request()`, make sure to first call either `Permission.location.request()` or `Permission.locationWhenInUse.request()`, and obtain permission to read the GPS. Once you obtain this permission, you can call `Permission.locationAlways.request()`. This will present the user with the option to update the settings so the location can always be read in the background. For more information, visit the [Android documentation on requesting location permissions](https://developer.android.com/training/location/permissions#request-only-foreground).
 
 ## Issues
 
