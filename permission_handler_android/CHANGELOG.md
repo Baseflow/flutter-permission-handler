@@ -1,7 +1,6 @@
 ## 11.0.0
 
-* Fixes a bug where the permission status would return 'denied' regardless of
-whether the status was 'denied' or 'permanently denied'.
+* **BREAKING CHANGE:** Fixes a bug where the permission status would return 'denied' regardless of whether the status was 'denied' or 'permanently denied'.
 
 ## 10.3.5
 
