@@ -18,7 +18,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.AlarmManagerCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
@@ -209,14 +208,32 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     private boolean ongoing = false;
 
+    /**
+     * Determines the permission status of the provided permission.
+     * <p>
+     * This method takes both a {@link Context} and an {@link Activity}. The activity is used for
+     * distinguishing between a status of 'denied' and a status of 'permanently denied'. The
+     * activity can be null, for example when running the application in the background. If the
+     * activity is null, this distinction cannot be made and the result will always be 'denied'. To
+     * have access to an application context regardless of whether the activity is null, a context
+     * must be supplied.
+     *
+     * @param permission the permission for which to determine the status.
+     * @param context the application context, used for checking various permission APIs.
+     * @param activity the activity that allows us to distinguish between 'denied' and
+     * 'permanently denied' statuses.
+     * @param successCallback the callback to which the resolved status must be supplied.
+     */
     void checkPermissionStatus(
-            @PermissionConstants.PermissionGroup int permission,
-            Context context,
-            CheckPermissionsSuccessCallback successCallback) {
+            final @PermissionConstants.PermissionGroup int permission,
+            final @NonNull Context context,
+            final @Nullable Activity activity,
+            final CheckPermissionsSuccessCallback successCallback) {
 
         successCallback.onSuccess(determinePermissionStatus(
                 permission,
-                context));
+                context,
+                activity));
     }
 
     void requestPermissions(
@@ -246,7 +263,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
-            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity);
+            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity, activity);
             if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
                 if (!requestResults.containsKey(permission)) {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
@@ -326,8 +343,9 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     @PermissionConstants.PermissionStatus
     private int determinePermissionStatus(
-            @PermissionConstants.PermissionGroup int permission,
-            Context context) {
+            final @PermissionConstants.PermissionGroup int permission,
+            final @NonNull Context context,
+            final @Nullable Activity activity) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
             return checkNotificationPermissionStatus(context);
@@ -446,7 +464,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionUtils.determineDeniedVariant(context, name);
+                    return PermissionUtils.determineDeniedVariant(activity, name);
                 }
             }
         }

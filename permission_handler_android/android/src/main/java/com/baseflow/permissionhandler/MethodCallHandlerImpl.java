@@ -54,17 +54,11 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 break;
             }
             case "checkPermissionStatus": {
-                /*
-                 Use the Activity as Context if possible, for smarted permission status resolution.
-                 If the activity is not available (the application is running in the background),
-                 use the ApplicationContext instead. See PermissionUtils.determineDeniedVariant()
-                 for more information.
-                */
-                final Context context = activity != null ? activity : applicationContext;
                 @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 permissionManager.checkPermissionStatus(
                         permission,
-                        context,
+                        applicationContext,
+                        activity,
                         result::success);
                 break;
             }

@@ -447,12 +447,12 @@ public class PermissionUtils {
      */
     @PermissionConstants.PermissionStatus
     static int toPermissionStatus(
-        final Context context,
+        final @Nullable Activity activity,
         final String permissionName,
         int grantResult) {
 
         if (grantResult == PackageManager.PERMISSION_DENIED) {
-            return determineDeniedVariant(context, permissionName);
+            return determineDeniedVariant(activity, permissionName);
         }
 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
@@ -462,21 +462,19 @@ public class PermissionUtils {
      * Determines whether a permission was either 'denied' or 'permanently denied'.
      * <p>
      * To distinguish between these two variants, the method needs access to an {@link Activity}.
-     * To that end, it checks if the provided {@link Context} is of type {@link Activity}. If it is,
-     * permission type resolution will work as expected. If a regular {@link Context} is provided
-     * instead, the result will always be resolved to 'denied'.
+     * If the provided activity is null, the result will always be resolved to 'denied'.
      *
-     * @param context the context needed to resolve.
+     * @param activity the activity needed to resolve the permission status.
      * @param permissionName the name of the permission.
      * @return either {@link PermissionConstants#PERMISSION_STATUS_DENIED} or
-     * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}
+     * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
      */
     @PermissionConstants.PermissionStatus
     static int determineDeniedVariant(
-        final Context context,
+        final @Nullable Activity activity,
         final String permissionName) {
 
-        if (!(context instanceof Activity)) {
+        if (activity == null) {
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
@@ -484,14 +482,14 @@ public class PermissionUtils {
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        final boolean wasDeniedBefore = PermissionUtils.wasPermissionDeniedBefore(context, permissionName);
-        final boolean shouldShowRational = !PermissionUtils.isNeverAskAgainSelected((Activity) context, permissionName);
+        final boolean wasDeniedBefore = PermissionUtils.wasPermissionDeniedBefore(activity, permissionName);
+        final boolean shouldShowRational = !PermissionUtils.isNeverAskAgainSelected(activity, permissionName);
 
         //noinspection SimplifiableConditionalExpression
         final boolean isDenied = wasDeniedBefore ? !shouldShowRational : shouldShowRational;
 
         if (!wasDeniedBefore && isDenied) {
-            setPermissionDenied(context, permissionName);
+            setPermissionDenied(activity, permissionName);
         }
 
         if (wasDeniedBefore && isDenied) {
