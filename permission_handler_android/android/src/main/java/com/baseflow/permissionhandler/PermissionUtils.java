@@ -440,7 +440,7 @@ public class PermissionUtils {
      * @param activity       the activity for context
      * @param permissionName the name of the permission
      * @param grantResult    the result of the permission intent. Either
-     * {@link PackageManager#PERMISSION_DENIED} or {@link PackageManager#PERMISSION_GRANTED}.
+     *                       {@link PackageManager#PERMISSION_DENIED} or {@link PackageManager#PERMISSION_GRANTED}.
      * @return {@link PermissionConstants#PERMISSION_STATUS_GRANTED},
      * {@link PermissionConstants#PERMISSION_STATUS_DENIED}, or
      * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
@@ -464,7 +464,7 @@ public class PermissionUtils {
      * To distinguish between these two variants, the method needs access to an {@link Activity}.
      * If the provided activity is null, the result will always be resolved to 'denied'.
      *
-     * @param activity the activity needed to resolve the permission status.
+     * @param activity       the activity needed to resolve the permission status.
      * @param permissionName the name of the permission.
      * @return either {@link PermissionConstants#PERMISSION_STATUS_DENIED} or
      * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
