@@ -1,11 +1,8 @@
 package com.baseflow.permissionhandler;
 
-import android.app.Activity;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
-
-import androidx.annotation.Nullable;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -30,13 +27,6 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
         this.serviceManager = serviceManager;
     }
 
-    @Nullable
-    private Activity activity;
-
-    public void setActivity(@Nullable Activity activity) {
-        this.activity = activity;
-    }
-
     @Override
     public void onMethodCall(@NonNull MethodCall call, @NonNull final Result result) {
         switch (call.method) {
@@ -57,8 +47,6 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 permissionManager.checkPermissionStatus(
                     permission,
-                    applicationContext,
-                    activity,
                     result::success);
                 break;
             }
@@ -66,7 +54,6 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 final List<Integer> permissions = call.arguments();
                 permissionManager.requestPermissions(
                     permissions,
-                    activity,
                     result::success,
                     (String errorCode, String errorDescription) -> result.error(
                         errorCode,
@@ -78,7 +65,6 @@ final class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
                 @PermissionConstants.PermissionGroup final int permission = Integer.parseInt(call.arguments.toString());
                 permissionManager.shouldShowRequestPermissionRationale(
                     permission,
-                    activity,
                     result::success,
                     (String errorCode, String errorDescription) -> result.error(
                         errorCode,
