@@ -13,6 +13,7 @@ final class PermissionConstants {
     static final int PERMISSION_CODE_SYSTEM_ALERT_WINDOW = 211;
     static final int PERMISSION_CODE_REQUEST_INSTALL_PACKAGES = 212;
     static final int PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY = 213;
+    static final int PERMISSION_CODE_SCHEDULE_EXACT_ALARM = 214;
 
     //PERMISSION_GROUP
     static final int PERMISSION_GROUP_CALENDAR = 0;

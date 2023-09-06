@@ -1,3 +1,8 @@
+## 10.3.5
+
+* Fixes a bug where `Permission.ScheduleExactAlarm` was not opening the settings
+screen.
+
 ## 10.3.4
 
 * Fixes a bug where the permission status would return 'permanently denied'
