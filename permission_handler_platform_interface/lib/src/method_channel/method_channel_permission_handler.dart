@@ -90,7 +90,10 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
       Permission permission) async {
     final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
-
+    // calling this on ios will return an int value 0, this will cause type cast error
+    if (shouldShowRationale is int){
+      return shouldShowRationale > 0;
+    }
     return shouldShowRationale ?? false;
   }
 }
