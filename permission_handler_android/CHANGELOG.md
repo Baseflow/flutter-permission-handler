@@ -1,3 +1,7 @@
+## 11.0.1
+
+* Fixes `java.lang.IllegalStateException: Reply already submitted` when requesting post notification permission.
+
 ## 11.0.0
 
 * **BREAKING CHANGE:** Fixes a bug where the permission status would return 'denied' regardless of whether the status was 'denied' or 'permanently denied'.
