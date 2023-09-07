@@ -39,6 +39,23 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     @NonNull
     private final Context context;
 
+    /**
+     * The number of pending permission requests.
+     * <p>
+     * This number is set by {@link this#requestPermissions(List, Activity, RequestPermissionsSuccessCallback, ErrorCallback)}
+     * and then reduced when receiving results in {@link this#onActivityResult(int, int, Intent)}
+     * and {@link this#onRequestPermissionsResult(int, String[], int[])}.
+     */
+    private int pendingRequestCount;
+    /**
+     * The results of resolved permission requests.
+     * <p>
+     * This map holds the results to resolved permission requests received through
+     * {@link this#onActivityResult(int, int, Intent)} and
+     * {@link this#onRequestPermissionsResult(int, String[], int[])}.
+     * It is (re)initialized when new permissions are requested through
+     * {@link this#requestPermissions(List, Activity, RequestPermissionsSuccessCallback, ErrorCallback)}.
+     */
     private Map<Integer, Integer> requestResults;
 
     public PermissionManager(@NonNull Context context) {
@@ -119,9 +136,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
-        HashMap<Integer, Integer> results = new HashMap<>();
-        results.put(permission, status);
-        successCallback.onSuccess(results);
+        requestResults.put(permission, status);
+        pendingRequestCount--;
+
+        // Post result if all requests have been handled.
+        if (pendingRequestCount == 0) {
+            this.successCallback.onSuccess(requestResults);
+        }
         return true;
     }
 
@@ -132,7 +153,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         @NonNull int[] grantResults) {
 
         if (requestCode != PermissionConstants.PERMISSION_CODE) {
-            ongoing = false;
+            pendingRequestCount = 0;
             return false;
         }
 
@@ -197,8 +218,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
         }
 
-        this.successCallback.onSuccess(requestResults);
-        ongoing = false;
+        pendingRequestCount -= grantResults.length;
+
+        // Post result if all requests have been handled.
+        if (pendingRequestCount == 0) {
+            this.successCallback.onSuccess(requestResults);
+        }
         return true;
     }
 
@@ -216,8 +241,6 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     interface ShouldShowRequestPermissionRationaleSuccessCallback {
         void onSuccess(boolean shouldShowRequestPermissionRationale);
     }
-
-    private boolean ongoing = false;
 
     /**
      * Determines the permission status of the provided permission.
@@ -237,11 +260,40 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         successCallback.onSuccess(determinePermissionStatus(permission));
     }
 
+    /**
+     * Requests the user for the provided permissions.
+     * <p>
+     * This method will throw an error if it is called before all permission requests that were
+     * requested in a previous call have been resolved.
+     * <p>
+     * Android distinguishes between
+     * <a href="https://developer.android.com/guide/topics/permissions/overview#runtime">runtime permissions</a>
+     * and
+     * <a href="https://developer.android.com/guide/topics/permissions/overview#special">special permissions</a>.
+     * Runtime permissions give an app additional access to restricted data or let the app perform
+     * restricted actions that more substantially affect the system and other apps. These
+     * permissions present the user with a dialog where they can choose to grant or deny the
+     * permission. Special permissions guard access to system resources that are particularly
+     * sensitive or not directly related to user privacy. These permissions are requested by sending
+     * an {@link Intent} to the OS. The OS will open a special settings page where the user can
+     * grant the permission.
+     * Runtime permission request results will be reported through
+     * {@link this#onRequestPermissionsResult(int, String[], int[])}, while special permissions
+     * request results will be reported through {@link this#onActivityResult(int, int, Intent)}.
+     * When these methods receive request results, they check whether all permissions that were
+     * requested through this method were handled, and if so, return the result back to Dart.
+     *
+     * @param permissions     the permissions that are requested.
+     * @param activity        the activity.
+     * @param successCallback the callback for returning the permission results.
+     * @param errorCallback   the callback to call in case of an error.
+     */
     void requestPermissions(
         List<Integer> permissions,
+        Activity activity,
         RequestPermissionsSuccessCallback successCallback,
         ErrorCallback errorCallback) {
-        if (ongoing) {
+        if (pendingRequestCount > 0) {
             errorCallback.onError(
                 "PermissionHandler.PermissionManager",
                 "A request for permissions is already running, please wait for it to finish before doing another request (note that you can request multiple permissions at the same time).");
@@ -259,6 +311,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         this.successCallback = successCallback;
         this.requestResults = new HashMap<>();
+        this.pendingRequestCount = 0; // sanity check
 
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
@@ -295,48 +348,49 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 continue;
             }
 
+            // Request special permissions.
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
-                executeIntent(
+                launchSpecialPermission(
                     Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
                     PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
-                executeIntent(
+                launchSpecialPermission(
                     Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
                     PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
-                executeIntent(
+                launchSpecialPermission(
                     Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                     PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
-                executeIntent(
+                launchSpecialPermission(
                     Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
                     PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
-                executeSimpleIntent(
+                launchSpecialPermission(
                     Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS,
                     PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
-                executeIntent(
+                launchSpecialPermission(
                     Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                     PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM);
             } else {
                 permissionsToRequest.addAll(names);
+                pendingRequestCount += names.size();
             }
         }
 
-        final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
+        // Request runtime permissions.
         if (permissionsToRequest.size() > 0) {
-            ongoing = true;
-
+            final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
             ActivityCompat.requestPermissions(
                 activity,
                 requestPermissions,
                 PermissionConstants.PERMISSION_CODE);
-        } else {
-            ongoing = false;
-            if (requestResults.size() > 0) {
-                successCallback.onSuccess(requestResults);
-            }
+        }
+
+        // Post results immediately if no requests are pending.
+        if (pendingRequestCount == 0) {
+            this.successCallback.onSuccess(requestResults);
         }
     }
 
@@ -467,16 +521,24 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
-    private void executeIntent(String action, int requestCode) {
-        String packageName = activity.getPackageName();
-        Intent intent = new Intent();
-        intent.setAction(action);
-        intent.setData(Uri.parse("package:" + packageName));
+    /**
+     * Launches a request for a <a href="https://developer.android.com/training/permissions/requesting-special">special permission</a>.
+     * <p>
+     * There is a special case for {@link Settings#ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS}. See
+     * <a href="https://github.com/Baseflow/flutter-permission-handler/pull/587#discussion_r649295489">this comment</a>
+     * for more details.
+     *
+     * @param permissionAction the action for launching the settings page for a particular permission.
+     * @param requestCode      a request code to verify incoming results.
+     */
+    private void launchSpecialPermission(String permissionAction, int requestCode) {
+        Intent intent = new Intent(permissionAction);
+        if (!permissionAction.equals(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)) {
+            String packageName = activity.getPackageName();
+            intent.setData(Uri.parse("package:" + packageName));
+        }
         activity.startActivityForResult(intent, requestCode);
-    }
-
-    private void executeSimpleIntent(String action, int requestCode) {
-        activity.startActivityForResult(new Intent(action), requestCode);
+        pendingRequestCount++;
     }
 
     void shouldShowRequestPermissionRationale(

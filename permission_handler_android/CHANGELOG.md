@@ -2,6 +2,10 @@
 
 * **BREAKING CHANGE:** Fixes a bug where the permission status would return 'denied' regardless of whether the status was 'denied' or 'permanently denied'.
 
+## 10.3.6
+
+* Fixes a bug where requesting multiple permissions would crash the app if at least one of the permissions was a [special permission](https://developer.android.com/guide/topics/permissions/overview#special).
+
 ## 10.3.5
 
 * Fixes a bug where `Permission.ScheduleExactAlarm` was not opening the settings
