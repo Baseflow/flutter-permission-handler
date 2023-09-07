@@ -36,10 +36,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     @Nullable
     private Activity activity;
 
+    @NonNull
+    private final Context context;
+
     /**
      * The number of pending permission requests.
      * <p>
-     * This number is set by {@link this#requestPermissions(List, Activity, RequestPermissionsSuccessCallback, ErrorCallback)}
+     * This number is set by {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)}
      * and then reduced when receiving results in {@link this#onActivityResult(int, int, Intent)}
      * and {@link this#onRequestPermissionsResult(int, String[], int[])}.
      */
@@ -51,9 +54,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
      * {@link this#onActivityResult(int, int, Intent)} and
      * {@link this#onRequestPermissionsResult(int, String[], int[])}.
      * It is (re)initialized when new permissions are requested through
-     * {@link this#requestPermissions(List, Activity, RequestPermissionsSuccessCallback, ErrorCallback)}.
+     * {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)}.
      */
     private Map<Integer, Integer> requestResults;
+
+    public PermissionManager(@NonNull Context context) {
+        this.context = context;
+    }
+
+    public void setActivity(@Nullable Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -231,14 +242,22 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         void onSuccess(boolean shouldShowRequestPermissionRationale);
     }
 
+    /**
+     * Determines the permission status of the provided permission.
+     * <p>
+     * To distinguish between a status of 'denied' and a status of 'permanently denied', the plugin
+     * needs access to an activity. If `this.activity` is null, for example when running the
+     * application in the background, the resolved status will be 'denied' for both 'denied' and
+     * 'permanently denied'.
+     *
+     * @param permission      the permission for which to determine the status.
+     * @param successCallback the callback to which the resolved status must be supplied.
+     */
     void checkPermissionStatus(
-        @PermissionConstants.PermissionGroup int permission,
-        Context context,
-        CheckPermissionsSuccessCallback successCallback) {
+        final @PermissionConstants.PermissionGroup int permission,
+        final CheckPermissionsSuccessCallback successCallback) {
 
-        successCallback.onSuccess(determinePermissionStatus(
-            permission,
-            context));
+        successCallback.onSuccess(determinePermissionStatus(permission));
     }
 
     /**
@@ -265,13 +284,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
      * requested through this method were handled, and if so, return the result back to Dart.
      *
      * @param permissions     the permissions that are requested.
-     * @param activity        the activity.
      * @param successCallback the callback for returning the permission results.
      * @param errorCallback   the callback to call in case of an error.
      */
     void requestPermissions(
         List<Integer> permissions,
-        Activity activity,
         RequestPermissionsSuccessCallback successCallback,
         ErrorCallback errorCallback) {
         if (pendingRequestCount > 0) {
@@ -291,13 +308,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         }
 
         this.successCallback = successCallback;
-        this.activity = activity;
         this.requestResults = new HashMap<>();
         this.pendingRequestCount = 0; // sanity check
 
         ArrayList<String> permissionsToRequest = new ArrayList<>();
         for (Integer permission : permissions) {
-            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission, activity);
+            @PermissionConstants.PermissionStatus final int permissionStatus = determinePermissionStatus(permission);
             if (permissionStatus == PermissionConstants.PERMISSION_STATUS_GRANTED) {
                 if (!requestResults.containsKey(permission)) {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
@@ -377,23 +393,21 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     @PermissionConstants.PermissionStatus
-    private int determinePermissionStatus(
-        @PermissionConstants.PermissionGroup int permission,
-        Context context) {
+    private int determinePermissionStatus(final @PermissionConstants.PermissionGroup int permission) {
 
         if (permission == PermissionConstants.PERMISSION_GROUP_NOTIFICATION) {
-            return checkNotificationPermissionStatus(context);
+            return checkNotificationPermissionStatus();
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH) {
-            return checkBluetoothPermissionStatus(context);
+            return checkBluetoothPermissionStatus();
         }
 
         if (permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT
             || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN
             || permission == PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-                return checkBluetoothPermissionStatus(context);
+                return checkBluetoothPermissionStatus();
             }
         }
 
@@ -498,7 +512,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
                 final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                 if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionConstants.PERMISSION_STATUS_DENIED;
+                    return PermissionUtils.determineDeniedVariant(activity, name);
                 }
             }
         }
@@ -527,7 +541,6 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     void shouldShowRequestPermissionRationale(
         int permission,
-        Activity activity,
         ShouldShowRequestPermissionRationaleSuccessCallback successCallback,
         ErrorCallback errorCallback) {
         if (activity == null) {
@@ -557,22 +570,26 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         successCallback.onSuccess(ActivityCompat.shouldShowRequestPermissionRationale(activity, names.get(0)));
     }
 
-    private int checkNotificationPermissionStatus(Context context) {
+    @PermissionConstants.PermissionStatus
+    private int checkNotificationPermissionStatus() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
             NotificationManagerCompat manager = NotificationManagerCompat.from(context);
-            boolean isGranted = manager.areNotificationsEnabled();
+            final boolean isGranted = manager.areNotificationsEnabled();
             if (isGranted) {
                 return PermissionConstants.PERMISSION_STATUS_GRANTED;
             }
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        return context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
-            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-            : PermissionConstants.PERMISSION_STATUS_DENIED;
+        final int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
+        if (status == PackageManager.PERMISSION_GRANTED) {
+            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        }
+        return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
-    private int checkBluetoothPermissionStatus(Context context) {
+    @PermissionConstants.PermissionStatus
+    private int checkBluetoothPermissionStatus() {
         List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_BLUETOOTH);
         boolean missingInManifest = names == null || names.isEmpty();
         if (missingInManifest) {
