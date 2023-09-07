@@ -42,7 +42,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     /**
      * The number of pending permission requests.
      * <p>
-     * This number is set by {@link this#requestPermissions(List, Activity, RequestPermissionsSuccessCallback, ErrorCallback)}
+     * This number is set by {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)}
      * and then reduced when receiving results in {@link this#onActivityResult(int, int, Intent)}
      * and {@link this#onRequestPermissionsResult(int, String[], int[])}.
      */
@@ -54,7 +54,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
      * {@link this#onActivityResult(int, int, Intent)} and
      * {@link this#onRequestPermissionsResult(int, String[], int[])}.
      * It is (re)initialized when new permissions are requested through
-     * {@link this#requestPermissions(List, Activity, RequestPermissionsSuccessCallback, ErrorCallback)}.
+     * {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)}.
      */
     private Map<Integer, Integer> requestResults;
 
@@ -284,13 +284,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
      * requested through this method were handled, and if so, return the result back to Dart.
      *
      * @param permissions     the permissions that are requested.
-     * @param activity        the activity.
      * @param successCallback the callback for returning the permission results.
      * @param errorCallback   the callback to call in case of an error.
      */
     void requestPermissions(
         List<Integer> permissions,
-        Activity activity,
         RequestPermissionsSuccessCallback successCallback,
         ErrorCallback errorCallback) {
         if (pendingRequestCount > 0) {
