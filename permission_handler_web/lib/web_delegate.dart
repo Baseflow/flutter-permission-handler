@@ -175,7 +175,7 @@ class WebDelegate {
         permissionStatusMap[permission] =
             await _requestSingularPermission(permission);
       } on UnimplementedError {
-        continue;
+        rethrow;
       }
     }
     return permissionStatusMap;
