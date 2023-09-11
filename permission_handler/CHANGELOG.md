@@ -1,3 +1,17 @@
+## 11.0.0
+
+* **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.
+* Updates `permission_handler_apple` dependency to version 9.1.4.
+* Updates `permission_handler_platform_interface` dependency to version 3.11.5.
+
+## 10.4.5
+
+* Updates the mentions of Android versions in the README, now following a format of 'Android {name} (API {number})'. For example: 'Android 13 (API 33)'.
+
+## 10.4.4
+
+* Adds a section to the [FAQ](https://pub.dev/packages/permission_handler#faq) clarifying how to request background location permission on Android 10+ (API 29+).
+
 ## 10.4.3
 
 * Updates example app to show relevant permissions on Android and iOS platforms.

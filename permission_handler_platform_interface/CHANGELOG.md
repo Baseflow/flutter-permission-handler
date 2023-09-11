@@ -1,3 +1,12 @@
+## 3.11.5
+
+* Updates the mentions of Android versions throughout the plugin, now following a format of 'Android {name} (API {number})'. For example: 'Android 13 (API 33)'.
+
+## 3.11.4
+
+* Clarifies the documentation on requesting background location permission
+through `Permission.locationAlways` on Android 10+ (API 29+).
+
 ## 3.11.3
 
 * Updates the documentation for the `Permission.bluetooth` permission regarding the limitations of the permission on iOS.
