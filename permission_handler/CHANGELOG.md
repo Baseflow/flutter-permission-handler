@@ -1,3 +1,9 @@
+## 11.0.0
+
+* **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.
+* Updates `permission_handler_apple` dependency to version 9.1.4.
+* Updates `permission_handler_platform_interface` dependency to version 3.11.5.
+
 ## 10.4.5
 
 * Updates the mentions of Android versions in the README, now following a format of 'Android {name} (API {number})'. For example: 'Android 13 (API 33)'.
