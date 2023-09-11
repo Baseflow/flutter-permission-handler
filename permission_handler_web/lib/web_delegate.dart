@@ -150,9 +150,8 @@ class WebDelegate {
         permissionGranted = await _requestLocationPermission(geolocation!);
         break;
       default:
-        throw UnimplementedError(
-          '_requestSingularPermission() has not been implemented for '
-          '${permission.toString()} on web.',
+        throw UnsupportedError(
+          'The ${permission.toString()} permission is currently not supported on web.',
         );
     }
 
