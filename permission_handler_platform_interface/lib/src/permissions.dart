@@ -31,23 +31,30 @@ class Permission {
   /// iOS: Calendar (Events)
   static const calendar = Permission._(0);
 
+  /// Permission to add events to device's calendar (iOS only).
+  ///
+  /// Events can only be added. If you want to read them as well, use the
+  /// [calendar] permission instead.
+  /// iOS: Calendar (17+ read & write access level)
+  static const calendarAddOnly = Permission._(1);
+
   /// Permission for accessing the device's camera.
   ///
   /// Android: Camera
   /// iOS: Photos (Camera Roll and Camera)
-  static const camera = Permission._(1);
+  static const camera = Permission._(2);
 
   /// Permission for accessing the device's contacts.
   ///
   /// Android: Contacts
   /// iOS: AddressBook
-  static const contacts = Permission._(2);
+  static const contacts = Permission._(3);
 
   /// Permission for accessing the device's location.
   ///
   /// Android: Fine and Coarse Location
   /// iOS: CoreLocation (Always and WhenInUse)
-  static const location = PermissionWithService._(3);
+  static const location = PermissionWithService._(4);
 
   /// Permission for accessing the device's location when the app is running in
   /// the background.
@@ -67,23 +74,23 @@ class Permission {
   /// - When running below Android 10 (API 29): Fine and Coarse Location
   ///
   /// **iOS:** CoreLocation - Always
-  static const locationAlways = PermissionWithService._(4);
+  static const locationAlways = PermissionWithService._(5);
 
   /// Permission for accessing the device's location when the app is running in
   /// the foreground.
   ///
   /// Android: Fine and Coarse Location
   /// iOS: CoreLocation - WhenInUse
-  static const locationWhenInUse = PermissionWithService._(5);
+  static const locationWhenInUse = PermissionWithService._(6);
 
   /// Permission for accessing the device's media library (iOS 9.3+ only).
-  static const mediaLibrary = Permission._(6);
+  static const mediaLibrary = Permission._(7);
 
   /// Permission for accessing the device's microphone.
-  static const microphone = Permission._(7);
+  static const microphone = Permission._(8);
 
   /// Permission for accessing the device's phone state (Android only).
-  static const phone = PermissionWithService._(8);
+  static const phone = PermissionWithService._(9);
 
   /// Permission for accessing the device's photos.
   ///
@@ -100,7 +107,7 @@ class Permission {
   ///
   /// **iOS:**
   /// - When running Photos (iOS 14+ read & write access level)
-  static const photos = Permission._(9);
+  static const photos = Permission._(10);
 
   /// Permission for adding photos to the device's photo library (iOS only).
   ///
@@ -108,19 +115,19 @@ class Permission {
   /// [photos] permission instead.
   ///
   /// iOS: Photos (14+ read & write access level)
-  static const photosAddOnly = Permission._(10);
+  static const photosAddOnly = Permission._(11);
 
   /// Permission for accessing the device's reminders (iOS only).
-  static const reminders = Permission._(11);
+  static const reminders = Permission._(12);
 
   /// Permission for accessing the device's sensors.
   ///
   /// Android: Body Sensors
   /// iOS: CoreMotion
-  static const sensors = Permission._(12);
+  static const sensors = Permission._(13);
 
   /// Permission for sending and reading SMS messages (Android only).
-  static const sms = Permission._(13);
+  static const sms = Permission._(14);
 
   /// Permission for accessing speech recognition.
   ///
@@ -131,7 +138,7 @@ class Permission {
   /// **iOS:**
   /// - Requests speech access (different from requesting
   /// [Permission.microphone]).
-  static const speech = Permission._(14);
+  static const speech = Permission._(15);
 
   /// Permission for accessing external storage.
   ///
@@ -150,13 +157,13 @@ class Permission {
   ///
   /// **iOS:**
   /// - Access to folders like `Documents` or `Downloads`. Implicitly granted.
-  static const storage = Permission._(15);
+  static const storage = Permission._(16);
 
   /// Permission for accessing ignore battery optimizations (Android only).
-  static const ignoreBatteryOptimizations = Permission._(16);
+  static const ignoreBatteryOptimizations = Permission._(17);
 
   /// Permission for pushing notifications.
-  static const notification = Permission._(17);
+  static const notification = Permission._(18);
 
   /// Permission for accessing the device's media library.
   ///
@@ -164,15 +171,15 @@ class Permission {
   ///
   /// Allows an application to access any geographic locations persisted in the
   /// user's shared collection.
-  static const accessMediaLocation = Permission._(18);
+  static const accessMediaLocation = Permission._(19);
 
   /// Permission for accessing the activity recognition.
   ///
   /// Android 10+ (API 29+)
-  static const activityRecognition = Permission._(19);
+  static const activityRecognition = Permission._(20);
 
   /// The unknown only used for return type, never requested.
-  static const unknown = Permission._(20);
+  static const unknown = Permission._(21);
 
   /// Permission for accessing the device's bluetooth adapter state.
   ///
@@ -196,7 +203,7 @@ class Permission {
   /// user. It is impossible to obtain the actual Bluetooth service status
   /// without having the Bluetooth permission granted. The method will prompt
   /// the user for Bluetooth permission if the permission was not yet requested.
-  static const bluetooth = PermissionWithService._(21);
+  static const bluetooth = PermissionWithService._(22);
 
   /// Permission for accessing the device's external storage.
   ///
@@ -219,29 +226,29 @@ class Permission {
   /// you have to fill out the Permission Declaration Form upon submitting
   /// your app to the Google Play Store. More details can be found here:
   /// https://support.google.com/googleplay/android-developer/answer/9214102#zippy=
-  static const manageExternalStorage = Permission._(22);
+  static const manageExternalStorage = Permission._(23);
 
   /// Permission for creating system alert window (Android only).
   ///
   /// Allows an app to create windows shown on top of all other apps.
-  static const systemAlertWindow = Permission._(23);
+  static const systemAlertWindow = Permission._(24);
 
   /// Permission for requesting installing packages.
   ///
   /// Android Marshmallow+ (API 23+)
-  static const requestInstallPackages = Permission._(24);
+  static const requestInstallPackages = Permission._(25);
 
   /// Permission for accessing the device's tracking state (iOS only).
   ///
   /// Allows user to accept that your app collects data about end users and
   /// shares it with other companies for purposes of tracking across apps and
   /// websites.
-  static const appTrackingTransparency = Permission._(25);
+  static const appTrackingTransparency = Permission._(26);
 
   /// Permission for sending critical alerts (iOS only).
   ///
   /// Allow for sending notifications that override the ringer.
-  static const criticalAlerts = Permission._(26);
+  static const criticalAlerts = Permission._(27);
 
   /// Permission for accessing the device's notification policy.
   ///
@@ -249,12 +256,12 @@ class Permission {
   ///
   /// Allows the user to access the notification policy of the phone.
   /// EX: Allows app to turn on and off do-not-disturb.
-  static const accessNotificationPolicy = Permission._(27);
+  static const accessNotificationPolicy = Permission._(28);
 
   /// Permission for scanning for Bluetooth devices.
   ///
   /// Android 12+ (API 31+)
-  static const bluetoothScan = Permission._(28);
+  static const bluetoothScan = Permission._(29);
 
   /// Permission for advertising Bluetooth devices
   ///
@@ -262,43 +269,44 @@ class Permission {
   ///
   /// Allows the user to make this device discoverable to other Bluetooth
   /// devices.
-  static const bluetoothAdvertise = Permission._(29);
+  static const bluetoothAdvertise = Permission._(30);
 
   /// Permission for connecting to Bluetooth devices.
   ///
   /// Android 12+ (API 31+)
   ///
   /// Allows the user to connect with already paired Bluetooth devices.
-  static const bluetoothConnect = Permission._(30);
+  static const bluetoothConnect = Permission._(31);
 
   /// Permission for connecting to nearby devices via Wi-Fi.
   ///
   /// Android 13+ (API 33+)
-  static const nearbyWifiDevices = Permission._(31);
+  static const nearbyWifiDevices = Permission._(32);
 
   /// Permission for accessing the device's video files from external storage.
   ///
   /// Android 13+ (API 33+)
-  static const videos = Permission._(32);
+  static const videos = Permission._(33);
 
   /// Permission for accessing the device's audio files from external storage.
   ///
   /// Android 13+ (API 33+)
-  static const audio = Permission._(33);
+  static const audio = Permission._(34);
 
   /// Permission for scheduling exact alarms.
   ///
   /// Android 12+ (API 31+)
-  static const scheduleExactAlarm = Permission._(34);
+  static const scheduleExactAlarm = Permission._(35);
 
   /// Permission for accessing the device's sensors in background.
   ///
   /// Android 13+ (API 33+)
-  static const sensorsAlways = Permission._(35);
+  static const sensorsAlways = Permission._(36);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     calendar,
+    calendarAddOnly,
     camera,
     contacts,
     location,
@@ -338,6 +346,7 @@ class Permission {
 
   static const List<String> _names = <String>[
     'calendar',
+    'calendarAddOnly',
     'camera',
     'contacts',
     'location',

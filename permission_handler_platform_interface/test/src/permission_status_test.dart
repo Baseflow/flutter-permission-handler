@@ -3,10 +3,10 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 
 void main() {
   group('PermissionStatus', () {
-    test('PermissionStatus should contain 6 options', () {
+    test('PermissionStatus should contain 8 options', () {
       const values = PermissionStatus.values;
 
-      expect(values.length, 6);
+      expect(values.length, 8);
     });
 
     test('PermissionStatus enum should have items in correct index', () {
@@ -18,6 +18,8 @@ void main() {
       expect(values[3], PermissionStatus.limited);
       expect(values[4], PermissionStatus.permanentlyDenied);
       expect(values[5], PermissionStatus.provisional);
+      expect(values[6], PermissionStatus.writeOnly);
+      expect(values[7], PermissionStatus.fullAccess);
     });
   });
 
@@ -29,6 +31,8 @@ void main() {
       expect(PermissionStatus.limited.value, 3);
       expect(PermissionStatus.permanentlyDenied.value, 4);
       expect(PermissionStatus.provisional.value, 5);
+      expect(PermissionStatus.writeOnly.value, 6);
+      expect(PermissionStatus.fullAccess.value, 7);
     });
 
     test(
@@ -44,6 +48,10 @@ void main() {
           PermissionStatus.permanentlyDenied);
       expect(
           PermissionStatusValue.statusByValue(5), PermissionStatus.provisional);
+      expect(
+          PermissionStatusValue.statusByValue(6), PermissionStatus.writeOnly);
+      expect(
+          PermissionStatusValue.statusByValue(7), PermissionStatus.fullAccess);
     });
   });
 
@@ -55,6 +63,8 @@ void main() {
       expect(PermissionStatus.limited.isLimited, true);
       expect(PermissionStatus.permanentlyDenied.isPermanentlyDenied, true);
       expect(PermissionStatus.provisional.isProvisional, true);
+      expect(PermissionStatus.writeOnly.isWriteOnly, true);
+      expect(PermissionStatus.fullAccess.isFullAccess, true);
     });
 
     test('Getters should return false if statement is not met', () {
@@ -64,6 +74,8 @@ void main() {
       expect(PermissionStatus.limited.isDenied, false);
       expect(PermissionStatus.permanentlyDenied.isDenied, false);
       expect(PermissionStatus.provisional.isDenied, false);
+      expect(PermissionStatus.writeOnly.isDenied, false);
+      expect(PermissionStatus.fullAccess.isDenied, false);
     });
   });
 
@@ -81,6 +93,8 @@ void main() {
           true);
       expect(
           await mockFuture(PermissionStatus.provisional).isProvisional, true);
+      expect(await mockFuture(PermissionStatus.writeOnly).isWriteOnly, true);
+      expect(await mockFuture(PermissionStatus.fullAccess).isFullAccess, true);
     });
 
     test('Getters should return false if statement is not met', () async {
@@ -91,6 +105,8 @@ void main() {
       expect(
           await mockFuture(PermissionStatus.permanentlyDenied).isDenied, false);
       expect(await mockFuture(PermissionStatus.provisional).isDenied, false);
+      expect(await mockFuture(PermissionStatus.writeOnly).isDenied, false);
+      expect(await mockFuture(PermissionStatus.fullAccess).isDenied, false);
     });
   });
 

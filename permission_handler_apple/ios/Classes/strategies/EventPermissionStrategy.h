@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import "PermissionStrategy.h"
 
-#if PERMISSION_EVENTS | PERMISSION_REMINDERS
+#if PERMISSION_EVENTS | PERMISSION_EVENTS_ADD_ONLY | PERMISSION_REMINDERS
 
 #import <EventKit/EventKit.h>
 

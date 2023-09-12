@@ -29,6 +29,16 @@ enum PermissionStatus {
   ///
   /// *Only supported on iOS (iOS12+).*
   provisional,
+
+  /// The application is granted write only access to the requested feature
+  ///
+  /// *Only supported on iOS(iOS17+).*
+  writeOnly,
+
+  /// The application is granted full access to the requested feature
+  ///
+  /// *Only supported on iOS(iOS17+).*
+  fullAccess
 }
 
 /// Conversion extension methods for the [PermissionStatus] type.
@@ -48,6 +58,10 @@ extension PermissionStatusValue on PermissionStatus {
         return 4;
       case PermissionStatus.provisional:
         return 5;
+      case PermissionStatus.writeOnly:
+        return 6;
+      case PermissionStatus.fullAccess:
+        return 7;
       default:
         throw UnimplementedError();
     }
@@ -62,6 +76,8 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
       PermissionStatus.provisional,
+      PermissionStatus.writeOnly,
+      PermissionStatus.fullAccess
     ][value];
   }
 }
@@ -102,6 +118,14 @@ extension PermissionStatusGetters on PermissionStatus {
   /// If the application is provisionally authorized to post noninterruptive
   /// user notifications.
   bool get isProvisional => this == PermissionStatus.provisional;
+
+  /// If the application is granted write only access to the requested feature
+  /// *Only supported on iOS(17+).*
+  bool get isWriteOnly => this == PermissionStatus.writeOnly;
+
+  /// If the application is granted full access to the requested feature
+  /// *Only supported on iOS(17+).*
+  bool get isFullAccess => this == PermissionStatus.fullAccess;
 }
 
 /// Utility getter extensions for the `Future<PermissionStatus>` type.
@@ -140,4 +164,14 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   ///
   /// *Only supported on iOS.*
   Future<bool> get isProvisional async => (await this).isProvisional;
+
+  /// If the application is granted write only access to the requested feature
+  ///
+  /// *Only supported on iOS(17+).*
+  Future<bool> get isWriteOnly async => (await this).isWriteOnly;
+
+  /// If the application is granted full access to the requested feature
+  ///
+  /// *Only supported on iOS(17+).*
+  Future<bool> get isFullAccess async => (await this).isFullAccess;
 }
