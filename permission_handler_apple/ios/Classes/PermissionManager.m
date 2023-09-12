@@ -98,6 +98,7 @@
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
         case PermissionGroupCalendar:
+        case PermissionGroupCalendarAddOnly:
             return [EventPermissionStrategy new];
         case PermissionGroupCamera:
             return [AudioVideoPermissionStrategy new];

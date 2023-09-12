@@ -82,6 +82,16 @@ extension PermissionCheckShortcuts on Permission {
   /// If the application is provisionally authorized to post noninterruptive user notifications.
   /// *Only supported on iOS.*
   Future<bool> get isProvisional => status.isProvisional;
+
+  /// If the application is granted write only access to the requested feature
+  ///
+  /// *Only supported on iOS(17+).*
+  Future<bool> get isWriteOnly async => status.isWriteOnly;
+
+  /// If the application is granted full access to the requested feature
+  ///
+  /// *Only supported on iOS(17+).*
+  Future<bool> get isFullAccess async => status.isFullAccess;
 }
 
 /// Actions that apply only to permissions that have an associated service.
