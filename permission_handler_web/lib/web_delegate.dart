@@ -7,20 +7,22 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 /// Used for dependency injection of html.MediaDevices and html.Permissions objects
 class WebDelegate {
   /// Constructs a WebDelegate.
-  WebDelegate(this.devices, this.geolocation, this.htmlPermissions);
+  WebDelegate(
+    html.MediaDevices? devices,
+    html.Geolocation? geolocation,
+    html.Permissions? permissions,
+  )   : _devices = devices,
+        _geolocation = geolocation,
+        _htmlPermissions = permissions;
 
   /// The html media devices object used to request camera and microphone permissions.
-  html.MediaDevices? devices;
+  final html.MediaDevices? _devices;
 
   /// The html geolocation object used to request location permission.
-  html.Geolocation? geolocation;
+  final html.Geolocation? _geolocation;
 
   /// The html permissions object used to check permission status.
-  html.Permissions? htmlPermissions;
-
-  /// Getter for WebDelegate.
-  WebDelegate get webDelegate =>
-      WebDelegate(devices, geolocation, htmlPermissions);
+  final html.Permissions? _htmlPermissions;
 
   /// The permission name to request access to the camera.
   static const _microphonePermissionName = 'microphone';
@@ -138,16 +140,16 @@ class WebDelegate {
 
     switch (permission) {
       case Permission.microphone:
-        permissionGranted = await _requestMicrophonePermission(devices!);
+        permissionGranted = await _requestMicrophonePermission(_devices!);
         break;
       case Permission.camera:
-        permissionGranted = await _requestCameraPermission(devices!);
+        permissionGranted = await _requestCameraPermission(_devices!);
         break;
       case Permission.notification:
         permissionGranted = await _requestNotificationPermission();
         break;
       case Permission.location:
-        permissionGranted = await _requestLocationPermission(geolocation!);
+        permissionGranted = await _requestLocationPermission(_geolocation!);
         break;
       default:
         throw UnsupportedError(
@@ -202,7 +204,7 @@ class WebDelegate {
           'on web.',
         );
     }
-    return _permissionStatusState(webPermissionName, htmlPermissions);
+    return _permissionStatusState(webPermissionName, _htmlPermissions);
   }
 
   /// Checks the current status of the service associated with the given
