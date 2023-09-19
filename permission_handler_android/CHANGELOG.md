@@ -1,3 +1,9 @@
+## 12.0.0
+
+* **BREAKING CHANGES:**
+  * Fixes a bug where `Permission.Phone` would always return 'denied' when requesting the permission status.
+  * Fixes a bug where Flutter permissions that require multiple Android permissions would base their status on the status of the first Android permission, as opposed to the result of all relevant Android permissions.
+
 ## 11.0.1
 
 * Fixes `java.lang.IllegalStateException: Reply already submitted` when requesting post notification permission.
