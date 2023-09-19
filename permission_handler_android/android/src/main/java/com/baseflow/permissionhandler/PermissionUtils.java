@@ -48,7 +48,6 @@ public class PermissionUtils {
             case Manifest.permission.WRITE_CALL_LOG:
             case Manifest.permission.ADD_VOICEMAIL:
             case Manifest.permission.USE_SIP:
-            case Manifest.permission.BIND_CALL_REDIRECTION_SERVICE:
                 return PermissionConstants.PERMISSION_GROUP_PHONE;
             case Manifest.permission.BODY_SENSORS:
                 return PermissionConstants.PERMISSION_GROUP_SENSORS;
@@ -172,9 +171,6 @@ public class PermissionUtils {
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.USE_SIP))
                     permissionNames.add(Manifest.permission.USE_SIP);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
-                    permissionNames.add(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && hasPermissionInManifest(context, permissionNames, Manifest.permission.ANSWER_PHONE_CALLS))
                     permissionNames.add(Manifest.permission.ANSWER_PHONE_CALLS);
