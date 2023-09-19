@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class PermissionUtils {
@@ -153,9 +155,8 @@ public class PermissionUtils {
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_STATE))
                     permissionNames.add(Manifest.permission.READ_PHONE_STATE);
 
-                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_NUMBERS)) {
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_NUMBERS))
                     permissionNames.add(Manifest.permission.READ_PHONE_NUMBERS);
-                }
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.CALL_PHONE))
                     permissionNames.add(Manifest.permission.CALL_PHONE);
@@ -452,6 +453,32 @@ public class PermissionUtils {
         }
 
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    @NonNull
+    @PermissionConstants.PermissionStatus
+    static Integer strictestStatus(final @NonNull Collection<@PermissionConstants.PermissionStatus Integer> statuses) {
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN))
+            return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_RESTRICTED))
+            return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_DENIED))
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_LIMITED))
+            return PermissionConstants.PERMISSION_STATUS_LIMITED;
+        return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    @NonNull
+    @PermissionConstants.PermissionStatus
+    static Integer strictestStatus(
+        final @Nullable @PermissionConstants.PermissionStatus Integer statusA,
+        final @Nullable @PermissionConstants.PermissionStatus Integer statusB) {
+
+        final Collection<@PermissionConstants.PermissionStatus Integer> statuses = new HashSet<>();
+        statuses.add(statusA);
+        statuses.add(statusB);
+        return strictestStatus(statuses);
     }
 
     /**
