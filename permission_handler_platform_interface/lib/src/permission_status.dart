@@ -34,9 +34,6 @@ enum PermissionStatus {
   ///
   /// *On iOS:*
   /// If the user has denied access to the requested feature.
-  ///
-  /// WARNING: This can only be determined AFTER requesting this permission.
-  /// Therefore make a `request` call first.
   permanentlyDenied,
 
   /// The application is provisionally authorized to post non-interruptive user
@@ -109,10 +106,6 @@ extension PermissionStatusGetters on PermissionStatus {
   ///
   /// *On iOS:*
   /// If the user has denied access to the requested feature.
-  /// The user may still change the permission status in the settings
-  ///
-  /// WARNING: This can only be determined AFTER requesting this permission.
-  /// Therefore make a `request` call first.
   bool get isPermanentlyDenied => this == PermissionStatus.permanentlyDenied;
 
   /// If the user has authorized this application for limited access. So far
@@ -155,9 +148,6 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   ///
   /// *On iOS:*
   /// If the user has denied access to the requested feature.
-  ///
-  /// WARNING: This can only be determined AFTER requesting this permission.
-  /// Therefore make a `request` call first.
   Future<bool> get isPermanentlyDenied async =>
       (await this).isPermanentlyDenied;
 
