@@ -609,7 +609,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (status == PackageManager.PERMISSION_GRANTED) {
             return PermissionConstants.PERMISSION_STATUS_GRANTED;
         }
-        return PermissionConstants.PERMISSION_STATUS_DENIED;
+        return PermissionUtils.determineDeniedVariant(activity, Manifest.permission.POST_NOTIFICATIONS);
     }
 
     @PermissionConstants.PermissionStatus

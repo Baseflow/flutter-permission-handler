@@ -1,3 +1,7 @@
+## 11.0.3
+
+* Fixes a bug where `Permission.notification.status` would never return `permanentlyDenied` on Android.
+
 ## 11.0.2
 
 * Fixes a bug where `Permission.Phone` would always return 'denied' when requesting the permission status.
