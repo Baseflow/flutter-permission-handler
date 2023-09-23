@@ -84,6 +84,83 @@ extension PermissionCheckShortcuts on Permission {
   Future<bool> get isProvisional => status.isProvisional;
 }
 
+/// Define an extension named PermissionCallbacks for adding callback handlers to Permission objects.
+extension PermissionCallbacks on Permission {
+  /// Callback for when permission is denied.
+  static late VoidCallback? onDenied;
+
+  /// Callback for when permission is granted.
+  static late VoidCallback? onGranted;
+
+  /// Callback for when permission is permanently denied.
+  static late VoidCallback? onPermanentlyDenied;
+
+  /// Callback for when permission is permanently restricted.
+  static late VoidCallback? onRestricted;
+
+  /// Callback for when permission is limited.
+  static late VoidCallback? onLimited;
+
+  /// Callback for when permission is Provisional.
+  static late VoidCallback? onProvisional;
+
+  /// Method to set a callback for when permission is denied.
+  Permission onDeniedCallback(VoidCallback? callback) {
+    onDenied = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is granted.
+  Permission onGrantedCallback(VoidCallback? callback) {
+    onGranted = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is permanently denied.
+  Permission onPermanentlyDeniedCallback(VoidCallback? callback) {
+    onPermanentlyDenied = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is restricted.
+  Permission onRestrictedCallback(VoidCallback? callback) {
+    onRestricted = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is limited.
+  Permission onLimitedCallback(VoidCallback? callback) {
+    onLimited = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is provisional.
+  Permission onProvisionalCallback(VoidCallback? callback) {
+    onProvisional = callback;
+    return this;
+  }
+
+  Future<PermissionStatus> ask() async {
+    final permissionStatus = await request();
+
+    if (permissionStatus.isDenied) {
+      onDenied?.call();
+    } else if (permissionStatus.isGranted) {
+      onGranted?.call();
+    } else if (permissionStatus.isPermanentlyDenied) {
+      onPermanentlyDenied?.call();
+    } else if (permissionStatus.isRestricted) {
+      onRestricted?.call();
+    } else if (permissionStatus.isLimited) {
+      onLimited?.call();
+    } else if (permissionStatus.isProvisional) {
+      onProvisional?.call();
+    }
+
+    return permissionStatus;
+  }
+}
+
 /// Actions that apply only to permissions that have an associated service.
 extension ServicePermissionActions on PermissionWithService {
   /// Checks the current status of the service associated with the given

@@ -95,6 +95,72 @@ void main() {
       expect(permissionMap, isA<Map<Permission, PermissionStatus>>());
     });
   });
+
+  group('PermissionCallbacks', () {
+    setUp(() {
+      PermissionHandlerPlatform.instance = MockPermissionHandlerPlatform();
+    });
+
+    test('onDeniedCallback sets onDenied', () {
+      final permission = Permission.camera;
+      final callback = () => print('Permission denied');
+      permission.onDeniedCallback(callback);
+      expect(PermissionCallbacks.onDenied, equals(callback));
+    });
+
+    test('onGrantedCallback sets onGranted', () {
+      final permission = Permission.camera;
+      final callback = () => print('Permission granted');
+      permission.onGrantedCallback(callback);
+      expect(PermissionCallbacks.onGranted, equals(callback));
+    });
+
+    test('onPermanentlyDeniedCallback sets onPermanentlyDenied', () {
+      final permission = Permission.camera;
+      final callback = () => print('Permission permanently denied');
+      permission.onPermanentlyDeniedCallback(callback);
+      expect(PermissionCallbacks.onPermanentlyDenied, equals(callback));
+    });
+
+    test('onRestrictedCallback sets onRestricted', () {
+      final permission = Permission.camera;
+      final callback = () => print('Permission restricted');
+      permission.onRestrictedCallback(callback);
+      expect(PermissionCallbacks.onRestricted, equals(callback));
+    });
+
+    test('onLimitedCallback sets onLimited', () {
+      final permission = Permission.camera;
+      final callback = () => print('Permission limited');
+      permission.onLimitedCallback(callback);
+      expect(PermissionCallbacks.onLimited, equals(callback));
+    });
+
+    test('onProvisionalCallback sets onProvisional', () {
+      final permission = Permission.camera;
+      final callback = () => print('Permission provisional');
+      permission.onProvisionalCallback(callback);
+      expect(PermissionCallbacks.onProvisional, equals(callback));
+    });
+
+    test('ask calls the appropriate callback', () async {
+      final status = Permission.camera.onDeniedCallback(() {
+        print('Permission denied');
+      }).onGrantedCallback(() {
+        print('Permission granted');
+      }).onPermanentlyDeniedCallback(() {
+        print('Permission permanently denied');
+      }).onRestrictedCallback(() {
+        print('Permission restricted');
+      }).onLimitedCallback(() {
+        print('Permission limited');
+      }).onProvisionalCallback(() {
+        print('Permission provisional');
+      }).ask();
+
+      expect(status, isA<Future<PermissionStatus>>());
+    });
+  });
 }
 
 class MockPermissionHandlerPlatform extends Mock
