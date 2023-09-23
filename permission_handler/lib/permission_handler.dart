@@ -140,6 +140,10 @@ extension PermissionCallbacks on Permission {
     return this;
   }
 
+  /// Request the user for access to this [Permission], if access hasn't already
+  /// been grant access before.
+  ///
+  /// Returns the new [PermissionStatus].
   Future<PermissionStatus> ask() async {
     final permissionStatus = await request();
 

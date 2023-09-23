@@ -1,3 +1,7 @@
+## 11.0.1
+
+* Refactor Permission Handling for Improved Readability
+
 ## 11.0.0
 
 * **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.

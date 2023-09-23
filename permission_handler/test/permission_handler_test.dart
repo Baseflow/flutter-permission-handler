@@ -102,60 +102,60 @@ void main() {
     });
 
     test('onDeniedCallback sets onDenied', () {
-      final permission = Permission.camera;
-      final callback = () => print('Permission denied');
+      const permission = Permission.camera;
+      callback() => true;
       permission.onDeniedCallback(callback);
       expect(PermissionCallbacks.onDenied, equals(callback));
     });
 
     test('onGrantedCallback sets onGranted', () {
-      final permission = Permission.camera;
-      final callback = () => print('Permission granted');
+      const permission = Permission.camera;
+      callback() => true;
       permission.onGrantedCallback(callback);
       expect(PermissionCallbacks.onGranted, equals(callback));
     });
 
     test('onPermanentlyDeniedCallback sets onPermanentlyDenied', () {
-      final permission = Permission.camera;
-      final callback = () => print('Permission permanently denied');
+      const permission = Permission.camera;
+      callback() => true;
       permission.onPermanentlyDeniedCallback(callback);
       expect(PermissionCallbacks.onPermanentlyDenied, equals(callback));
     });
 
     test('onRestrictedCallback sets onRestricted', () {
-      final permission = Permission.camera;
-      final callback = () => print('Permission restricted');
+      const permission = Permission.camera;
+      callback() => true;
       permission.onRestrictedCallback(callback);
       expect(PermissionCallbacks.onRestricted, equals(callback));
     });
 
     test('onLimitedCallback sets onLimited', () {
-      final permission = Permission.camera;
-      final callback = () => print('Permission limited');
+      const permission = Permission.camera;
+      callback() => true;
       permission.onLimitedCallback(callback);
       expect(PermissionCallbacks.onLimited, equals(callback));
     });
 
     test('onProvisionalCallback sets onProvisional', () {
-      final permission = Permission.camera;
-      final callback = () => print('Permission provisional');
+      const permission = Permission.camera;
+      callback() => true;
       permission.onProvisionalCallback(callback);
       expect(PermissionCallbacks.onProvisional, equals(callback));
     });
 
     test('ask calls the appropriate callback', () async {
       final status = Permission.camera.onDeniedCallback(() {
-        print('Permission denied');
+        // Your code.
       }).onGrantedCallback(() {
-        print('Permission granted');
+        // Your code.
       }).onPermanentlyDeniedCallback(() {
-        print('Permission permanently denied');
+        // Your code.
       }).onRestrictedCallback(() {
-        print('Permission restricted');
+        // Your code.
       }).onLimitedCallback(() {
-        print('Permission limited');
+        // Your code.
       }).onProvisionalCallback(() {
-        print('Permission provisional');
+        // Your code.
       }).ask();
 
       expect(status, isA<Future<PermissionStatus>>());
