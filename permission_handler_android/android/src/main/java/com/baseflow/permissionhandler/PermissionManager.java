@@ -477,9 +477,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     } else {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_RESTRICTED);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_RESTRICTED);
                     }
@@ -488,27 +486,21 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
                     permissionStatuses.add(status);
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         int status = Settings.canDrawOverlays(context)
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
                         permissionStatuses.add(status);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         int status = context.getPackageManager().canRequestPackageInstalls()
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
                         permissionStatuses.add(status);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
                         int status = notificationManager.isNotificationPolicyAccessGranted()
@@ -516,9 +508,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
                         permissionStatuses.add(status);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                         int status = alarmManager.canScheduleExactAlarms()
@@ -528,11 +518,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     } else {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     }
-                }
-
-                final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
+                } else {
+                    final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                    if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                        permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
+                    }
                 }
             }
         }
