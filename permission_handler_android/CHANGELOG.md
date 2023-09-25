@@ -1,3 +1,7 @@
+## 11.0.4
+
+* Fixes a bug where the status of special permissions would incorrectly be reported as `denied`.
+
 ## 11.0.3
 
 * Fixes a bug where `Permission.notification.status` would never return `permanentlyDenied` on Android.
