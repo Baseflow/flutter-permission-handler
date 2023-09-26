@@ -1,3 +1,8 @@
+## 11.0.2
+
+* Removes the obsolete `updatePermissionShouldShowStatus` method from the Java code base.
+* Fixes some analysis warnings in the Java code base.
+
 ## 11.0.1
 
 * Fixes `java.lang.IllegalStateException: Reply already submitted` when requesting post notification permission.
