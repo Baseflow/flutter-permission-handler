@@ -1,5 +1,7 @@
 package com.baseflow.permissionhandler;
 
+import static com.baseflow.permissionhandler.PermissionUtils.strictestStatus;
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -23,8 +25,10 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.flutter.plugin.common.PluginRegistry;
 
@@ -172,7 +176,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
             final int result = grantResults[i];
 
-            if (permission == PermissionConstants.PERMISSION_GROUP_MICROPHONE) {
+            if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {
+                @Nullable @PermissionConstants.PermissionStatus Integer previousResult = requestResults.get(PermissionConstants.PERMISSION_GROUP_PHONE);
+                @PermissionConstants.PermissionStatus int newResult = PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+                @Nullable @PermissionConstants.PermissionStatus Integer strictestStatus = strictestStatus(previousResult, newResult);
+                requestResults.put(PermissionConstants.PERMISSION_GROUP_PHONE, strictestStatus);
+            } else if (permission == PermissionConstants.PERMISSION_GROUP_MICROPHONE) {
                 if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
                     requestResults.put(
                         PermissionConstants.PERMISSION_GROUP_MICROPHONE,
@@ -444,6 +453,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
+        Set<@PermissionConstants.PermissionStatus Integer> permissionStatuses = new HashSet<>();
         for (String name : names) {
             // Only handle them if the client app actually targets a API level greater than M.
             if (targetsMOrHigher) {
@@ -453,66 +463,65 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
-                            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                         } else {
-                            return PermissionConstants.PERMISSION_STATUS_DENIED;
+                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
                         }
                     } else {
-                        return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_RESTRICTED);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
-                        return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_RESTRICTED);
                     }
 
-                    return Environment.isExternalStorageManager()
+                    int status = Environment.isExternalStorageManager()
                         ? PermissionConstants.PERMISSION_STATUS_GRANTED
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
+                    permissionStatuses.add(status);
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        return Settings.canDrawOverlays(context)
+                        int status = Settings.canDrawOverlays(context)
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
+                        permissionStatuses.add(status);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        return context.getPackageManager().canRequestPackageInstalls()
+                        int status = context.getPackageManager().canRequestPackageInstalls()
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
+                        permissionStatuses.add(status);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
-                        return notificationManager.isNotificationPolicyAccessGranted()
+                        int status = notificationManager.isNotificationPolicyAccessGranted()
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
+                        permissionStatuses.add(status);
                     }
-                }
-
-                if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                        return alarmManager.canScheduleExactAlarms()
+                        int status = alarmManager.canScheduleExactAlarms()
                             ? PermissionConstants.PERMISSION_STATUS_GRANTED
                             : PermissionConstants.PERMISSION_STATUS_DENIED;
+                        permissionStatuses.add(status);
                     } else {
-                        return PermissionConstants.PERMISSION_STATUS_GRANTED;
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
+                    }
+                } else {
+                    final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                    if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                        permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
                     }
                 }
-
-                final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                    return PermissionUtils.determineDeniedVariant(activity, name);
-                }
             }
+        }
+
+        if (!permissionStatuses.isEmpty()) {
+            return strictestStatus(permissionStatuses);
         }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
@@ -587,7 +596,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (status == PackageManager.PERMISSION_GRANTED) {
             return PermissionConstants.PERMISSION_STATUS_GRANTED;
         }
-        return PermissionConstants.PERMISSION_STATUS_DENIED;
+        return PermissionUtils.determineDeniedVariant(activity, Manifest.permission.POST_NOTIFICATIONS);
     }
 
     @PermissionConstants.PermissionStatus

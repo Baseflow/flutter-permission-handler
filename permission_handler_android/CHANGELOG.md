@@ -1,7 +1,20 @@
-## 11.0.2
+## 11.0.5
 
 * Removes the obsolete `updatePermissionShouldShowStatus` method from the Java code base.
 * Fixes some analysis warnings in the Java code base.
+
+## 11.0.4
+
+* Fixes a bug where the status of special permissions would incorrectly be reported as `denied`.
+
+## 11.0.3
+
+* Fixes a bug where `Permission.notification.status` would never return `permanentlyDenied` on Android.
+
+## 11.0.2
+
+* Fixes a bug where `Permission.Phone` would always return 'denied' when requesting the permission status.
+* Fixes a bug where Flutter permissions that require multiple Android permissions would base their status on the status of the first Android permission, as opposed to the result of all relevant Android permissions.
 
 ## 11.0.1
 

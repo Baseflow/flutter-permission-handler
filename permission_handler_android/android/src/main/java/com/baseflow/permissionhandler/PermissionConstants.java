@@ -2,8 +2,10 @@ package com.baseflow.permissionhandler;
 
 import androidx.annotation.IntDef;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 final class PermissionConstants {
     static final String LOG_TAG = "permissions_handler";
@@ -99,6 +101,7 @@ final class PermissionConstants {
     static final int PERMISSION_STATUS_LIMITED = 3;
     static final int PERMISSION_STATUS_NEVER_ASK_AGAIN = 4;
 
+    @Target(ElementType.TYPE_USE)
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             PERMISSION_STATUS_DENIED,
