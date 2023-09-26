@@ -1,3 +1,8 @@
+## 11.0.5
+
+* Removes the obsolete `updatePermissionShouldShowStatus` method from the Java code base.
+* Fixes some analysis warnings in the Java code base.
+
 ## 11.0.4
 
 * Fixes a bug where the status of special permissions would incorrectly be reported as `denied`.
