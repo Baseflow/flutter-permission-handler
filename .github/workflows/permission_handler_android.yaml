@@ -6,12 +6,12 @@ name: permission_handler_android
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches: [ main, next ]
     paths:
     - 'permission_handler_android/**'
     - '.github/workflows/permission_handler_android.yaml'
   pull_request:
-    branches: [ main ]
+    branches: [ main, next ]
     paths:
     - 'permission_handler_android/**'
     - '.github/workflows/permission_handler_android.yaml'
