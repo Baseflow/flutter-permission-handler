@@ -68,12 +68,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode != PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS &&
-            requestCode != PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE &&
-            requestCode != PermissionConstants.PERMISSION_CODE_SYSTEM_ALERT_WINDOW &&
-            requestCode != PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES &&
-            requestCode != PermissionConstants.PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY &&
-            requestCode != PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM) {
+        if (activity == null) {
             return false;
         }
 
@@ -140,7 +135,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         pendingRequestCount--;
 
         // Post result if all requests have been handled.
-        if (pendingRequestCount == 0) {
+        if (successCallback != null && pendingRequestCount == 0) {
             this.successCallback.onSuccess(requestResults);
         }
         return true;
@@ -219,14 +214,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     permission,
                     PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
             }
-
-            PermissionUtils.updatePermissionShouldShowStatus(this.activity, permission);
         }
 
         pendingRequestCount -= grantResults.length;
 
         // Post result if all requests have been handled.
-        if (pendingRequestCount == 0) {
+        if (successCallback != null && pendingRequestCount == 0) {
             this.successCallback.onSuccess(requestResults);
         }
         return true;
@@ -392,7 +385,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         }
 
         // Post results immediately if no requests are pending.
-        if (pendingRequestCount == 0) {
+        if (this.successCallback != null && pendingRequestCount == 0) {
             this.successCallback.onSuccess(requestResults);
         }
     }
@@ -535,6 +528,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
      * @param requestCode      a request code to verify incoming results.
      */
     private void launchSpecialPermission(String permissionAction, int requestCode) {
+        if (activity == null) {
+            return;
+        }
+
         Intent intent = new Intent(permissionAction);
         if (!permissionAction.equals(Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)) {
             String packageName = activity.getPackageName();
