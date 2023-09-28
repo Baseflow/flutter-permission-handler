@@ -1,3 +1,7 @@
+## 3.11.6
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status.
+
 ## 3.11.5
 
 * Updates the mentions of Android versions throughout the plugin, now following a format of 'Android {name} (API {number})'. For example: 'Android 13 (API 33)'.

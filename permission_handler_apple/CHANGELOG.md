@@ -1,3 +1,7 @@
+## 9.1.5
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status.
+
 ## 9.1.4
 
 * Adds checking whether Bluetooth service is enabled through `Permission.bluetooth.serviceStatus`.

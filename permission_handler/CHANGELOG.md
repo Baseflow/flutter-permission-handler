@@ -1,3 +1,9 @@
+## 11.0.1
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status via:
+  * Updates `permission_handler_apple` dependency to version 9.1.5.
+  * Updates `permission_handler_platform_interface` dependency to version 3.11.6.
+
 ## 11.0.0
 
 * **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.
