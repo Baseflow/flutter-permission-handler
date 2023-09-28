@@ -296,7 +296,10 @@ class Permission {
   /// Android 13+ (API 33+)
   static const sensorsAlways = Permission._(35);
 
-  /// Returns a list of all possible [PermissionGroup] values.
+  /// Permission for reading the current background refresh status. (iOS only)
+  static const backgroundRefresh = Permission._(36);
+
+  /// Returns a list of all possible [Permission] values.
   static const List<Permission> values = <Permission>[
     calendar,
     camera,
@@ -334,6 +337,7 @@ class Permission {
     audio,
     scheduleExactAlarm,
     sensorsAlways,
+    backgroundRefresh,
   ];
 
   static const List<String> _names = <String>[
@@ -373,6 +377,7 @@ class Permission {
     'audio',
     'scheduleExactAlarm',
     'sensorsAlways',
+    'backgroundRefresh'
   ];
 
   @override
