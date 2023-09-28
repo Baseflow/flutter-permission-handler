@@ -1,3 +1,7 @@
+## 11.0.1
+
+* Add linux platform support with `permission_handler_default`.
+
 ## 11.0.0
 
 * **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.
