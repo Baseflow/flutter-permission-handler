@@ -1,8 +1,8 @@
 ## 11.1.0
 * Adds support for iOS 17 [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels)
-* Adds additional permission statuses - `PermissionStatus.fullAccess` and `PermissionStatus.writeOnly` - to support the new iOS 17 Calendar access levels
-* Updates `permission_handler_apple` dependency to version 9.1.5.
-* Updates `permission_handler_platform_interface` dependency to version 3.11.6.
+* __BREAKING CHANGE__: on iOS 17, `Permission.calendar` requests a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
+* Updates `permission_handler_apple` dependency to version 9.2.0.
+* Updates `permission_handler_platform_interface` dependency to version 3.12.0.
 
 ## 11.0.0
 
@@ -76,7 +76,7 @@
 
 ## 9.0.2
 
-* Fixes regression when requesting 'locationAlways' permission on Andriod 9 (Pie) and earlier.
+* Fixes regression when requesting 'locationAlways' permission on Android 9 (Pie) and earlier.
 
 ## 9.0.1
 

@@ -1,3 +1,7 @@
+## 9.2.0
+* __BREAKING CHANGE__: `Permission.calendar` on iOS 17+ now requests write-only access to Calendar.
+* Adds the support for `Permission.calendarFullAccess` permission to support full access to Calendar on iOS 17+.
+
 ## 9.1.4
 
 * Adds checking whether Bluetooth service is enabled through `Permission.bluetooth.serviceStatus`.

@@ -5,17 +5,13 @@
 
 #import "EventPermissionStrategy.h"
 
-#if PERMISSION_EVENTS | PERMISSION_EVENTS_ADD_ONLY | PERMISSION_REMINDERS
+#if PERMISSION_EVENTS | PERMISSION_EVENTS_FULL_ACCESS | PERMISSION_REMINDERS
 
 @implementation EventPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
     if (permission == PermissionGroupCalendar) {
-        #if PERMISSION_EVENTS
-        return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
-        #endif
-
-        #if PERMISSION_EVENTS_ADD_ONLY
+        #if PERMISSION_EVENTS | PERMISSION_EVENTS_FULL_ACCESS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
         #endif
     } else if (permission == PermissionGroupReminders) {
@@ -48,8 +44,8 @@
         completionHandler(PermissionStatusDenied);
         return;
         #endif
-    } else if (permission == PermissionGroupCalendarAddOnly) {
-        #if PERMISSION_EVENTS_ADD_ONLY
+    } else if (permission == PermissionGroupCalendarFullAccess) {
+        #if PERMISSION_EVENTS_FULL_ACCESS
         entityType = EKEntityTypeEvent;
         #else
         completionHandler(PermissionStatusDenied);
@@ -73,18 +69,18 @@
 
     if (@available(iOS 17.0, *)) {
         if (entityType == EKEntityTypeEvent) {
-            #if PERMISSION_EVENTS
+            #if PERMISSION_EVENTS_FULL_ACCESS
             [eventStore requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        completionHandler(PermissionStatusFullAccess);
+                        completionHandler(PermissionStatusGranted);
                     } else {
                         completionHandler(PermissionStatusPermanentlyDenied);
                     }
                 }];
-            #elif PERMISSION_EVENTS_ADD_ONLY
+            #elif PERMISSION_EVENTS
             [eventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
                     if (granted) {
-                        completionHandler(PermissionStatusWriteOnly);
+                        completionHandler(PermissionStatusGranted);
                     } else {
                         completionHandler(PermissionStatusPermanentlyDenied);
                     }
@@ -94,7 +90,7 @@
             #if PERMISSION_REMINDERS
             [eventStore requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
                                 if (granted) {
-                                    completionHandler(PermissionStatusFullAccess);
+                                    completionHandler(PermissionStatusGranted);
                                 } else {
                                     completionHandler(PermissionStatusPermanentlyDenied);
                                 }
@@ -125,9 +121,13 @@
                 case EKAuthorizationStatusDenied:
                     return PermissionStatusPermanentlyDenied;
                 case EKAuthorizationStatusFullAccess:
-                    return PermissionStatusFullAccess;
+                    return PermissionStatusGranted;
                 case EKAuthorizationStatusWriteOnly:
-                    return PermissionStatusWriteOnly;
+                    #if PERMISSION_EVENTS_FULL_ACCESS
+                    return PermissionStatusDenied;
+                    #elif PERMISSION_EVENTS
+                    return PermissionStatusGranted;
+                    #endif
             }
     } else {
         switch (status) {
