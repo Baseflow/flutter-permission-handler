@@ -15,9 +15,6 @@ import io.flutter.plugin.common.MethodChannel;
  *
  * <p>Instantiate this in an add-to-app scenario to gracefully handle activity and context changes.
  * See {@code com.example.permissionhandlerexample.MainActivity} for an example.
- *
- * <p>Call {@link #registerWith(io.flutter.plugin.common.PluginRegistry.Registrar)} to register an
- * implementation of this that uses the stable {@code io.flutter.plugin.common} package.
  */
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
 

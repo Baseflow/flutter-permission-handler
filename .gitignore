@@ -11,6 +11,7 @@
 .project
 .svn/
 bin/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -38,6 +39,7 @@ android/.settings/
 version
 
 # Flutter/Dart/Pub related
+/pubspec.lock
 **/doc/api/
 .dart_tool/
 .flutter-plugins
