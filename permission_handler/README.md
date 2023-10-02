@@ -86,8 +86,8 @@ You must list permission you want to use in your application:
            ## dart: PermissionGroup.calendar
            # 'PERMISSION_EVENTS=1',
    
-           ## dart: PermissionGroup.calendarAddOnly
-           # 'PERMISSION_EVENTS_ADD_ONLY=1',
+           ## dart: PermissionGroup.calendarFullAccess
+           # 'PERMISSION_EVENTS_FULL_ACCESS=1',
   
            ## dart: PermissionGroup.reminders
            # 'PERMISSION_REMINDERS=1',
@@ -149,8 +149,8 @@ You must list permission you want to use in your application:
    | Permission                                                                                  | Info.plist                                                                                                    | Macro                                |
 ---------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
    | PermissionGroup.calendar (< iOS 17)                                                         | NSCalendarsUsageDescription                                                                                   | PERMISSION_EVENTS                    |
-   | PermissionGroup.calendar (iOS 17+)                                                          | NSCalendarsFullAccessUsageDescription                                                                         | PERMISSION_EVENTS                    |
-   | PermissionGroup.calendarAddOnly  (iOS 17+)                                                  | NSCalendarsWriteOnlyAccessUsageDescription                                                                    | PERMISSION_EVENTS_ADD_ONLY           |
+   | PermissionGroup.calendar (iOS 17+)                                                          | NSCalendarsWriteOnlyAccessUsageDescription                                                                    | PERMISSION_EVENTS                    |
+   | PermissionGroup.calendarFullAccess  (iOS 17+)                                               | NSCalendarsFullAccessUsageDescription                                                                         | PERMISSION_EVENTS_FULL_ACCESS        |
    | PermissionGroup.reminders                                                                   | NSRemindersUsageDescription                                                                                   | PERMISSION_REMINDERS                 |
    | PermissionGroup.contacts                                                                    | NSContactsUsageDescription                                                                                    | PERMISSION_CONTACTS                  |
    | PermissionGroup.camera                                                                      | NSCameraUsageDescription                                                                                      | PERMISSION_CAMERA                    |
