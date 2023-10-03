@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
@@ -87,61 +89,61 @@ extension PermissionCheckShortcuts on Permission {
 /// Define an extension named PermissionCallbacks for adding callback handlers to Permission objects.
 extension PermissionCallbacks on Permission {
   /// Callback for when permission is denied.
-  static late VoidCallback? onDenied;
+  static FutureOr<void>? Function()? onDenied;
 
   /// Callback for when permission is granted.
-  static late VoidCallback? onGranted;
+  static FutureOr<void>? Function()? onGranted;
 
   /// Callback for when permission is permanently denied.
-  static late VoidCallback? onPermanentlyDenied;
+  static FutureOr<void>? Function()? onPermanentlyDenied;
 
-  /// Callback for when permission is permanently restricted.
-  static late VoidCallback? onRestricted;
+  /// Callback for when permission is restricted.
+  static FutureOr<void>? Function()? onRestricted;
 
   /// Callback for when permission is limited.
-  static late VoidCallback? onLimited;
+  static FutureOr<void>? Function()? onLimited;
 
   /// Callback for when permission is Provisional.
-  static late VoidCallback? onProvisional;
+  static FutureOr<void>? Function()? onProvisional;
 
   /// Method to set a callback for when permission is denied.
-  Permission onDeniedCallback(VoidCallback? callback) {
+  Permission onDeniedCallback(FutureOr<void>? Function()? callback) {
     onDenied = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is granted.
-  Permission onGrantedCallback(VoidCallback? callback) {
+  Permission onGrantedCallback(FutureOr<void>? Function()? callback) {
     onGranted = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is permanently denied.
-  Permission onPermanentlyDeniedCallback(VoidCallback? callback) {
+  Permission onPermanentlyDeniedCallback(FutureOr<void>? Function()? callback) {
     onPermanentlyDenied = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is restricted.
-  Permission onRestrictedCallback(VoidCallback? callback) {
+  Permission onRestrictedCallback(FutureOr<void>? Function()? callback) {
     onRestricted = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is limited.
-  Permission onLimitedCallback(VoidCallback? callback) {
+  Permission onLimitedCallback(FutureOr<void>? Function()? callback) {
     onLimited = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is provisional.
-  Permission onProvisionalCallback(VoidCallback? callback) {
+  Permission onProvisionalCallback(FutureOr<void>? Function()? callback) {
     onProvisional = callback;
     return this;
   }
 
   /// Request the user for access to this [Permission], if access hasn't already
-  /// been grant access before.
+  /// been granted before.
   ///
   /// Returns the new [PermissionStatus].
   Future<PermissionStatus> ask() async {
