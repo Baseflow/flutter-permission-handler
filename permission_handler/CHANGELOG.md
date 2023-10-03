@@ -1,6 +1,6 @@
 ## 11.0.1
 
-* Refactor Permission Handling for Improved Readability
+* Adds extension methods to the `PermissionStatus` enum allowing developers to register callback methods, which will improve code readability.
 
 ## 11.0.0
 
