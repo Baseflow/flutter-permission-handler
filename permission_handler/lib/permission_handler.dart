@@ -21,41 +21,6 @@ PermissionHandlerPlatform get _handler => PermissionHandlerPlatform.instance;
 /// Returns [true] if the app settings page could be opened, otherwise [false].
 Future<bool> openAppSettings() => _handler.openAppSettings();
 
-/// Actions that can be executed on a permission.
-extension PermissionActions on Permission {
-  /// Checks the current status of the given [Permission].
-  ///
-  /// Notes about specific permissions:
-  /// - **[Permission.bluetooth]**
-  ///   - iOS 13.0 only:
-  ///     - The method will **always** return [PermissionStatus.denied],
-  ///       regardless of the actual status. For the actual permission state,
-  ///       use [Permission.bluetooth.request]. Note that this will show a
-  ///       permission dialog if the permission was not yet requested.
-  Future<PermissionStatus> get status => _handler.checkPermissionStatus(this);
-
-  /// If you should show a rationale for requesting permission.
-  ///
-  /// This is only implemented on Android, calling this on iOS always returns
-  /// [false].
-  Future<bool> get shouldShowRequestRationale async {
-    if (defaultTargetPlatform != TargetPlatform.android) {
-      return false;
-    }
-
-    return _handler.shouldShowRequestPermissionRationale(this);
-  }
-
-  /// Request the user for access to this [Permission], if access hasn't already
-  /// been grant access before.
-  ///
-  /// Returns the new [PermissionStatus].
-  Future<PermissionStatus> request() async {
-    final permissionStatus = (await [this].request())[this];
-    return permissionStatus ?? PermissionStatus.denied;
-  }
-}
-
 /// Shortcuts for checking the [status] of a [Permission].
 extension PermissionCheckShortcuts on Permission {
   /// If the user granted this permission.
@@ -86,8 +51,8 @@ extension PermissionCheckShortcuts on Permission {
   Future<bool> get isProvisional => status.isProvisional;
 }
 
-/// Define an extension named PermissionCallbacks for adding callback handlers to Permission objects.
-extension PermissionCallbacks on Permission {
+/// Actions that can be executed on a permission.
+extension PermissionActions on Permission {
   /// Callback for when permission is denied.
   static FutureOr<void>? Function()? onDenied;
 
@@ -142,12 +107,36 @@ extension PermissionCallbacks on Permission {
     return this;
   }
 
+  /// Checks the current status of the given [Permission].
+  ///
+  /// Notes about specific permissions:
+  /// - **[Permission.bluetooth]**
+  ///   - iOS 13.0 only:
+  ///     - The method will **always** return [PermissionStatus.denied],
+  ///       regardless of the actual status. For the actual permission state,
+  ///       use [Permission.bluetooth.request]. Note that this will show a
+  ///       permission dialog if the permission was not yet requested.
+  Future<PermissionStatus> get status => _handler.checkPermissionStatus(this);
+
+  /// If you should show a rationale for requesting permission.
+  ///
+  /// This is only implemented on Android, calling this on iOS always returns
+  /// [false].
+  Future<bool> get shouldShowRequestRationale async {
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      return false;
+    }
+
+    return _handler.shouldShowRequestPermissionRationale(this);
+  }
+
   /// Request the user for access to this [Permission], if access hasn't already
-  /// been granted before.
+  /// been grant access before.
   ///
   /// Returns the new [PermissionStatus].
-  Future<PermissionStatus> ask() async {
-    final permissionStatus = await request();
+  Future<PermissionStatus> request() async {
+    final permissionStatus =
+        (await [this].request())[this] ?? PermissionStatus.denied;
 
     if (permissionStatus.isDenied) {
       onDenied?.call();
