@@ -21,36 +21,6 @@ PermissionHandlerPlatform get _handler => PermissionHandlerPlatform.instance;
 /// Returns [true] if the app settings page could be opened, otherwise [false].
 Future<bool> openAppSettings() => _handler.openAppSettings();
 
-/// Shortcuts for checking the [status] of a [Permission].
-extension PermissionCheckShortcuts on Permission {
-  /// If the user granted this permission.
-  Future<bool> get isGranted => status.isGranted;
-
-  /// If the user denied this permission.
-  Future<bool> get isDenied => status.isDenied;
-
-  /// If the OS denied this permission. The user cannot change the status,
-  /// possibly due to active restrictions such as parental controls being in
-  /// place.
-  /// *Only supported on iOS.*
-  Future<bool> get isRestricted => status.isRestricted;
-
-  /// User has authorized this application for limited photo library access.
-  /// *Only supported on iOS.(iOS14+)*
-  Future<bool> get isLimited => status.isLimited;
-
-  /// Returns `true` when permissions are denied permanently.
-  ///
-  /// When permissions are denied permanently, no new permission dialog will
-  /// be showed to the user. Consuming Apps should redirect the user to the
-  /// App settings to change permissions.
-  Future<bool> get isPermanentlyDenied => status.isPermanentlyDenied;
-
-  /// If the application is provisionally authorized to post noninterruptive user notifications.
-  /// *Only supported on iOS.*
-  Future<bool> get isProvisional => status.isProvisional;
-}
-
 /// Actions that can be executed on a permission.
 extension PermissionActions on Permission {
   /// Callback for when permission is denied.
@@ -154,6 +124,36 @@ extension PermissionActions on Permission {
 
     return permissionStatus;
   }
+}
+
+/// Shortcuts for checking the [status] of a [Permission].
+extension PermissionCheckShortcuts on Permission {
+  /// If the user granted this permission.
+  Future<bool> get isGranted => status.isGranted;
+
+  /// If the user denied this permission.
+  Future<bool> get isDenied => status.isDenied;
+
+  /// If the OS denied this permission. The user cannot change the status,
+  /// possibly due to active restrictions such as parental controls being in
+  /// place.
+  /// *Only supported on iOS.*
+  Future<bool> get isRestricted => status.isRestricted;
+
+  /// User has authorized this application for limited photo library access.
+  /// *Only supported on iOS.(iOS14+)*
+  Future<bool> get isLimited => status.isLimited;
+
+  /// Returns `true` when permissions are denied permanently.
+  ///
+  /// When permissions are denied permanently, no new permission dialog will
+  /// be showed to the user. Consuming Apps should redirect the user to the
+  /// App settings to change permissions.
+  Future<bool> get isPermanentlyDenied => status.isPermanentlyDenied;
+
+  /// If the application is provisionally authorized to post noninterruptive user notifications.
+  /// *Only supported on iOS.*
+  Future<bool> get isProvisional => status.isProvisional;
 }
 
 /// Actions that apply only to permissions that have an associated service.
