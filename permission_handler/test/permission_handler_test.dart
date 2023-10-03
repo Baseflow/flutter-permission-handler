@@ -5,10 +5,10 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 void main() {
-  setUp(() {
-    PermissionHandlerPlatform.instance = MockPermissionHandlerPlatform();
-  });
   group('PermissionHandler', () {
+    setUp(() {
+      PermissionHandlerPlatform.instance = MockPermissionHandlerPlatform();
+    });
     test('openAppSettings', () async {
       final hasOpened = await openAppSettings();
 
@@ -93,63 +93,63 @@ void main() {
 
       expect(permissionMap, isA<Map<Permission, PermissionStatus>>());
     });
-  });
 
-  test('onDeniedCallback sets onDenied', () {
-    callback() => true;
-    const permission = Permission.camera;
-    permission.onDeniedCallback(callback);
-    expect(PermissionActions.onDenied, callback);
-  });
+    test('onDeniedCallback sets onDenied', () {
+      callback() => true;
+      const permission = Permission.camera;
+      permission.onDeniedCallback(callback);
+      expect(PermissionActions.onDenied, callback);
+    });
 
-  test('onGrantedCallback sets onGranted', () {
-    callback() => true;
-    const permission = Permission.camera;
-    permission.onGrantedCallback(callback);
-    expect(PermissionActions.onGranted, callback);
-  });
+    test('onGrantedCallback sets onGranted', () {
+      callback() => true;
+      const permission = Permission.camera;
+      permission.onGrantedCallback(callback);
+      expect(PermissionActions.onGranted, callback);
+    });
 
-  test('onPermanentlyDeniedCallback sets onPermanentlyDenied', () {
-    callback() => true;
-    const permission = Permission.camera;
-    permission.onPermanentlyDeniedCallback(callback);
-    expect(PermissionActions.onPermanentlyDenied, callback);
-  });
+    test('onPermanentlyDeniedCallback sets onPermanentlyDenied', () {
+      callback() => true;
+      const permission = Permission.camera;
+      permission.onPermanentlyDeniedCallback(callback);
+      expect(PermissionActions.onPermanentlyDenied, callback);
+    });
 
-  test('onRestrictedCallback sets onRestricted', () {
-    callback() => true;
-    const permission = Permission.camera;
-    permission.onRestrictedCallback(callback);
-    expect(PermissionActions.onRestricted, callback);
-  });
+    test('onRestrictedCallback sets onRestricted', () {
+      callback() => true;
+      const permission = Permission.camera;
+      permission.onRestrictedCallback(callback);
+      expect(PermissionActions.onRestricted, callback);
+    });
 
-  test('onLimitedCallback sets onLimited', () {
-    const permission = Permission.camera;
-    callback() => true;
-    permission.onLimitedCallback(callback);
-    expect(PermissionActions.onLimited, callback);
-  });
+    test('onLimitedCallback sets onLimited', () {
+      const permission = Permission.camera;
+      callback() => true;
+      permission.onLimitedCallback(callback);
+      expect(PermissionActions.onLimited, callback);
+    });
 
-  test('onProvisionalCallback sets onProvisional', () {
-    callback() => true;
-    const permission = Permission.camera;
-    permission.onProvisionalCallback(callback);
-    expect(PermissionActions.onProvisional, callback);
-  });
+    test('onProvisionalCallback sets onProvisional', () {
+      callback() => true;
+      const permission = Permission.camera;
+      permission.onProvisionalCallback(callback);
+      expect(PermissionActions.onProvisional, callback);
+    });
 
-  test('ask calls the appropriate callback', () async {
-    callback() => true;
+    test('ask calls the appropriate callback', () async {
+      callback() => true;
 
-    final status = Permission.camera
-        .onDeniedCallback(callback)
-        .onGrantedCallback(callback)
-        .onPermanentlyDeniedCallback(callback)
-        .onRestrictedCallback(callback)
-        .onLimitedCallback(callback)
-        .onProvisionalCallback(callback)
-        .request();
+      final status = Permission.camera
+          .onDeniedCallback(callback)
+          .onGrantedCallback(callback)
+          .onPermanentlyDeniedCallback(callback)
+          .onRestrictedCallback(callback)
+          .onLimitedCallback(callback)
+          .onProvisionalCallback(callback)
+          .request();
 
-    expect(status, isA<Future<PermissionStatus>>());
+      expect(status, isA<Future<PermissionStatus>>());
+    });
   });
 }
 
