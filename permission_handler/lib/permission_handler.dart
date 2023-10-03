@@ -24,56 +24,56 @@ Future<bool> openAppSettings() => _handler.openAppSettings();
 /// Actions that can be executed on a permission.
 extension PermissionActions on Permission {
   /// Callback for when permission is denied.
-  static FutureOr<void>? Function()? onDenied;
+  static FutureOr<void>? Function()? _onDenied;
 
   /// Callback for when permission is granted.
-  static FutureOr<void>? Function()? onGranted;
+  static FutureOr<void>? Function()? _onGranted;
 
   /// Callback for when permission is permanently denied.
-  static FutureOr<void>? Function()? onPermanentlyDenied;
+  static FutureOr<void>? Function()? _onPermanentlyDenied;
 
   /// Callback for when permission is restricted.
-  static FutureOr<void>? Function()? onRestricted;
+  static FutureOr<void>? Function()? _onRestricted;
 
   /// Callback for when permission is limited.
-  static FutureOr<void>? Function()? onLimited;
+  static FutureOr<void>? Function()? _onLimited;
 
   /// Callback for when permission is Provisional.
-  static FutureOr<void>? Function()? onProvisional;
+  static FutureOr<void>? Function()? _onProvisional;
 
   /// Method to set a callback for when permission is denied.
   Permission onDeniedCallback(FutureOr<void>? Function()? callback) {
-    onDenied = callback;
+    _onDenied = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is granted.
   Permission onGrantedCallback(FutureOr<void>? Function()? callback) {
-    onGranted = callback;
+    _onGranted = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is permanently denied.
   Permission onPermanentlyDeniedCallback(FutureOr<void>? Function()? callback) {
-    onPermanentlyDenied = callback;
+    _onPermanentlyDenied = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is restricted.
   Permission onRestrictedCallback(FutureOr<void>? Function()? callback) {
-    onRestricted = callback;
+    _onRestricted = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is limited.
   Permission onLimitedCallback(FutureOr<void>? Function()? callback) {
-    onLimited = callback;
+    _onLimited = callback;
     return this;
   }
 
   /// Method to set a callback for when permission is provisional.
   Permission onProvisionalCallback(FutureOr<void>? Function()? callback) {
-    onProvisional = callback;
+    _onProvisional = callback;
     return this;
   }
 
@@ -109,17 +109,17 @@ extension PermissionActions on Permission {
         (await [this].request())[this] ?? PermissionStatus.denied;
 
     if (permissionStatus.isDenied) {
-      onDenied?.call();
+      _onDenied?.call();
     } else if (permissionStatus.isGranted) {
-      onGranted?.call();
+      _onGranted?.call();
     } else if (permissionStatus.isPermanentlyDenied) {
-      onPermanentlyDenied?.call();
+      _onPermanentlyDenied?.call();
     } else if (permissionStatus.isRestricted) {
-      onRestricted?.call();
+      _onRestricted?.call();
     } else if (permissionStatus.isLimited) {
-      onLimited?.call();
+      _onLimited?.call();
     } else if (permissionStatus.isProvisional) {
-      onProvisional?.call();
+      _onProvisional?.call();
     }
 
     return permissionStatus;
