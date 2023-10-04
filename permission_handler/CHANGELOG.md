@@ -1,3 +1,7 @@
+## 11.0.1
+
+* Adds extension methods to the `PermissionStatus` enum allowing developers to register callback methods, which will improve code readability.
+
 ## 11.0.0
 
 * **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.
