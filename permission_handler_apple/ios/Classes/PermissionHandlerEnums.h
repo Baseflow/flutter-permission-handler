@@ -146,7 +146,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissiongroupVideos,
     PermissionGroupAudio,
     PermissionGroupScheduleExactAlarm,
-    PermissionGroupSensorsAlways
+    PermissionGroupSensorsAlways,
+    PermissionGroupBackgroundRefresh
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

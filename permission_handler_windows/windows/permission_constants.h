@@ -46,7 +46,8 @@ public:
         VIDEOS = 32,
         AUDIO = 33,
         SCHEDULE_EXACT_ALARM = 34,
-        SENSORS_ALWAYS = 35
+        SENSORS_ALWAYS = 35,
+        BACKGROUND_REFRESH = 36
     };
 
     //PERMISSION_STATUS
