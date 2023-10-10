@@ -451,24 +451,19 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
+        final boolean requiresExplicitPermission = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
-        Set<@PermissionConstants.PermissionStatus Integer> permissionStatuses = new HashSet<>();
-        for (String name : names) {
-            // Only handle them if the client app actually targets a API level greater than M.
-            if (targetsMOrHigher) {
+        if (requiresExplicitPermission) {
+            final Set<@PermissionConstants.PermissionStatus Integer> permissionStatuses = new HashSet<>();
+
+            for (String name : names) {
                 if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
                     String packageName = context.getPackageName();
                     PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                    // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
-                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
-                        } else {
-                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
-                        }
+                    if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     } else {
-                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_RESTRICTED);
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -480,12 +475,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
                     permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        int status = Settings.canDrawOverlays(context)
-                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                            : PermissionConstants.PERMISSION_STATUS_DENIED;
-                        permissionStatuses.add(status);
-                    }
+                    int status = Settings.canDrawOverlays(context)
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         int status = context.getPackageManager().canRequestPackageInstalls()
@@ -494,13 +487,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         permissionStatuses.add(status);
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
-                        int status = notificationManager.isNotificationPolicyAccessGranted()
-                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                            : PermissionConstants.PERMISSION_STATUS_DENIED;
-                        permissionStatuses.add(status);
-                    }
+                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
+                    int status = notificationManager.isNotificationPolicyAccessGranted()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -518,11 +509,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }
                 }
             }
+            if (!permissionStatuses.isEmpty()) {
+                return strictestStatus(permissionStatuses);
+            }
         }
 
-        if (!permissionStatuses.isEmpty()) {
-            return strictestStatus(permissionStatuses);
-        }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
