@@ -103,6 +103,12 @@ public class PermissionUtils {
         final ArrayList<String> permissionNames = new ArrayList<>();
 
         switch (permission) {
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_READ_ONLY:
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
+                    permissionNames.add(Manifest.permission.READ_CALENDAR);
+                break;
+
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS:
             case PermissionConstants.PERMISSION_GROUP_CALENDAR:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
                     permissionNames.add(Manifest.permission.READ_CALENDAR);

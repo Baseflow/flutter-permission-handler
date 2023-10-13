@@ -17,7 +17,11 @@ final class PermissionConstants {
     static final int PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY = 213;
     static final int PERMISSION_CODE_SCHEDULE_EXACT_ALARM = 214;
 
-    //PERMISSION_GROUP
+
+    // PERMISSION_GROUP
+
+    // Deprecated in favor of PERMISSION_GROUP_CALENDAR_READ_ONLY and
+    // PERMISSION_GROUP_CALENDAR_FULL_ACCESS.
     static final int PERMISSION_GROUP_CALENDAR = 0;
     static final int PERMISSION_GROUP_CAMERA = 1;
     static final int PERMISSION_GROUP_CONTACTS = 2;
@@ -54,6 +58,8 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_AUDIO = 33;
     static final int PERMISSION_GROUP_SCHEDULE_EXACT_ALARM = 34;
     static final int PERMISSION_GROUP_SENSORS_ALWAYS = 35;
+    static final int PERMISSION_GROUP_CALENDAR_READ_ONLY = 36;
+    static final int PERMISSION_GROUP_CALENDAR_FULL_ACCESS = 37;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -89,7 +95,9 @@ final class PermissionConstants {
             PERMISSION_GROUP_NEARBY_WIFI_DEVICES,
             PERMISSION_GROUP_VIDEOS,
             PERMISSION_GROUP_AUDIO,
-            PERMISSION_GROUP_SCHEDULE_EXACT_ALARM
+            PERMISSION_GROUP_SCHEDULE_EXACT_ALARM,
+            PERMISSION_GROUP_CALENDAR_READ_ONLY,
+            PERMISSION_GROUP_CALENDAR_FULL_ACCESS
     })
     @interface PermissionGroup {
     }
