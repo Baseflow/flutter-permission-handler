@@ -1,6 +1,6 @@
 ## 11.1.0
 * Adds support for iOS 17 [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels)
-* __BREAKING CHANGE__: on iOS 17, `Permission.calendar` requests a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
+* on iOS 17 use `Permission.calendarReadOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`. 
 * Updates `permission_handler_apple` dependency to version 9.2.0.
 * Updates `permission_handler_platform_interface` dependency to version 3.12.0.
 
