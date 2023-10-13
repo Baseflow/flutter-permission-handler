@@ -5,8 +5,8 @@
 //  Created by Razvan Lung on 15/02/2019.
 //
 
-// ios: PermissionGroupCalendar
-// Info.plist: [NSCalendarWriteOnlyAccessUsageDescription]
+// ios: [PermissionGroupCalendar, PermissionGroupCalendarReadOnly]
+// Info.plist: [NSCalendarsUsageDescription, NSCalendarWriteOnlyAccessUsageDescription]
 // dart: PermissionGroup.calendar
 #ifndef PERMISSION_EVENTS
     #define PERMISSION_EVENTS 0
@@ -154,6 +154,7 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupAudio,
     PermissionGroupScheduleExactAlarm,
     PermissionGroupSensorsAlways,
+    PermissionGroupCalendarReadOnly,
     PermissionGroupCalendarFullAccess
 };
 

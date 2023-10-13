@@ -98,6 +98,7 @@
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
         case PermissionGroupCalendar:
+        case PermissionGroupCalendarReadOnly:
         case PermissionGroupCalendarFullAccess:
             return [EventPermissionStrategy new];
         case PermissionGroupCamera:

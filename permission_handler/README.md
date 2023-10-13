@@ -83,7 +83,7 @@ You must list the permission you want to use in your application:
          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
            '$(inherited)',
 
-           ## dart: PermissionGroup.calendar
+           ## dart: [PermissionGroup.calendar, PermissionGroup.calendarReadOnly] 
            # 'PERMISSION_EVENTS=1',
    
            ## dart: PermissionGroup.calendarFullAccess
