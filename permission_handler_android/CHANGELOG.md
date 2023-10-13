@@ -1,3 +1,7 @@
+## 11.1.0
+
+* Implements the `Permission.calendarReadOnly` and `PermissionCalendarFullAccess` permissions.
+
 ## 11.0.5
 
 * Removes the obsolete `updatePermissionShouldShowStatus` method from the Java code base.

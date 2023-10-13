@@ -1,11 +1,11 @@
 [![pub package](https://img.shields.io/pub/v/permission_handler.svg)](https://pub.dartlang.org/packages/permission_handler) [![Build status](https://github.com/Baseflow/flutter-permission-handler/actions/workflows/permission_handler.yaml/badge.svg?branch=master)](https://github.com/Baseflow/flutter-permission-handler/actions/workflows/permission_handler.yaml) [![style: effective dart](https://img.shields.io/badge/style-effective_dart-40c4ff.svg)](https://github.com/tenhobi/effective_dart) [![codecov](https://codecov.io/gh/Baseflow/flutter-permission-handler/branch/master/graph/badge.svg)](https://codecov.io/gh/Baseflow/flutter-permission-handler)
 
 On most operating systems, permissions aren't just granted to apps at install time.
-Rather, developers have to ask the user for permissions while the app is running.
+Rather, developers have to ask the user for permission while the app is running.
 
 This plugin provides a cross-platform (iOS, Android) API to request permissions and check their status.
-You can also open the device's app settings so users can grant a permission.  
-On Android, you can show a rationale for requesting a permission.
+You can also open the device's app settings so users can grant permission.  
+On Android, you can show a rationale for requesting permission.
 
 See the [FAQ](#faq) section for more information on common questions when using the permission_handler plugin.
 
@@ -16,13 +16,13 @@ While the permissions are being requested during runtime, you'll still need to t
 <details>
 <summary>Android</summary>
   
-**Upgrade pre 1.12 Android projects**
+**Upgrade pre-1.12 Android projects**
   
-Since version 4.4.0 this plugin is implemented using the Flutter 1.12 Android plugin APIs. Unfortunately this means App developers also need to migrate their Apps to support the new Android infrastructure. You can do so by following the [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects) migration guide. Failing to do so might result in unexpected behaviour. Most common known error is the permission_handler not returning after calling the `.request()` method on a permission. 
+Since version 4.4.0 this plugin is implemented using the Flutter 1.12 Android plugin APIs. Unfortunately, this means App developers also need to migrate their Apps to support the new Android infrastructure. You can do so by following the [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects) migration guide. Failing to do so might result in unexpected behavior. The most common known error is the permission_handler not returning after calling the `.request()` method on permission.
 
 **AndroidX**
 
-As of version 3.1.0 the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
+As of version 3.1.0, the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
 
 The TL;DR version is:
 
@@ -45,7 +45,7 @@ android {
 3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found [here](https://developer.android.com/jetpack/androidx/migrate)).
 
 Add permissions to your `AndroidManifest.xml` file.
-There's a `debug`, `main` and `profile` version which are chosen depending on how you start your app.
+There are `debug`, `main`, and `profile` versions which are chosen depending on how you start your app.
 In general, it's sufficient to add permission only to the `main` version.
 [Here](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/android/app/src/main/AndroidManifest.xml)'s an example `AndroidManifest.xml` with a complete list of all possible permissions.
 
@@ -57,11 +57,11 @@ In general, it's sufficient to add permission only to the `main` version.
 Add permission to your `Info.plist` file.
 [Here](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/ios/Runner/Info.plist)'s an example `Info.plist` with a complete list of all possible permissions.
 
-> IMPORTANT: ~~You will have to include all permission options when you want to submit your App.~~ This is because the `permission_handler` plugin touches all different SDKs and because the static code analyser (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).
+> IMPORTANT: ~~You will have to include all permission options when you want to submit your App.~~ This is because the `permission_handler` plugin touches all different SDKs and because the static code analyzer (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).
 
 The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h) to control whether a permission is enabled.
 
-You must list permission you want to use in your application:
+You must list the permission you want to use in your application:
 
 1. Add the following to your `Podfile` file:
 
@@ -69,20 +69,20 @@ You must list permission you want to use in your application:
    post_install do |installer|
      installer.pods_project.targets.each do |target|
        ... # Here are some configurations automatically generated by flutter
-  
+
        # Start of the permission_handler configuration
        target.build_configurations.each do |config|
-   
+
          # You can enable the permissions needed here. For example to enable camera
          # permission, just remove the `#` character in front so it looks like this:
          #
          # ## dart: PermissionGroup.camera
          # 'PERMISSION_CAMERA=1'
          #
-         #  Preprocessor definitions can be found in: https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
+         #  Preprocessor definitions can be found at: https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
            '$(inherited)',
-  
+
            ## dart: PermissionGroup.calendar
            # 'PERMISSION_EVENTS=1',
    
@@ -91,51 +91,51 @@ You must list permission you want to use in your application:
   
            ## dart: PermissionGroup.reminders
            # 'PERMISSION_REMINDERS=1',
-  
+
            ## dart: PermissionGroup.contacts
            # 'PERMISSION_CONTACTS=1',
-  
+
            ## dart: PermissionGroup.camera
            # 'PERMISSION_CAMERA=1',
-  
+
            ## dart: PermissionGroup.microphone
            # 'PERMISSION_MICROPHONE=1',
-  
+
            ## dart: PermissionGroup.speech
            # 'PERMISSION_SPEECH_RECOGNIZER=1',
-  
+
            ## dart: PermissionGroup.photos
            # 'PERMISSION_PHOTOS=1',
-  
+
            ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
            # 'PERMISSION_LOCATION=1',
-          
+
            ## dart: PermissionGroup.notification
            # 'PERMISSION_NOTIFICATIONS=1',
-  
+
            ## dart: PermissionGroup.mediaLibrary
            # 'PERMISSION_MEDIA_LIBRARY=1',
-  
+
            ## dart: PermissionGroup.sensors
-           # 'PERMISSION_SENSORS=1',   
-           
+           # 'PERMISSION_SENSORS=1',
+
            ## dart: PermissionGroup.bluetooth
            # 'PERMISSION_BLUETOOTH=1',
-   
+
            ## dart: PermissionGroup.appTrackingTransparency
            # 'PERMISSION_APP_TRACKING_TRANSPARENCY=1',
-   
+
            ## dart: PermissionGroup.criticalAlerts
            # 'PERMISSION_CRITICAL_ALERTS=1'
          ]
-  
-       end 
+
+       end
        # End of the permission_handler configuration
      end
    end
    ```
 
-2. Remove the `#` character in front of the permission you do want to use. For example if you need access to the calendar make sure the code looks like this:
+2. Remove the `#` character in front of the permission you want to use. For example, if you need access to the calendar make sure the code looks like this:
 
    ```ruby
            ## dart: PermissionGroup.calendar
@@ -162,8 +162,9 @@ You must list permission you want to use in your application:
    | PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMediaLibrary                                                         | PERMISSION_MEDIA_LIBRARY             |
    | PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                      | PERMISSION_SENSORS                   |
    | PermissionGroup.bluetooth                                                                   | NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription                                      | PERMISSION_BLUETOOTH                 |
-   | PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                | PERMISSION_APP_TRACKING_TRANSPARENCY |  
+   | PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                | PERMISSION_APP_TRACKING_TRANSPARENCY |
    | PermissionGroup.criticalAlerts                                                              | PermissionGroupCriticalAlerts                                                                                 | PERMISSION_CRITICAL_ALERTS           |
+
 4. Clean & Rebuild
 
 </details>
@@ -176,13 +177,38 @@ You can get a `Permission`'s `status`, which is either `granted`, `denied`, `res
 ```dart
 var status = await Permission.camera.status;
 if (status.isDenied) {
-  // We didn't ask for permission yet or the permission has been denied before, but not permanently.
+  // We haven't asked for permission yet or the permission has been denied before, but not permanently.
 }
 
-// You can can also directly ask the permission about its status.
+// You can also directly ask permission about its status.
 if (await Permission.location.isRestricted) {
-  // The OS restricts access, for example because of parental controls.
+  // The OS restricts access, for example, because of parental controls.
 }
+```
+
+Can use also this style for better readability of your code when using the `Permission` class.
+
+```dart
+await Permission.camera
+  .onDeniedCallback(() {
+    // Your code
+  })
+  .onGrantedCallback(() {
+    // Your code
+  })
+  .onPermanentlyDeniedCallback(() {
+    // Your code
+  })
+  .onRestrictedCallback(() {
+    // Your code
+  })
+  .onLimitedCallback(() {
+    // Your code
+  })
+  .onProvisionalCallback(() {
+    // Your code
+  })
+  .request();
 ```
 
 Call `request()` on a `Permission` to request it.
@@ -202,7 +228,7 @@ Map<Permission, PermissionStatus> statuses = await [
 print(statuses[Permission.location]);
 ```
 
-Some permissions, for example location or acceleration sensor permissions, have an associated service, which can be `enabled` or `disabled`.
+Some permissions, for example, location or acceleration sensor permissions, have an associated service, which can be `enabled` or `disabled`.
 
 ```dart
 if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
@@ -216,12 +242,12 @@ You can also open the app settings:
 if (await Permission.speech.isPermanentlyDenied) {
   // The user opted to never again see the permission request dialog for this
   // app. The only way to change the permission's status now is to let the
-  // user manually enable it in the system settings.
+  // user manually enables it in the system settings.
   openAppSettings();
 }
 ```
 
-On Android, you can show a rationale for using a permission:
+On Android, you can show a rationale for using permission:
 
 ```dart
 bool isShown = await Permission.contacts.shouldShowRequestRationale;
@@ -229,14 +255,14 @@ bool isShown = await Permission.contacts.shouldShowRequestRationale;
 
 Some permissions will not show a dialog asking the user to allow or deny the requested permission.  
 This is because the OS setting(s) of the app are being retrieved for the corresponding permission.  
-The status of the setting will determine whether the permission is `granted` or `denied`.  
+The status of the setting will determine whether the permission is `granted` or `denied`.
 
-The following permissions will show no dialog:  
+The following permissions will show no dialog:
 
 - Notification
 - Bluetooth
 
-The following permissions will show no dialog, but will open the corresponding setting intent for the user to change the permission status:  
+The following permissions will show no dialog, but will open the corresponding setting intent for the user to change the permission status:
 
 - manageExternalStorage
 - systemAlertWindow
@@ -251,23 +277,23 @@ This will then bring up another permission popup asking you to `Keep Only While 
 
 ### Requesting "storage" permissions always returns "denied" on Android 13+. What can I do?
 
-On Android the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android 10 (API 29) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/disabled since Android 13 (API 33).
+On Android, the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android 10 (API 29) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/disabled since Android 13 (API 33).
 
-If your application needs access to media files Google recommends using the `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEOS` or `READ_MEDIA_AUDIO` permissions instead. These can be requested using the `Permission.photos`, `Permission.videos` and `Permission.audio` respectively. To request these permissions make sure the `compileSdkVersion` in the `android/app/build.gradle` file is set to `33`.
+If your application needs access to media files Google recommends using the `READ_MEDIA_IMAGES`, `READ_MEDIA_VIDEOS`, or `READ_MEDIA_AUDIO` permissions instead. These can be requested using the `Permission.photos`, `Permission.videos`, and `Permission.audio` respectively. To request these permissions make sure the `compileSdkVersion` in the `android/app/build.gradle` file is set to `33`.
 
 If your application needs access to Android's file system, it is possible to request the `MANAGE_EXTERNAL_STORAGE` permission (using `Permission.manageExternalStorage`). As of Android 11 (API 30), the `MANAGE_EXTERNAL_STORAGE` permission is considered a high-risk or sensitive permission. Therefore it is required to [declare the use of these permissions](https://support.google.com/googleplay/android-developer/answer/9214102) if you intend to release the application via the Google Play Store.
 
 ### Requesting `Permission.locationAlways` always returns "denied" on Android 10+ (API 29+). What can I do?
 
-Starting with Android 10, apps are required to first obtain the permission to read the device's location in the foreground, before requesting to read the location in the background as well. When requesting for the 'location always' permission directly, or when requesting both permissions at the same time, the system will ignore the request. So, instead of calling only `Permission.location.request()`, make sure to first call either `Permission.location.request()` or `Permission.locationWhenInUse.request()`, and obtain permission to read the GPS. Once you obtain this permission, you can call `Permission.locationAlways.request()`. This will present the user with the option to update the settings so the location can always be read in the background. For more information, visit the [Android documentation on requesting location permissions](https://developer.android.com/training/location/permissions#request-only-foreground).
+Starting with Android 10, apps are required to first obtain permission to read the device's location in the foreground, before requesting to read the location in the background as well. When requesting the 'location always' permission directly, or when requesting both permissions at the same time, the system will ignore the request. So, instead of calling only `Permission.location.request()`, make sure to first call either `Permission.location.request()` or `Permission.locationWhenInUse.request()`, and obtain permission to read the GPS. Once you obtain this permission, you can call `Permission.locationAlways.request()`. This will present the user with the option to update the settings so the location can always be read in the background. For more information, visit the [Android documentation on requesting location permissions](https://developer.android.com/training/location/permissions#request-only-foreground).
 
 ## Issues
 
-Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).
+Please file any issues, bugs, or feature requests as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).
 
 ## Want to contribute
 
-If you would like to contribute to the plugin (e.g. by improving the documentation, solving a bug or adding a cool new feature), please carefully review our [contribution guide](../CONTRIBUTING.md) and send us your [pull request](https://github.com/Baseflow/flutter-permission-handler/pulls).
+If you would like to contribute to the plugin (e.g. by improving the documentation, solving a bug, or adding a cool new feature), please carefully review our [contribution guide](../CONTRIBUTING.md) and send us your [pull request](https://github.com/Baseflow/flutter-permission-handler/pulls).
 
 ## Author
 

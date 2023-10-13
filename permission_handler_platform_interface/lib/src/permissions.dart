@@ -28,10 +28,8 @@ class Permission {
   /// Permission for accessing the device's calendar.
   ///
   /// Android: Calendar
-  /// **iOS:**
-  /// Calendar (Events). When running on iOS 17.0 and above,
-  /// the permission grants write-only access to the calendar.
-  /// For full access to the calendar, use [Permission.calendarFullAccess].
+  /// iOS: Calendar (Events)
+  @Deprecated('Use [calendarReadOnly] and [calendarFullAccess].')
   static const calendar = Permission._(0);
 
   /// Permission for accessing the device's camera.
@@ -299,15 +297,17 @@ class Permission {
   /// Android 13+ (API 33+)
   static const sensorsAlways = Permission._(35);
 
-  /// Permission to add events to device's calendar (iOS only).
+  /// Permission for reading the device's calendar.
   ///
-  /// Events can only be added. If you want to read them as well, use the
-  /// [calendar] permission instead.
-  /// iOS: Calendar (17+ read & write access level)
-  static const calendarFullAccess = Permission._(36);
+  /// On iOS 16 and lower, this permission is identical to [Permission.calendarFullAccess].
+  static const calendarReadOnly = Permission._(36);
+
+  /// Permission for reading from and writing to the device's calendar.
+  static const calendarFullAccess = Permission._(37);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
+    // ignore: deprecated_member_use_from_same_package
     calendar,
     camera,
     contacts,
@@ -344,7 +344,8 @@ class Permission {
     audio,
     scheduleExactAlarm,
     sensorsAlways,
-    calendarFullAccess
+    calendarReadOnly,
+    calendarFullAccess,
   ];
 
   static const List<String> _names = <String>[
@@ -384,6 +385,7 @@ class Permission {
     'audio',
     'scheduleExactAlarm',
     'sensorsAlways',
+    'calendarReadOnly',
     'calendarFullAccess',
   ];
 

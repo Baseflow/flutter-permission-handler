@@ -24,6 +24,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -165,8 +166,37 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
+        // Calendar permissions are split between READ and WRITE in Android, and split between READ
+        // and FULL ACCESS in the plugin. We need special logic for this translation.
+        final List<String> permissionList = Arrays.asList(permissions);
+        final int calendarReadIndex = permissionList.indexOf(Manifest.permission.READ_CALENDAR);
+        final int calendarWriteIndex = permissionList.indexOf(Manifest.permission.WRITE_CALENDAR);
+        // READ -> READ.
+        if (calendarReadIndex >= 0) {
+            final int readGrantResult = grantResults[calendarReadIndex];
+            final @PermissionConstants.PermissionStatus int readStatus =
+                PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.READ_CALENDAR, readGrantResult);
+            requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_READ_ONLY, readStatus);
+
+            // READ + WRITE -> FULL ACCESS.
+            if (calendarWriteIndex >= 0) {
+                final int writeGrantResult = grantResults[calendarWriteIndex];
+                final @PermissionConstants.PermissionStatus int writeStatus =
+                    PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.WRITE_CALENDAR, writeGrantResult);
+                final @PermissionConstants.PermissionStatus int fullAccessStatus = strictestStatus(readStatus, writeStatus);
+                requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS, fullAccessStatus);
+                // Support deprecated CALENDAR permission.
+                requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR, fullAccessStatus);
+            }
+        }
+
         for (int i = 0; i < permissions.length; i++) {
             final String permissionName = permissions[i];
+
+            // READ_CALENDAR and WRITE_CALENDAR permission results have already been handled.
+            if (permissionName.equals(Manifest.permission.READ_CALENDAR) || permissionName.equals(Manifest.permission.WRITE_CALENDAR)) {
+                continue;
+            }
 
             @PermissionConstants.PermissionGroup final int permission =
                 PermissionUtils.parseManifestName(permissionName);
@@ -378,6 +408,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 launchSpecialPermission(
                     Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                     PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM);
+            } else if (permission == PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS || permission == PermissionConstants.PERMISSION_GROUP_CALENDAR) {
+                // Deny CALENDAR_FULL_ACCESS permission if manifest is not listing both read- and write permissions.
+                // Otherwise, we will only ask for READ permission and think full access is granted.
+                final boolean isValidManifest = isValidManifestForCalendarFullAccess();
+                if (isValidManifest) {
+                    permissionsToRequest.add(Manifest.permission.READ_CALENDAR);
+                    permissionsToRequest.add(Manifest.permission.WRITE_CALENDAR);
+                    pendingRequestCount += 2;
+                } else {
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
+                }
             } else {
                 permissionsToRequest.addAll(names);
                 pendingRequestCount += names.size();
@@ -418,6 +459,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             }
         }
 
+        // Inspect the manifest for CALENDAR_FULL_ACCESS, as a misconfigured manifest will give a false positive if READ access has been provided.
+        if (permission == PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS || permission == PermissionConstants.PERMISSION_GROUP_CALENDAR) {
+            boolean isValidManifest = isValidManifestForCalendarFullAccess();
+            if (!isValidManifest)
+                return PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+
         final List<String> names = PermissionUtils.getManifestNames(context, permission);
 
         if (names == null) {
@@ -451,24 +499,19 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
-        final boolean targetsMOrHigher = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
+        final boolean requiresExplicitPermission = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
-        Set<@PermissionConstants.PermissionStatus Integer> permissionStatuses = new HashSet<>();
-        for (String name : names) {
-            // Only handle them if the client app actually targets a API level greater than M.
-            if (targetsMOrHigher) {
+        if (requiresExplicitPermission) {
+            final Set<@PermissionConstants.PermissionStatus Integer> permissionStatuses = new HashSet<>();
+
+            for (String name : names) {
                 if (permission == PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS) {
                     String packageName = context.getPackageName();
                     PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-                    // PowerManager.isIgnoringBatteryOptimizations has been included in Android M first.
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
-                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
-                        } else {
-                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
-                        }
+                    if (pm != null && pm.isIgnoringBatteryOptimizations(packageName)) {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     } else {
-                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_RESTRICTED);
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_MANAGE_EXTERNAL_STORAGE) {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
@@ -480,12 +523,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         : PermissionConstants.PERMISSION_STATUS_DENIED;
                     permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_SYSTEM_ALERT_WINDOW) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        int status = Settings.canDrawOverlays(context)
-                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                            : PermissionConstants.PERMISSION_STATUS_DENIED;
-                        permissionStatuses.add(status);
-                    }
+                    int status = Settings.canDrawOverlays(context)
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         int status = context.getPackageManager().canRequestPackageInstalls()
@@ -494,13 +535,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         permissionStatuses.add(status);
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
-                        int status = notificationManager.isNotificationPolicyAccessGranted()
-                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                            : PermissionConstants.PERMISSION_STATUS_DENIED;
-                        permissionStatuses.add(status);
-                    }
+                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
+                    int status = notificationManager.isNotificationPolicyAccessGranted()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -518,11 +557,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }
                 }
             }
+            if (!permissionStatuses.isEmpty()) {
+                return strictestStatus(permissionStatuses);
+            }
         }
 
-        if (!permissionStatuses.isEmpty()) {
-            return strictestStatus(permissionStatuses);
-        }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
@@ -608,5 +647,24 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return PermissionConstants.PERMISSION_STATUS_DENIED;
         }
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    /**
+     * Checks if the manifest contains both {@link Manifest.permission#READ_CALENDAR} and
+     * {@link Manifest.permission#WRITE_CALENDAR} permission declarations.
+     */
+    private boolean isValidManifestForCalendarFullAccess() {
+        List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS);
+        final boolean readInManifest = names != null && names.contains(Manifest.permission.READ_CALENDAR);
+        final boolean writeInManifest = names != null && names.contains(Manifest.permission.WRITE_CALENDAR);
+        final boolean validManifest = readInManifest && writeInManifest;
+        if (!validManifest) {
+            if (!readInManifest)
+                Log.d(PermissionConstants.LOG_TAG, Manifest.permission.READ_CALENDAR + " missing in manifest");
+            if (!writeInManifest)
+                Log.d(PermissionConstants.LOG_TAG, Manifest.permission.WRITE_CALENDAR + " missing in manifest");
+            return false;
+        }
+        return true;
     }
 }
