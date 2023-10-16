@@ -166,24 +166,24 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
-        // Calendar permissions are split between READ and WRITE in Android, and split between READ
+        // Calendar permissions are split between WRITE and READ in Android, and split between WRITE
         // and FULL ACCESS in the plugin. We need special logic for this translation.
         final List<String> permissionList = Arrays.asList(permissions);
-        final int calendarReadIndex = permissionList.indexOf(Manifest.permission.READ_CALENDAR);
         final int calendarWriteIndex = permissionList.indexOf(Manifest.permission.WRITE_CALENDAR);
-        // READ -> READ.
-        if (calendarReadIndex >= 0) {
-            final int readGrantResult = grantResults[calendarReadIndex];
-            final @PermissionConstants.PermissionStatus int readStatus =
-                PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.READ_CALENDAR, readGrantResult);
-            requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_READ_ONLY, readStatus);
+        // WRITE -> WRITE.
+        if (calendarWriteIndex >= 0) {
+            final int writeGrantResult = grantResults[calendarWriteIndex];
+            final @PermissionConstants.PermissionStatus int writeStatus =
+                PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.WRITE_CALENDAR, writeGrantResult);
+            requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_WRITE_ONLY, writeStatus);
 
-            // READ + WRITE -> FULL ACCESS.
-            if (calendarWriteIndex >= 0) {
-                final int writeGrantResult = grantResults[calendarWriteIndex];
-                final @PermissionConstants.PermissionStatus int writeStatus =
-                    PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.WRITE_CALENDAR, writeGrantResult);
-                final @PermissionConstants.PermissionStatus int fullAccessStatus = strictestStatus(readStatus, writeStatus);
+            // WRITE + READ -> FULL ACCESS.
+            final int calendarReadIndex = permissionList.indexOf(Manifest.permission.READ_CALENDAR);
+            if (calendarReadIndex >= 0) {
+                final int readGrantResult = grantResults[calendarReadIndex];
+                final @PermissionConstants.PermissionStatus int readStatus =
+                    PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.READ_CALENDAR, readGrantResult);
+                final @PermissionConstants.PermissionStatus int fullAccessStatus = strictestStatus(writeStatus, readStatus);
                 requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS, fullAccessStatus);
                 // Support deprecated CALENDAR permission.
                 requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR, fullAccessStatus);
@@ -193,8 +193,8 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         for (int i = 0; i < permissions.length; i++) {
             final String permissionName = permissions[i];
 
-            // READ_CALENDAR and WRITE_CALENDAR permission results have already been handled.
-            if (permissionName.equals(Manifest.permission.READ_CALENDAR) || permissionName.equals(Manifest.permission.WRITE_CALENDAR)) {
+            // WRITE_CALENDAR and READ_CALENDAR permission results have already been handled.
+            if (permissionName.equals(Manifest.permission.WRITE_CALENDAR) || permissionName.equals(Manifest.permission.READ_CALENDAR)) {
                 continue;
             }
 
@@ -409,12 +409,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
                     PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM);
             } else if (permission == PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS || permission == PermissionConstants.PERMISSION_GROUP_CALENDAR) {
-                // Deny CALENDAR_FULL_ACCESS permission if manifest is not listing both read- and write permissions.
-                // Otherwise, we will only ask for READ permission and think full access is granted.
+                // Deny CALENDAR_FULL_ACCESS permission if manifest is not listing both write- and read permissions.
+                // Otherwise, we will only ask for WRITE permission and think full access is granted.
                 final boolean isValidManifest = isValidManifestForCalendarFullAccess();
                 if (isValidManifest) {
-                    permissionsToRequest.add(Manifest.permission.READ_CALENDAR);
                     permissionsToRequest.add(Manifest.permission.WRITE_CALENDAR);
+                    permissionsToRequest.add(Manifest.permission.READ_CALENDAR);
                     pendingRequestCount += 2;
                 } else {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
@@ -650,19 +650,19 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     }
 
     /**
-     * Checks if the manifest contains both {@link Manifest.permission#READ_CALENDAR} and
-     * {@link Manifest.permission#WRITE_CALENDAR} permission declarations.
+     * Checks if the manifest contains both {@link Manifest.permission#WRITE_CALENDAR} and
+     * {@link Manifest.permission#READ_CALENDAR} permission declarations.
      */
     private boolean isValidManifestForCalendarFullAccess() {
         List<String> names = PermissionUtils.getManifestNames(context, PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS);
-        final boolean readInManifest = names != null && names.contains(Manifest.permission.READ_CALENDAR);
         final boolean writeInManifest = names != null && names.contains(Manifest.permission.WRITE_CALENDAR);
-        final boolean validManifest = readInManifest && writeInManifest;
+        final boolean readInManifest = names != null && names.contains(Manifest.permission.READ_CALENDAR);
+        final boolean validManifest = writeInManifest && readInManifest;
         if (!validManifest) {
-            if (!readInManifest)
-                Log.d(PermissionConstants.LOG_TAG, Manifest.permission.READ_CALENDAR + " missing in manifest");
             if (!writeInManifest)
                 Log.d(PermissionConstants.LOG_TAG, Manifest.permission.WRITE_CALENDAR + " missing in manifest");
+            if (!readInManifest)
+                Log.d(PermissionConstants.LOG_TAG, Manifest.permission.READ_CALENDAR + " missing in manifest");
             return false;
         }
         return true;

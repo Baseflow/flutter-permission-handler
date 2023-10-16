@@ -27,8 +27,8 @@ public class PermissionUtils {
     @PermissionConstants.PermissionGroup
     static int parseManifestName(String permission) {
         switch (permission) {
-            case Manifest.permission.READ_CALENDAR:
             case Manifest.permission.WRITE_CALENDAR:
+            case Manifest.permission.READ_CALENDAR:
                 return PermissionConstants.PERMISSION_GROUP_CALENDAR;
             case Manifest.permission.CAMERA:
                 return PermissionConstants.PERMISSION_GROUP_CAMERA;
@@ -103,17 +103,17 @@ public class PermissionUtils {
         final ArrayList<String> permissionNames = new ArrayList<>();
 
         switch (permission) {
-            case PermissionConstants.PERMISSION_GROUP_CALENDAR_READ_ONLY:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
-                    permissionNames.add(Manifest.permission.READ_CALENDAR);
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_WRITE_ONLY:
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_CALENDAR))
+                    permissionNames.add(Manifest.permission.WRITE_CALENDAR);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS:
             case PermissionConstants.PERMISSION_GROUP_CALENDAR:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
-                    permissionNames.add(Manifest.permission.READ_CALENDAR);
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_CALENDAR))
                     permissionNames.add(Manifest.permission.WRITE_CALENDAR);
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
+                    permissionNames.add(Manifest.permission.READ_CALENDAR);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_CAMERA:
