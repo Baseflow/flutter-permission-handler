@@ -1,3 +1,9 @@
+## 12.0.0
+
+* **BREAKING CHANGES:**
+  * Adds `Permission.calendarWriteOnly`.
+  * Removes `Permission.calendarReadOnly`.
+
 ## 11.1.0
 
 * Implements the `Permission.calendarReadOnly` and `PermissionCalendarFullAccess` permissions.
