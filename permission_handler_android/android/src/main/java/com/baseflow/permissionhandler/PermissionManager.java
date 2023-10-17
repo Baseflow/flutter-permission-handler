@@ -410,7 +410,6 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM);
             } else if (permission == PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS || permission == PermissionConstants.PERMISSION_GROUP_CALENDAR) {
                 // Deny CALENDAR_FULL_ACCESS permission if manifest is not listing both write- and read permissions.
-                // Otherwise, we will only ask for WRITE permission and think full access is granted.
                 final boolean isValidManifest = isValidManifestForCalendarFullAccess();
                 if (isValidManifest) {
                     permissionsToRequest.add(Manifest.permission.WRITE_CALENDAR);
