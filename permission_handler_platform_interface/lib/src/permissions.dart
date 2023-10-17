@@ -94,13 +94,27 @@ class Permission {
   /// Depending on the platform and version, the requirements are slightly
   /// different:
   ///
-  /// **Android:**
-  /// - When running on Android 13 (API 33) and above: Read image files from
-  /// external storage
-  /// - When running below Android 13 (API 33): Nothing
-  ///
   /// **iOS:**
   /// - When running Photos (iOS 14+ read & write access level)
+  ///
+  /// **Android:**
+  /// - Devices running Android 13 (API level 33) use [Permissions.storage].
+  /// - Devices running Android 12L (API level 32) or lower: Should use [Permissions.photos].
+  ///
+  /// EXAMPLE: in Manifest:
+  /// <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+  /// <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+  ///
+  /// In Flutter to check the status:
+  ///
+  /// if (Platform.isAndroid) {
+  ///   final androidInfo = await DeviceInfoPlugin().androidInfo;
+  ///   if (androidInfo.version.sdkInt <= 32) {
+  ///     use [Permissions.storage.status]
+  ///   }  else {
+  ///     use [Permissions.photos.status]
+  ///   }
+  /// }
   static const photos = Permission._(9);
 
   /// Permission for adding photos to the device's photo library (iOS only).
