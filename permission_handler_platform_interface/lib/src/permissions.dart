@@ -98,8 +98,8 @@ class Permission {
   /// - When running Photos (iOS 14+ read & write access level)
   ///
   /// **Android:**
-  /// - Devices running Android 13 (API level 33) use [Permissions.storage].
-  /// - Devices running Android 12L (API level 32) or lower: Should use [Permissions.photos].
+  /// - Devices running Android 13 (API level 33) and above: use [Permissions.storage].
+  /// - Devices running Android 12 (API level 32) or lower: Should use [Permissions.photos].
   ///
   /// EXAMPLE: in Manifest:
   /// <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
