@@ -6,7 +6,7 @@ import 'method_channel_mock.dart';
 List<Permission> get mockPermissions => List.of(<Permission>{
       Permission.contacts,
       Permission.camera,
-      Permission.calendarReadOnly,
+      Permission.calendarWriteOnly,
     });
 
 Map<Permission, PermissionStatus> get mockPermissionMap => {};

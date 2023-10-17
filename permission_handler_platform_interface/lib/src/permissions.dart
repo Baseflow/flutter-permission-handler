@@ -29,7 +29,7 @@ class Permission {
   ///
   /// Android: Calendar
   /// iOS: Calendar (Events)
-  @Deprecated('Use [calendarReadOnly] and [calendarFullAccess].')
+  @Deprecated('Use [calendarWriteOnly] and [calendarFullAccess].')
   static const calendar = Permission._(0);
 
   /// Permission for accessing the device's camera.
@@ -297,10 +297,10 @@ class Permission {
   /// Android 13+ (API 33+)
   static const sensorsAlways = Permission._(35);
 
-  /// Permission for reading the device's calendar.
+  /// Permission for writing to the device's calendar.
   ///
   /// On iOS 16 and lower, this permission is identical to [Permission.calendarFullAccess].
-  static const calendarReadOnly = Permission._(36);
+  static const calendarWriteOnly = Permission._(36);
 
   /// Permission for reading from and writing to the device's calendar.
   static const calendarFullAccess = Permission._(37);
@@ -344,7 +344,7 @@ class Permission {
     audio,
     scheduleExactAlarm,
     sensorsAlways,
-    calendarReadOnly,
+    calendarWriteOnly,
     calendarFullAccess,
   ];
 
@@ -385,7 +385,7 @@ class Permission {
     'audio',
     'scheduleExactAlarm',
     'sensorsAlways',
-    'calendarReadOnly',
+    'calendarWriteOnly',
     'calendarFullAccess',
   ];
 
