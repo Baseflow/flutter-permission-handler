@@ -14,19 +14,50 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static PermissionHandlerPlatform _instance = MethodChannelPermissionHandler();
+  static PermissionHandlerPlatform? _instance;
 
-  /// The default instance of [PermissionHandlerPlatform] to use.
+  /// The instance of [PermissionHandlerPlatform] to use.
   ///
-  /// Defaults to [MethodChannelPermissionHandler].
-  static PermissionHandlerPlatform get instance => _instance;
+  /// Returns the instance, if it has been created, or a newly created instance
+  /// through the builder provided in [setInstanceBuilder]. Throws an
+  /// [Exception] if there is no instance, and [setInstanceBuilder] has not been
+  /// called.
+  static PermissionHandlerPlatform get instance {
+    if (_instance == null) {
+      if (_instanceBuilder == null) {
+        throw Exception(
+            'No instance builder was provided. Did you call `setInstanceBuilder`?');
+      }
 
-  /// Platform-specific plugins should set this with their own
-  /// platform-specific class that extends
-  /// [PermissionHandlerPlatform] when they register themselves.
+      _instance = _instanceBuilder!();
+      PlatformInterface.verifyToken(_instance!, _token);
+    }
+
+    return _instance!;
+  }
+
+  /// Platform-specific plugins should set this with their own platform-specific
+  /// class that extends [PermissionHandlerPlatform] when they register
+  /// themselves.
+  @Deprecated('Use [setPlatformInstanceBuilder] instead.')
   static set instance(PermissionHandlerPlatform instance) {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
+  }
+
+  static PermissionHandlerPlatform Function()? _instanceBuilder;
+
+  /// Sets the builder function that creates a new instance of the
+  /// platform-specific implementation of [PermissionHandlerPlatform].
+  ///
+  /// This function allows for delayed initialisation of the handler. This is
+  /// especially useful in the plugin environment, where the handler is
+  /// registered early during start-up. As platform channels are not established
+  /// at that point, the implementation cannot directly be created.
+  static void setInstanceBuilder(
+    PermissionHandlerPlatform Function() builder,
+  ) {
+    _instanceBuilder = builder;
   }
 
   /// Checks the current status of the given [Permission].

@@ -4,7 +4,7 @@ homepage: https://github.com/baseflow/flutter-permission-handler
 version: 12.0.0
 
 environment:
-  sdk: ">=2.15.0 <4.0.0"
+  sdk: ">=2.17.0 <4.0.0"
   flutter: ">=2.8.0"
 
 flutter:
@@ -14,12 +14,23 @@ flutter:
       android:
         package: com.baseflow.permissionhandler
         pluginClass: PermissionHandlerPlugin
+        dartPluginClass: PermissionHandlerAndroid
+
+dependency_overrides:
+  permission_handler_platform_interface:
+    path: ../permission_handler_platform_interface
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_instance_manager:
+    path: ../../flutter_instance_manager
   permission_handler_platform_interface: ^4.0.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4
+  flutter_test:
+    sdk: flutter
+  pigeon: ^11.0.1
   plugin_platform_interface: ^2.0.0
+  mockito: ^5.4.2
