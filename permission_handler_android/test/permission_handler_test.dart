@@ -6,6 +6,7 @@ import 'package:flutter_instance_manager/test/test_instance_manager.pigeon.dart'
 import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler_android/permission_handler_android.dart';
 import 'package:permission_handler_android/src/android_permission_handler_api_impls.dart';
+import 'package:permission_handler_android/src/missing_android_activity_exception.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 void main() {
@@ -84,7 +85,9 @@ void main() {
         );
       });
 
-      test('throws Exception if no activity is attached', () async {
+      test(
+          'throws `MissingAndroidActivityException` if no activity is attached',
+          () async {
         // > Arrange
         final instanceManager = InstanceManager(
           onWeakReferenceRemoved: (_) {},
@@ -106,7 +109,10 @@ void main() {
             .shouldShowRequestPermissionRationale(Permission.contacts);
 
         // > Assert
-        expect(shouldShowRequestPermissionRationale(), throwsException);
+        expect(
+          shouldShowRequestPermissionRationale(),
+          throwsA(isA<MissingAndroidActivityException>()),
+        );
       });
 
       test('returns properly', () async {

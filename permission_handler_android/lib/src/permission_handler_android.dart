@@ -4,6 +4,7 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'android_object_mirrors/activity.dart';
 import 'android_object_mirrors/activity_compat.dart';
 import 'android.dart';
+import 'missing_android_activity_exception.dart';
 
 /// An implementation of [PermissionHandlerPlatform] for Android.
 class PermissionHandlerAndroid extends PermissionHandlerPlatform {
@@ -55,7 +56,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   @override
   Future<bool> shouldShowRequestPermissionRationale(Permission permission) {
     if (_activity == null) {
-      throw Exception('There is no attached activity');
+      throw const MissingAndroidActivityException();
     }
 
     return ActivityCompat.shouldShowRequestPermissionRationale(
