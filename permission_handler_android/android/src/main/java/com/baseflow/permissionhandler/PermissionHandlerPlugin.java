@@ -1,82 +1,61 @@
 package com.baseflow.permissionhandler;
 
 import android.app.Activity;
-import android.content.Context;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
+import com.baseflow.instancemanager.InstanceManager;
+import com.baseflow.instancemanager.InstanceManagerPigeon.JavaObjectHostApi;
+import com.baseflow.instancemanager.InstanceManagerPigeon.InstanceManagerHostApi;
+import com.baseflow.instancemanager.JavaObjectHostApiImpl;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityCompatHostApi;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.MethodChannel;
 
 /**
  * Platform implementation of the permission_handler Flutter plugin.
  *
  * <p>Instantiate this in an add-to-app scenario to gracefully handle activity and context changes.
- * See {@code com.example.permissionhandlerexample.MainActivity} for an example.
+ * See {@code com.example.example.MainActivity} for an example.
  */
 public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAware {
+    private InstanceManager instanceManager;
 
-    private PermissionManager permissionManager;
+    private ActivityFlutterApiImpl activityFlutterApi;
 
-    private MethodChannel methodChannel;
-
-    @SuppressWarnings("deprecation")
-    @Nullable private io.flutter.plugin.common.PluginRegistry.Registrar pluginRegistrar;
-
-    @Nullable private ActivityPluginBinding pluginBinding;
-
-    @Nullable
-    private MethodCallHandlerImpl methodCallHandler;
-
-    /**
-     * Registers a plugin implementation that uses the stable {@code io.flutter.plugin.common}
-     * package.
-     *
-     * <p>Calling this automatically initializes the plugin. However plugins initialized this way
-     * won't react to changes in activity or context, unlike {@link PermissionHandlerPlugin}.
-     */
-    @SuppressWarnings("deprecation")
-    public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
-        final PermissionHandlerPlugin plugin = new PermissionHandlerPlugin();
-
-        plugin.pluginRegistrar = registrar;
-        plugin.permissionManager = new PermissionManager(registrar.context());
-        plugin.registerListeners();
-
-        plugin.startListening(registrar.context(), registrar.messenger());
-
-        if (registrar.activeContext() instanceof Activity) {
-            plugin.startListeningToActivity(
-                registrar.activity()
-            );
-        }
-    }
+    private Activity activity;
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
-        this.permissionManager = new PermissionManager(binding.getApplicationContext());
+        final BinaryMessenger binaryMessenger = binding.getBinaryMessenger();
 
-        startListening(
-            binding.getApplicationContext(),
-            binding.getBinaryMessenger()
-        );
+        instanceManager = InstanceManager.create(identifier -> {});
+        InstanceManagerHostApi.setup(binaryMessenger, () -> {});
+
+        final JavaObjectHostApi javaObjectHostApi = new JavaObjectHostApiImpl(instanceManager);
+        JavaObjectHostApi.setup(binaryMessenger, javaObjectHostApi);
+
+        activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
+
+        final ActivityCompatHostApi activityCompatHostApi = new ActivityCompatHostApiImpl(binaryMessenger, instanceManager);
+        ActivityCompatHostApi.setup(binaryMessenger, activityCompatHostApi);
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
-        stopListening();
+        if (instanceManager != null) {
+            instanceManager.stopFinalizationListener();
+            instanceManager = null;
+        }
     }
 
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
-        startListeningToActivity(
-            binding.getActivity()
-        );
-
-        this.pluginBinding = binding;
-        registerListeners();
+        this.activity = binding.getActivity();
+        activityFlutterApi.create(this.activity);
     }
 
     @Override
@@ -86,66 +65,12 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
     @Override
     public void onDetachedFromActivity() {
-        stopListeningToActivity();
-
-        deregisterListeners();
+        activityFlutterApi.dispose(this.activity);
+        this.activity = null;
     }
 
     @Override
     public void onDetachedFromActivityForConfigChanges() {
         onDetachedFromActivity();
-    }
-
-
-    private void startListening(Context applicationContext, BinaryMessenger messenger) {
-        methodChannel = new MethodChannel(
-            messenger,
-            "flutter.baseflow.com/permissions/methods");
-
-        methodCallHandler = new MethodCallHandlerImpl(
-            applicationContext,
-            new AppSettingsManager(),
-            this.permissionManager,
-            new ServiceManager()
-        );
-
-        methodChannel.setMethodCallHandler(methodCallHandler);
-    }
-
-    private void stopListening() {
-        methodChannel.setMethodCallHandler(null);
-        methodChannel = null;
-        methodCallHandler = null;
-    }
-
-    private void startListeningToActivity(
-        Activity activity
-    ) {
-        if (permissionManager != null) {
-            permissionManager.setActivity(activity);
-        }
-    }
-
-    private void stopListeningToActivity() {
-        if (permissionManager != null) {
-            permissionManager.setActivity(null);
-        }
-    }
-
-    private void registerListeners() {
-        if (this.pluginRegistrar != null) {
-            this.pluginRegistrar.addActivityResultListener(this.permissionManager);
-            this.pluginRegistrar.addRequestPermissionsResultListener(this.permissionManager);
-        } else if (pluginBinding != null) {
-            this.pluginBinding.addActivityResultListener(this.permissionManager);
-            this.pluginBinding.addRequestPermissionsResultListener(this.permissionManager);
-        }
-    }
-
-    private void deregisterListeners() {
-        if (this.pluginBinding != null) {
-            this.pluginBinding.removeActivityResultListener(this.permissionManager);
-            this.pluginBinding.removeRequestPermissionsResultListener(this.permissionManager);
-        }
     }
 }

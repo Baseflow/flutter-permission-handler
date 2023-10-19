@@ -1,3 +1,8 @@
+## NEXT
+
+* Adds `setInstanceBuilder` to `PermissionHandlerPlatform`.
+* Deprecates `set instance` in `PermissionHandlerPlatform`. Use `setInstanceBuilder` instead.
+
 ## 4.0.1
 
 * Updates Android documentation on how to use `permission.photo` on Android 12 (API 32) and below and Android 13 (API 33) and above.

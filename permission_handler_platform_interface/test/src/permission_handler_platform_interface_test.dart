@@ -1,32 +1,43 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
-import 'package:permission_handler_platform_interface/src/method_channel/method_channel_permission_handler.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('$PermissionHandlerPlatform', () {
-    test('$MethodChannelPermissionHandler is the default instance', () {
-      expect(PermissionHandlerPlatform.instance,
-          isA<MethodChannelPermissionHandler>());
+    test('Throws an `Exception` if no instance builder is provided', () {
+      expect(
+        () => PermissionHandlerPlatform.instance,
+        throwsException,
+      );
     });
 
     test('Cannot be implemented with `implements`', () {
-      expect(() {
-        PermissionHandlerPlatform.instance =
-            ImplementsPermissionHandlerPlatform();
-      }, throwsA(anything));
+      PermissionHandlerPlatform.setInstanceBuilder(
+        () => ImplementsPermissionHandlerPlatform(),
+      );
+
+      expect(
+        () => PermissionHandlerPlatform.instance,
+        throwsA(anything),
+      );
     });
 
     test('Can be extended with `extend`', () {
-      PermissionHandlerPlatform.instance = ExtendsPermissionHandlerPlatform();
+      PermissionHandlerPlatform.setInstanceBuilder(
+        () => ExtendsPermissionHandlerPlatform(),
+      );
+
+      PermissionHandlerPlatform.instance;
     });
 
     test('Can be mocked with `implements`', () {
       final mock = MockPermissionHandlerPlatform();
-      PermissionHandlerPlatform.instance = mock;
+      PermissionHandlerPlatform.setInstanceBuilder(() => mock);
+
+      PermissionHandlerPlatform.instance;
     });
 
     test(
