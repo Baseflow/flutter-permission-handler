@@ -66,7 +66,9 @@ class ActivityFlutterApiImpl extends ActivityFlutterApi {
   void addOnAttachedToActivityCallback(
     void Function(Activity attachedActivity) onActivityAttached,
   ) {
-    if (_activity != null) onActivityAttached(_activity!);
+    if (_activity != null) {
+      onActivityAttached(_activity!);
+    }
     _onAttachedToActivityCallbacks.add(onActivityAttached);
   }
 
