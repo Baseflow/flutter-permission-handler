@@ -26,12 +26,15 @@ class ActivityCompatHostApi {
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
   /// Gets whether you should show UI with rationale before requesting a permission.
-  Future<bool> shouldShowRequestPermissionRationale(String arg_activityInstanceId, String arg_permission) async {
+  Future<bool> shouldShowRequestPermissionRationale(
+      String arg_activityInstanceId, String arg_permission) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.shouldShowRequestPermissionRationale', codec,
+        'dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.shouldShowRequestPermissionRationale',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_activityInstanceId, arg_permission]) as List<Object?>?;
+        await channel.send(<Object?>[arg_activityInstanceId, arg_permission])
+            as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -54,12 +57,15 @@ class ActivityCompatHostApi {
   }
 
   /// Determine whether you have been granted a particular permission.
-  Future<int> checkSelfPermission(String arg_activityInstanceId, String arg_permission) async {
+  Future<int> checkSelfPermission(
+      String arg_activityInstanceId, String arg_permission) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.checkSelfPermission', codec,
+        'dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.checkSelfPermission',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_activityInstanceId, arg_permission]) as List<Object?>?;
+        await channel.send(<Object?>[arg_activityInstanceId, arg_permission])
+            as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -98,17 +104,19 @@ abstract class ActivityFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 
-  static void setup(ActivityFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(ActivityFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
@@ -120,14 +128,15 @@ abstract class ActivityFlutterApi {
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
