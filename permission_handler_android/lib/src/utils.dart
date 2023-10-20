@@ -7,8 +7,8 @@ import 'android_object_mirrors/package_manager.dart';
 
 /// A class that provides methods for setting and getting whether a manifest
 /// permission was denied before.
-class ManifestPersistenceStorage {
-  const ManifestPersistenceStorage._();
+class ManifestPersistentStorage {
+  const ManifestPersistentStorage._();
 
   /// Writes to shared preferences that the permission was denied before.
   static Future<void> setDeniedBefore(String manifestString) async {
@@ -75,11 +75,11 @@ class ManifestPersistenceStorage {
 /// boolean, we can distinguish all scenarios and return the appropriate
 /// permission status.
 ///
-/// Changing permissions via the app info screen, so outside of the
-/// application, changes the permission state to 'Granted' if the permission
-/// is allowed, or 'Denied once' if denied. This behavior should not require
-/// any additional logic.
-Future<PermissionStatus> translateManifestGrantResult(
+/// Changing permissions via the app info screen (so outside of the application)
+/// changes the permission state to 'Granted' if the permission is allowed, or
+/// 'Denied once' if denied. This behavior should not require any additional
+/// logic.
+Future<PermissionStatus> grantResultToPermissionStatus(
   Activity activity,
   String manifestString,
   int grantResult,
@@ -89,7 +89,7 @@ Future<PermissionStatus> translateManifestGrantResult(
   }
 
   final bool wasDeniedBefore =
-      await ManifestPersistenceStorage.wasDeniedBefore(manifestString);
+      await ManifestPersistentStorage.wasDeniedBefore(manifestString);
   final bool shouldShowRationale =
       await ActivityCompat.shouldShowRequestPermissionRationale(
     activity,
@@ -100,7 +100,7 @@ Future<PermissionStatus> translateManifestGrantResult(
       wasDeniedBefore ? !shouldShowRationale : shouldShowRationale;
 
   if (!wasDeniedBefore && isDeniedNow) {
-    ManifestPersistenceStorage.setDeniedBefore(manifestString);
+    ManifestPersistentStorage.setDeniedBefore(manifestString);
   }
 
   if (wasDeniedBefore && isDeniedNow) {

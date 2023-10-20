@@ -3,7 +3,7 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'android_object_mirrors/manifest.dart';
 
 /// An extension on [Permission] that provides a [manifestStrings] getter.
-extension ManifestStringExtension on Permission {
+extension PermissionToManifestStrings on Permission {
   /// Returns the matching Manifest.permission strings for this permission.
   ///
   /// TODO(jweener): translate all permissions that will be universally

@@ -57,7 +57,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
             manifestString,
           );
 
-          final PermissionStatus status = await translateManifestGrantResult(
+          final PermissionStatus status = await grantResultToPermissionStatus(
             _activity!,
             manifestString,
             grantResult,
