@@ -94,5 +94,17 @@ void main() {
     });
   });
 
-  test('test', () {});
+  group('StrictestPermissionInIterable', () {
+    test('Getter for strictest should return the strictest status', () {
+      final statuses = [
+        PermissionStatus.granted,
+        PermissionStatus.denied,
+        PermissionStatus.permanentlyDenied,
+      ];
+
+      final strictestStatus = statuses.strictest;
+
+      expect(strictestStatus, PermissionStatus.permanentlyDenied);
+    });
+  });
 }
