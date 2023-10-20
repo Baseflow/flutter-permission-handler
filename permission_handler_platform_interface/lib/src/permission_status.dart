@@ -141,3 +141,19 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// *Only supported on iOS.*
   Future<bool> get isProvisional async => (await this).isProvisional;
 }
+
+/// An extension on the [Iterable] of [PermissionStatus] that provides a method
+/// to get the [strictest] status.
+extension StrictestPermissionInIterable on Iterable<PermissionStatus> {
+  /// Returns the strictest [PermissionStatus] in this iterable.
+  ///
+  /// TODO(jweener): consider other values for [PermissionStatus].
+  PermissionStatus get strictest {
+    if (contains(PermissionStatus.permanentlyDenied)) {
+      return PermissionStatus.permanentlyDenied;
+    } else if (contains(PermissionStatus.denied)) {
+      return PermissionStatus.denied;
+    }
+    return PermissionStatus.granted;
+  }
+}
