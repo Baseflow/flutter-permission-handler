@@ -11,7 +11,7 @@ See the [FAQ](#faq) section for more information on common questions when using 
 
 ## Setup
 
-While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use. That requires adding permission configuration to Android- and iOS-specific files.
+While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use. That requires adding permission configuration to Android* and iOS-specific files.
 
 <details>
 <summary>Android</summary>
@@ -254,15 +254,15 @@ The status of the setting will determine whether the permission is `granted` or 
 
 The following permissions will show no dialog:
 
-- Notification
-- Bluetooth
+* Notification
+* Bluetooth
 
 The following permissions will show no dialog, but will open the corresponding setting intent for the user to change the permission status:
 
-- manageExternalStorage
-- systemAlertWindow
-- requestInstallPackages
-- accessNotificationPolicy
+* manageExternalStorage
+* systemAlertWindow
+* requestInstallPackages
+* accessNotificationPolicy
 
 The `locationAlways` permission can not be requested directly, the user has to request the `locationWhenInUse` permission first.
 Accepting this permission by clicking on the 'Allow While Using App' gives the user the possibility to request the `locationAlways` permission.
