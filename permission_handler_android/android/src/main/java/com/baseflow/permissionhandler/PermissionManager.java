@@ -79,15 +79,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
             permission = PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS;
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                return false;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                String packageName = context.getPackageName();
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                status = (pm != null && pm.isIgnoringBatteryOptimizations(packageName))
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+            } else {
+                status = PermissionConstants.PERMISSION_STATUS_RESTRICTED;
             }
-
-            String packageName = context.getPackageName();
-            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-            status = (pm != null && pm.isIgnoringBatteryOptimizations(packageName))
-                ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                : PermissionConstants.PERMISSION_STATUS_DENIED;
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 status = Environment.isExternalStorageManager()
