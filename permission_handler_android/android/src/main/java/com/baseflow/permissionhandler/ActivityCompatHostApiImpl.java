@@ -40,9 +40,8 @@ public class ActivityCompatHostApiImpl implements ActivityCompatHostApi {
         this.instanceManager = instanceManager;
     }
 
-    @NonNull
     @Override
-    public Boolean shouldShowRequestPermissionRationale(
+    @NonNull public Boolean shouldShowRequestPermissionRationale(
         @NonNull String activityInstanceId,
         @NonNull String permission
     ) {
@@ -52,5 +51,18 @@ public class ActivityCompatHostApiImpl implements ActivityCompatHostApi {
             throw new ActivityNotFoundException();
         }
         return ActivityCompat.shouldShowRequestPermissionRationale(activity, permission);
+    }
+
+    @Override
+    @NonNull public Long checkSelfPermission(
+        @NonNull String activityInstanceId,
+        @NonNull String permission
+    ) {
+        final UUID activityInstanceUuid = UUID.fromString(activityInstanceId);
+        final Activity activity = instanceManager.getInstance(activityInstanceUuid);
+        if (activity == null) {
+            throw new ActivityNotFoundException();
+        }
+        return (long) ActivityCompat.checkSelfPermission(activity, permission);
     }
 }

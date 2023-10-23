@@ -31,6 +31,12 @@ abstract class ActivityCompatHostApi {
     String activityInstanceId,
     String permission,
   );
+
+  /// Determine whether you have been granted a particular permission.
+  int checkSelfPermission(
+    String activityInstanceId,
+    String permission,
+  );
 }
 
 /// Flutter API for `Activity`.

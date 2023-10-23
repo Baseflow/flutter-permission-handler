@@ -71,6 +71,9 @@ public class PermissionHandlerPigeon {
     /** Gets whether you should show UI with rationale before requesting a permission. */
     @NonNull 
     Boolean shouldShowRequestPermissionRationale(@NonNull String activityInstanceId, @NonNull String permission);
+    /** Determine whether you have been granted a particular permission. */
+    @NonNull 
+    Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
 
     /** The codec used by ActivityCompatHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -91,6 +94,31 @@ public class PermissionHandlerPigeon {
                 String permissionArg = (String) args.get(1);
                 try {
                   Boolean output = api.shouldShowRequestPermissionRationale(activityInstanceIdArg, permissionArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.checkSelfPermission", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String activityInstanceIdArg = (String) args.get(0);
+                String permissionArg = (String) args.get(1);
+                try {
+                  Long output = api.checkSelfPermission(activityInstanceIdArg, permissionArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {

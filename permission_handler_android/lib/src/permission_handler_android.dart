@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:permission_handler_android/src/extensions.dart';
+import 'package:permission_handler_android/src/utils.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 import 'android_object_mirrors/activity.dart';
@@ -40,10 +42,33 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     );
   }
 
-  /// TODO(jweener): implement this method.
+  /// TODO(jweener): handle special permissions.
   @override
-  Future<PermissionStatus> checkPermissionStatus(Permission permission) {
-    return Future(() => PermissionStatus.denied);
+  Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
+    if (_activity == null) {
+      throw const MissingAndroidActivityException();
+    }
+
+    final Iterable<PermissionStatus> statuses = await Future.wait(
+      permission.manifestStrings.map(
+        (String manifestString) async {
+          final int grantResult = await ActivityCompat.checkSelfPermission(
+            _activity!,
+            manifestString,
+          );
+
+          final PermissionStatus status = await grantResultToPermissionStatus(
+            _activity!,
+            manifestString,
+            grantResult,
+          );
+
+          return status;
+        },
+      ),
+    );
+
+    return statuses.strictest;
   }
 
   /// TODO(jweener): implement this method.
@@ -54,16 +79,24 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   }
 
   @override
-  Future<bool> shouldShowRequestPermissionRationale(Permission permission) {
+  Future<bool> shouldShowRequestPermissionRationale(
+    Permission permission,
+  ) async {
     if (_activity == null) {
       throw const MissingAndroidActivityException();
     }
 
-    return ActivityCompat.shouldShowRequestPermissionRationale(
-      _activity!,
-      // TODO(jweener): replace with Android manifest name for permission once
-      // they have been ported over.
-      'android.permission.READ_CONTACTS',
+    final Iterable<bool> shouldShowRationales = await Future.wait(
+      permission.manifestStrings.map(
+        (String manifestString) {
+          return ActivityCompat.shouldShowRequestPermissionRationale(
+            _activity!,
+            manifestString,
+          );
+        },
+      ),
     );
+
+    return shouldShowRationales.any((bool shouldShow) => shouldShow);
   }
 }

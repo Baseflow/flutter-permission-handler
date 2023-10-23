@@ -35,6 +35,19 @@ class ActivityCompatHostApiImpl extends ActivityCompatHostApi {
       permission,
     );
   }
+
+  /// Determine whether you have been granted a particular permission.
+  Future<int> checkSelfPermissionFromInstance(
+    Activity activity,
+    String permission,
+  ) async {
+    final String activityInstanceId = instanceManager.getIdentifier(activity)!;
+
+    return checkSelfPermission(
+      activityInstanceId,
+      permission,
+    );
+  }
 }
 
 /// Flutter API implementation of Activity.

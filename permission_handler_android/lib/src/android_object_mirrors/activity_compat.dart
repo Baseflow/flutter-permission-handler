@@ -7,6 +7,8 @@ import 'activity.dart';
 ///
 /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.
 class ActivityCompat {
+  const ActivityCompat._();
+
   static ActivityCompatHostApiImpl _api = ActivityCompatHostApiImpl();
 
   @visibleForTesting
@@ -18,6 +20,17 @@ class ActivityCompat {
     String permission,
   ) {
     return _api.shouldShowRequestPermissionRationaleFromInstance(
+      activity,
+      permission,
+    );
+  }
+
+  /// Gets whether the app has been granted the given permission.
+  static Future<int> checkSelfPermission(
+    Activity activity,
+    String permission,
+  ) {
+    return _api.checkSelfPermissionFromInstance(
       activity,
       permission,
     );
