@@ -35,15 +35,12 @@ import io.flutter.plugin.common.PluginRegistry;
 
 final class PermissionManager implements PluginRegistry.ActivityResultListener, PluginRegistry.RequestPermissionsResultListener {
 
-    @Nullable
-    private RequestPermissionsSuccessCallback successCallback;
-
-    @Nullable
-    private Activity activity;
-
     @NonNull
     private final Context context;
-
+    @Nullable
+    private RequestPermissionsSuccessCallback successCallback;
+    @Nullable
+    private Activity activity;
     /**
      * The number of pending permission requests.
      * <p>
@@ -77,14 +74,20 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
-        int status = resultCode == Activity.RESULT_OK
-            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-            : PermissionConstants.PERMISSION_STATUS_DENIED;
-
-        int permission;
+        int status, permission;
 
         if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
             permission = PermissionConstants.PERMISSION_GROUP_IGNORE_BATTERY_OPTIMIZATIONS;
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                return false;
+            }
+
+            String packageName = context.getPackageName();
+            PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            status = (pm != null && pm.isIgnoringBatteryOptimizations(packageName))
+                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                : PermissionConstants.PERMISSION_STATUS_DENIED;
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_MANAGE_EXTERNAL_STORAGE) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 status = Environment.isExternalStorageManager()
@@ -262,21 +265,6 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             this.successCallback.onSuccess(requestResults);
         }
         return true;
-    }
-
-    @FunctionalInterface
-    interface RequestPermissionsSuccessCallback {
-        void onSuccess(Map<Integer, Integer> results);
-    }
-
-    @FunctionalInterface
-    interface CheckPermissionsSuccessCallback {
-        void onSuccess(@PermissionConstants.PermissionStatus int permissionStatus);
-    }
-
-    @FunctionalInterface
-    interface ShouldShowRequestPermissionRationaleSuccessCallback {
-        void onSuccess(boolean shouldShowRequestPermissionRationale);
     }
 
     /**
@@ -665,5 +653,20 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
         return true;
+    }
+
+    @FunctionalInterface
+    interface RequestPermissionsSuccessCallback {
+        void onSuccess(Map<Integer, Integer> results);
+    }
+
+    @FunctionalInterface
+    interface CheckPermissionsSuccessCallback {
+        void onSuccess(@PermissionConstants.PermissionStatus int permissionStatus);
+    }
+
+    @FunctionalInterface
+    interface ShouldShowRequestPermissionRationaleSuccessCallback {
+        void onSuccess(boolean shouldShowRequestPermissionRationale);
     }
 }
