@@ -66,12 +66,6 @@ mixin AndroidActivity {
   static final ActivityHostApiImpl _hostApi = ActivityHostApiImpl();
   static final ActivityFlutterApiImpl _flutterApi = ActivityFlutterApiImpl();
 
-  /// The request code used when requesting permissions.
-  ///
-  /// This code has been randomly generated once, in the hope of avoiding
-  /// collisions with other request code that are used on the native side.
-  static const int _requestCode = 702764314;
-
   /// An [AndroidActivity] instance that is waiting for permission request results.
   ///
   /// We are assuming there is only ever 1 instance of [AndroidActivity] that
@@ -116,6 +110,7 @@ mixin AndroidActivity {
   /// Requests permissions to be granted to this application.
   Future<void> requestPermissions(
     List<String> permissions,
+    int requestCode,
   ) {
     final Activity? activity = _flutterApi.activity;
     if (activity == null) {
@@ -127,7 +122,7 @@ mixin AndroidActivity {
     return _hostApi.requestPermissionsFromInstance(
       activity,
       permissions,
-      _requestCode,
+      requestCode,
     );
   }
 

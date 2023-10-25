@@ -8,6 +8,12 @@ import '../permission_handler_android.dart';
 /// An implementation of [PermissionHandlerPlatform] for Android.
 class PermissionHandlerAndroid extends PermissionHandlerPlatform
     with AndroidActivity {
+  /// The request code used when requesting permissions.
+  ///
+  /// This code has been randomly generated once, in the hope of avoiding
+  /// collisions with other request code that are used on the native side.
+  static const int _requestCode = 702764314;
+
   /// Constructor for creating a new instance of [PermissionHandlerAndroid].
   PermissionHandlerAndroid() {
     AndroidActivity.register();
@@ -74,7 +80,10 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform
   @override
   Future<PermissionStatus> requestPermission(Permission permission) {
     final List<String> permissions = permission.manifestStrings;
-    requestPermissions(permissions);
+    requestPermissions(
+      permissions,
+      _requestCode,
+    );
     _completer = Completer<PermissionStatus>();
     return _completer!.future;
   }
