@@ -2,7 +2,6 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_object_mirrors/activity.dart';
-import 'android_object_mirrors/activity_compat.dart';
 import 'android_object_mirrors/package_manager.dart';
 
 /// A class that provides methods for setting and getting whether a manifest
@@ -80,7 +79,7 @@ class ManifestPersistentStorage {
 /// 'Denied once' if denied. This behavior should not require any additional
 /// logic.
 Future<PermissionStatus> grantResultToPermissionStatus(
-  Activity activity,
+  AndroidActivity activity,
   String manifestString,
   int grantResult,
 ) async {
@@ -91,8 +90,7 @@ Future<PermissionStatus> grantResultToPermissionStatus(
   final bool wasDeniedBefore =
       await ManifestPersistentStorage.wasDeniedBefore(manifestString);
   final bool shouldShowRationale =
-      await ActivityCompat.shouldShowRequestPermissionRationale(
-    activity,
+      await activity.shouldShowRequestPermissionRationale(
     manifestString,
   );
 

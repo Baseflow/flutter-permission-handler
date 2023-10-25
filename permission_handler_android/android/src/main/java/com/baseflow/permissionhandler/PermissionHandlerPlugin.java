@@ -8,7 +8,7 @@ import com.baseflow.instancemanager.InstanceManager;
 import com.baseflow.instancemanager.InstanceManagerPigeon.JavaObjectHostApi;
 import com.baseflow.instancemanager.InstanceManagerPigeon.InstanceManagerHostApi;
 import com.baseflow.instancemanager.JavaObjectHostApiImpl;
-import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityCompatHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityHostApi;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -40,8 +40,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
 
-        final ActivityCompatHostApi activityCompatHostApi = new ActivityCompatHostApiImpl(binaryMessenger, instanceManager);
-        ActivityCompatHostApi.setup(binaryMessenger, activityCompatHostApi);
+        final ActivityHostApi activityHostApi = new ActivityHostApiImpl(binaryMessenger, instanceManager);
+        ActivityHostApi.setup(binaryMessenger, activityHostApi);
     }
 
     @Override
@@ -55,7 +55,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         this.activity = binding.getActivity();
-        activityFlutterApi.create(this.activity);
+        binding.addRequestPermissionsResultListener(this.activityFlutterApi);
+        this.activityFlutterApi.create(this.activity);
     }
 
     @Override

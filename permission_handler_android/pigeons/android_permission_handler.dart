@@ -17,15 +17,15 @@ import 'package:pigeon/pigeon.dart';
   ),
 )
 
-/// Host API for `ActivityCompat`.
+/// Host API for `Activity`.
 ///
 /// This class may handle instantiating and adding native object instances that
 /// are attached to a Dart instance or handle method calls on the associated
 /// native class or an instance of the class.
 ///
-/// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.
-@HostApi(dartHostTestHandler: 'ActivityCompatTestHostApi')
-abstract class ActivityCompatHostApi {
+/// See https://developer.android.com/reference/android/app/Activity.
+@HostApi(dartHostTestHandler: 'ActivityTestHostApi')
+abstract class ActivityHostApi {
   /// Gets whether you should show UI with rationale before requesting a permission.
   bool shouldShowRequestPermissionRationale(
     String activityInstanceId,
@@ -36,6 +36,13 @@ abstract class ActivityCompatHostApi {
   int checkSelfPermission(
     String activityInstanceId,
     String permission,
+  );
+
+  /// Requests permissions to be granted to this application.
+  void requestPermissions(
+    String activityInstanceId,
+    List<String> permissions,
+    int requestCode,
   );
 }
 
@@ -53,4 +60,11 @@ abstract class ActivityFlutterApi {
 
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
+
+  /// Receive permission request results.
+  void onRequestPermissionsResult(
+    int requestCode,
+    List<String> permissions,
+    List<int> grantResults,
+  );
 }

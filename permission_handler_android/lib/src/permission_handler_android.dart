@@ -1,38 +1,16 @@
-import 'package:flutter/foundation.dart';
-import 'package:permission_handler_android/src/extensions.dart';
+import 'dart:async';
+
 import 'package:permission_handler_android/src/utils.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-import 'android_object_mirrors/activity.dart';
-import 'android_object_mirrors/activity_compat.dart';
-import 'android.dart';
-import 'missing_android_activity_exception.dart';
+import '../permission_handler_android.dart';
 
 /// An implementation of [PermissionHandlerPlatform] for Android.
-class PermissionHandlerAndroid extends PermissionHandlerPlatform {
-  /// The activity that Flutter is attached to.
-  ///
-  /// Used for method invocation that require an activity or context.
-  Activity? _activity;
-
-  /// Allow overriding the attached activity for testing purposes.
-  @visibleForTesting
-  set activity(Activity? activity) {
-    _activity = activity;
-  }
-
-  /// Private constructor for creating a new instance of [PermissionHandlerAndroid].
-  PermissionHandlerAndroid._();
-
-  /// Creates and initializes an instance of [PermissionHandlerAndroid].
-  factory PermissionHandlerAndroid() {
-    final instance = PermissionHandlerAndroid._();
-    Android.register(
-      onAttachedToActivityCallback: (Activity activity) =>
-          instance._activity = activity,
-      onDetachedFromActivityCallback: () => instance._activity = null,
-    );
-    return instance;
+class PermissionHandlerAndroid extends PermissionHandlerPlatform
+    with AndroidActivity {
+  /// Constructor for creating a new instance of [PermissionHandlerAndroid].
+  PermissionHandlerAndroid() {
+    AndroidActivity.register();
   }
 
   /// Registers this class as the default instance of [PermissionHandlerPlatform].
@@ -45,20 +23,15 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   /// TODO(jweener): handle special permissions.
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
-    if (_activity == null) {
-      throw const MissingAndroidActivityException();
-    }
-
     final Iterable<PermissionStatus> statuses = await Future.wait(
       permission.manifestStrings.map(
         (String manifestString) async {
-          final int grantResult = await ActivityCompat.checkSelfPermission(
-            _activity!,
+          final int grantResult = await checkSelfPermission(
             manifestString,
           );
 
           final PermissionStatus status = await grantResultToPermissionStatus(
-            _activity!,
+            this,
             manifestString,
             grantResult,
           );
@@ -71,26 +44,14 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return statuses.strictest;
   }
 
-  /// TODO(jweener): implement this method.
   @override
-  Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) {
-    return Future(() => <Permission, PermissionStatus>{});
-  }
-
-  @override
-  Future<bool> shouldShowRequestPermissionRationale(
+  Future<bool> shouldShowPermissionRequestRationale(
     Permission permission,
   ) async {
-    if (_activity == null) {
-      throw const MissingAndroidActivityException();
-    }
-
     final Iterable<bool> shouldShowRationales = await Future.wait(
       permission.manifestStrings.map(
         (String manifestString) {
-          return ActivityCompat.shouldShowRequestPermissionRationale(
-            _activity!,
+          return shouldShowRequestPermissionRationale(
             manifestString,
           );
         },
@@ -98,5 +59,47 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     );
 
     return shouldShowRationales.any((bool shouldShow) => shouldShow);
+  }
+
+  /// A [Completer] that bridges between the [requestPermission] method and the
+  /// [onRequestPermissionsResult] method.
+  ///
+  /// The completer is created in [requestPermission], which returns its
+  /// [Future]. [onRequestPermissionsResult] completes the completer.
+  ///
+  /// This allows us to make [requestPermission] return a [Future] to make the
+  /// API more accessible for developers.
+  Completer<PermissionStatus>? _completer;
+
+  @override
+  Future<PermissionStatus> requestPermission(Permission permission) {
+    final List<String> permissions = permission.manifestStrings;
+    requestPermissions(permissions);
+    _completer = Completer<PermissionStatus>();
+    return _completer!.future;
+  }
+
+  @override
+  void onRequestPermissionsResult(
+    int requestCode,
+    List<String> permissions,
+    List<int> grantResults,
+  ) async {
+    final List<PermissionStatus> statuses = <PermissionStatus>[];
+
+    for (int i = 0; i < permissions.length; i++) {
+      final String permission = permissions[i];
+      final int grantResult = grantResults[i];
+
+      final PermissionStatus status = await grantResultToPermissionStatus(
+        this,
+        permission,
+        grantResult,
+      );
+
+      statuses.add(status);
+    }
+
+    _completer?.complete(statuses.strictest);
   }
 }

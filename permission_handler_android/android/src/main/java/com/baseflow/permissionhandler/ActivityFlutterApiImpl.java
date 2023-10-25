@@ -8,7 +8,11 @@ import com.baseflow.instancemanager.InstanceManager;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityFlutterApi;
 
 import io.flutter.plugin.common.BinaryMessenger;
+import io.flutter.plugin.common.PluginRegistry;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -17,7 +21,7 @@ import java.util.UUID;
  * <p>This class may handle adding native instances that are attached to a Dart instance or passing
  * arguments of callbacks methods to a Dart instance.
  */
-public class ActivityFlutterApiImpl {
+public class ActivityFlutterApiImpl implements PluginRegistry.RequestPermissionsResultListener {
     // To ease adding additional methods, this value is added prematurely.
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private final BinaryMessenger binaryMessenger;
@@ -33,7 +37,9 @@ public class ActivityFlutterApiImpl {
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ActivityFlutterApiImpl(
-        @NonNull BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
+        @NonNull BinaryMessenger binaryMessenger,
+        @NonNull InstanceManager instanceManager
+    ) {
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         api = new ActivityFlutterApi(binaryMessenger);
@@ -60,5 +66,31 @@ public class ActivityFlutterApiImpl {
         if (activityInstanceUuid != null) {
             api.dispose(activityInstanceUuid.toString(), reply -> {});
         }
+    }
+
+    /**
+     * TODO(jweener): what if another plugin makes a permission request?
+     */
+    @Override
+    public boolean onRequestPermissionsResult(
+        int requestCode,
+        @NonNull String[] permissions,
+        @NonNull int[] grantResults
+    ) {
+        final Long requestCodeLong = (long) requestCode;
+        final List<String> permissionsList = Arrays.asList(permissions);
+        final List<Long> grantResultsList = new ArrayList<>();
+        for (int grantResult : grantResults) {
+            grantResultsList.add((long) grantResult);
+        }
+
+        api.onRequestPermissionsResult(
+            requestCodeLong,
+            permissionsList,
+            grantResultsList,
+            reply -> {}
+        );
+
+        return true;
     }
 }

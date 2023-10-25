@@ -57,34 +57,36 @@ public class PermissionHandlerPigeon {
     return errorList;
   }
   /**
-   * Host API for `ActivityCompat`.
+   * Host API for `Activity`.
    *
    * This class may handle instantiating and adding native object instances that
    * are attached to a Dart instance or handle method calls on the associated
    * native class or an instance of the class.
    *
-   * See https://developer.android.com/reference/androidx/core/app/ActivityCompat.
+   * See https://developer.android.com/reference/android/app/Activity.
    *
    * Generated interface from Pigeon that represents a handler of messages from Flutter.
    */
-  public interface ActivityCompatHostApi {
+  public interface ActivityHostApi {
     /** Gets whether you should show UI with rationale before requesting a permission. */
     @NonNull 
     Boolean shouldShowRequestPermissionRationale(@NonNull String activityInstanceId, @NonNull String permission);
     /** Determine whether you have been granted a particular permission. */
     @NonNull 
     Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
+    /** Requests permissions to be granted to this application. */
+    void requestPermissions(@NonNull String activityInstanceId, @NonNull List<String> permissions, @NonNull Long requestCode);
 
-    /** The codec used by ActivityCompatHostApi. */
+    /** The codec used by ActivityHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
       return new StandardMessageCodec();
     }
-    /**Sets up an instance of `ActivityCompatHostApi` to handle messages through the `binaryMessenger`. */
-    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable ActivityCompatHostApi api) {
+    /**Sets up an instance of `ActivityHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable ActivityHostApi api) {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.shouldShowRequestPermissionRationale", getCodec());
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale", getCodec());
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -109,7 +111,7 @@ public class PermissionHandlerPigeon {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityCompatHostApi.checkSelfPermission", getCodec());
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission", getCodec());
         if (api != null) {
           channel.setMessageHandler(
               (message, reply) -> {
@@ -120,6 +122,32 @@ public class PermissionHandlerPigeon {
                 try {
                   Long output = api.checkSelfPermission(activityInstanceIdArg, permissionArg);
                   wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String activityInstanceIdArg = (String) args.get(0);
+                List<String> permissionsArg = (List<String>) args.get(1);
+                Number requestCodeArg = (Number) args.get(2);
+                try {
+                  api.requestPermissions(activityInstanceIdArg, permissionsArg, (requestCodeArg == null) ? null : requestCodeArg.longValue());
+                  wrapped.add(0, null);
                 }
  catch (Throwable exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
@@ -176,6 +204,15 @@ public class PermissionHandlerPigeon {
               binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose", getCodec());
       channel.send(
           new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Receive permission request results. */
+    public void onRequestPermissionsResult(@NonNull Long requestCodeArg, @NonNull List<String> permissionsArg, @NonNull List<Long> grantResultsArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.onRequestPermissionsResult", getCodec());
+      channel.send(
+          new ArrayList<Object>(Arrays.asList(requestCodeArg, permissionsArg, grantResultsArg)),
           channelReply -> callback.reply(null));
     }
   }

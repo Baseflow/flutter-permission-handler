@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 
@@ -6,9 +5,9 @@ import 'android_object_mirrors/activity.dart';
 import 'permission_handler.pigeon.dart';
 
 /// Host API implementation of ActivityCompat.
-class ActivityCompatHostApiImpl extends ActivityCompatHostApi {
-  /// Creates a new instance of [ActivityCompatHostApiImpl].
-  ActivityCompatHostApiImpl({
+class ActivityHostApiImpl extends ActivityHostApi {
+  /// Creates a new instance of [ActivityHostApiImpl].
+  ActivityHostApiImpl({
     this.binaryMessenger,
     InstanceManager? instanceManager,
   })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
@@ -48,6 +47,21 @@ class ActivityCompatHostApiImpl extends ActivityCompatHostApi {
       permission,
     );
   }
+
+  /// Requests permissions to be granted to this application.
+  Future<void> requestPermissionsFromInstance(
+    Activity activity,
+    List<String> permissions,
+    int requestCode,
+  ) async {
+    final String activityInstanceId = instanceManager.getIdentifier(activity)!;
+
+    return requestPermissions(
+      activityInstanceId,
+      permissions,
+      requestCode,
+    );
+  }
 }
 
 /// Flutter API implementation of Activity.
@@ -63,88 +77,35 @@ class ActivityFlutterApiImpl extends ActivityFlutterApi {
   /// The activity currently attached to the Flutter engine.
   ///
   /// This is null when no activity is attached.
-  Activity? _activity;
-
-  /// Registered callbacks for activity attach events.
-  final List<void Function(Activity activity)> _onAttachedToActivityCallbacks =
-      [];
-
-  /// Registered callbacks for activity detach events.
-  final List<void Function()> _onDetachedFromActivityCallbacks = [];
-
-  /// Adds a callback to be called when an activity is attached.
-  ///
-  /// If an activity is attached when this method is called, the callback is
-  /// called immediately.
-  void addOnAttachedToActivityCallback(
-    void Function(Activity attachedActivity) onActivityAttached,
-  ) {
-    if (_activity != null) {
-      onActivityAttached(_activity!);
-    }
-    _onAttachedToActivityCallbacks.add(onActivityAttached);
-  }
-
-  /// Removes a callback to be called when an activity is attached.
-  void removeOnAttachedToActivityCallback(
-    void Function(Activity attachedActivity) onActivityAttached,
-  ) {
-    _onAttachedToActivityCallbacks.remove(onActivityAttached);
-  }
-
-  /// Adds a callback to be called when an activity is detached.
-  void addOnDetachedFromActivityCallback(
-    void Function() onActivityDetached,
-  ) {
-    _onDetachedFromActivityCallbacks.add(onActivityDetached);
-  }
-
-  /// Removes a callback to be called when an activity is detached.
-  void removeOnDetachedFromActivityCallback(
-    void Function() onActivityDetached,
-  ) {
-    _onDetachedFromActivityCallbacks.remove(onActivityDetached);
-  }
-
-  /// Pretend an activity attaches.
-  ///
-  /// For testing purposes only.
-  @visibleForTesting
-  void attachToActivity(Activity activity) {
-    _activity = activity;
-    for (final callback in _onAttachedToActivityCallbacks) {
-      callback(activity);
-    }
-  }
-
-  /// Pretend the attached activity detaches.
-  ///
-  /// For testing purposes only.
-  @visibleForTesting
-  void detachFromActivity() {
-    _activity = null;
-    for (final callback in _onDetachedFromActivityCallbacks) {
-      callback();
-    }
-  }
+  Activity? activity;
 
   @override
   void create(String instanceId) {
-    _activity = Activity.detached();
-    _instanceManager.addHostCreatedInstance(_activity!, instanceId);
-
-    for (final callback in _onAttachedToActivityCallbacks) {
-      callback(_activity!);
-    }
+    activity = Activity.detached();
+    _instanceManager.addHostCreatedInstance(activity!, instanceId);
   }
 
   @override
   void dispose(String instanceId) {
     _instanceManager.remove(instanceId);
-    _activity = null;
+    activity = null;
+  }
 
-    for (final callback in _onDetachedFromActivityCallbacks) {
-      callback();
-    }
+  @override
+  void onRequestPermissionsResult(
+    int requestCode,
+    List<String?> permissions,
+    List<int?> grantResults,
+  ) {
+    final List<String> nonNullPermissions =
+        permissions.whereType<String>().toList();
+    final List<int> nonNullgrantResults =
+        grantResults.whereType<int>().toList();
+
+    AndroidActivity.relayOnRequestPermissionsResult(
+      requestCode,
+      nonNullPermissions,
+      nonNullgrantResults,
+    );
   }
 }
