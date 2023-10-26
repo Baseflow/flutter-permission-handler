@@ -1,7 +1,11 @@
 ## NEXT
 
+* **BREAKING CHANGES**:
+  * Renames `shouldShowRequestPermissionRationale` to `shouldShowPermissionRequestRationale`.
+  * Removes `requestPermissions` use `requestPermission` instead.
 * Adds `setInstanceBuilder` to `PermissionHandlerPlatform`.
 * Deprecates `set instance` in `PermissionHandlerPlatform`. Use `setInstanceBuilder` instead.
+* Adds `requestPermission`.
 
 ## 4.0.2
 
