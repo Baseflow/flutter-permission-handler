@@ -1,3 +1,7 @@
+## 4.0.2
+
+* Improved the documentation around the `PermissionStatus`, `PermissionStatusGetters` and `FuturePermissionStatusGetters`.
+
 ## 4.0.1
 
 * Updates Android documentation on how to use `permission.photo` on Android 12 (API 32) and below and Android 13 (API 33) and above.
