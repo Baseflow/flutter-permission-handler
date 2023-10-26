@@ -63,8 +63,18 @@ class Activity extends JavaObject {
 /// }
 /// ```
 mixin AndroidActivity {
-  static final ActivityHostApiImpl _hostApi = ActivityHostApiImpl();
-  static final ActivityFlutterApiImpl _flutterApi = ActivityFlutterApiImpl();
+  static ActivityHostApiImpl _hostApi = ActivityHostApiImpl();
+  static ActivityFlutterApiImpl _flutterApi = ActivityFlutterApiImpl();
+
+  @visibleForTesting
+  set hostApi(ActivityHostApiImpl hostApi) {
+    _hostApi = hostApi;
+  }
+
+  @visibleForTesting
+  set flutterApi(ActivityFlutterApiImpl flutterApi) {
+    _flutterApi = flutterApi;
+  }
 
   /// An [AndroidActivity] instance that is waiting for permission request results.
   ///
