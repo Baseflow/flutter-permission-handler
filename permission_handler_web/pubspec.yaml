@@ -4,7 +4,7 @@ version: 0.0.1
 homepage:
 
 environment:
-  sdk: '>=3.0.5 <4.0.0'
+  sdk: ">=3.0.5 <4.0.0"
   flutter: ">=3.3.0"
 
 dependencies:
@@ -27,7 +27,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-
   plugin:
     implements: permission_handler
     platforms:
