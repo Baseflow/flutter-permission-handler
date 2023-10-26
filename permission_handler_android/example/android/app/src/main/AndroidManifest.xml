@@ -2,6 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.baseflow.permissionhandler.example">
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <!--
     Internet permissions do not affect the `permission_handler` plugin, but are required if your app needs access to
     the internet.
