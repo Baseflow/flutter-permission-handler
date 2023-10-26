@@ -69,7 +69,8 @@ public class ActivityFlutterApiImpl implements PluginRegistry.RequestPermissions
     }
 
     /**
-     * TODO(jweener): what if another plugin makes a permission request?
+     * TODO(jweener): what if another plugin makes a permission request? We may need to keep track
+     * in java of open request ids, and return false if they do not match with the incoming result.
      */
     @Override
     public boolean onRequestPermissionsResult(
