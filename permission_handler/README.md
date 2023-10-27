@@ -83,7 +83,7 @@ You must list the permission you want to use in your application:
          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
            '$(inherited)',
 
-           ## dart: [PermissionGroup.calendar, PermissionGroup.calendarReadOnly] 
+           ## dart: [PermissionGroup.calendar, PermissionGroup.calendarWriteOnly] 
            # 'PERMISSION_EVENTS=1',
    
            ## dart: PermissionGroup.calendarFullAccess
@@ -172,7 +172,7 @@ You must list the permission you want to use in your application:
 ## How to use
 
 There are a number of [`Permission`](https://pub.dev/documentation/permission_handler_platform_interface/latest/permission_handler_platform_interface/Permission-class.html#constants)s.
-You can get a `Permission`'s `status`, which is either `granted`, `denied`, `restricted`, `permanentlyDenied`, `limited`, `provisional`, `fullAccess` or `writeOnly`
+You can get a `Permission`'s `status`, which is either `granted`, `denied`, `restricted`, `permanentlyDenied`, `limited` or `provisional`
 
 ```dart
 var status = await Permission.camera.status;

@@ -10,7 +10,7 @@
 @implementation EventPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarReadOnly || permission == PermissionGroupCalendarFullAccess) {
+    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarWriteOnly || permission == PermissionGroupCalendarFullAccess) {
         #if PERMISSION_EVENTS | PERMISSION_EVENTS_FULL_ACCESS
         return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
         #endif
@@ -37,7 +37,7 @@
     
     EKEntityType entityType;
     
-    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarReadOnly) {
+    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarWriteOnly) {
         #if PERMISSION_EVENTS
         entityType = EKEntityTypeEvent;
         #else
