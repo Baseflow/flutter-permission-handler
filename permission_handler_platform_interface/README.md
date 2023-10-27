@@ -4,25 +4,25 @@
 
 A common platform interface for the [`permission_handler`][1] plugin.
 
-This interface allows platform-specific implementations of the 
+This interface allows platform-specific implementations of the
 `permission_handler` plugin, as well as the plugin itself, to ensure they are
 supporting the same interface.
 
 # Usage
 
-To implement a new platform-specific implementation of `permission_handler`, 
-extend [`PermissionHandlerPlatform`][2] with an implementation that performs 
-the platform-specific behavior, and when you register your plugin, set the 
+To implement a new platform-specific implementation of `permission_handler`,
+extend [`PermissionHandlerPlatform`][2] with an implementation that performs
+the platform-specific behavior, and when you register your plugin, set the
 default `PermissionHandlerPlatform` by calling
 `PermissionHandlerPlatform.instance = MyPlatformPermissionHandler()`.
 
 # Issues
 
-Please file any issues, bugs or feature request as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page.
+Please file any issues, bugs, or feature requests as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page.
 
 # Want to contribute
 
-If you would like to contribute to the plugin (e.g. by improving the documentation, solving a bug or adding a cool new feature), please carefully review our [contribution guide](../CONTRIBUTING.md) and send us your [pull request](https://github.com/Baseflow/flutter-permission-handler/pulls).
+If you would like to contribute to the plugin (e.g. by improving the documentation, solving a bug, or adding a cool new feature), please carefully review our [contribution guide](../CONTRIBUTING.md) and send us your [pull request](https://github.com/Baseflow/flutter-permission-handler/pulls).
 
 ## Note on breaking changes
 
@@ -30,7 +30,7 @@ Strongly prefer non-breaking changes (such as adding a method to the interface)
 over breaking changes for this package.
 
 See https://flutter.dev/go/platform-interface-breaking-changes for a discussion
-on why a less-clean interface is preferable to a breaking change.
+on why a less clean interface is preferable to a breaking change.
 
 # Author
 
