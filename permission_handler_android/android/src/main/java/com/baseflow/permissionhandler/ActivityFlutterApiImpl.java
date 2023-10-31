@@ -8,11 +8,7 @@ import com.baseflow.instancemanager.InstanceManager;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityFlutterApi;
 
 import io.flutter.plugin.common.BinaryMessenger;
-import io.flutter.plugin.common.PluginRegistry;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,7 +17,7 @@ import java.util.UUID;
  * <p>This class may handle adding native instances that are attached to a Dart instance or passing
  * arguments of callbacks methods to a Dart instance.
  */
-public class ActivityFlutterApiImpl implements PluginRegistry.RequestPermissionsResultListener {
+public class ActivityFlutterApiImpl {
     // To ease adding additional methods, this value is added prematurely.
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private final BinaryMessenger binaryMessenger;
@@ -66,32 +62,5 @@ public class ActivityFlutterApiImpl implements PluginRegistry.RequestPermissions
         if (activityInstanceUuid != null) {
             api.dispose(activityInstanceUuid.toString(), reply -> {});
         }
-    }
-
-    /**
-     * TODO(jweener): what if another plugin makes a permission request? We may need to keep track
-     * in java of open request ids, and return false if they do not match with the incoming result.
-     */
-    @Override
-    public boolean onRequestPermissionsResult(
-        int requestCode,
-        @NonNull String[] permissions,
-        @NonNull int[] grantResults
-    ) {
-        final Long requestCodeLong = (long) requestCode;
-        final List<String> permissionsList = Arrays.asList(permissions);
-        final List<Long> grantResultsList = new ArrayList<>();
-        for (int grantResult : grantResults) {
-            grantResultsList.add((long) grantResult);
-        }
-
-        api.onRequestPermissionsResult(
-            requestCodeLong,
-            permissionsList,
-            grantResultsList,
-            reply -> {}
-        );
-
-        return true;
     }
 }

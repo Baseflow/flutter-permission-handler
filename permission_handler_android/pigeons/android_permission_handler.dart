@@ -17,6 +17,23 @@ import 'package:pigeon/pigeon.dart';
   ),
 )
 
+/// Result of a permission request.
+///
+/// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+/// permission results are returned as a [Future] instead of through a
+/// separate callback.
+///
+/// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+class PermissionRequestResult {
+  const PermissionRequestResult({
+    required this.permissions,
+    required this.grantResults,
+  });
+
+  final List<String?> permissions;
+  final List<int?> grantResults;
+}
+
 /// Host API for `Activity`.
 ///
 /// This class may handle instantiating and adding native object instances that
@@ -39,10 +56,16 @@ abstract class ActivityHostApi {
   );
 
   /// Requests permissions to be granted to this application.
-  void requestPermissions(
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// permission results are returned as a [Future] instead of through a
+  /// separate callback.
+  ///
+  /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+  @async
+  PermissionRequestResult requestPermissions(
     String activityInstanceId,
     List<String> permissions,
-    int requestCode,
   );
 }
 
@@ -60,11 +83,36 @@ abstract class ActivityFlutterApi {
 
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
+}
 
-  /// Receive permission request results.
-  void onRequestPermissionsResult(
-    int requestCode,
-    List<String> permissions,
-    List<int> grantResults,
+/// Host API for `Context`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/Context.
+@HostApi(dartHostTestHandler: 'ContextTestHostApi')
+abstract class ContextHostApi {
+  /// Determine whether you have been granted a particular permission.
+  int checkSelfPermission(
+    String activityInstanceId,
+    String permission,
   );
+}
+
+/// Flutter API for `Context`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/Context.
+@FlutterApi()
+abstract class ContextFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
 }

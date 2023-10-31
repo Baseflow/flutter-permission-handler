@@ -56,6 +56,123 @@ public class PermissionHandlerPigeon {
     }
     return errorList;
   }
+
+  /**
+   * Result of a permission request.
+   *
+   * Contrary to the Android SDK, we do not make use of a `requestCode`, as
+   * permission results are returned as a [Future] instead of through a
+   * separate callback.
+   *
+   * See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+   *
+   * Generated class from Pigeon that represents data sent in messages.
+   */
+  public static final class PermissionRequestResult {
+    private @NonNull List<String> permissions;
+
+    public @NonNull List<String> getPermissions() {
+      return permissions;
+    }
+
+    public void setPermissions(@NonNull List<String> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"permissions\" is null.");
+      }
+      this.permissions = setterArg;
+    }
+
+    private @NonNull List<Long> grantResults;
+
+    public @NonNull List<Long> getGrantResults() {
+      return grantResults;
+    }
+
+    public void setGrantResults(@NonNull List<Long> setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"grantResults\" is null.");
+      }
+      this.grantResults = setterArg;
+    }
+
+    /** Constructor is non-public to enforce null safety; use Builder. */
+    PermissionRequestResult() {}
+
+    public static final class Builder {
+
+      private @Nullable List<String> permissions;
+
+      public @NonNull Builder setPermissions(@NonNull List<String> setterArg) {
+        this.permissions = setterArg;
+        return this;
+      }
+
+      private @Nullable List<Long> grantResults;
+
+      public @NonNull Builder setGrantResults(@NonNull List<Long> setterArg) {
+        this.grantResults = setterArg;
+        return this;
+      }
+
+      public @NonNull PermissionRequestResult build() {
+        PermissionRequestResult pigeonReturn = new PermissionRequestResult();
+        pigeonReturn.setPermissions(permissions);
+        pigeonReturn.setGrantResults(grantResults);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(2);
+      toListResult.add(permissions);
+      toListResult.add(grantResults);
+      return toListResult;
+    }
+
+    static @NonNull PermissionRequestResult fromList(@NonNull ArrayList<Object> list) {
+      PermissionRequestResult pigeonResult = new PermissionRequestResult();
+      Object permissions = list.get(0);
+      pigeonResult.setPermissions((List<String>) permissions);
+      Object grantResults = list.get(1);
+      pigeonResult.setGrantResults((List<Long>) grantResults);
+      return pigeonResult;
+    }
+  }
+
+  public interface Result<T> {
+    @SuppressWarnings("UnknownNullness")
+    void success(T result);
+
+    void error(@NonNull Throwable error);
+  }
+
+  private static class ActivityHostApiCodec extends StandardMessageCodec {
+    public static final ActivityHostApiCodec INSTANCE = new ActivityHostApiCodec();
+
+    private ActivityHostApiCodec() {}
+
+    @Override
+    protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
+      switch (type) {
+        case (byte) 128:
+          return PermissionRequestResult.fromList((ArrayList<Object>) readValue(buffer));
+        default:
+          return super.readValueOfType(type, buffer);
+      }
+    }
+
+    @Override
+    protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
+      if (value instanceof PermissionRequestResult) {
+        stream.write(128);
+        writeValue(stream, ((PermissionRequestResult) value).toList());
+      } else {
+        super.writeValue(stream, value);
+      }
+    }
+  }
+
   /**
    * Host API for `Activity`.
    *
@@ -75,11 +192,11 @@ public class PermissionHandlerPigeon {
     @NonNull 
     Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
     /** Requests permissions to be granted to this application. */
-    void requestPermissions(@NonNull String activityInstanceId, @NonNull List<String> permissions, @NonNull Long requestCode);
+    void requestPermissions(@NonNull String activityInstanceId, @NonNull List<String> permissions, @NonNull Result<PermissionRequestResult> result);
 
     /** The codec used by ActivityHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
-      return new StandardMessageCodec();
+      return ActivityHostApiCodec.INSTANCE;
     }
     /**Sets up an instance of `ActivityHostApi` to handle messages through the `binaryMessenger`. */
     static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable ActivityHostApi api) {
@@ -144,16 +261,20 @@ public class PermissionHandlerPigeon {
                 ArrayList<Object> args = (ArrayList<Object>) message;
                 String activityInstanceIdArg = (String) args.get(0);
                 List<String> permissionsArg = (List<String>) args.get(1);
-                Number requestCodeArg = (Number) args.get(2);
-                try {
-                  api.requestPermissions(activityInstanceIdArg, permissionsArg, (requestCodeArg == null) ? null : requestCodeArg.longValue());
-                  wrapped.add(0, null);
-                }
- catch (Throwable exception) {
-                  ArrayList<Object> wrappedError = wrapError(exception);
-                  wrapped = wrappedError;
-                }
-                reply.reply(wrapped);
+                Result<PermissionRequestResult> resultCallback =
+                    new Result<PermissionRequestResult>() {
+                      public void success(PermissionRequestResult result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.requestPermissions(activityInstanceIdArg, permissionsArg, resultCallback);
               });
         } else {
           channel.setMessageHandler(null);
@@ -206,13 +327,99 @@ public class PermissionHandlerPigeon {
           new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
           channelReply -> callback.reply(null));
     }
-    /** Receive permission request results. */
-    public void onRequestPermissionsResult(@NonNull Long requestCodeArg, @NonNull List<String> permissionsArg, @NonNull List<Long> grantResultsArg, @NonNull Reply<Void> callback) {
+  }
+  /**
+   * Host API for `Context`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/content/Context.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface ContextHostApi {
+    /** Determine whether you have been granted a particular permission. */
+    @NonNull 
+    Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
+
+    /** The codec used by ContextHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `ContextHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable ContextHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String activityInstanceIdArg = (String) args.get(0);
+                String permissionArg = (String) args.get(1);
+                try {
+                  Long output = api.checkSelfPermission(activityInstanceIdArg, permissionArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `Context`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/content/Context.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class ContextFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public ContextFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by ContextFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(
-              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.onRequestPermissionsResult", getCodec());
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.create", getCodec());
       channel.send(
-          new ArrayList<Object>(Arrays.asList(requestCodeArg, permissionsArg, grantResultsArg)),
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
           channelReply -> callback.reply(null));
     }
   }

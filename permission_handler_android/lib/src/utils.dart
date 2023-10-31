@@ -54,7 +54,7 @@ class ManifestPersistentStorage {
 /// Dismissed
 ///
 /// **Scenario table listing output of
-/// [ActivityCompat.shouldShowRequestPermissionRationale]:**
+/// [Activity.shouldShowRequestPermissionRationale]:**
 ///
 /// ┌────────────┬────────────────┬─────────┬───────────────────────────────────┬─────────────────────────┐
 /// │ Scenario # │ Previous state │ Action  │ New state                         │ 'Show rationale' output │
@@ -66,20 +66,19 @@ class ManifestPersistentStorage {
 /// └────────────┴────────────────┴─────────┴───────────────────────────────────┴─────────────────────────┘
 ///
 /// To distinguish between scenarios, we can use
-/// [ActivityCompat.shouldShowRequestPermissionRationale]. If it returns true,
-/// we can safely return [PermissionStatus.denied]. To distinguish between
-/// scenarios 1 and 4, however, we need an extra mechanism. We opt to store a
-/// boolean stating whether permission has been requested before. Using a
-/// combination of checking for showing the permission rationale and the
-/// boolean, we can distinguish all scenarios and return the appropriate
-/// permission status.
+/// [Activity.shouldShowRequestPermissionRationale]. If it returns true, we can
+/// safely return [PermissionStatus.denied]. To distinguish between scenarios 1
+/// and 4, however, we need an extra mechanism. We opt to store a boolean
+/// stating whether permission has been requested before. Using a combination of
+/// checking for showing the permission rationale and the boolean, we can
+/// distinguish all scenarios and return the appropriate permission status.
 ///
 /// Changing permissions via the app info screen (so outside of the application)
 /// changes the permission state to 'Granted' if the permission is allowed, or
 /// 'Denied once' if denied. This behavior should not require any additional
 /// logic.
 Future<PermissionStatus> grantResultToPermissionStatus(
-  AndroidActivity activity,
+  Activity activity,
   String manifestString,
   int grantResult,
 ) async {
