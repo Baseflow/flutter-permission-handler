@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler_android/src/activity_manager.dart';
 import 'package:permission_handler_android/src/utils.dart';

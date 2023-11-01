@@ -191,7 +191,15 @@ public class PermissionHandlerPigeon {
     /** Determine whether you have been granted a particular permission. */
     @NonNull 
     Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
-    /** Requests permissions to be granted to this application. */
+    /**
+     * Requests permissions to be granted to this application.
+     *
+     * Contrary to the Android SDK, we do not make use of a `requestCode`, as
+     * permission results are returned as a [Future] instead of through a
+     * separate callback.
+     *
+     * See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+     */
     void requestPermissions(@NonNull String activityInstanceId, @NonNull List<String> permissions, @NonNull Result<PermissionRequestResult> result);
 
     /** The codec used by ActivityHostApi. */

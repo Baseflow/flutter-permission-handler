@@ -25,7 +25,7 @@ class _ActivityTestHostApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return PermissionRequestResult.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -41,29 +41,43 @@ class _ActivityTestHostApiCodec extends StandardMessageCodec {
 ///
 /// See https://developer.android.com/reference/android/app/Activity.
 abstract class ActivityTestHostApi {
-  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = _ActivityTestHostApiCodec();
 
   /// Gets whether you should show UI with rationale before requesting a permission.
-  bool shouldShowRequestPermissionRationale(String activityInstanceId, String permission);
+  bool shouldShowRequestPermissionRationale(
+      String activityInstanceId, String permission);
 
   /// Determine whether you have been granted a particular permission.
   int checkSelfPermission(String activityInstanceId, String permission);
 
   /// Requests permissions to be granted to this application.
-  Future<PermissionRequestResult> requestPermissions(String activityInstanceId, List<String?> permissions);
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// permission results are returned as a [Future] instead of through a
+  /// separate callback.
+  ///
+  /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+  Future<PermissionRequestResult> requestPermissions(
+      String activityInstanceId, List<String?> permissions);
 
-  static void setup(ActivityTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(ActivityTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
       } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_activityInstanceId = (args[0] as String?);
           assert(arg_activityInstanceId != null,
@@ -71,21 +85,26 @@ abstract class ActivityTestHostApi {
           final String? arg_permission = (args[1] as String?);
           assert(arg_permission != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale was null, expected non-null String.');
-          final bool output = api.shouldShowRequestPermissionRationale(arg_activityInstanceId!, arg_permission!);
+          final bool output = api.shouldShowRequestPermissionRationale(
+              arg_activityInstanceId!, arg_permission!);
           return <Object?>[output];
         });
       }
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
       } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_activityInstanceId = (args[0] as String?);
           assert(arg_activityInstanceId != null,
@@ -93,29 +112,36 @@ abstract class ActivityTestHostApi {
           final String? arg_permission = (args[1] as String?);
           assert(arg_permission != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission was null, expected non-null String.');
-          final int output = api.checkSelfPermission(arg_activityInstanceId!, arg_permission!);
+          final int output =
+              api.checkSelfPermission(arg_activityInstanceId!, arg_permission!);
           return <Object?>[output];
         });
       }
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
       } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_activityInstanceId = (args[0] as String?);
           assert(arg_activityInstanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null, expected non-null String.');
-          final List<String?>? arg_permissions = (args[1] as List<Object?>?)?.cast<String?>();
+          final List<String?>? arg_permissions =
+              (args[1] as List<Object?>?)?.cast<String?>();
           assert(arg_permissions != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null, expected non-null List<String?>.');
-          final PermissionRequestResult output = await api.requestPermissions(arg_activityInstanceId!, arg_permissions!);
+          final PermissionRequestResult output = await api.requestPermissions(
+              arg_activityInstanceId!, arg_permissions!);
           return <Object?>[output];
         });
       }
@@ -131,23 +157,29 @@ abstract class ActivityTestHostApi {
 ///
 /// See https://developer.android.com/reference/android/content/Context.
 abstract class ContextTestHostApi {
-  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
   /// Determine whether you have been granted a particular permission.
   int checkSelfPermission(String activityInstanceId, String permission);
 
-  static void setup(ContextTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(ContextTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission', codec,
+          'dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
       } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_activityInstanceId = (args[0] as String?);
           assert(arg_activityInstanceId != null,
@@ -155,7 +187,8 @@ abstract class ContextTestHostApi {
           final String? arg_permission = (args[1] as String?);
           assert(arg_permission != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission was null, expected non-null String.');
-          final int output = api.checkSelfPermission(arg_activityInstanceId!, arg_permission!);
+          final int output =
+              api.checkSelfPermission(arg_activityInstanceId!, arg_permission!);
           return <Object?>[output];
         });
       }
