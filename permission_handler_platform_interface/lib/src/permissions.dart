@@ -29,7 +29,7 @@ class Permission {
   ///
   /// Android: Calendar
   /// iOS: Calendar (Events)
-  @Deprecated('Use [calendarReadOnly] and [calendarFullAccess].')
+  @Deprecated('Use [calendarWriteOnly] and [calendarFullAccess].')
   static const calendar = Permission._(0);
 
   /// Permission for accessing the device's camera.
@@ -94,13 +94,27 @@ class Permission {
   /// Depending on the platform and version, the requirements are slightly
   /// different:
   ///
-  /// **Android:**
-  /// - When running on Android 13 (API 33) and above: Read image files from
-  /// external storage
-  /// - When running below Android 13 (API 33): Nothing
-  ///
   /// **iOS:**
   /// - When running Photos (iOS 14+ read & write access level)
+  ///
+  /// **Android:**
+  /// - Devices running Android 12 (API level 32) or lower: use [Permissions.storage].
+  /// - Devices running Android 13 (API level 33) and above: Should use [Permissions.photos].
+  ///
+  /// EXAMPLE: in Manifest:
+  /// <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
+  /// <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+  ///
+  /// In Flutter to check the status:
+  ///
+  /// if (Platform.isAndroid) {
+  ///   final androidInfo = await DeviceInfoPlugin().androidInfo;
+  ///   if (androidInfo.version.sdkInt <= 32) {
+  ///     use [Permissions.storage.status]
+  ///   }  else {
+  ///     use [Permissions.photos.status]
+  ///   }
+  /// }
   static const photos = Permission._(9);
 
   /// Permission for adding photos to the device's photo library (iOS only).
@@ -297,10 +311,10 @@ class Permission {
   /// Android 13+ (API 33+)
   static const sensorsAlways = Permission._(35);
 
-  /// Permission for reading the device's calendar.
+  /// Permission for writing to the device's calendar.
   ///
   /// On iOS 16 and lower, this permission is identical to [Permission.calendarFullAccess].
-  static const calendarReadOnly = Permission._(36);
+  static const calendarWriteOnly = Permission._(36);
 
   /// Permission for reading from and writing to the device's calendar.
   static const calendarFullAccess = Permission._(37);
@@ -344,7 +358,7 @@ class Permission {
     audio,
     scheduleExactAlarm,
     sensorsAlways,
-    calendarReadOnly,
+    calendarWriteOnly,
     calendarFullAccess,
   ];
 
@@ -385,7 +399,7 @@ class Permission {
     'audio',
     'scheduleExactAlarm',
     'sensorsAlways',
-    'calendarReadOnly',
+    'calendarWriteOnly',
     'calendarFullAccess',
   ];
 

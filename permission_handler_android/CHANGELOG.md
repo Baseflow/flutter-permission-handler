@@ -1,3 +1,13 @@
+## 12.0.1
+
+* Fixes a bug where the `ignoreBatteryOptimizations` permission didn't report the correct status when the permission is requested and granted.
+
+## 12.0.0
+
+* **BREAKING CHANGES:**
+  * Adds `Permission.calendarWriteOnly`.
+  * Removes `Permission.calendarReadOnly`.
+
 ## 11.1.0
 
 * Implements the `Permission.calendarReadOnly` and `PermissionCalendarFullAccess` permissions.
@@ -35,12 +45,12 @@
 ## 10.3.5
 
 * Fixes a bug where `Permission.ScheduleExactAlarm` was not opening the settings
-screen.
+  screen.
 
 ## 10.3.4
 
 * Fixes a bug where the permission status would return 'permanently denied'
-instead of 'denied' when the user would dismiss the permission dialog.
+  instead of 'denied' when the user dismisses the permission dialog.
 
 ## 10.3.3
 
@@ -52,7 +62,7 @@ instead of 'denied' when the user would dismiss the permission dialog.
 
 ## 10.3.1
 
-* Fixes `java.lang.IllegalStateException: Reply already submitted` when checking status of Bluetooth service.
+* Fixes `java.lang.IllegalStateException: Reply already submitted` when checking the status of Bluetooth service.
 
 ## 10.3.0
 
@@ -60,7 +70,7 @@ instead of 'denied' when the user would dismiss the permission dialog.
 
 ## 10.2.3
 
-* Fixes missing POST_NOTIFICATIONS permission in Android example project.
+* Fix missing POST_NOTIFICATIONS permission in the Android example project.
 
 ## 10.2.2
 
@@ -80,8 +90,8 @@ instead of 'denied' when the user would dismiss the permission dialog.
 
 ## 10.0.0
 
- * __BREAKING CHANGE__: Updates Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
- > When updating to version 10.0.0 make sure to update the `android/app/build.gradle` file and set the `compileSdkVersion` to `33`.
+* **BREAKING CHANGE**: Updates Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
+  > When updating to version 10.0.0 make sure to update the `android/app/build.gradle` file and set the `compileSdkVersion` to `33`.
 
 ## 9.0.2+1
 

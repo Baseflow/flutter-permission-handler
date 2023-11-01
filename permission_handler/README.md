@@ -11,7 +11,7 @@ See the [FAQ](#faq) section for more information on common questions when using 
 
 ## Setup
 
-While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use. That requires adding permission configuration to Android- and iOS-specific files.
+While the permissions are being requested during runtime, you'll still need to tell the OS which permissions your app might potentially use. That requires adding permission configuration to Android* and iOS-specific files.
 
 <details>
 <summary>Android</summary>
