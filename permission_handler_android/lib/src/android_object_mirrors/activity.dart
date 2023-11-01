@@ -10,7 +10,7 @@ import '../android_permission_handler_api_impls.dart';
 ///
 /// See https://developer.android.com/reference/android/app/Activity.
 class Activity extends JavaObject {
-  /// Instantiates an [AndroidActivity] without creating and attaching to an instance
+  /// Instantiates an [Activity] without creating and attaching to an instance
   /// of the associated native class.
   Activity.detached({
     InstanceManager? instanceManager,
