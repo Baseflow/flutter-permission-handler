@@ -59,7 +59,8 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   ) async {
     final Activity? activity = _activityManager.activity;
     if (activity == null) {
-      debugPrint('Activity is null');
+      debugPrint(
+          'Android activity is null. Did you run this method in the background instead of the foreground?');
       return false;
     }
 
@@ -81,7 +82,8 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   Future<PermissionStatus> requestPermission(Permission permission) async {
     final Activity? activity = _activityManager.activity;
     if (activity == null) {
-      debugPrint('Activity is null');
+      debugPrint(
+          'Android activity is null. Did you run this method in the background instead of the foreground?');
       return PermissionStatus.denied;
     }
 
