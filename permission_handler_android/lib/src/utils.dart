@@ -27,6 +27,10 @@ class ManifestPersistentStorage {
 /// Note: This method has side-effects as it will store whether the permission
 /// was denied before in persistent memory.
 ///
+/// Uses an [Activity] to distinguish between [PermissionStatus.denied] and
+/// [PermissionStatus.permanentlyDenied]. If no [Activity] is provided,
+/// [PermissionStatus.denied] is returned.
+///
 /// When [PackageManager.permissionDenied] is received, we do not know if the
 /// permission was denied permanently. The OS does not tell us whether the
 /// user dismissed the dialog or pressed 'deny'. Therefore, we need a more
@@ -78,12 +82,16 @@ class ManifestPersistentStorage {
 /// 'Denied once' if denied. This behavior should not require any additional
 /// logic.
 Future<PermissionStatus> grantResultToPermissionStatus(
-  Activity activity,
+  Activity? activity,
   String manifestString,
   int grantResult,
 ) async {
   if (grantResult == PackageManager.permissionGranted) {
     return PermissionStatus.granted;
+  }
+
+  if (activity == null) {
+    return PermissionStatus.denied;
   }
 
   final bool wasDeniedBefore =

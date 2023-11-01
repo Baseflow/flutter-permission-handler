@@ -13,7 +13,7 @@ import 'android_object_mirrors/context.dart';
 /// [ActivityAware] instance.
 extension ActivityAwareManager on ActivityAware {
   static final List<ActivityAware> _registeredInstances = [];
-  static late final Context _applicationContext;
+  static Context? _applicationContext;
   static Activity? _attachedActivity;
 
   /// Notifies all registered [ActivityAware] instances that the Flutter engine
@@ -57,11 +57,13 @@ abstract class ActivityAware {
   void registerForUpdates() {
     AndroidPermissionHandlerFlutterApis.instance.ensureSetUp();
 
-    _registeredInstances.add(this);
+    ActivityAwareManager._registeredInstances.add(this);
 
-    onAttachedToApplication(_applicationContext);
-    if (_attachedActivity != null) {
-      onAttachedToActivity(_attachedActivity!);
+    if (ActivityAwareManager._applicationContext != null) {
+      onAttachedToApplication(ActivityAwareManager._applicationContext!);
+    }
+    if (ActivityAwareManager._attachedActivity != null) {
+      onAttachedToActivity(ActivityAwareManager._attachedActivity!);
     }
   }
 

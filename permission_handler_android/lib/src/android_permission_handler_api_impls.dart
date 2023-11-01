@@ -116,7 +116,7 @@ class ActivityFlutterApiImpl extends ActivityFlutterApi {
 
   @override
   void create(String instanceId) {
-    Activity activity = Activity.detached();
+    final Activity activity = Activity.detached();
     _instanceManager.addHostCreatedInstance(activity, instanceId);
 
     ActivityAwareManager.notifyAttachedToActivity(activity);

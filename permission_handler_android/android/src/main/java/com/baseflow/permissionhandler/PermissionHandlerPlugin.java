@@ -43,7 +43,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         BinaryMessenger binaryMessenger
     ) {
         instanceManager = InstanceManager.create(identifier -> {});
-        InstanceManagerHostApi.setup(binaryMessenger, () -> instanceManager.clear());
+        InstanceManagerHostApi.setup(binaryMessenger, () -> {});
 
         final JavaObjectHostApi javaObjectHostApi = new JavaObjectHostApiImpl(instanceManager);
         JavaObjectHostApi.setup(binaryMessenger, javaObjectHostApi);

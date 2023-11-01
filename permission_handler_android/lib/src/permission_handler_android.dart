@@ -19,17 +19,17 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     );
   }
 
+  /// Determine whether you have been granted a particular permission.
+  ///
+  /// When running in the foreground, the result can be
+  /// [PermissionStatus.granted], [PermissionStatus.denied] or
+  /// [PermissionStatus.permanentlyDenied]. When running in the background,
+  /// however, only [PermissionStatus.granted] or [PermissionStatus.denied] will
+  /// be returned.
+  ///
   /// TODO(jweener): handle special permissions.
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
-    /// TODO(jweener): check self permission now needs activity because of the
-    /// hacky fix. This fix might not work (issue online). Discuss with team
-    /// about the future of permanently denied.
-    if (_activityManager.activity == null) {
-      debugPrint('Activity is null');
-      return PermissionStatus.denied;
-    }
-
     final Iterable<PermissionStatus> statuses = await Future.wait(
       permission.manifestStrings.map(
         (String manifestString) async {
@@ -39,7 +39,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
           );
 
           final PermissionStatus status = await grantResultToPermissionStatus(
-            _activityManager.activity!,
+            _activityManager.activity,
             manifestString,
             grantResult,
           );
