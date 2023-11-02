@@ -5,6 +5,7 @@ import 'package:permission_handler_android/src/activity_aware.dart';
 
 import 'android_object_mirrors/activity.dart';
 import 'android_object_mirrors/context.dart';
+import 'android_object_mirrors/uri.dart';
 import 'permission_handler.pigeon.dart';
 
 /// Handles initialization of Flutter APIs for the Android permission handler.
@@ -199,5 +200,50 @@ class ContextFlutterApiImpl extends ContextFlutterApi {
   @override
   void dispose(String instanceId) {
     _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of Uri.
+class UriHostApiImpl extends UriHostApi {
+  /// Creates a new instance of [UriHostApiImpl].
+  UriHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Creates a Uri which parses the given encoded URI string.
+  ///
+  /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
+  Future<Uri> parseFromClass(
+    String uriString,
+  ) async {
+    final String instanceId = await parse(uriString);
+    final Uri uri = Uri.detached(
+      binaryMessenger: binaryMessenger,
+      instanceManager: instanceManager,
+    );
+    instanceManager.addHostCreatedInstance(uri, instanceId);
+    return uri;
+  }
+
+  /// Returns the encoded string representation of this URI.
+  ///
+  /// Example: "http://google.com/".
+  ///
+  /// See https://developer.android.com/reference/android/net/Uri#toString().
+  Future<String> toStringAsyncFromInstance(
+    Uri uriInstance,
+  ) {
+    return toStringAsync(instanceManager.getIdentifier(uriInstance)!);
   }
 }

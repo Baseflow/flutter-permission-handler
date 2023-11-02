@@ -442,4 +442,94 @@ public class PermissionHandlerPigeon {
           channelReply -> callback.reply(null));
     }
   }
+  /**
+   * Host API for `Uri`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/net/Uri.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface UriHostApi {
+    /**
+     * Creates a Uri which parses the given encoded URI string.
+     *
+     * Returns the instance ID of the created Uri.
+     *
+     * See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
+     */
+    @NonNull 
+    String parse(@NonNull String uriString);
+    /**
+     * Returns the encoded string representation of this URI.
+     *
+     * Example: "http://google.com/".
+     *
+     * Method name is [toStringAsync] as opposed to [toString], as [toString]
+     * cannot be overridden with return type [Future].
+     *
+     * See https://developer.android.com/reference/android/net/Uri#toString().
+     */
+    @NonNull 
+    String toStringAsync(@NonNull String instanceId);
+
+    /** The codec used by UriHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `UriHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable UriHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.UriHostApi.parse", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String uriStringArg = (String) args.get(0);
+                try {
+                  String output = api.parse(uriStringArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  String output = api.toStringAsync(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
 }

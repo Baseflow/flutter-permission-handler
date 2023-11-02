@@ -175,3 +175,73 @@ abstract class ContextTestHostApi {
     }
   }
 }
+
+/// Host API for `Uri`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/net/Uri.
+abstract class UriTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Creates a Uri which parses the given encoded URI string.
+  ///
+  /// Returns the instance ID of the created Uri.
+  ///
+  /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
+  String parse(String uriString);
+
+  /// Returns the encoded string representation of this URI.
+  ///
+  /// Example: "http://google.com/".
+  ///
+  /// Method name is [toStringAsync] as opposed to [toString], as [toString]
+  /// cannot be overridden with return type [Future].
+  ///
+  /// See https://developer.android.com/reference/android/net/Uri#toString().
+  String toStringAsync(String instanceId);
+
+  static void setup(UriTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.UriHostApi.parse', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_uriString = (args[0] as String?);
+          assert(arg_uriString != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null, expected non-null String.');
+          final String output = api.parse(arg_uriString!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync was null, expected non-null String.');
+          final String output = api.toStringAsync(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
