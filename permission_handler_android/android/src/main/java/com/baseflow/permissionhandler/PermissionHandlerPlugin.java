@@ -12,6 +12,7 @@ import com.baseflow.instancemanager.InstanceManagerPigeon.InstanceManagerHostApi
 import com.baseflow.instancemanager.JavaObjectHostApiImpl;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ContextHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.IntentHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.UriHostApi;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -59,6 +60,9 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
         final UriHostApi uriHostApi = new UriHostApiImpl(binaryMessenger, instanceManager);
         UriHostApi.setup(binaryMessenger, uriHostApi);
+
+        final IntentHostApi intentHostApi = new IntentHostApiImpl(binaryMessenger, instanceManager);
+        IntentHostApi.setup(binaryMessenger, intentHostApi);
     }
 
     @Override

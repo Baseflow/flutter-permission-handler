@@ -5,6 +5,7 @@ import 'package:permission_handler_android/src/activity_aware.dart';
 
 import 'android_object_mirrors/activity.dart';
 import 'android_object_mirrors/context.dart';
+import 'android_object_mirrors/intent.dart';
 import 'android_object_mirrors/uri.dart';
 import 'permission_handler.pigeon.dart';
 
@@ -224,16 +225,13 @@ class UriHostApiImpl extends UriHostApi {
   /// Creates a Uri which parses the given encoded URI string.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  Future<Uri> parseFromClass(
+  void parseFromInstance(
+    Uri uriInstance,
     String uriString,
   ) async {
-    final String instanceId = await parse(uriString);
-    final Uri uri = Uri.detached(
-      binaryMessenger: binaryMessenger,
-      instanceManager: instanceManager,
-    );
-    instanceManager.addHostCreatedInstance(uri, instanceId);
-    return uri;
+    final String instanceId =
+        instanceManager.addDartCreatedInstance(uriInstance);
+    await parse(instanceId, uriString);
   }
 
   /// Returns the encoded string representation of this URI.
@@ -245,5 +243,32 @@ class UriHostApiImpl extends UriHostApi {
     Uri uriInstance,
   ) {
     return toStringAsync(instanceManager.getIdentifier(uriInstance)!);
+  }
+}
+
+/// Host API implementation of Intent.
+class IntentHostApiImpl extends IntentHostApi {
+  /// Creates a new instance of [IntentHostApiImpl].
+  IntentHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Creates a new [Intent] instance on the host side.
+  void createFromInstance(
+    Intent intent,
+  ) async {
+    final String instanceId = instanceManager.addDartCreatedInstance(intent);
+    await create(instanceId);
   }
 }

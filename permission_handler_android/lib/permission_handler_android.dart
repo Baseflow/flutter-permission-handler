@@ -1,5 +1,6 @@
 export 'src/android_object_mirrors/activity.dart';
 export 'src/android_object_mirrors/context.dart';
+export 'src/android_object_mirrors/intent.dart';
 export 'src/android_object_mirrors/manifest.dart';
 export 'src/android_object_mirrors/package_manager.dart';
 export 'src/android_object_mirrors/settings.dart';

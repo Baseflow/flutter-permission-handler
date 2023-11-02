@@ -461,8 +461,7 @@ public class PermissionHandlerPigeon {
      *
      * See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
      */
-    @NonNull 
-    String parse(@NonNull String uriString);
+    void parse(@NonNull String instanceId, @NonNull String uriString);
     /**
      * Returns the encoded string representation of this URI.
      *
@@ -491,10 +490,11 @@ public class PermissionHandlerPigeon {
               (message, reply) -> {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 ArrayList<Object> args = (ArrayList<Object>) message;
-                String uriStringArg = (String) args.get(0);
+                String instanceIdArg = (String) args.get(0);
+                String uriStringArg = (String) args.get(1);
                 try {
-                  String output = api.parse(uriStringArg);
-                  wrapped.add(0, output);
+                  api.parse(instanceIdArg, uriStringArg);
+                  wrapped.add(0, null);
                 }
  catch (Throwable exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
@@ -519,6 +519,53 @@ public class PermissionHandlerPigeon {
                 try {
                   String output = api.toStringAsync(instanceIdArg);
                   wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Host API for `Intent`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/content/Intent.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface IntentHostApi {
+
+    void create(@NonNull String instanceId);
+
+    /** The codec used by IntentHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `IntentHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable IntentHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.IntentHostApi.create", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  api.create(instanceIdArg);
+                  wrapped.add(0, null);
                 }
  catch (Throwable exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);

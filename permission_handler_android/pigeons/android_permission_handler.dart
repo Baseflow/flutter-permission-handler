@@ -138,7 +138,8 @@ abstract class UriHostApi {
   /// Returns the instance ID of the created Uri.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  String parse(
+  void parse(
+    String instanceId,
     String uriString,
   );
 
@@ -151,6 +152,20 @@ abstract class UriHostApi {
   ///
   /// See https://developer.android.com/reference/android/net/Uri#toString().
   String toStringAsync(
+    String instanceId,
+  );
+}
+
+/// Host API for `Intent`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/Intent.
+@HostApi(dartHostTestHandler: 'IntentTestHostApi')
+abstract class IntentHostApi {
+  void create(
     String instanceId,
   );
 }

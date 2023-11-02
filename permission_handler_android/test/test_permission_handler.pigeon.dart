@@ -192,7 +192,7 @@ abstract class UriTestHostApi {
   /// Returns the instance ID of the created Uri.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  String parse(String uriString);
+  void parse(String instanceId, String uriString);
 
   /// Returns the encoded string representation of this URI.
   ///
@@ -216,11 +216,14 @@ abstract class UriTestHostApi {
           assert(message != null,
           'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_uriString = (args[0] as String?);
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null, expected non-null String.');
+          final String? arg_uriString = (args[1] as String?);
           assert(arg_uriString != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null, expected non-null String.');
-          final String output = api.parse(arg_uriString!);
-          return <Object?>[output];
+          api.parse(arg_instanceId!, arg_uriString!);
+          return <Object?>[];
         });
       }
     }
@@ -240,6 +243,42 @@ abstract class UriTestHostApi {
               'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync was null, expected non-null String.');
           final String output = api.toStringAsync(arg_instanceId!);
           return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `Intent`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/Intent.
+abstract class IntentTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  void create(String instanceId);
+
+  static void setup(IntentTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.IntentHostApi.create', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.create was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.create was null, expected non-null String.');
+          api.create(arg_instanceId!);
+          return <Object?>[];
         });
       }
     }
