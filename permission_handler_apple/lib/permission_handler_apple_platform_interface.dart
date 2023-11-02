@@ -8,7 +8,8 @@ abstract class PermissionHandlerApplePlatform extends PlatformInterface {
 
   static final Object _token = Object();
 
-  static PermissionHandlerApplePlatform _instance = MethodChannelPermissionHandlerApple();
+  static PermissionHandlerApplePlatform _instance =
+      MethodChannelPermissionHandlerApple();
 
   /// The default instance of [PermissionHandlerApplePlatform] to use.
   ///
