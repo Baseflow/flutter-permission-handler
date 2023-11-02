@@ -165,7 +165,46 @@ abstract class UriHostApi {
 /// See https://developer.android.com/reference/android/content/Intent.
 @HostApi(dartHostTestHandler: 'IntentTestHostApi')
 abstract class IntentHostApi {
+  /// Creates an empty intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#Intent().
   void create(
     String instanceId,
+  );
+
+  /// Set the general action to be performed.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
+  void setAction(
+    String instanceId,
+    String action,
+  );
+
+  /// Set the data this intent is operating on.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setData(android.net.Uri).
+  void setData(
+    String instanceId,
+    String uriInstanceId,
+  );
+
+  /// Add a new category to the intent.
+  ///
+  /// Categories provide additional detail about the action the intent performs.
+  /// When resolving an intent, only activities that provide all of the
+  /// requested categories will be used.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addCategory(java.lang.String).
+  void addCategory(
+    String instanceId,
+    String category,
+  );
+
+  /// Add additional flags to the intent (or with existing flags value).
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addFlags(int).
+  void addFlags(
+    String instanceId,
+    int flags,
   );
 }

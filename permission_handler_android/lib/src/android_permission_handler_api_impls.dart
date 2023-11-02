@@ -264,11 +264,69 @@ class IntentHostApiImpl extends IntentHostApi {
   /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
 
-  /// Creates a new [Intent] instance on the host side.
-  void createFromInstance(
+  /// Creates an empty intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#Intent().
+  Future<void> createFromInstance(
     Intent intent,
-  ) async {
+  ) {
     final String instanceId = instanceManager.addDartCreatedInstance(intent);
-    await create(instanceId);
+    return create(instanceId);
+  }
+
+  /// Sets the general action to be performed.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
+  Future<void> setActionFromInstance(
+    Intent intent,
+    String action,
+  ) {
+    return setAction(
+      instanceManager.getIdentifier(intent)!,
+      action,
+    );
+  }
+
+  /// Sets the data this intent is operating on.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setData(android.net.Uri).
+  Future<void> setDataFromInstance(
+    Intent intent,
+    Uri uri,
+  ) {
+    return setData(
+      instanceManager.getIdentifier(intent)!,
+      instanceManager.getIdentifier(uri)!,
+    );
+  }
+
+  /// Add a new category to the intent.
+  ///
+  /// Categories provide additional detail about the action the intent performs.
+  /// When resolving an intent, only activities that provide all of the
+  /// requested categories will be used.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addCategory(java.lang.String).
+  Future<void> addCategoryFromInstance(
+    Intent intent,
+    String category,
+  ) {
+    return addCategory(
+      instanceManager.getIdentifier(intent)!,
+      category,
+    );
+  }
+
+  /// Add additional flags to the intent (or with existing flags value).
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addFlags(int).
+  Future<void> addFlagsFromInstance(
+    Intent intent,
+    int flags,
+  ) {
+    return addFlags(
+      instanceManager.getIdentifier(intent)!,
+      flags,
+    );
   }
 }

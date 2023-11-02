@@ -544,8 +544,40 @@ public class PermissionHandlerPigeon {
    * Generated interface from Pigeon that represents a handler of messages from Flutter.
    */
   public interface IntentHostApi {
-
+    /**
+     * Creates an empty intent.
+     *
+     * See https://developer.android.com/reference/android/content/Intent#Intent().
+     */
     void create(@NonNull String instanceId);
+    /**
+     * Set the general action to be performed.
+     *
+     * See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
+     */
+    void setAction(@NonNull String instanceId, @NonNull String action);
+    /**
+     * Set the data this intent is operating on.
+     *
+     * See https://developer.android.com/reference/android/content/Intent#setData(android.net.Uri).
+     */
+    void setData(@NonNull String instanceId, @NonNull String uriInstanceId);
+    /**
+     * Add a new category to the intent.
+     *
+     * Categories provide additional detail about the action the intent performs.
+     * When resolving an intent, only activities that provide all of the
+     * requested categories will be used.
+     *
+     * See https://developer.android.com/reference/android/content/Intent#addCategory(java.lang.String).
+     */
+    void addCategory(@NonNull String instanceId, @NonNull String category);
+    /**
+     * Add additional flags to the intent (or with existing flags value).
+     *
+     * See https://developer.android.com/reference/android/content/Intent#addFlags(int).
+     */
+    void addFlags(@NonNull String instanceId, @NonNull Long flags);
 
     /** The codec used by IntentHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -565,6 +597,106 @@ public class PermissionHandlerPigeon {
                 String instanceIdArg = (String) args.get(0);
                 try {
                   api.create(instanceIdArg);
+                  wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String actionArg = (String) args.get(1);
+                try {
+                  api.setAction(instanceIdArg, actionArg);
+                  wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String uriInstanceIdArg = (String) args.get(1);
+                try {
+                  api.setData(instanceIdArg, uriInstanceIdArg);
+                  wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String categoryArg = (String) args.get(1);
+                try {
+                  api.addCategory(instanceIdArg, categoryArg);
+                  wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                Number flagsArg = (Number) args.get(1);
+                try {
+                  api.addFlags(instanceIdArg, (flagsArg == null) ? null : flagsArg.longValue());
                   wrapped.add(0, null);
                 }
  catch (Throwable exception) {

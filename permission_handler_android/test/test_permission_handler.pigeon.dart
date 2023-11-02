@@ -260,7 +260,34 @@ abstract class IntentTestHostApi {
   static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
+  /// Creates an empty intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#Intent().
   void create(String instanceId);
+
+  /// Set the general action to be performed.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
+  void setAction(String instanceId, String action);
+
+  /// Set the data this intent is operating on.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setData(android.net.Uri).
+  void setData(String instanceId, String uriInstanceId);
+
+  /// Add a new category to the intent.
+  ///
+  /// Categories provide additional detail about the action the intent performs.
+  /// When resolving an intent, only activities that provide all of the
+  /// requested categories will be used.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addCategory(java.lang.String).
+  void addCategory(String instanceId, String category);
+
+  /// Add additional flags to the intent (or with existing flags value).
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addFlags(int).
+  void addFlags(String instanceId, int flags);
 
   static void setup(IntentTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
     {
@@ -278,6 +305,94 @@ abstract class IntentTestHostApi {
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.create was null, expected non-null String.');
           api.create(arg_instanceId!);
+          return <Object?>[];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction was null, expected non-null String.');
+          final String? arg_action = (args[1] as String?);
+          assert(arg_action != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction was null, expected non-null String.');
+          api.setAction(arg_instanceId!, arg_action!);
+          return <Object?>[];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData was null, expected non-null String.');
+          final String? arg_uriInstanceId = (args[1] as String?);
+          assert(arg_uriInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData was null, expected non-null String.');
+          api.setData(arg_instanceId!, arg_uriInstanceId!);
+          return <Object?>[];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory was null, expected non-null String.');
+          final String? arg_category = (args[1] as String?);
+          assert(arg_category != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory was null, expected non-null String.');
+          api.addCategory(arg_instanceId!, arg_category!);
+          return <Object?>[];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags was null, expected non-null String.');
+          final int? arg_flags = (args[1] as int?);
+          assert(arg_flags != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags was null, expected non-null int.');
+          api.addFlags(arg_instanceId!, arg_flags!);
           return <Object?>[];
         });
       }

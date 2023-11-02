@@ -1,6 +1,7 @@
 package com.baseflow.permissionhandler;
 
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 
@@ -43,5 +44,51 @@ public class IntentHostApiImpl implements IntentHostApi {
         final Intent intent = new Intent();
         final UUID instanceUuid = UUID.fromString(instanceId);
         instanceManager.addDartCreatedInstance(intent, instanceUuid);
+    }
+
+    @Override
+    public void setAction(
+        @NonNull String instanceId,
+        @NonNull String action
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Intent intent = instanceManager.getInstance(instanceUuid);
+
+        intent.setAction(action);
+    }
+
+    @Override
+    public void setData(
+        @NonNull String instanceId,
+        @NonNull String uriInstanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final UUID uriInstanceUuid = UUID.fromString(uriInstanceId);
+        final Intent intent = instanceManager.getInstance(instanceUuid);
+        final Uri uri = instanceManager.getInstance(uriInstanceUuid);
+
+        intent.setData(uri);
+    }
+
+    @Override
+    public void addCategory(
+        @NonNull String instanceId,
+        @NonNull String category
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Intent intent = instanceManager.getInstance(instanceUuid);
+
+        intent.addCategory(category);
+    }
+
+    @Override
+    public void addFlags(
+        @NonNull String instanceId,
+        Long flags
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Intent intent = instanceManager.getInstance(instanceUuid);
+
+        intent.addFlags(flags.intValue());
     }
 }
