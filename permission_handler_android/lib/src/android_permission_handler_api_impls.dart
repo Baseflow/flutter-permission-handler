@@ -119,14 +119,14 @@ class ActivityFlutterApiImpl extends ActivityFlutterApi {
     final Activity activity = Activity.detached();
     _instanceManager.addHostCreatedInstance(activity, instanceId);
 
-    ActivityAwareManager.notifyAttachedToActivity(activity);
+    ActivityAwareExtension.notifyAttachedToActivity(activity);
   }
 
   @override
   void dispose(String instanceId) {
     _instanceManager.remove(instanceId);
 
-    ActivityAwareManager.notifyDetachedFromActivity();
+    ActivityAwareExtension.notifyDetachedFromActivity();
   }
 }
 
@@ -178,7 +178,7 @@ class ContextFlutterApiImpl extends ContextFlutterApi {
       instanceId,
     );
 
-    ActivityAwareManager.notifyAttachedToApplication(context);
+    ActivityAwareExtension.notifyAttachedToApplication(context);
   }
 
   @override

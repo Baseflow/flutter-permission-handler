@@ -44,12 +44,16 @@ class PermissionRequestResult {
 @HostApi(dartHostTestHandler: 'ActivityTestHostApi')
 abstract class ActivityHostApi {
   /// Gets whether you should show UI with rationale before requesting a permission.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
   bool shouldShowRequestPermissionRationale(
     String activityInstanceId,
     String permission,
   );
 
   /// Determine whether you have been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   int checkSelfPermission(
     String activityInstanceId,
     String permission,
@@ -61,7 +65,10 @@ abstract class ActivityHostApi {
   /// permission results are returned as a [Future] instead of through a
   /// separate callback.
   ///
-  /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+  /// See
+  /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
+  /// and
+  /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
   @async
   PermissionRequestResult requestPermissions(
     String activityInstanceId,

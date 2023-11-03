@@ -185,7 +185,7 @@ public class PermissionHandlerPigeon {
    * Generated interface from Pigeon that represents a handler of messages from Flutter.
    */
   public interface ActivityHostApi {
-    /** Gets whether you should show UI with rationale before requesting a permission. */
+    /** Gets whether the application should show UI with rationale before requesting a permission. */
     @NonNull 
     Boolean shouldShowRequestPermissionRationale(@NonNull String activityInstanceId, @NonNull String permission);
     /** Determine whether you have been granted a particular permission. */

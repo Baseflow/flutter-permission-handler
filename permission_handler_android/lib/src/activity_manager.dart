@@ -11,12 +11,16 @@ class ActivityManager with ActivityAware {
   }
 
   /// The Android application context.
-  Context get applicationContext => _applicationContext;
   late final Context _applicationContext;
+
+  /// The Android application context.
+  Context get applicationContext => _applicationContext;
+
+  /// The activity the Flutter engine is attached to.
+  Activity? _activity;
 
   /// The activity the Flutter engine is attached to.
   Activity? get activity => _activity;
-  Activity? _activity;
 
   @override
   void onAttachedToApplication(Context applicationContext) {

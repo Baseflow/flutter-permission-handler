@@ -11,7 +11,7 @@ import 'android_object_mirrors/context.dart';
 /// By splitting these methods out into an extension, we avoid the risk of
 /// developers accidentally calling these methods directly from an
 /// [ActivityAware] instance.
-extension ActivityAwareManager on ActivityAware {
+extension ActivityAwareExtension on ActivityAware {
   static final List<ActivityAware> _registeredInstances = [];
   static Context? _applicationContext;
   static Activity? _attachedActivity;
@@ -39,15 +39,28 @@ extension ActivityAwareManager on ActivityAware {
       instance.onDetachedFromActivity();
     }
   }
+
+  void _registerInstance() {
+    AndroidPermissionHandlerFlutterApis.instance.ensureSetUp();
+
+    ActivityAwareExtension._registeredInstances.add(this);
+
+    if (ActivityAwareExtension._applicationContext != null) {
+      onAttachedToApplication(ActivityAwareExtension._applicationContext!);
+    }
+    if (ActivityAwareExtension._attachedActivity != null) {
+      onAttachedToActivity(ActivityAwareExtension._attachedActivity!);
+    }
+  }
 }
 
-/// Abstract class for classes that need to hook into the Android system.
+/// Mixin for classes that need to hook into the Android system.
 ///
 /// **NOTE**: make sure to call [registerForUpdates] to receive updates.
 ///
 /// Obtains references, through callbacks, to the Android application context
 /// and the activity the Flutter engine is attached to.
-abstract class ActivityAware {
+mixin ActivityAware {
   /// Register this [ActivityAware] instance for updates about the Android system.
   ///
   /// Updates are delivered through the different callbacks.
@@ -55,16 +68,7 @@ abstract class ActivityAware {
   /// This method should usually be called as soon as the [ActivityAware]
   /// instance is created.
   void registerForUpdates() {
-    AndroidPermissionHandlerFlutterApis.instance.ensureSetUp();
-
-    ActivityAwareManager._registeredInstances.add(this);
-
-    if (ActivityAwareManager._applicationContext != null) {
-      onAttachedToApplication(ActivityAwareManager._applicationContext!);
-    }
-    if (ActivityAwareManager._attachedActivity != null) {
-      onAttachedToActivity(ActivityAwareManager._attachedActivity!);
-    }
+    _registerInstance();
   }
 
   /// This [ActivityAware] has been associated with an application.
