@@ -49,7 +49,6 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return statuses.strictest;
   }
 
-  /// TODO(jweener): Handle activity null.
   @override
   Future<bool> shouldShowPermissionRequestRationale(
     Permission permission,
@@ -74,7 +73,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return shouldShowRationales.any((bool shouldShow) => shouldShow);
   }
 
-  /// TODO(jweener): handle activity null.
+  /// TODO(jweener): handle special permissions.
   @override
   Future<PermissionStatus> requestPermission(Permission permission) async {
     final Activity? activity = _activityManager.activity;
