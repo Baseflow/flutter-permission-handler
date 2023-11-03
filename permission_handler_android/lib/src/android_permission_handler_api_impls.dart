@@ -117,6 +117,30 @@ class ActivityHostApiImpl extends ActivityHostApi {
       permissions,
     );
   }
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  Future<void> startActivityFromInstance(
+    Activity activity,
+    Intent intent,
+  ) async {
+    return startActivity(
+      instanceManager.getIdentifier(activity)!,
+      instanceManager.getIdentifier(intent)!,
+    );
+  }
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  Future<String> getPackageNameFromInstance(
+    Activity activity,
+  ) async {
+    return getPackageName(
+      instanceManager.getIdentifier(activity)!,
+    );
+  }
 }
 
 /// Flutter API implementation of Activity.

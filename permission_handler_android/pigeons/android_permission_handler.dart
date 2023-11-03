@@ -74,6 +74,21 @@ abstract class ActivityHostApi {
     String instanceId,
     List<String> permissions,
   );
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  void startActivity(
+    String instanceId,
+    String intentInstanceId,
+  );
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  String getPackageName(
+    String instanceId,
+  );
 }
 
 /// Flutter API for `Activity`.

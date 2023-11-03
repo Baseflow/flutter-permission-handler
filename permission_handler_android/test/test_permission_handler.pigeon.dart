@@ -83,6 +83,16 @@ abstract class ActivityTestHostApi {
   Future<PermissionRequestResult> requestPermissions(String instanceId, List<String?> permissions);
 >>>>>>> 5617076 (Implement `startActivity`, `getPackageName` for `Context`)
 
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  void startActivity(String instanceId, String intentInstanceId);
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  String getPackageName(String instanceId);
+
   static void setup(ActivityTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
@@ -146,6 +156,47 @@ abstract class ActivityTestHostApi {
           assert(arg_permissions != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null, expected non-null List<String?>.');
           final PermissionRequestResult output = await api.requestPermissions(arg_instanceId!, arg_permissions!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity was null, expected non-null String.');
+          final String? arg_intentInstanceId = (args[1] as String?);
+          assert(arg_intentInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity was null, expected non-null String.');
+          api.startActivity(arg_instanceId!, arg_intentInstanceId!);
+          return <Object?>[];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger.setMockDecodedMessageHandler<Object?>(channel, (Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName was null, expected non-null String.');
+          final String output = api.getPackageName(arg_instanceId!);
           return <Object?>[output];
         });
       }

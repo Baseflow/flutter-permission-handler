@@ -2,6 +2,7 @@ package com.baseflow.permissionhandler;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -124,5 +125,29 @@ public class ActivityHostApiImpl implements ActivityHostApi, PluginRegistry.Requ
         pendingRequest.success(result);
 
         return true;
+    }
+
+    @Override
+    public void startActivity(
+        @NonNull String instanceId,
+        @NonNull String intentInstanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final UUID intentInstanceUuid = UUID.fromString(intentInstanceId);
+
+        final Activity activity = instanceManager.getInstance(instanceUuid);
+        final Intent intent = instanceManager.getInstance(intentInstanceUuid);
+
+        ActivityCompat.startActivity(activity, intent, null);
+    }
+
+    @Override
+    @NonNull public String getPackageName(
+        @NonNull String instanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Activity activity = instanceManager.getInstance(instanceUuid);
+
+        return activity.getPackageName();
     }
 }

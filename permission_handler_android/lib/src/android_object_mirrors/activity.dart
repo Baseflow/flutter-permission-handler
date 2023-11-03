@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 import 'package:permission_handler_android/src/permission_handler.pigeon.dart';
 
+import '../../permission_handler_android.dart';
 import '../android_permission_handler_api_impls.dart';
 
 /// An activity is a single, focused thing that the user can do.
@@ -66,6 +67,27 @@ class Activity extends JavaObject {
     return _hostApi.requestPermissionsFromInstance(
       this,
       permissions,
+    );
+  }
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  Future<void> startActivity(
+    Intent intent,
+  ) {
+    return _hostApi.startActivityFromInstance(
+      this,
+      intent,
+    );
+  }
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  Future<String> getPackageName() {
+    return _hostApi.getPackageNameFromInstance(
+      this,
     );
   }
 }
