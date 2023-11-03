@@ -20,8 +20,8 @@ import 'package:pigeon/pigeon.dart';
 /// Result of a permission request.
 ///
 /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-/// permission results are returned as a [Future] instead of through a
-/// separate callback.
+/// permission results are returned as a [Future] instead of through a separate
+/// callback.
 ///
 /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
 class PermissionRequestResult {
@@ -32,6 +32,23 @@ class PermissionRequestResult {
 
   final List<String?> permissions;
   final List<int?> grantResults;
+}
+
+/// Result of an activity-for-result request.
+///
+/// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+/// activity results are returned as a [Future] instead of through a separate
+/// callback.
+///
+/// See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
+class ActivityResultPigeon {
+  const ActivityResultPigeon({
+    required this.resultCode,
+    required this.dataInstanceId,
+  });
+
+  final int resultCode;
+  final String? dataInstanceId;
 }
 
 /// Host API for `Activity`.
@@ -88,6 +105,18 @@ abstract class ActivityHostApi {
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(
     String instanceId,
+  );
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// activity results are returned as a [Future].
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  @async
+  ActivityResultPigeon startActivityForResult(
+    String instanceId,
+    String intentInstanceId,
   );
 }
 

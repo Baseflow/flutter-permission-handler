@@ -61,8 +61,8 @@ public class PermissionHandlerPigeon {
    * Result of a permission request.
    *
    * Contrary to the Android SDK, we do not make use of a `requestCode`, as
-   * permission results are returned as a [Future] instead of through a
-   * separate callback.
+   * permission results are returned as a [Future] instead of through a separate
+   * callback.
    *
    * See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
    *
@@ -140,6 +140,86 @@ public class PermissionHandlerPigeon {
     }
   }
 
+  /**
+   * Result of an activity-for-result request.
+   *
+   * Contrary to the Android SDK, we do not make use of a `requestCode`, as
+   * activity results are returned as a [Future] instead of through a separate
+   * callback.
+   *
+   * See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
+   *
+   * Generated class from Pigeon that represents data sent in messages.
+   */
+  public static final class ActivityResultPigeon {
+    private @NonNull Long resultCode;
+
+    public @NonNull Long getResultCode() {
+      return resultCode;
+    }
+
+    public void setResultCode(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"resultCode\" is null.");
+      }
+      this.resultCode = setterArg;
+    }
+
+    private @Nullable String dataInstanceId;
+
+    public @Nullable String getDataInstanceId() {
+      return dataInstanceId;
+    }
+
+    public void setDataInstanceId(@Nullable String setterArg) {
+      this.dataInstanceId = setterArg;
+    }
+
+    /** Constructor is non-public to enforce null safety; use Builder. */
+    ActivityResultPigeon() {}
+
+    public static final class Builder {
+
+      private @Nullable Long resultCode;
+
+      public @NonNull Builder setResultCode(@NonNull Long setterArg) {
+        this.resultCode = setterArg;
+        return this;
+      }
+
+      private @Nullable String dataInstanceId;
+
+      public @NonNull Builder setDataInstanceId(@Nullable String setterArg) {
+        this.dataInstanceId = setterArg;
+        return this;
+      }
+
+      public @NonNull ActivityResultPigeon build() {
+        ActivityResultPigeon pigeonReturn = new ActivityResultPigeon();
+        pigeonReturn.setResultCode(resultCode);
+        pigeonReturn.setDataInstanceId(dataInstanceId);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(2);
+      toListResult.add(resultCode);
+      toListResult.add(dataInstanceId);
+      return toListResult;
+    }
+
+    static @NonNull ActivityResultPigeon fromList(@NonNull ArrayList<Object> list) {
+      ActivityResultPigeon pigeonResult = new ActivityResultPigeon();
+      Object resultCode = list.get(0);
+      pigeonResult.setResultCode((resultCode == null) ? null : ((resultCode instanceof Integer) ? (Integer) resultCode : (Long) resultCode));
+      Object dataInstanceId = list.get(1);
+      pigeonResult.setDataInstanceId((String) dataInstanceId);
+      return pigeonResult;
+    }
+  }
+
   public interface Result<T> {
     @SuppressWarnings("UnknownNullness")
     void success(T result);
@@ -156,6 +236,8 @@ public class PermissionHandlerPigeon {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
+          return ActivityResultPigeon.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 129:
           return PermissionRequestResult.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -164,8 +246,11 @@ public class PermissionHandlerPigeon {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof PermissionRequestResult) {
+      if (value instanceof ActivityResultPigeon) {
         stream.write(128);
+        writeValue(stream, ((ActivityResultPigeon) value).toList());
+      } else if (value instanceof PermissionRequestResult) {
+        stream.write(129);
         writeValue(stream, ((PermissionRequestResult) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -225,6 +310,15 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     String getPackageName(@NonNull String instanceId);
+    /**
+     * Start an activity for which the application would like a result when it finished.
+     *
+     * Contrary to the Android SDK, we do not make use of a `requestCode`, as
+     * activity results are returned as a [Future].
+     *
+     * See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+     */
+    void startActivityForResult(@NonNull String instanceId, @NonNull String intentInstanceId, @NonNull Result<ActivityResultPigeon> result);
 
     /** The codec used by ActivityHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -356,6 +450,36 @@ public class PermissionHandlerPigeon {
                   wrapped = wrappedError;
                 }
                 reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String intentInstanceIdArg = (String) args.get(1);
+                Result<ActivityResultPigeon> resultCallback =
+                    new Result<ActivityResultPigeon>() {
+                      public void success(ActivityResultPigeon result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.startActivityForResult(instanceIdArg, intentInstanceIdArg, resultCallback);
               });
         } else {
           channel.setMessageHandler(null);

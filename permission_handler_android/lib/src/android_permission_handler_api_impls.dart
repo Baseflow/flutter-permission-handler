@@ -141,6 +141,33 @@ class ActivityHostApiImpl extends ActivityHostApi {
       instanceManager.getIdentifier(activity)!,
     );
   }
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// activity results are returned as a [Future].
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  Future<ActivityResult> startActivityForResultFromInstance(
+    Activity activity,
+    Intent intent,
+  ) async {
+    final ActivityResultPigeon activityResult = await startActivityForResult(
+      instanceManager.getIdentifier(activity)!,
+      instanceManager.getIdentifier(intent)!,
+    );
+
+    Intent? data;
+    final String? dataInstanceId = activityResult.dataInstanceId;
+    if (dataInstanceId != null) {
+      data = instanceManager.getInstanceWithWeakReference(dataInstanceId);
+    }
+
+    return ActivityResult(
+      resultCode: activityResult.resultCode,
+      data: data,
+    );
+  }
 }
 
 /// Flutter API implementation of Activity.

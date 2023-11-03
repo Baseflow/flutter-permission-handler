@@ -90,4 +90,42 @@ class Activity extends JavaObject {
       this,
     );
   }
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// activity results are returned as a [Future].
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  Future<ActivityResult> startActivityForResult(
+    Intent intent,
+  ) {
+    return _hostApi.startActivityForResultFromInstance(
+      this,
+      intent,
+    );
+  }
+}
+
+/// Result of an activity-for-result request.
+///
+/// See also [ActivityResultPigeon].
+///
+/// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+/// activity results are returned as a [Future] instead of through a separate
+/// callback.
+///
+/// See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
+class ActivityResult {
+  /// Instantiates an [ActivityResult].
+  const ActivityResult({
+    required this.resultCode,
+    this.data,
+  });
+
+  /// The integer result code returned by the child activity.
+  final int resultCode;
+
+  /// An [Intent] which can return result data to the caller.
+  final Intent? data;
 }

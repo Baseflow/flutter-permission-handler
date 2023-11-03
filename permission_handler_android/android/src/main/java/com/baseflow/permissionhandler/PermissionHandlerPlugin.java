@@ -85,6 +85,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onAttachedToActivity(@NonNull ActivityPluginBinding binding) {
         binding.addRequestPermissionsResultListener(activityHostApi);
+        binding.addActivityResultListener(activityHostApi);
 
         attachedActivity = binding.getActivity();
         activityFlutterApi.create(attachedActivity);
