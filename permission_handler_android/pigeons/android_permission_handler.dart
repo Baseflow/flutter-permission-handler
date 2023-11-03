@@ -107,6 +107,18 @@ abstract class ActivityHostApi {
     String instanceId,
   );
 
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  String getSystemService(
+    String instanceId,
+    String name,
+  );
+
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
@@ -166,6 +178,18 @@ abstract class ContextHostApi {
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(
     String instanceId,
+  );
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  String getSystemService(
+    String instanceId,
+    String name,
   );
 }
 

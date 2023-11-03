@@ -119,6 +119,22 @@ class Activity extends JavaObject {
       intent,
     );
   }
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  Future<JavaObject> getSystemService(
+    String name,
+  ) {
+    return _hostApi.getSystemServiceFromInstance(
+      this,
+      name,
+    );
+  }
 }
 
 /// Result of an activity-for-result request.

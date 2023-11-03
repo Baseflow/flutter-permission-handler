@@ -84,6 +84,15 @@ abstract class ActivityTestHostApi {
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(String instanceId);
 
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  String getSystemService(String instanceId, String name);
+
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
@@ -228,6 +237,33 @@ abstract class ActivityTestHostApi {
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService was null, expected non-null String.');
+          final String? arg_name = (args[1] as String?);
+          assert(arg_name != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService was null, expected non-null String.');
+          final String output =
+              api.getSystemService(arg_instanceId!, arg_name!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
           'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult',
           codec,
           binaryMessenger: binaryMessenger);
@@ -282,6 +318,15 @@ abstract class ContextTestHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(String instanceId);
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  String getSystemService(String instanceId, String name);
 
   static void setup(ContextTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -357,6 +402,33 @@ abstract class ContextTestHostApi {
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getPackageName was null, expected non-null String.');
           final String output = api.getPackageName(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService was null, expected non-null String.');
+          final String? arg_name = (args[1] as String?);
+          assert(arg_name != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService was null, expected non-null String.');
+          final String output =
+              api.getSystemService(arg_instanceId!, arg_name!);
           return <Object?>[output];
         });
       }

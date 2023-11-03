@@ -74,4 +74,18 @@ public class ContextHostApiImpl implements ContextHostApi {
 
         return context.getPackageName();
     }
+
+    @Override
+    @NonNull public String getSystemService(
+        @NonNull String instanceId,
+        @NonNull String name
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Context context = instanceManager.getInstance(instanceUuid);
+
+        final Object systemService = context.getSystemService(name);
+
+        final UUID systemServiceInstanceUuid = instanceManager.addHostCreatedInstance(systemService);
+        return systemServiceInstanceUuid.toString();
+    }
 }

@@ -168,6 +168,21 @@ class ActivityHostApiImpl extends ActivityHostApi {
       data: data,
     );
   }
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  Future<JavaObject> getSystemServiceFromInstance(
+    Activity activity,
+    String name,
+  ) async {
+    final String systemServiceId = await getSystemService(
+      instanceManager.getIdentifier(activity)!,
+      name,
+    );
+
+    return instanceManager.getInstanceWithWeakReference(systemServiceId)!;
+  }
 }
 
 /// Flutter API implementation of Activity.
@@ -249,6 +264,23 @@ class ContextHostApiImpl extends ContextHostApi {
     return getPackageName(
       instanceManager.getIdentifier(context)!,
     );
+  }
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  Future<JavaObject> getSystemServiceFromInstance(
+    Context context,
+    String name,
+  ) async {
+    final String systemServiceId = await getSystemService(
+      instanceManager.getIdentifier(context)!,
+      name,
+    );
+
+    return instanceManager.getInstanceWithWeakReference(systemServiceId)!;
   }
 }
 

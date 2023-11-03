@@ -311,6 +311,17 @@ public class PermissionHandlerPigeon {
     @NonNull 
     String getPackageName(@NonNull String instanceId);
     /**
+     * Return the handle to a system-level service by name.
+     *
+     * The class of the returned object varies by the requested name.
+     *
+     * Returns the instance ID of the service.
+     *
+     * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+     */
+    @NonNull 
+    String getSystemService(@NonNull String instanceId, @NonNull String name);
+    /**
      * Start an activity for which the application would like a result when it finished.
      *
      * Contrary to the Android SDK, we do not make use of a `requestCode`, as
@@ -458,6 +469,31 @@ public class PermissionHandlerPigeon {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  String output = api.getSystemService(instanceIdArg, nameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
                 binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult", getCodec());
         if (api != null) {
           channel.setMessageHandler(
@@ -565,6 +601,17 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     String getPackageName(@NonNull String instanceId);
+    /**
+     * Return the handle to a system-level service by name.
+     *
+     * The class of the returned object varies by the requested name.
+     *
+     * Returns the instance ID of the service.
+     *
+     * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+     */
+    @NonNull 
+    String getSystemService(@NonNull String instanceId, @NonNull String name);
 
     /** The codec used by ContextHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -634,6 +681,31 @@ public class PermissionHandlerPigeon {
                 String instanceIdArg = (String) args.get(0);
                 try {
                   String output = api.getPackageName(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  String output = api.getSystemService(instanceIdArg, nameArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {

@@ -209,4 +209,18 @@ public class ActivityHostApiImpl implements
 
         return true;
     }
+
+    @Override
+    @NonNull public String getSystemService(
+        @NonNull String instanceId,
+        @NonNull String name
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Activity activity = instanceManager.getInstance(instanceUuid);
+
+        final Object systemService = activity.getSystemService(name);
+
+        final UUID systemServiceInstanceUuid = instanceManager.addHostCreatedInstance(systemService);
+        return systemServiceInstanceUuid.toString();
+    }
 }

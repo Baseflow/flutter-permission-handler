@@ -281,6 +281,42 @@ class ActivityHostApi {
     }
   }
 
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  Future<String> getSystemService(
+      String arg_instanceId, String arg_name) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_name]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as String?)!;
+    }
+  }
+
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
@@ -466,6 +502,42 @@ class ContextHostApi {
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as String?)!;
+    }
+  }
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// Returns the instance ID of the service.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  Future<String> getSystemService(
+      String arg_instanceId, String arg_name) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_name]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
