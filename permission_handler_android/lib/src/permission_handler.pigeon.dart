@@ -56,7 +56,7 @@ class _ActivityHostApiCodec extends StandardMessageCodec {
   @override
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
-      case 128: 
+      case 128:
         return PermissionRequestResult.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -83,13 +83,15 @@ class ActivityHostApi {
 
   /// Gets whether the application should show UI with rationale before requesting a permission.
   ///
-  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
-  Future<bool> shouldShowRequestPermissionRationale(String arg_activityInstanceId, String arg_permission) async {
+  /// See https://developer.android.com/reference/android/app/Activity#shouldShowRequestPermissionRationale(java.lang.String).
+  Future<bool> shouldShowRequestPermissionRationale(
+      String arg_instanceId, String arg_permission) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale', codec,
+        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_activityInstanceId, arg_permission]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_permission]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -113,13 +115,15 @@ class ActivityHostApi {
 
   /// Determine whether the application has been granted a particular permission.
   ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
-  Future<int> checkSelfPermission(String arg_activityInstanceId, String arg_permission) async {
+  /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
+  Future<int> checkSelfPermission(
+      String arg_instanceId, String arg_permission) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission', codec,
+        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_activityInstanceId, arg_permission]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_permission]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -151,12 +155,14 @@ class ActivityHostApi {
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
-  Future<PermissionRequestResult> requestPermissions(String arg_activityInstanceId, List<String?> arg_permissions) async {
+  Future<PermissionRequestResult> requestPermissions(
+      String arg_activityInstanceId, List<String?> arg_permissions) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions', codec,
+        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_activityInstanceId, arg_permissions]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_permissions]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -195,17 +201,19 @@ abstract class ActivityFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 
-  static void setup(ActivityFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(ActivityFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.create was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
@@ -217,14 +225,15 @@ abstract class ActivityFlutterApi {
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose', codec,
+          'dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityFlutterApi.dispose was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
@@ -255,12 +264,16 @@ class ContextHostApi {
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
   /// Determine whether the application has been granted a particular permission.
-  Future<int> checkSelfPermission(String arg_activityInstanceId, String arg_permission) async {
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
+  Future<int> checkSelfPermission(
+      String arg_instanceId, String arg_permission) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission', codec,
+        'dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_activityInstanceId, arg_permission]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_permission]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -281,6 +294,65 @@ class ContextHostApi {
       return (replyList[0] as int?)!;
     }
   }
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  Future<void> startActivity(
+      String arg_instanceId, String arg_intentInstanceId) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.ContextHostApi.startActivity',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_instanceId, arg_intentInstanceId])
+            as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else {
+      return;
+    }
+  }
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  Future<String> getPackageName(String arg_instanceId) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.ContextHostApi.getPackageName',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as String?)!;
+    }
+  }
 }
 
 /// Flutter API for `Context`.
@@ -299,17 +371,19 @@ abstract class ContextFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 
-  static void setup(ContextFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+  static void setup(ContextFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.create', codec,
+          'dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.create',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.create was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.create was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
@@ -321,14 +395,15 @@ abstract class ContextFlutterApi {
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.dispose', codec,
+          'dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.dispose',
+          codec,
           binaryMessenger: binaryMessenger);
       if (api == null) {
         channel.setMessageHandler(null);
       } else {
         channel.setMessageHandler((Object? message) async {
           assert(message != null,
-          'Argument for dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.dispose was null.');
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextFlutterApi.dispose was null.');
           final List<Object?> args = (message as List<Object?>?)!;
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
@@ -367,8 +442,8 @@ class UriHostApi {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.permission_handler_android.UriHostApi.parse', codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId, arg_uriString]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_uriString]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -395,7 +470,8 @@ class UriHostApi {
   /// See https://developer.android.com/reference/android/net/Uri#toString().
   Future<String> toStringAsync(String arg_instanceId) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync', codec,
+        'dev.flutter.pigeon.permission_handler_android.UriHostApi.toStringAsync',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
@@ -443,7 +519,8 @@ class IntentHostApi {
   /// See https://developer.android.com/reference/android/content/Intent#Intent().
   Future<void> create(String arg_instanceId) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.create', codec,
+        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.create',
+        codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
         await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
@@ -468,10 +545,11 @@ class IntentHostApi {
   /// See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
   Future<void> setAction(String arg_instanceId, String arg_action) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction', codec,
+        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.setAction',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId, arg_action]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_action]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -493,10 +571,11 @@ class IntentHostApi {
   /// See https://developer.android.com/reference/android/content/Intent#setData(android.net.Uri).
   Future<void> setData(String arg_instanceId, String arg_uriInstanceId) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData', codec,
+        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.setData',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId, arg_uriInstanceId]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_uriInstanceId]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -522,10 +601,11 @@ class IntentHostApi {
   /// See https://developer.android.com/reference/android/content/Intent#addCategory(java.lang.String).
   Future<void> addCategory(String arg_instanceId, String arg_category) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory', codec,
+        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.addCategory',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId, arg_category]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_category]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -547,10 +627,11 @@ class IntentHostApi {
   /// See https://developer.android.com/reference/android/content/Intent#addFlags(int).
   Future<void> addFlags(String arg_instanceId, int arg_flags) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags', codec,
+        'dev.flutter.pigeon.permission_handler_android.IntentHostApi.addFlags',
+        codec,
         binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId, arg_flags]) as List<Object?>?;
+    final List<Object?>? replyList = await channel
+        .send(<Object?>[arg_instanceId, arg_flags]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

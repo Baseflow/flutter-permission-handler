@@ -45,17 +45,17 @@ class PermissionRequestResult {
 abstract class ActivityHostApi {
   /// Gets whether the application should show UI with rationale before requesting a permission.
   ///
-  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
+  /// See https://developer.android.com/reference/android/app/Activity#shouldShowRequestPermissionRationale(java.lang.String).
   bool shouldShowRequestPermissionRationale(
-    String activityInstanceId,
+    String instanceId,
     String permission,
   );
 
   /// Determine whether the application has been granted a particular permission.
   ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
+  /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
   int checkSelfPermission(
-    String activityInstanceId,
+    String instanceId,
     String permission,
   );
 
@@ -71,7 +71,7 @@ abstract class ActivityHostApi {
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
   @async
   PermissionRequestResult requestPermissions(
-    String activityInstanceId,
+    String instanceId,
     List<String> permissions,
   );
 }
@@ -102,9 +102,26 @@ abstract class ActivityFlutterApi {
 @HostApi(dartHostTestHandler: 'ContextTestHostApi')
 abstract class ContextHostApi {
   /// Determine whether the application has been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
   int checkSelfPermission(
-    String activityInstanceId,
+    String instanceId,
     String permission,
+  );
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  void startActivity(
+    String instanceId,
+    String intentInstanceId,
+  );
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  String getPackageName(
+    String instanceId,
   );
 }
 

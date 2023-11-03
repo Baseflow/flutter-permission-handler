@@ -165,7 +165,7 @@ class ContextHostApiImpl extends ContextHostApi {
 
   /// Determine whether the application has been granted a particular permission.
   ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
+  /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermissionFromInstance(
     Context context,
     String permission,
@@ -173,6 +173,30 @@ class ContextHostApiImpl extends ContextHostApi {
     return checkSelfPermission(
       instanceManager.getIdentifier(context)!,
       permission,
+    );
+  }
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  Future<void> startActivityFromInstance(
+    Context context,
+    Intent intent,
+  ) async {
+    return startActivity(
+      instanceManager.getIdentifier(context)!,
+      instanceManager.getIdentifier(intent)!,
+    );
+  }
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  Future<String> getPackageNameFromInstance(
+    Context context,
+  ) async {
+    return getPackageName(
+      instanceManager.getIdentifier(context)!,
     );
   }
 }
