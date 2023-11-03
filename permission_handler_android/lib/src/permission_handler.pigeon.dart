@@ -111,7 +111,7 @@ class ActivityHostApi {
     }
   }
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermission(String arg_activityInstanceId, String arg_permission) async {
@@ -254,7 +254,7 @@ class ContextHostApi {
 
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   Future<int> checkSelfPermission(String arg_activityInstanceId, String arg_permission) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.permission_handler_android.ContextHostApi.checkSelfPermission', codec,

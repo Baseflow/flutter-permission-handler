@@ -17,7 +17,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     );
   }
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// When running in the foreground, the result can be
   /// [PermissionStatus.granted], [PermissionStatus.denied] or

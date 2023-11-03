@@ -51,7 +51,7 @@ abstract class ActivityHostApi {
     String permission,
   );
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   int checkSelfPermission(
@@ -101,7 +101,7 @@ abstract class ActivityFlutterApi {
 /// See https://developer.android.com/reference/android/content/Context.
 @HostApi(dartHostTestHandler: 'ContextTestHostApi')
 abstract class ContextHostApi {
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   int checkSelfPermission(
     String activityInstanceId,
     String permission,

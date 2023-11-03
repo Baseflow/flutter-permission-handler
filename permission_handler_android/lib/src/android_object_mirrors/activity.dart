@@ -38,7 +38,7 @@ class Activity extends JavaObject {
     );
   }
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermission(

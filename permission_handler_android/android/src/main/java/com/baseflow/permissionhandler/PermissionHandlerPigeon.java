@@ -193,7 +193,7 @@ public class PermissionHandlerPigeon {
     @NonNull 
     Boolean shouldShowRequestPermissionRationale(@NonNull String activityInstanceId, @NonNull String permission);
     /**
-     * Determine whether you have been granted a particular permission.
+     * Determine whether the application has been granted a particular permission.
      *
      * See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
      */
@@ -359,7 +359,7 @@ public class PermissionHandlerPigeon {
    * Generated interface from Pigeon that represents a handler of messages from Flutter.
    */
   public interface ContextHostApi {
-    /** Determine whether you have been granted a particular permission. */
+    /** Determine whether the application has been granted a particular permission. */
     @NonNull 
     Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
 

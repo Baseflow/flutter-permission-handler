@@ -28,7 +28,7 @@ class Context extends JavaObject {
 
   final ContextHostApiImpl _hostApi;
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   Future<int> checkSelfPermission(
     String permission,
   ) {

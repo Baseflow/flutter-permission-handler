@@ -49,7 +49,7 @@ abstract class ActivityTestHostApi {
   /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
   bool shouldShowRequestPermissionRationale(String activityInstanceId, String permission);
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   int checkSelfPermission(String activityInstanceId, String permission);
@@ -147,7 +147,7 @@ abstract class ContextTestHostApi {
   static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   int checkSelfPermission(String activityInstanceId, String permission);
 
   static void setup(ContextTestHostApi? api, {BinaryMessenger? binaryMessenger}) {

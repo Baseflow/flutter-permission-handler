@@ -79,7 +79,7 @@ class ActivityHostApiImpl extends ActivityHostApi {
     );
   }
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermissionFromInstance(
@@ -161,7 +161,7 @@ class ContextHostApiImpl extends ContextHostApi {
   /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermissionFromInstance(
