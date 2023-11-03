@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler_android/src/activity_manager.dart';
 import 'package:permission_handler_android/src/utils.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
@@ -106,5 +105,26 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     }
 
     return statuses.strictest;
+  }
+
+  /// TODO(jweener): return false if opening of the settings page fails.
+  @override
+  Future<bool> openAppSettings() async {
+    final Context applicationContext = _activityManager.applicationContext;
+
+    final String packageName = await applicationContext.getPackageName();
+    final Uri uri = Uri.parse('package:$packageName');
+
+    final Intent intent = Intent();
+    intent.setAction(Settings.actionApplicationDetailsSettings);
+    intent.setData(uri);
+    intent.addCategory(Intent.categoryDefault);
+    intent.addFlags(Intent.flagActivityNewTask);
+    intent.addFlags(Intent.flagActivityNoHistory);
+    intent.addFlags(Intent.flagActivityExcludeFromRecents);
+
+    applicationContext.startActivity(intent);
+
+    return true;
   }
 }
