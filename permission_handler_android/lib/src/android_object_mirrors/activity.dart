@@ -27,6 +27,20 @@ class Activity extends JavaObject {
 
   final ActivityHostApiImpl _hostApi;
 
+  /// Standard activity result: operation succeeded.
+  ///
+  /// Constant Value: -1 (0xffffffff).
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#RESULT_OK.
+  static const int resultOkay = -1;
+
+  /// Standard activity result: operation canceled.
+  ///
+  /// Constant Value: 0 (0x00000000).
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#RESULT_CANCELED.
+  static const int resultCanceled = 0;
+
   /// Gets whether the application should show UI with rationale before requesting a permission.
   ///
   /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
