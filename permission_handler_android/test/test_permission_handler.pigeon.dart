@@ -44,27 +44,15 @@ abstract class ActivityTestHostApi {
   static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = _ActivityTestHostApiCodec();
 
-<<<<<<< HEAD
   /// Gets whether the application should show UI with rationale before requesting a permission.
-  ///
-  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
-  bool shouldShowRequestPermissionRationale(String activityInstanceId, String permission);
-
-  /// Determine whether the application has been granted a particular permission.
-  ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
-  int checkSelfPermission(String activityInstanceId, String permission);
-=======
-  /// Gets whether you should show UI with rationale before requesting a permission.
   ///
   /// See https://developer.android.com/reference/android/app/Activity#shouldShowRequestPermissionRationale(java.lang.String).
   bool shouldShowRequestPermissionRationale(String instanceId, String permission);
 
-  /// Determine whether you have been granted a particular permission.
+  /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
   int checkSelfPermission(String instanceId, String permission);
->>>>>>> 5617076 (Implement `startActivity`, `getPackageName` for `Context`)
 
   /// Requests permissions to be granted to this application.
   ///
@@ -72,16 +60,11 @@ abstract class ActivityTestHostApi {
   /// permission results are returned as a [Future] instead of through a
   /// separate callback.
   ///
-<<<<<<< HEAD
   /// See
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
-  Future<PermissionRequestResult> requestPermissions(String activityInstanceId, List<String?> permissions);
-=======
-  /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
   Future<PermissionRequestResult> requestPermissions(String instanceId, List<String?> permissions);
->>>>>>> 5617076 (Implement `startActivity`, `getPackageName` for `Context`)
 
   /// Launch a new activity.
   ///
@@ -215,11 +198,7 @@ abstract class ContextTestHostApi {
   static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding => TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-<<<<<<< HEAD
   /// Determine whether the application has been granted a particular permission.
-  int checkSelfPermission(String activityInstanceId, String permission);
-=======
-  /// Determine whether you have been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
   int checkSelfPermission(String instanceId, String permission);
@@ -233,7 +212,6 @@ abstract class ContextTestHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(String instanceId);
->>>>>>> 5617076 (Implement `startActivity`, `getPackageName` for `Context`)
 
   static void setup(ContextTestHostApi? api, {BinaryMessenger? binaryMessenger}) {
     {

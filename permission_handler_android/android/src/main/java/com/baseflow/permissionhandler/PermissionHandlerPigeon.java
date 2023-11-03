@@ -188,14 +188,14 @@ public class PermissionHandlerPigeon {
     /**
      * Gets whether the application should show UI with rationale before requesting a permission.
      *
-     * See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
+     * See https://developer.android.com/reference/android/app/Activity#shouldShowRequestPermissionRationale(java.lang.String).
      */
     @NonNull 
-    Boolean shouldShowRequestPermissionRationale(@NonNull String activityInstanceId, @NonNull String permission);
+    Boolean shouldShowRequestPermissionRationale(@NonNull String instanceId, @NonNull String permission);
     /**
      * Determine whether the application has been granted a particular permission.
      *
-     * See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
+     * See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
      */
     @NonNull 
     Long checkSelfPermission(@NonNull String instanceId, @NonNull String permission);
