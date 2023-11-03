@@ -185,10 +185,18 @@ public class PermissionHandlerPigeon {
    * Generated interface from Pigeon that represents a handler of messages from Flutter.
    */
   public interface ActivityHostApi {
-    /** Gets whether the application should show UI with rationale before requesting a permission. */
+    /**
+     * Gets whether the application should show UI with rationale before requesting a permission.
+     *
+     * See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
+     */
     @NonNull 
     Boolean shouldShowRequestPermissionRationale(@NonNull String activityInstanceId, @NonNull String permission);
-    /** Determine whether you have been granted a particular permission. */
+    /**
+     * Determine whether you have been granted a particular permission.
+     *
+     * See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
+     */
     @NonNull 
     Long checkSelfPermission(@NonNull String activityInstanceId, @NonNull String permission);
     /**
@@ -198,7 +206,10 @@ public class PermissionHandlerPigeon {
      * permission results are returned as a [Future] instead of through a
      * separate callback.
      *
-     * See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+     * See
+     * https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
+     * and
+     * https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
      */
     void requestPermissions(@NonNull String activityInstanceId, @NonNull List<String> permissions, @NonNull Result<PermissionRequestResult> result);
 

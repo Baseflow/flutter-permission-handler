@@ -43,7 +43,7 @@ class PermissionRequestResult {
 /// See https://developer.android.com/reference/android/app/Activity.
 @HostApi(dartHostTestHandler: 'ActivityTestHostApi')
 abstract class ActivityHostApi {
-  /// Gets whether you should show UI with rationale before requesting a permission.
+  /// Gets whether the application should show UI with rationale before requesting a permission.
   ///
   /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
   bool shouldShowRequestPermissionRationale(

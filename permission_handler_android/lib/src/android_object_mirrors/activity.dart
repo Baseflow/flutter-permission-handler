@@ -26,7 +26,9 @@ class Activity extends JavaObject {
 
   final ActivityHostApiImpl _hostApi;
 
-  /// Gets whether you should show UI with rationale before requesting a permission.
+  /// Gets whether the application should show UI with rationale before requesting a permission.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
   Future<bool> shouldShowRequestPermissionRationale(
     String permission,
   ) {
@@ -37,6 +39,8 @@ class Activity extends JavaObject {
   }
 
   /// Determine whether you have been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermission(
     String permission,
   ) {
@@ -47,6 +51,15 @@ class Activity extends JavaObject {
   }
 
   /// Requests permissions to be granted to this application.
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// permission results are returned as a [Future] instead of through a
+  /// separate callback.
+  ///
+  /// See
+  /// https://developer.android.com/reference/android/app/Activity.html#requestPermissions(java.lang.String[],%20int)
+  /// and
+  /// https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
   Future<PermissionRequestResult> requestPermissions(
     List<String> permissions,
   ) {

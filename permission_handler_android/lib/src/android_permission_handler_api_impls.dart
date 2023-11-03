@@ -64,7 +64,9 @@ class ActivityHostApiImpl extends ActivityHostApi {
   /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
 
-  /// Gets whether you should show UI with rationale before requesting a permission.
+  /// Gets whether the application should show UI with rationale before requesting a permission.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
   Future<bool> shouldShowRequestPermissionRationaleFromInstance(
     Activity activity,
     String permission,
@@ -78,6 +80,8 @@ class ActivityHostApiImpl extends ActivityHostApi {
   }
 
   /// Determine whether you have been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermissionFromInstance(
     Activity activity,
     String permission,
@@ -91,6 +95,15 @@ class ActivityHostApiImpl extends ActivityHostApi {
   }
 
   /// Requests permissions to be granted to this application.
+  ///
+  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
+  /// permission results are returned as a [Future] instead of through a
+  /// separate callback.
+  ///
+  /// See
+  /// https://developer.android.com/reference/android/app/Activity.html#requestPermissions(java.lang.String[],%20int)
+  /// and
+  /// https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
   Future<PermissionRequestResult> requestPermissionsFromInstance(
     Activity activity,
     List<String> permissions,
@@ -149,6 +162,8 @@ class ContextHostApiImpl extends ContextHostApi {
   final InstanceManager instanceManager;
 
   /// Determine whether you have been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermissionFromInstance(
     Context context,
     String permission,
