@@ -1,39 +1,14 @@
 import 'package:flutter/foundation.dart';
-import 'package:permission_handler_android/src/extensions.dart';
+import 'package:permission_handler_android/src/activity_manager.dart';
 import 'package:permission_handler_android/src/utils.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
-import 'android_object_mirrors/activity.dart';
-import 'android_object_mirrors/activity_compat.dart';
-import 'android.dart';
-import 'missing_android_activity_exception.dart';
+import '../permission_handler_android.dart';
+import 'permission_handler.pigeon.dart';
 
 /// An implementation of [PermissionHandlerPlatform] for Android.
 class PermissionHandlerAndroid extends PermissionHandlerPlatform {
-  /// The activity that Flutter is attached to.
-  ///
-  /// Used for method invocation that require an activity or context.
-  Activity? _activity;
-
-  /// Allow overriding the attached activity for testing purposes.
-  @visibleForTesting
-  set activity(Activity? activity) {
-    _activity = activity;
-  }
-
-  /// Private constructor for creating a new instance of [PermissionHandlerAndroid].
-  PermissionHandlerAndroid._();
-
-  /// Creates and initializes an instance of [PermissionHandlerAndroid].
-  factory PermissionHandlerAndroid() {
-    final instance = PermissionHandlerAndroid._();
-    Android.register(
-      onAttachedToActivityCallback: (Activity activity) =>
-          instance._activity = activity,
-      onDetachedFromActivityCallback: () => instance._activity = null,
-    );
-    return instance;
-  }
+  final ActivityManager _activityManager = ActivityManager();
 
   /// Registers this class as the default instance of [PermissionHandlerPlatform].
   static void registerWith() {
@@ -42,23 +17,27 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     );
   }
 
+  /// Determine whether the application has been granted a particular permission.
+  ///
+  /// When running in the foreground, the result can be
+  /// [PermissionStatus.granted], [PermissionStatus.denied] or
+  /// [PermissionStatus.permanentlyDenied]. When running in the background,
+  /// however, only [PermissionStatus.granted] or [PermissionStatus.denied] will
+  /// be returned.
+  ///
   /// TODO(jweener): handle special permissions.
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
-    if (_activity == null) {
-      throw const MissingAndroidActivityException();
-    }
-
     final Iterable<PermissionStatus> statuses = await Future.wait(
       permission.manifestStrings.map(
         (String manifestString) async {
-          final int grantResult = await ActivityCompat.checkSelfPermission(
-            _activity!,
+          final int grantResult =
+              await _activityManager.applicationContext.checkSelfPermission(
             manifestString,
           );
 
           final PermissionStatus status = await grantResultToPermissionStatus(
-            _activity!,
+            _activityManager.activity,
             manifestString,
             grantResult,
           );
@@ -71,26 +50,22 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return statuses.strictest;
   }
 
-  /// TODO(jweener): implement this method.
+  /// TODO(jweener): Handle activity null.
   @override
-  Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) {
-    return Future(() => <Permission, PermissionStatus>{});
-  }
-
-  @override
-  Future<bool> shouldShowRequestPermissionRationale(
+  Future<bool> shouldShowPermissionRequestRationale(
     Permission permission,
   ) async {
-    if (_activity == null) {
-      throw const MissingAndroidActivityException();
+    final Activity? activity = _activityManager.activity;
+    if (activity == null) {
+      debugPrint(
+          'Android activity is null. Did you run this method in the background instead of the foreground?');
+      return false;
     }
 
     final Iterable<bool> shouldShowRationales = await Future.wait(
       permission.manifestStrings.map(
         (String manifestString) {
-          return ActivityCompat.shouldShowRequestPermissionRationale(
-            _activity!,
+          return activity.shouldShowRequestPermissionRationale(
             manifestString,
           );
         },
@@ -98,5 +73,38 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     );
 
     return shouldShowRationales.any((bool shouldShow) => shouldShow);
+  }
+
+  /// TODO(jweener): handle activity null.
+  @override
+  Future<PermissionStatus> requestPermission(Permission permission) async {
+    final Activity? activity = _activityManager.activity;
+    if (activity == null) {
+      debugPrint(
+          'Android activity is null. Did you run this method in the background instead of the foreground?');
+      return PermissionStatus.denied;
+    }
+
+    final PermissionRequestResult result = await activity.requestPermissions(
+      permission.manifestStrings,
+    );
+
+    final List<String> permissions =
+        result.permissions.whereType<String>().toList();
+    final List<int> grantResults =
+        result.grantResults.whereType<int>().toList();
+
+    final List<PermissionStatus> statuses = <PermissionStatus>[];
+    for (int i = 0; i < permissions.length; i++) {
+      final PermissionStatus status = await grantResultToPermissionStatus(
+        activity,
+        permissions[i],
+        grantResults[i],
+      );
+
+      statuses.add(status);
+    }
+
+    return statuses.strictest;
   }
 }

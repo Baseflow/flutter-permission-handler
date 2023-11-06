@@ -33,7 +33,9 @@ public class ActivityFlutterApiImpl {
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ActivityFlutterApiImpl(
-        @NonNull BinaryMessenger binaryMessenger, @NonNull InstanceManager instanceManager) {
+        @NonNull BinaryMessenger binaryMessenger,
+        @NonNull InstanceManager instanceManager
+    ) {
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         api = new ActivityFlutterApi(binaryMessenger);

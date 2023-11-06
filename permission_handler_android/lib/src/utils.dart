@@ -2,7 +2,6 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'android_object_mirrors/activity.dart';
-import 'android_object_mirrors/activity_compat.dart';
 import 'android_object_mirrors/package_manager.dart';
 
 /// A class that provides methods for setting and getting whether a manifest
@@ -27,6 +26,10 @@ class ManifestPersistentStorage {
 ///
 /// Note: This method has side-effects as it will store whether the permission
 /// was denied before in persistent memory.
+///
+/// Uses an [Activity] to distinguish between [PermissionStatus.denied] and
+/// [PermissionStatus.permanentlyDenied]. If no [Activity] is provided,
+/// [PermissionStatus.denied] is returned.
 ///
 /// When [PackageManager.permissionDenied] is received, we do not know if the
 /// permission was denied permanently. The OS does not tell us whether the
@@ -55,7 +58,7 @@ class ManifestPersistentStorage {
 /// Dismissed
 ///
 /// **Scenario table listing output of
-/// [ActivityCompat.shouldShowRequestPermissionRationale]:**
+/// [Activity.shouldShowRequestPermissionRationale]:**
 ///
 /// ┌────────────┬────────────────┬─────────┬───────────────────────────────────┬─────────────────────────┐
 /// │ Scenario # │ Previous state │ Action  │ New state                         │ 'Show rationale' output │
@@ -67,20 +70,19 @@ class ManifestPersistentStorage {
 /// └────────────┴────────────────┴─────────┴───────────────────────────────────┴─────────────────────────┘
 ///
 /// To distinguish between scenarios, we can use
-/// [ActivityCompat.shouldShowRequestPermissionRationale]. If it returns true,
-/// we can safely return [PermissionStatus.denied]. To distinguish between
-/// scenarios 1 and 4, however, we need an extra mechanism. We opt to store a
-/// boolean stating whether permission has been requested before. Using a
-/// combination of checking for showing the permission rationale and the
-/// boolean, we can distinguish all scenarios and return the appropriate
-/// permission status.
+/// [Activity.shouldShowRequestPermissionRationale]. If it returns true, we can
+/// safely return [PermissionStatus.denied]. To distinguish between scenarios 1
+/// and 4, however, we need an extra mechanism. We opt to store a boolean
+/// stating whether permission has been requested before. Using a combination of
+/// checking for showing the permission rationale and the boolean, we can
+/// distinguish all scenarios and return the appropriate permission status.
 ///
 /// Changing permissions via the app info screen (so outside of the application)
 /// changes the permission state to 'Granted' if the permission is allowed, or
 /// 'Denied once' if denied. This behavior should not require any additional
 /// logic.
 Future<PermissionStatus> grantResultToPermissionStatus(
-  Activity activity,
+  Activity? activity,
   String manifestString,
   int grantResult,
 ) async {
@@ -88,11 +90,14 @@ Future<PermissionStatus> grantResultToPermissionStatus(
     return PermissionStatus.granted;
   }
 
+  if (activity == null) {
+    return PermissionStatus.denied;
+  }
+
   final bool wasDeniedBefore =
       await ManifestPersistentStorage.wasDeniedBefore(manifestString);
   final bool shouldShowRationale =
-      await ActivityCompat.shouldShowRequestPermissionRationale(
-    activity,
+      await activity.shouldShowRequestPermissionRationale(
     manifestString,
   );
 

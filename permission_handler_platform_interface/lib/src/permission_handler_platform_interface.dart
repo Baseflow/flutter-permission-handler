@@ -99,21 +99,22 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
     throw UnimplementedError('openAppSettings() has not been implemented.');
   }
 
-  /// Requests the user for access to the supplied list of [Permission]s, if
-  /// they have not already been granted before.
+  /// Requests the user for access to the supplied [Permission], if they have
+  /// not already been granted before.
   ///
-  /// Returns a [Map] containing the status per requested [Permission].
-  Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) {
-    throw UnimplementedError('requestPermissions() has not been implemented.');
+  /// Returns the [PermissionStatus] for the requested [Permission].
+  Future<PermissionStatus> requestPermission(
+    Permission permission,
+  ) {
+    throw UnimplementedError('requestPermission() has not been implemented.');
   }
 
   /// Checks if you should show a rationale for requesting permission.
   ///
   /// This method is only implemented on Android, calling this on iOS always
   /// returns [false].
-  Future<bool> shouldShowRequestPermissionRationale(Permission permission) {
+  Future<bool> shouldShowPermissionRequestRationale(Permission permission) {
     throw UnimplementedError(
-        'shouldShowRequestPermissionRationale() has not been implemented.');
+        'shouldShowPermissionRequestRationale() has not been implemented.');
   }
 }

@@ -79,10 +79,10 @@ void main() {
         'Default implementation of requestPermissions should throw unimplemented error',
         () {
       final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
-      var permission = <Permission>[Permission.accessMediaLocation];
+      var permission = Permission.accessMediaLocation;
 
       expect(() {
-        permissionHandlerPlatform.requestPermissions(permission);
+        permissionHandlerPlatform.requestPermission(permission);
       }, throwsUnimplementedError);
     });
 
@@ -92,7 +92,7 @@ void main() {
         () {
       final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
       expect(() {
-        permissionHandlerPlatform.shouldShowRequestPermissionRationale(
+        permissionHandlerPlatform.shouldShowPermissionRequestRationale(
             Permission.accessMediaLocation);
       }, throwsUnimplementedError);
     });
