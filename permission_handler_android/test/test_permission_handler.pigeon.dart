@@ -690,3 +690,104 @@ abstract class IntentTestHostApi {
     }
   }
 }
+
+/// Host API for `PowerManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/PowerManager.
+abstract class PowerManagerTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Returns whether the given application package name is on the device's power allowlist.
+  ///
+  /// Apps can be placed on the allowlist through the settings UI invoked by
+  /// [Settings.actionRequestIgnoreBatteryOptimizations].
+  ///
+  /// Being on the power allowlist means that the system will not apply most
+  /// power saving features to the app. Guardrails for extreme cases may still
+  /// be applied.
+  ///
+  /// See https://developer.android.com/reference/android/os/PowerManager#isIgnoringBatteryOptimizations(java.lang.String).
+  bool isIgnoringBatteryOptimizations(String instanceId, String packageName);
+
+  static void setup(PowerManagerTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PowerManagerHostApi.isIgnoringBatteryOptimizations',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PowerManagerHostApi.isIgnoringBatteryOptimizations was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PowerManagerHostApi.isIgnoringBatteryOptimizations was null, expected non-null String.');
+          final String? arg_packageName = (args[1] as String?);
+          assert(arg_packageName != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PowerManagerHostApi.isIgnoringBatteryOptimizations was null, expected non-null String.');
+          final bool output = api.isIgnoringBatteryOptimizations(
+              arg_instanceId!, arg_packageName!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `BuildVersion`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/Build.VERSION.
+abstract class BuildVersionTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// The SDK version of the software currently running on this hardware device.
+  ///
+  /// This value never changes while a device is booted, but it may increase
+  /// when the hardware manufacturer provides an OTA update.
+  ///
+  /// Possible values are defined in [Build.versionCodes].
+  ///
+  /// See https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT.
+  int sdkInt();
+
+  static void setup(BuildVersionTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.BuildVersionHostApi.sdkInt',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          // ignore message
+          final int output = api.sdkInt();
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}

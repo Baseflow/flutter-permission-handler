@@ -1,12 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
-import 'package:permission_handler_android/src/activity_aware.dart';
-
-import 'android_object_mirrors/activity.dart';
-import 'android_object_mirrors/context.dart';
-import 'android_object_mirrors/intent.dart';
-import 'android_object_mirrors/uri.dart';
+import 'package:permission_handler_android/permission_handler_android.dart';
 import 'permission_handler.pigeon.dart';
 
 /// Handles initialization of Flutter APIs for the Android permission handler.
@@ -15,9 +10,12 @@ class AndroidPermissionHandlerFlutterApis {
   AndroidPermissionHandlerFlutterApis({
     ActivityFlutterApiImpl? activityFlutterApi,
     ContextFlutterApiImpl? contextFlutterApi,
+    PowerManagerFlutterApiImpl? powerManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
+    this.powerManagerFlutterApi =
+        powerManagerFlutterApi ?? PowerManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -37,11 +35,15 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [Context].
   late final ContextFlutterApiImpl contextFlutterApi;
 
+  /// Flutter API for [PowerManager].
+  late final PowerManagerFlutterApiImpl powerManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
       ActivityFlutterApi.setup(activityFlutterApi);
       ContextFlutterApi.setup(contextFlutterApi);
+      PowerManagerFlutterApi.setup(powerManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -271,7 +273,7 @@ class ContextHostApiImpl extends ContextHostApi {
   /// Returns the instance ID of the service.
   ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<JavaObject> getSystemServiceFromInstance(
+  Future<JavaObject?> getSystemServiceFromInstance(
     Context context,
     String name,
   ) async {
@@ -280,7 +282,7 @@ class ContextHostApiImpl extends ContextHostApi {
       name,
     );
 
-    return instanceManager.getInstanceWithWeakReference(systemServiceId)!;
+    return instanceManager.getInstanceWithWeakReference(systemServiceId);
   }
 }
 
@@ -436,4 +438,88 @@ class IntentHostApiImpl extends IntentHostApi {
       flags,
     );
   }
+}
+
+/// Host API implementation of PowerManager.
+class PowerManagerHostApiImpl extends PowerManagerHostApi {
+  /// Creates a new instance of [PowerManagerHostApiImpl].
+  PowerManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Returns whether the given application package name is on the device's power allowlist.
+  ///
+  /// Apps can be placed on the allowlist through the settings UI invoked by
+  /// [Settings.actionRequestIgnoreBatteryOptimizations].
+  ///
+  /// Being on the power allowlist means that the system will not apply most
+  /// power saving features to the app. Guardrails for extreme cases may still
+  /// be applied.
+  ///
+  /// See https://developer.android.com/reference/android/os/PowerManager#isIgnoringBatteryOptimizations(java.lang.String).
+  Future<bool> isIgnoringBatteryOptimizationsFromInstance(
+    PowerManager powerManager,
+    String packageName,
+  ) async {
+    return await Build.version.sdkInt >= Build.versionCodes.m &&
+        await isIgnoringBatteryOptimizations(
+          instanceManager.getIdentifier(powerManager)!,
+          packageName,
+        );
+  }
+}
+
+/// Flutter API implementation of PowerManager.
+class PowerManagerFlutterApiImpl extends PowerManagerFlutterApi {
+  /// Constructs a new instance of [PowerManagerFlutterApiImpl].
+  PowerManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final PowerManager powerManager = PowerManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      powerManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of Build.Version.
+class BuildVersionHostApiImpl extends BuildVersionHostApi {
+  /// Creates a new instance of [BuildVersionHostApiImpl].
+  BuildVersionHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
 }

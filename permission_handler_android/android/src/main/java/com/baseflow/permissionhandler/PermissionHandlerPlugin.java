@@ -11,8 +11,10 @@ import com.baseflow.instancemanager.InstanceManagerPigeon.JavaObjectHostApi;
 import com.baseflow.instancemanager.InstanceManagerPigeon.InstanceManagerHostApi;
 import com.baseflow.instancemanager.JavaObjectHostApiImpl;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.BuildVersionHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ContextHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.IntentHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.PowerManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.UriHostApi;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -50,19 +52,34 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         final JavaObjectHostApi javaObjectHostApi = new JavaObjectHostApiImpl(instanceManager);
         JavaObjectHostApi.setup(binaryMessenger, javaObjectHostApi);
 
-        activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
-        activityHostApi = new ActivityHostApiImpl(binaryMessenger, instanceManager);
-        ActivityHostApi.setup(binaryMessenger, activityHostApi);
-
-        contextFlutterApi = new ContextFlutterApiImpl(binaryMessenger, instanceManager);
-        final ContextHostApiImpl contextHostApi = new ContextHostApiImpl(binaryMessenger, instanceManager);
-        ContextHostApi.setup(binaryMessenger, contextHostApi);
-
         final UriHostApi uriHostApi = new UriHostApiImpl(binaryMessenger, instanceManager);
         UriHostApi.setup(binaryMessenger, uriHostApi);
 
         final IntentHostApi intentHostApi = new IntentHostApiImpl(binaryMessenger, instanceManager);
         IntentHostApi.setup(binaryMessenger, intentHostApi);
+
+        final PowerManagerFlutterApiImpl powerManagerFlutterApi = new PowerManagerFlutterApiImpl(binaryMessenger, instanceManager);
+        final PowerManagerHostApi powerManagerHostApi = new PowerManagerHostApiImpl(binaryMessenger, instanceManager);
+        PowerManagerHostApi.setup(binaryMessenger, powerManagerHostApi);
+
+        activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
+        activityHostApi = new ActivityHostApiImpl(
+            powerManagerFlutterApi,
+            binaryMessenger,
+            instanceManager
+        );
+        ActivityHostApi.setup(binaryMessenger, activityHostApi);
+
+        contextFlutterApi = new ContextFlutterApiImpl(binaryMessenger, instanceManager);
+        final ContextHostApiImpl contextHostApi = new ContextHostApiImpl(
+            powerManagerFlutterApi,
+            binaryMessenger,
+            instanceManager
+        );
+        ContextHostApi.setup(binaryMessenger, contextHostApi);
+
+        final BuildVersionHostApi buildVersionHostApi = new BuildVersionHostApiImpl();
+        BuildVersionHostApi.setup(binaryMessenger, buildVersionHostApi);
     }
 
     @Override

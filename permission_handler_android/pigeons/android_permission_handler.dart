@@ -293,3 +293,64 @@ abstract class IntentHostApi {
     int flags,
   );
 }
+
+/// Host API for `PowerManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/PowerManager.
+@HostApi(dartHostTestHandler: 'PowerManagerTestHostApi')
+abstract class PowerManagerHostApi {
+  /// Returns whether the given application package name is on the device's power allowlist.
+  ///
+  /// Apps can be placed on the allowlist through the settings UI invoked by
+  /// [Settings.actionRequestIgnoreBatteryOptimizations].
+  ///
+  /// Being on the power allowlist means that the system will not apply most
+  /// power saving features to the app. Guardrails for extreme cases may still
+  /// be applied.
+  ///
+  /// See https://developer.android.com/reference/android/os/PowerManager#isIgnoringBatteryOptimizations(java.lang.String).
+  bool isIgnoringBatteryOptimizations(
+    String instanceId,
+    String packageName,
+  );
+}
+
+/// Flutter API for `PowerManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/os/PowerManager.
+@FlutterApi()
+abstract class PowerManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `BuildVersion`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/Build.VERSION.
+@HostApi(dartHostTestHandler: 'BuildVersionTestHostApi')
+abstract class BuildVersionHostApi {
+  /// The SDK version of the software currently running on this hardware device.
+  ///
+  /// This value never changes while a device is booted, but it may increase
+  /// when the hardware manufacturer provides an OTA update.
+  ///
+  /// Possible values are defined in [Build.versionCodes].
+  ///
+  /// See https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT.
+  int sdkInt();
+}

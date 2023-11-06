@@ -2,6 +2,7 @@ package com.baseflow.permissionhandler;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -51,6 +52,8 @@ public class ActivityHostApiImpl implements
 
     private final InstanceManager instanceManager;
 
+    private final PowerManagerFlutterApiImpl powerManagerFlutterApi;
+
     /**
      * A callback to complete a pending permission request.
      * <p>
@@ -74,9 +77,11 @@ public class ActivityHostApiImpl implements
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ActivityHostApiImpl(
+        @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
+        this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -219,6 +224,10 @@ public class ActivityHostApiImpl implements
         final Activity activity = instanceManager.getInstance(instanceUuid);
 
         final Object systemService = activity.getSystemService(name);
+
+        if (systemService instanceof PowerManager) {
+            powerManagerFlutterApi.create((PowerManager) systemService);
+        }
 
         final UUID systemServiceInstanceUuid = instanceManager.addHostCreatedInstance(systemService);
         return systemServiceInstanceUuid.toString();

@@ -74,7 +74,7 @@ class Context extends JavaObject {
   /// Returns the instance ID of the service.
   ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<JavaObject> getSystemService(
+  Future<JavaObject?> getSystemService(
     String name,
   ) {
     return _hostApi.getSystemServiceFromInstance(

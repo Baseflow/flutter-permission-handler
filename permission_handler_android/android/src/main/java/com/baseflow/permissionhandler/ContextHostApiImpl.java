@@ -2,6 +2,7 @@ package com.baseflow.permissionhandler;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -26,6 +27,8 @@ public class ContextHostApiImpl implements ContextHostApi {
 
     private final InstanceManager instanceManager;
 
+    private final PowerManagerFlutterApiImpl powerManagerFlutterApi;
+
     /**
      * Constructs an {@link ContextHostApiImpl}.
      *
@@ -33,9 +36,11 @@ public class ContextHostApiImpl implements ContextHostApi {
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ContextHostApiImpl(
+        @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
+        this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -85,7 +90,12 @@ public class ContextHostApiImpl implements ContextHostApi {
 
         final Object systemService = context.getSystemService(name);
 
-        final UUID systemServiceInstanceUuid = instanceManager.addHostCreatedInstance(systemService);
-        return systemServiceInstanceUuid.toString();
+        if (systemService instanceof PowerManager) {
+            powerManagerFlutterApi.create((PowerManager) systemService);
+        }
+
+        final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
+
+        return systemServiceUuid.toString();
     }
 }
