@@ -103,9 +103,9 @@ class ActivityHostApiImpl extends ActivityHostApi {
   /// separate callback.
   ///
   /// See
-  /// https://developer.android.com/reference/android/app/Activity.html#requestPermissions(java.lang.String[],%20int)
+  /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
-  /// https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
+  /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
   Future<PermissionRequestResult> requestPermissionsFromInstance(
     Activity activity,
     List<String> permissions,
