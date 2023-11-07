@@ -173,8 +173,10 @@ class ActivityHostApiImpl extends ActivityHostApi {
 
   /// Return the handle to a system-level service by name.
   ///
+  /// Returns the instance ID of the service.
+  ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<JavaObject> getSystemServiceFromInstance(
+  Future<Object?> getSystemServiceFromInstance(
     Activity activity,
     String name,
   ) async {
@@ -183,7 +185,7 @@ class ActivityHostApiImpl extends ActivityHostApi {
       name,
     );
 
-    return instanceManager.getInstanceWithWeakReference(systemServiceId)!;
+    return instanceManager.getInstanceWithWeakReference(systemServiceId);
   }
 }
 
@@ -270,10 +272,8 @@ class ContextHostApiImpl extends ContextHostApi {
 
   /// Return the handle to a system-level service by name.
   ///
-  /// Returns the instance ID of the service.
-  ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<JavaObject?> getSystemServiceFromInstance(
+  Future<Object?> getSystemServiceFromInstance(
     Context context,
     String name,
   ) async {

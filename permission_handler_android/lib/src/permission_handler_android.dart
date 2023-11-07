@@ -24,9 +24,13 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   /// however, only [PermissionStatus.granted] or [PermissionStatus.denied] will
   /// be returned.
   ///
-  /// TODO(jweener): handle special permissions.
+  /// TODO(jweener): handle all special permissions.
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
+    if (Permission.ignoreBatteryOptimizations == permission) {
+      return _checkIgnoreBatteryOptimizationStatus();
+    }
+
     final Iterable<PermissionStatus> statuses = await Future.wait(
       permission.manifestStrings.map(
         (String manifestString) async {
@@ -73,7 +77,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return shouldShowRationales.any((bool shouldShow) => shouldShow);
   }
 
-  /// TODO(jweener): handle special permissions.
+  /// TODO(jweener): handle all special permissions.
   @override
   Future<PermissionStatus> requestPermission(Permission permission) async {
     final Activity? activity = _activityManager.activity;
@@ -83,6 +87,23 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
       return PermissionStatus.denied;
     }
 
+    if (Permission.ignoreBatteryOptimizations == permission) {
+      await _requestSpecialPermission(
+        Settings.actionRequestIgnoreBatteryOptimizations,
+      );
+      return _checkIgnoreBatteryOptimizationStatus();
+    }
+
+    return _requestNormalPermission(
+      activity: activity,
+      permission: permission,
+    );
+  }
+
+  Future<PermissionStatus> _requestNormalPermission({
+    required Activity activity,
+    required Permission permission,
+  }) async {
     final PermissionRequestResult result = await activity.requestPermissions(
       permission.manifestStrings,
     );
@@ -106,6 +127,20 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return statuses.strictest;
   }
 
+  Future<void> _requestSpecialPermission(
+    String action,
+  ) async {
+    await _activityManager.activity?.startActivityForResult(
+      Intent()
+        ..setAction(action)
+        ..setData(
+          Uri.parse(
+            'package:${await _activityManager.applicationContext.getPackageName()}',
+          ),
+        ),
+    );
+  }
+
   /// TODO(jweener): return false if opening of the settings page fails.
   @override
   Future<bool> openAppSettings() async {
@@ -125,5 +160,19 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     applicationContext.startActivity(intent);
 
     return true;
+  }
+
+  Future<PermissionStatus> _checkIgnoreBatteryOptimizationStatus() async {
+    final Context applicationContext = _activityManager.applicationContext;
+    final String packageName = await applicationContext.getPackageName();
+    final Object? systemService =
+        await applicationContext.getSystemService(Context.powerService);
+    assert(systemService is PowerManager,
+        'Expected PowerManager, got $systemService');
+    final PowerManager powerManager = systemService as PowerManager;
+    final bool isIgnoring =
+        await powerManager.isIgnoringBatteryOptimizations(packageName);
+
+    return isIgnoring ? PermissionStatus.granted : PermissionStatus.denied;
   }
 }

@@ -95,7 +95,6 @@ public class ContextHostApiImpl implements ContextHostApi {
         }
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
-
         return systemServiceUuid.toString();
     }
 }

@@ -144,8 +144,10 @@ public class ActivityHostApiImpl implements
             .setGrantResults(grantResultsList)
             .build();
 
-        pendingPermissionsRequest.success(result);
-        pendingPermissionsRequest = null;
+        if (pendingPermissionsRequest != null) {
+            pendingPermissionsRequest.success(result);
+            pendingPermissionsRequest = null;
+        }
 
         return true;
     }
@@ -209,8 +211,10 @@ public class ActivityHostApiImpl implements
             activityResultBuilder.setDataInstanceId(intentInstanceId.toString());
         }
 
-        pendingActivityResultRequest.success(activityResultBuilder.build());
-        pendingActivityResultRequest = null;
+        if (pendingActivityResultRequest != null) {
+            pendingActivityResultRequest.success(activityResultBuilder.build());
+            pendingActivityResultRequest = null;
+        }
 
         return true;
     }
@@ -229,7 +233,7 @@ public class ActivityHostApiImpl implements
             powerManagerFlutterApi.create((PowerManager) systemService);
         }
 
-        final UUID systemServiceInstanceUuid = instanceManager.addHostCreatedInstance(systemService);
-        return systemServiceInstanceUuid.toString();
+        final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
+        return systemServiceUuid.toString();
     }
 }
