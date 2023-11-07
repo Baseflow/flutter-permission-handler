@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
+import 'package:permission_handler_android/permission_handler_android.dart';
 
 import '../android_permission_handler_api_impls.dart';
 
@@ -29,12 +30,35 @@ class Context extends JavaObject {
   final ContextHostApiImpl _hostApi;
 
   /// Determine whether the application has been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermission(
     String permission,
   ) {
     return _hostApi.checkSelfPermissionFromInstance(
       this,
       permission,
+    );
+  }
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  Future<void> startActivity(
+    Intent intent,
+  ) {
+    return _hostApi.startActivityFromInstance(
+      this,
+      intent,
+    );
+  }
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  Future<String> getPackageName() {
+    return _hostApi.getPackageNameFromInstance(
+      this,
     );
   }
 }

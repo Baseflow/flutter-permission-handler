@@ -45,17 +45,17 @@ class PermissionRequestResult {
 abstract class ActivityHostApi {
   /// Gets whether the application should show UI with rationale before requesting a permission.
   ///
-  /// See https://developer.android.com/reference/android/app/Activity.html#shouldShowRequestPermissionRationale(java.lang.String).
+  /// See https://developer.android.com/reference/android/app/Activity#shouldShowRequestPermissionRationale(java.lang.String).
   bool shouldShowRequestPermissionRationale(
-    String activityInstanceId,
+    String instanceId,
     String permission,
   );
 
   /// Determine whether the application has been granted a particular permission.
   ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
+  /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
   int checkSelfPermission(
-    String activityInstanceId,
+    String instanceId,
     String permission,
   );
 
@@ -71,8 +71,23 @@ abstract class ActivityHostApi {
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
   @async
   PermissionRequestResult requestPermissions(
-    String activityInstanceId,
+    String instanceId,
     List<String> permissions,
+  );
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  void startActivity(
+    String instanceId,
+    String intentInstanceId,
+  );
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  String getPackageName(
+    String instanceId,
   );
 }
 
@@ -102,9 +117,26 @@ abstract class ActivityFlutterApi {
 @HostApi(dartHostTestHandler: 'ContextTestHostApi')
 abstract class ContextHostApi {
   /// Determine whether the application has been granted a particular permission.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
   int checkSelfPermission(
-    String activityInstanceId,
+    String instanceId,
     String permission,
+  );
+
+  /// Launch a new activity.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
+  void startActivity(
+    String instanceId,
+    String intentInstanceId,
+  );
+
+  /// Returns the name of this application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
+  String getPackageName(
+    String instanceId,
   );
 }
 
@@ -122,4 +154,89 @@ abstract class ContextFlutterApi {
 
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
+}
+
+/// Host API for `Uri`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/net/Uri.
+@HostApi(dartHostTestHandler: 'UriTestHostApi')
+abstract class UriHostApi {
+  /// Creates a Uri which parses the given encoded URI string.
+  ///
+  /// Returns the instance ID of the created Uri.
+  ///
+  /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
+  void parse(
+    String instanceId,
+    String uriString,
+  );
+
+  /// Returns the encoded string representation of this URI.
+  ///
+  /// Example: "http://google.com/".
+  ///
+  /// Method name is [toStringAsync] as opposed to [toString], as [toString]
+  /// cannot be overridden with return type [Future].
+  ///
+  /// See https://developer.android.com/reference/android/net/Uri#toString().
+  String toStringAsync(
+    String instanceId,
+  );
+}
+
+/// Host API for `Intent`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/Intent.
+@HostApi(dartHostTestHandler: 'IntentTestHostApi')
+abstract class IntentHostApi {
+  /// Creates an empty intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#Intent().
+  void create(
+    String instanceId,
+  );
+
+  /// Set the general action to be performed.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
+  void setAction(
+    String instanceId,
+    String action,
+  );
+
+  /// Set the data this intent is operating on.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#setData(android.net.Uri).
+  void setData(
+    String instanceId,
+    String uriInstanceId,
+  );
+
+  /// Add a new category to the intent.
+  ///
+  /// Categories provide additional detail about the action the intent performs.
+  /// When resolving an intent, only activities that provide all of the
+  /// requested categories will be used.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addCategory(java.lang.String).
+  void addCategory(
+    String instanceId,
+    String category,
+  );
+
+  /// Add additional flags to the intent (or with existing flags value).
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#addFlags(int).
+  void addFlags(
+    String instanceId,
+    int flags,
+  );
 }

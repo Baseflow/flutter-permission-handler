@@ -1,6 +1,7 @@
 package com.baseflow.permissionhandler;
 
 import android.content.Context;
+import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -41,14 +42,36 @@ public class ContextHostApiImpl implements ContextHostApi {
 
     @Override
     @NonNull public Long checkSelfPermission(
-        @NonNull String contextInstanceId,
+        @NonNull String instanceId,
         @NonNull String permission
     ) {
-        final UUID contextInstanceUuid = UUID.fromString(contextInstanceId);
+        final UUID contextInstanceUuid = UUID.fromString(instanceId);
         final Context context = instanceManager.getInstance(contextInstanceUuid);
-        if (context == null) {
-            throw new ApplicationContextNotFoundException();
-        }
+
         return (long) ContextCompat.checkSelfPermission(context, permission);
+    }
+
+    @Override
+    public void startActivity(
+        @NonNull String instanceId,
+        @NonNull String intentInstanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final UUID intentInstanceUuid = UUID.fromString(intentInstanceId);
+
+        final Context context = instanceManager.getInstance(instanceUuid);
+        final Intent intent = instanceManager.getInstance(intentInstanceUuid);
+
+        ContextCompat.startActivity(context, intent, null);
+    }
+
+    @Override
+    @NonNull public String getPackageName(
+        @NonNull String instanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Context context = instanceManager.getInstance(instanceUuid);
+
+        return context.getPackageName();
     }
 }
