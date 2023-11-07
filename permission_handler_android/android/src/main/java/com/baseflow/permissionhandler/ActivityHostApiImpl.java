@@ -209,28 +209,4 @@ public class ActivityHostApiImpl implements
 
         return true;
     }
-
-    @Override
-    public void startActivity(
-        @NonNull String instanceId,
-        @NonNull String intentInstanceId
-    ) {
-        final UUID instanceUuid = UUID.fromString(instanceId);
-        final UUID intentInstanceUuid = UUID.fromString(intentInstanceId);
-
-        final Activity activity = instanceManager.getInstance(instanceUuid);
-        final Intent intent = instanceManager.getInstance(intentInstanceUuid);
-
-        ActivityCompat.startActivity(activity, intent, null);
-    }
-
-    @Override
-    @NonNull public String getPackageName(
-        @NonNull String instanceId
-    ) {
-        final UUID instanceUuid = UUID.fromString(instanceId);
-        final Activity activity = instanceManager.getInstance(instanceUuid);
-
-        return activity.getPackageName();
-    }
 }
