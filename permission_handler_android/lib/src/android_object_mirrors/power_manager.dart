@@ -2,6 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 import 'package:permission_handler_android/src/android_permission_handler_api_impls.dart';
 
+import 'build.dart';
+
 /// This class lets you query and request control of aspects of the device's power state.
 ///
 /// See: https://developer.android.com/reference/android/os/PowerManager
@@ -21,6 +23,8 @@ class PowerManager extends JavaObject {
 
   /// Returns whether the given application package name is on the device's power allowlist.
   ///
+  /// Only works on Android M and above. Returns false on lower API levels.
+  ///
   /// Apps can be placed on the allowlist through the settings UI invoked by
   /// [Settings.actionRequestIgnoreBatteryOptimizations].
   ///
@@ -29,7 +33,12 @@ class PowerManager extends JavaObject {
   /// be applied.
   ///
   /// See https://developer.android.com/reference/android/os/PowerManager#isIgnoringBatteryOptimizations(java.lang.String).
-  Future<bool> isIgnoringBatteryOptimizations(String packageName) {
+  Future<bool> isIgnoringBatteryOptimizations(String packageName) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return false;
+    }
+
     return _hostApi.isIgnoringBatteryOptimizationsFromInstance(
       this,
       packageName,
