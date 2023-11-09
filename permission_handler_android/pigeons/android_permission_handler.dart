@@ -345,3 +345,34 @@ abstract class BuildVersionHostApi {
   /// See https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT.
   int sdkInt();
 }
+
+/// Host API for `AlarmManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/app/AlarmManager.
+@HostApi(dartHostTestHandler: 'AlarmManagerTestHostApi')
+abstract class AlarmManagerHostApi {
+  /// Called to check if the application can schedule exact alarms.
+  ///
+  /// See https://developer.android.com/reference/android/app/AlarmManager#canScheduleExactAlarms().
+  bool canScheduleExactAlarms(String instanceId);
+}
+
+/// Flutter API for `AlarmManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/app/AlarmManager.
+@FlutterApi()
+abstract class AlarmManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}

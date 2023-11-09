@@ -27,6 +27,15 @@ class Activity extends JavaObject {
 
   final ActivityHostApiImpl _hostApi;
 
+  /// Use with [Context.getSystemService] to retrieve a [PowerManager] for
+  /// controlling power management, including "wake locks," which let you keep
+  /// the device on while you're running long tasks.
+  static const String powerService = 'power';
+
+  /// Use with [Context.getSystemService] to retrieve an [AlarmManager] for
+  /// receiving intents at a time of your choosing.
+  static const String alarmService = 'alarm';
+
   /// Standard activity result: operation succeeded.
   ///
   /// Constant Value: -1 (0xffffffff).

@@ -11,11 +11,14 @@ class AndroidPermissionHandlerFlutterApis {
     ActivityFlutterApiImpl? activityFlutterApi,
     ContextFlutterApiImpl? contextFlutterApi,
     PowerManagerFlutterApiImpl? powerManagerFlutterApi,
+    AlarmManagerFlutterApiImpl? alarmManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
     this.powerManagerFlutterApi =
         powerManagerFlutterApi ?? PowerManagerFlutterApiImpl();
+    this.alarmManagerFlutterApi =
+        alarmManagerFlutterApi ?? AlarmManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -38,12 +41,16 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [PowerManager].
   late final PowerManagerFlutterApiImpl powerManagerFlutterApi;
 
+  /// Flutter API for [AlarmManager].
+  late final AlarmManagerFlutterApiImpl alarmManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
       ActivityFlutterApi.setup(activityFlutterApi);
       ContextFlutterApi.setup(contextFlutterApi);
       PowerManagerFlutterApi.setup(powerManagerFlutterApi);
+      AlarmManagerFlutterApi.setup(alarmManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -530,4 +537,59 @@ class BuildVersionHostApiImpl extends BuildVersionHostApi {
 
   /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
+}
+
+/// Host API implementation of AlarmManager.
+class AlarmManagerHostApiImpl extends AlarmManagerHostApi {
+  /// Creates a new instance of [AlarmManagerHostApiImpl].
+  AlarmManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Called to check if the application can schedule exact alarms.
+  ///
+  /// See https://developer.android.com/reference/android/app/AlarmManager#canScheduleExactAlarms().
+  Future<bool> canScheduleExactAlarmsFromInstance(
+    AlarmManager alarmManager,
+  ) async {
+    return await canScheduleExactAlarms(
+      instanceManager.getIdentifier(alarmManager)!,
+    );
+  }
+}
+
+/// Flutter API implementation of AlarmManager.
+class AlarmManagerFlutterApiImpl extends AlarmManagerFlutterApi {
+  /// Constructs a new instance of [AlarmManagerFlutterApiImpl].
+  AlarmManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final AlarmManager alarmManager = AlarmManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      alarmManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
 }

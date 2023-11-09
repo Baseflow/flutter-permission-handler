@@ -786,3 +786,48 @@ abstract class BuildVersionTestHostApi {
     }
   }
 }
+
+/// Host API for `AlarmManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/app/AlarmManager.
+abstract class AlarmManagerTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Called to check if the application can schedule exact alarms.
+  ///
+  /// See https://developer.android.com/reference/android/app/AlarmManager#canScheduleExactAlarms().
+  bool canScheduleExactAlarms(String instanceId);
+
+  static void setup(AlarmManagerTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.AlarmManagerHostApi.canScheduleExactAlarms',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.AlarmManagerHostApi.canScheduleExactAlarms was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.AlarmManagerHostApi.canScheduleExactAlarms was null, expected non-null String.');
+          final bool output = api.canScheduleExactAlarms(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
