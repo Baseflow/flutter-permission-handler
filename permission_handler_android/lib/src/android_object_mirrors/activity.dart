@@ -67,20 +67,18 @@ class Activity extends JavaObject {
 
   /// Requests permissions to be granted to this application.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// permission results are returned as a [Future] instead of through a
-  /// separate callback.
-  ///
   /// See
   /// https://developer.android.com/reference/android/app/Activity.html#requestPermissions(java.lang.String[],%20int)
   /// and
   /// https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
   Future<PermissionRequestResult> requestPermissions(
     List<String> permissions,
+    int? requestCode,
   ) {
     return _hostApi.requestPermissionsFromInstance(
       this,
       permissions,
+      requestCode,
     );
   }
 
@@ -107,16 +105,15 @@ class Activity extends JavaObject {
 
   /// Start an activity for which the application would like a result when it finished.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// activity results are returned as a [Future].
-  ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
   Future<ActivityResult> startActivityForResult(
     Intent intent,
+    int? requestCode,
   ) {
     return _hostApi.startActivityForResultFromInstance(
       this,
       intent,
+      requestCode,
     );
   }
 }
@@ -125,16 +122,13 @@ class Activity extends JavaObject {
 ///
 /// See also [ActivityResultPigeon].
 ///
-/// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-/// activity results are returned as a [Future] instead of through a separate
-/// callback.
-///
 /// See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
 class ActivityResult {
   /// Instantiates an [ActivityResult].
   const ActivityResult({
     required this.resultCode,
     this.data,
+    this.requestCode,
   });
 
   /// The integer result code returned by the child activity.
@@ -142,4 +136,7 @@ class ActivityResult {
 
   /// An [Intent] which can return result data to the caller.
   final Intent? data;
+
+  /// The integer request code originally supplied to [Activity.startActivityForResult].
+  final int? requestCode;
 }
