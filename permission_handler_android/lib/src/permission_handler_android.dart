@@ -79,7 +79,9 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
 
   /// TODO(jweener): handle all special permissions.
   @override
-  Future<PermissionStatus> requestPermission(Permission permission) async {
+  Future<PermissionStatus> requestPermission(
+    Permission permission,
+  ) async {
     final Activity? activity = _activityManager.activity;
     if (activity == null) {
       debugPrint(
