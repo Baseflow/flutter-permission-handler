@@ -29,6 +29,11 @@ class Context extends JavaObject {
 
   final ContextHostApiImpl _hostApi;
 
+  /// Use with [Context.getSystemService] to retrieve a [PowerManager] for
+  /// controlling power management, including "wake locks," which let you keep
+  /// the device on while you're running long tasks.
+  static const String powerService = 'power';
+
   /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
@@ -59,6 +64,20 @@ class Context extends JavaObject {
   Future<String> getPackageName() {
     return _hostApi.getPackageNameFromInstance(
       this,
+    );
+  }
+
+  /// Return the handle to a system-level service by name.
+  ///
+  /// The class of the returned object varies by the requested name.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+  Future<Object?> getSystemService(
+    String name,
+  ) {
+    return _hostApi.getSystemServiceFromInstance(
+      this,
+      name,
     );
   }
 }

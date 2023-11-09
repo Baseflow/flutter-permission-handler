@@ -19,6 +19,8 @@ extension PermissionToManifestStrings on Permission {
       return [Manifest.permission.writeCalendar];
     } else if (this == Permission.camera) {
       return [Manifest.permission.camera];
+    } else if (this == Permission.ignoreBatteryOptimizations) {
+      return [Manifest.permission.requestIgnoreBatteryOptimizations];
     }
 
     throw UnimplementedError(

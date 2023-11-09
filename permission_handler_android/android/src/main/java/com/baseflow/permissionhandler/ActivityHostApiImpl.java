@@ -2,6 +2,7 @@ package com.baseflow.permissionhandler;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +54,8 @@ public class ActivityHostApiImpl implements
 
     private final InstanceManager instanceManager;
 
+    private final PowerManagerFlutterApiImpl powerManagerFlutterApi;
+
     /**
      * Callbacks to complete a pending permission request.
      * <p>
@@ -62,7 +65,7 @@ public class ActivityHostApiImpl implements
     private final Map<Integer, Result<PermissionRequestResult>> pendingPermissionsRequestMap = new HashMap<>();
 
     /**
-     * Callback to complete a pending activity-for-result request.
+     * Callbacks to complete a pending activity-for-result request.
      * <p>
      * These callbacks are set in {@link this#startActivityForResult(String, String, Long, Result)},
      * and are completed in {@link this#onActivityResult(int, int, Intent)}.
@@ -76,9 +79,11 @@ public class ActivityHostApiImpl implements
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ActivityHostApiImpl(
+        @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
+        this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -218,5 +223,23 @@ public class ActivityHostApiImpl implements
         pendingActivityResultRequestMap.remove(requestCode);
 
         return true;
+    }
+
+    @Override
+    @NonNull public String getSystemService(
+        @NonNull String instanceId,
+        @NonNull String name
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Activity activity = instanceManager.getInstance(instanceUuid);
+
+        final Object systemService = activity.getSystemService(name);
+
+        if (systemService instanceof PowerManager) {
+            powerManagerFlutterApi.create((PowerManager) systemService);
+        }
+
+        final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
+        return systemServiceUuid.toString();
     }
 }

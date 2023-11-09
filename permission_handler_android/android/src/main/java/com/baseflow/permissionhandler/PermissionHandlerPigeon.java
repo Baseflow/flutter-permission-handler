@@ -341,6 +341,17 @@ public class PermissionHandlerPigeon {
     @NonNull 
     String getPackageName(@NonNull String instanceId);
     /**
+     * Return the handle to a system-level service by name.
+     *
+     * The class of the returned object varies by the requested name.
+     *
+     * Returns the instance ID of the service.
+     *
+     * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+     */
+    @NonNull 
+    String getSystemService(@NonNull String instanceId, @NonNull String name);
+    /**
      * Start an activity for which the application would like a result when it finished.
      *
      * See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
@@ -486,6 +497,31 @@ public class PermissionHandlerPigeon {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  String output = api.getSystemService(instanceIdArg, nameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
                 binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult", getCodec());
         if (api != null) {
           channel.setMessageHandler(
@@ -594,6 +630,17 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     String getPackageName(@NonNull String instanceId);
+    /**
+     * Return the handle to a system-level service by name.
+     *
+     * The class of the returned object varies by the requested name.
+     *
+     * Returns the instance ID of the service.
+     *
+     * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
+     */
+    @NonNull 
+    String getSystemService(@NonNull String instanceId, @NonNull String name);
 
     /** The codec used by ContextHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -663,6 +710,31 @@ public class PermissionHandlerPigeon {
                 String instanceIdArg = (String) args.get(0);
                 try {
                   String output = api.getPackageName(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  String output = api.getSystemService(instanceIdArg, nameArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {
@@ -979,6 +1051,167 @@ public class PermissionHandlerPigeon {
                 try {
                   api.addFlags(instanceIdArg, (flagsArg == null) ? null : flagsArg.longValue());
                   wrapped.add(0, null);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Host API for `PowerManager`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/os/PowerManager.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface PowerManagerHostApi {
+    /**
+     * Returns whether the given application package name is on the device's power allowlist.
+     *
+     * Apps can be placed on the allowlist through the settings UI invoked by
+     * [Settings.actionRequestIgnoreBatteryOptimizations].
+     *
+     * Being on the power allowlist means that the system will not apply most
+     * power saving features to the app. Guardrails for extreme cases may still
+     * be applied.
+     *
+     * See https://developer.android.com/reference/android/os/PowerManager#isIgnoringBatteryOptimizations(java.lang.String).
+     */
+    @NonNull 
+    Boolean isIgnoringBatteryOptimizations(@NonNull String instanceId, @NonNull String packageName);
+
+    /** The codec used by PowerManagerHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `PowerManagerHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable PowerManagerHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.PowerManagerHostApi.isIgnoringBatteryOptimizations", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String packageNameArg = (String) args.get(1);
+                try {
+                  Boolean output = api.isIgnoringBatteryOptimizations(instanceIdArg, packageNameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `PowerManager`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/os/PowerManager.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class PowerManagerFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public PowerManagerFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by PowerManagerFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.PowerManagerFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.PowerManagerFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `BuildVersion`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/os/Build.VERSION.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface BuildVersionHostApi {
+    /**
+     * The SDK version of the software currently running on this hardware device.
+     *
+     * This value never changes while a device is booted, but it may increase
+     * when the hardware manufacturer provides an OTA update.
+     *
+     * Possible values are defined in [Build.versionCodes].
+     *
+     * See https://developer.android.com/reference/android/os/Build.VERSION#SDK_INT.
+     */
+    @NonNull 
+    Long sdkInt();
+
+    /** The codec used by BuildVersionHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `BuildVersionHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable BuildVersionHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BuildVersionHostApi.sdkInt", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  Long output = api.sdkInt();
+                  wrapped.add(0, output);
                 }
  catch (Throwable exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
