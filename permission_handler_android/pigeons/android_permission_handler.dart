@@ -121,6 +121,13 @@ abstract class ActivityHostApi {
     String intentInstanceId,
     int? requestCode,
   );
+
+  /// Returns the instance ID of a PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  String getPackageManager(
+    String instanceId,
+  );
 }
 
 /// Flutter API for `Activity`.
@@ -181,6 +188,13 @@ abstract class ContextHostApi {
   String getSystemService(
     String instanceId,
     String name,
+  );
+
+  /// Returns the instance ID of a PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  String getPackageManager(
+    String instanceId,
   );
 }
 
@@ -370,6 +384,37 @@ abstract class AlarmManagerHostApi {
 /// See https://developer.android.com/reference/android/app/AlarmManager.
 @FlutterApi()
 abstract class AlarmManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `PackageManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/kotlin/android/content/pm/PackageManager.
+@HostApi(dartHostTestHandler: 'PackageManagerTestHostApi')
+abstract class PackageManagerHostApi {
+  /// Checks whether the calling package is allowed to request package installs through package installer.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
+  bool canRequestPackageInstalls(String instanceId);
+}
+
+/// Flutter API for `PackageManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/kotlin/android/content/pm/PackageManager.
+@FlutterApi()
+abstract class PackageManagerFlutterApi {
   /// Create a new Dart instance and add it to the `InstanceManager`.
   void create(String instanceId);
 

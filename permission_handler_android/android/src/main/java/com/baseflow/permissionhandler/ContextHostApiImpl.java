@@ -3,6 +3,7 @@ package com.baseflow.permissionhandler;
 import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,8 @@ public class ContextHostApiImpl implements ContextHostApi {
 
     private final AlarmManagerFlutterApiImpl alarmManagerFlutterApi;
 
+    private final PackageManagerFlutterApiImpl packageManagerFlutterApi;
+
     /**
      * Constructs an {@link ContextHostApiImpl}.
      *
@@ -41,11 +44,13 @@ public class ContextHostApiImpl implements ContextHostApi {
     public ContextHostApiImpl(
         @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
         @NonNull AlarmManagerFlutterApiImpl alarmManagerFlutterApi,
+        @NonNull PackageManagerFlutterApiImpl packageManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.alarmManagerFlutterApi = alarmManagerFlutterApi;
+        this.packageManagerFlutterApi = packageManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -103,5 +108,20 @@ public class ContextHostApiImpl implements ContextHostApi {
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
         return systemServiceUuid.toString();
+    }
+
+    @Override
+    @NonNull public String getPackageManager(
+        @NonNull String instanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Context context = instanceManager.getInstance(instanceUuid);
+
+        final PackageManager packageManager = context.getPackageManager();
+
+        packageManagerFlutterApi.create(packageManager);
+
+        final UUID packageManagerUuid = instanceManager.getIdentifierForStrongReference(packageManager);
+        return packageManagerUuid.toString();
     }
 }

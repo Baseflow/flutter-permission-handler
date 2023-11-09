@@ -3,6 +3,7 @@ package com.baseflow.permissionhandler;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,8 @@ public class ActivityHostApiImpl implements
 
     private final AlarmManagerFlutterApiImpl alarmManagerFlutterApi;
 
+    private final PackageManagerFlutterApiImpl packageManagerFlutterApi;
+
     /**
      * Callbacks to complete a pending permission request.
      * <p>
@@ -84,11 +87,13 @@ public class ActivityHostApiImpl implements
     public ActivityHostApiImpl(
         @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
         @NonNull AlarmManagerFlutterApiImpl alarmManagerFlutterApi,
+        @NonNull PackageManagerFlutterApiImpl packageManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.alarmManagerFlutterApi = alarmManagerFlutterApi;
         this.powerManagerFlutterApi = powerManagerFlutterApi;
+        this.alarmManagerFlutterApi = alarmManagerFlutterApi;
+        this.packageManagerFlutterApi = packageManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -248,5 +253,20 @@ public class ActivityHostApiImpl implements
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
         return systemServiceUuid.toString();
+    }
+
+    @Override
+    @NonNull public String getPackageManager(
+        @NonNull String instanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Activity activity = instanceManager.getInstance(instanceUuid);
+
+        final PackageManager packageManager = activity.getPackageManager();
+
+        packageManagerFlutterApi.create(packageManager);
+
+        final UUID packageManagerUuid = instanceManager.getIdentifierForStrongReference(packageManager);
+        return packageManagerUuid.toString();
     }
 }
