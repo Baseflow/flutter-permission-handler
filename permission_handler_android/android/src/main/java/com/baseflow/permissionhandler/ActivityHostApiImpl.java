@@ -13,7 +13,9 @@ import com.baseflow.permissionhandler.PermissionHandlerPigeon.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import io.flutter.plugin.common.BinaryMessenger;
@@ -31,20 +33,20 @@ public class ActivityHostApiImpl implements
     PluginRegistry.ActivityResultListener {
 
     /**
-     * The request code used when requesting permissions.
+     * The default request code used when requesting permissions.
      *
      * <p>This code has been randomly generated once, in the hope of avoiding collisions with other
      * request codes that are used on the native side, such as by other plugins.
      */
-    static final int REQUEST_CODE_PERMISSIONS = 702764314;
+    static final int DEFAULT_REQUEST_CODE_PERMISSIONS = 702764314;
 
     /**
-     * The request code used when requesting special permissions.
+     * The default request code used when requesting special permissions.
      *
      * <p>This code has been randomly generated once, in the hope of avoiding collisions with other
      * request codes that are used on the native side, such as by other plugins.
      */
-    static final int REQUEST_CODE_ACTIVITY_FOR_RESULT = 834370754;
+    static final int DEFAULT_REQUEST_CODE_ACTIVITY_FOR_RESULT = 834370754;
 
     // To ease adding additional methods, this value is added prematurely.
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
@@ -55,20 +57,20 @@ public class ActivityHostApiImpl implements
     private final PowerManagerFlutterApiImpl powerManagerFlutterApi;
 
     /**
-     * A callback to complete a pending permission request.
+     * Callbacks to complete a pending permission request.
      * <p>
-     * This callback is set in {@link this#requestPermissions(String, List, Result)}, and completed
-     * in {@link this#onRequestPermissionsResult(int, String[], int[])}.
+     * These callbacks are set in {@link this#requestPermissions(String, List, Long, Result)}, and
+     * are completed in {@link this#onRequestPermissionsResult(int, String[], int[])}.
      */
-    private Result<PermissionRequestResult> pendingPermissionsRequest;
+    private final Map<Integer, Result<PermissionRequestResult>> pendingPermissionsRequestMap = new HashMap<>();
 
     /**
-     * A callback to complete a pending activity-for-result request.
+     * Callbacks to complete a pending activity-for-result request.
      * <p>
-     * This callback is set in {@link this#startActivityForResult(String, String, Result)}, and
-     * completed in {@link this#onActivityResult(int, int, Intent)}.
+     * These callbacks are set in {@link this#startActivityForResult(String, String, Long, Result)},
+     * and are completed in {@link this#onActivityResult(int, int, Intent)}.
      */
-    private Result<ActivityResultPigeon> pendingActivityResultRequest;
+    private final Map<Integer, Result<ActivityResultPigeon>> pendingActivityResultRequestMap = new HashMap<>();
 
     /**
      * Constructs an {@link ActivityHostApiImpl}.
@@ -112,15 +114,17 @@ public class ActivityHostApiImpl implements
     public void requestPermissions(
         @NonNull String activityInstanceId,
         @NonNull List<String> permissions,
+        @Nullable Long requestCode,
         @NonNull Result<PermissionRequestResult> result
     ) {
         final UUID activityInstanceUuid = UUID.fromString(activityInstanceId);
         final Activity activity = instanceManager.getInstance(activityInstanceUuid);
 
-        pendingPermissionsRequest = result;
+        int requestCodeInt = requestCode == null ? DEFAULT_REQUEST_CODE_PERMISSIONS : requestCode.intValue();
+        pendingPermissionsRequestMap.put(requestCodeInt, result);
 
         String[] permissionsArray = permissions.toArray(new String[0]);
-        ActivityCompat.requestPermissions(activity, permissionsArray, REQUEST_CODE_PERMISSIONS);
+        ActivityCompat.requestPermissions(activity, permissionsArray, requestCodeInt);
     }
 
     @Override
@@ -129,7 +133,8 @@ public class ActivityHostApiImpl implements
         @NonNull String[] permissions,
         @NonNull int[] grantResults
     ) {
-        if (requestCode != REQUEST_CODE_PERMISSIONS) {
+        @Nullable final Result<PermissionRequestResult> pendingPermissionsRequest = pendingPermissionsRequestMap.get(requestCode);
+        if (pendingPermissionsRequest == null) {
             return false;
         }
 
@@ -140,14 +145,13 @@ public class ActivityHostApiImpl implements
         }
         final PermissionRequestResult result = new PermissionRequestResult
             .Builder()
+            .setRequestCode((long) requestCode)
             .setPermissions(permissionsList)
             .setGrantResults(grantResultsList)
             .build();
 
-        if (pendingPermissionsRequest != null) {
-            pendingPermissionsRequest.success(result);
-            pendingPermissionsRequest = null;
-        }
+        pendingPermissionsRequest.success(result);
+        pendingPermissionsRequestMap.remove(requestCode);
 
         return true;
     }
@@ -180,6 +184,7 @@ public class ActivityHostApiImpl implements
     public void startActivityForResult(
         @NonNull String instanceId,
         @NonNull String intentInstanceId,
+        @Nullable Long requestCode,
         @NonNull Result<ActivityResultPigeon> result
     ) {
         final UUID instanceUuid = UUID.fromString(instanceId);
@@ -188,9 +193,10 @@ public class ActivityHostApiImpl implements
         final Activity activity = instanceManager.getInstance(instanceUuid);
         final Intent intent = instanceManager.getInstance(intentInstanceUuid);
 
-        pendingActivityResultRequest = result;
+        int requestCodeInt = requestCode == null ? DEFAULT_REQUEST_CODE_ACTIVITY_FOR_RESULT : requestCode.intValue();
+        pendingActivityResultRequestMap.put(requestCodeInt, result);
 
-        activity.startActivityForResult(intent, REQUEST_CODE_ACTIVITY_FOR_RESULT);
+        activity.startActivityForResult(intent, requestCodeInt);
     }
 
     @Override
@@ -199,11 +205,13 @@ public class ActivityHostApiImpl implements
         int resultCode,
         @Nullable Intent data
     ) {
-        if (requestCode != REQUEST_CODE_ACTIVITY_FOR_RESULT) {
+        @Nullable final Result<ActivityResultPigeon> pendingActivityResultRequest = pendingActivityResultRequestMap.get(requestCode);
+        if (pendingActivityResultRequest == null) {
             return false;
         }
 
         final ActivityResultPigeon.Builder activityResultBuilder = new ActivityResultPigeon.Builder()
+            .setRequestCode((long) requestCode)
             .setResultCode((long) resultCode);
 
         if (data != null) {
@@ -211,10 +219,8 @@ public class ActivityHostApiImpl implements
             activityResultBuilder.setDataInstanceId(intentInstanceId.toString());
         }
 
-        if (pendingActivityResultRequest != null) {
-            pendingActivityResultRequest.success(activityResultBuilder.build());
-            pendingActivityResultRequest = null;
-        }
+        pendingActivityResultRequest.success(activityResultBuilder.build());
+        pendingActivityResultRequestMap.remove(requestCode);
 
         return true;
     }
