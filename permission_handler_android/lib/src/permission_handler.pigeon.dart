@@ -10,25 +10,25 @@ import 'package:flutter/services.dart';
 
 /// Result of a permission request.
 ///
-/// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-/// permission results are returned as a [Future] instead of through a
-/// separate callback.
-///
 /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
 class PermissionRequestResult {
   PermissionRequestResult({
     required this.permissions,
     required this.grantResults,
+    this.requestCode,
   });
 
   List<String?> permissions;
 
   List<int?> grantResults;
 
+  int? requestCode;
+
   Object encode() {
     return <Object?>[
       permissions,
       grantResults,
+      requestCode,
     ];
   }
 
@@ -37,6 +37,41 @@ class PermissionRequestResult {
     return PermissionRequestResult(
       permissions: (result[0] as List<Object?>?)!.cast<String?>(),
       grantResults: (result[1] as List<Object?>?)!.cast<int?>(),
+      requestCode: result[2] as int?,
+    );
+  }
+}
+
+/// Result of an activity-for-result request.
+///
+/// See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
+class ActivityResultPigeon {
+  ActivityResultPigeon({
+    required this.resultCode,
+    this.dataInstanceId,
+    this.requestCode,
+  });
+
+  int resultCode;
+
+  String? dataInstanceId;
+
+  int? requestCode;
+
+  Object encode() {
+    return <Object?>[
+      resultCode,
+      dataInstanceId,
+      requestCode,
+    ];
+  }
+
+  static ActivityResultPigeon decode(Object result) {
+    result as List<Object?>;
+    return ActivityResultPigeon(
+      resultCode: result[0]! as int,
+      dataInstanceId: result[1] as String?,
+      requestCode: result[2] as int?,
     );
   }
 }
@@ -45,8 +80,11 @@ class _ActivityHostApiCodec extends StandardMessageCodec {
   const _ActivityHostApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is PermissionRequestResult) {
+    if (value is ActivityResultPigeon) {
       buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else if (value is PermissionRequestResult) {
+      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -57,6 +95,8 @@ class _ActivityHostApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128:
+        return ActivityResultPigeon.decode(readValue(buffer)!);
+      case 129:
         return PermissionRequestResult.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -147,22 +187,19 @@ class ActivityHostApi {
 
   /// Requests permissions to be granted to this application.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// permission results are returned as a [Future] instead of through a
-  /// separate callback.
-  ///
   /// See
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
-  Future<PermissionRequestResult> requestPermissions(
-      String arg_instanceId, List<String?> arg_permissions) async {
+  Future<PermissionRequestResult> requestPermissions(String arg_instanceId,
+      List<String?> arg_permissions, int? arg_requestCode) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions',
         codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_instanceId, arg_permissions]) as List<Object?>?;
+            .send(<Object?>[arg_instanceId, arg_permissions, arg_requestCode])
+        as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -240,6 +277,39 @@ class ActivityHostApi {
       );
     } else {
       return (replyList[0] as String?)!;
+    }
+  }
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  Future<ActivityResultPigeon> startActivityForResult(String arg_instanceId,
+      String arg_intentInstanceId, int? arg_requestCode) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(
+            <Object?>[arg_instanceId, arg_intentInstanceId, arg_requestCode])
+        as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as ActivityResultPigeon?)!;
     }
   }
 }

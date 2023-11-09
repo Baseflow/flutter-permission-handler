@@ -14,8 +14,11 @@ class _ActivityTestHostApiCodec extends StandardMessageCodec {
   const _ActivityTestHostApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is PermissionRequestResult) {
+    if (value is ActivityResultPigeon) {
       buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else if (value is PermissionRequestResult) {
+      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -26,6 +29,8 @@ class _ActivityTestHostApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128:
+        return ActivityResultPigeon.decode(readValue(buffer)!);
+      case 129:
         return PermissionRequestResult.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -58,16 +63,12 @@ abstract class ActivityTestHostApi {
 
   /// Requests permissions to be granted to this application.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// permission results are returned as a [Future] instead of through a
-  /// separate callback.
-  ///
   /// See
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
   Future<PermissionRequestResult> requestPermissions(
-      String instanceId, List<String?> permissions);
+      String instanceId, List<String?> permissions, int? requestCode);
 
   /// Launch a new activity.
   ///
@@ -78,6 +79,12 @@ abstract class ActivityTestHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(String instanceId);
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  Future<ActivityResultPigeon> startActivityForResult(
+      String instanceId, String intentInstanceId, int? requestCode);
 
   static void setup(ActivityTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -157,8 +164,9 @@ abstract class ActivityTestHostApi {
               (args[1] as List<Object?>?)?.cast<String?>();
           assert(arg_permissions != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null, expected non-null List<String?>.');
-          final PermissionRequestResult output =
-              await api.requestPermissions(arg_instanceId!, arg_permissions!);
+          final int? arg_requestCode = (args[2] as int?);
+          final PermissionRequestResult output = await api.requestPermissions(
+              arg_instanceId!, arg_permissions!, arg_requestCode);
           return <Object?>[output];
         });
       }
@@ -208,6 +216,34 @@ abstract class ActivityTestHostApi {
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName was null, expected non-null String.');
           final String output = api.getPackageName(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult was null, expected non-null String.');
+          final String? arg_intentInstanceId = (args[1] as String?);
+          assert(arg_intentInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult was null, expected non-null String.');
+          final int? arg_requestCode = (args[2] as int?);
+          final ActivityResultPigeon output = await api.startActivityForResult(
+              arg_instanceId!, arg_intentInstanceId!, arg_requestCode);
           return <Object?>[output];
         });
       }

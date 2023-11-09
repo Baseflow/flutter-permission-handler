@@ -19,19 +19,32 @@ import 'package:pigeon/pigeon.dart';
 
 /// Result of a permission request.
 ///
-/// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-/// permission results are returned as a [Future] instead of through a
-/// separate callback.
-///
 /// See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
 class PermissionRequestResult {
   const PermissionRequestResult({
     required this.permissions,
     required this.grantResults,
+    this.requestCode,
   });
 
   final List<String?> permissions;
   final List<int?> grantResults;
+  final int? requestCode;
+}
+
+/// Result of an activity-for-result request.
+///
+/// See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
+class ActivityResultPigeon {
+  const ActivityResultPigeon({
+    required this.resultCode,
+    this.dataInstanceId,
+    this.requestCode,
+  });
+
+  final int resultCode;
+  final String? dataInstanceId;
+  final int? requestCode;
 }
 
 /// Host API for `Activity`.
@@ -61,10 +74,6 @@ abstract class ActivityHostApi {
 
   /// Requests permissions to be granted to this application.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// permission results are returned as a [Future] instead of through a
-  /// separate callback.
-  ///
   /// See
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
@@ -73,6 +82,7 @@ abstract class ActivityHostApi {
   PermissionRequestResult requestPermissions(
     String instanceId,
     List<String> permissions,
+    int? requestCode,
   );
 
   /// Launch a new activity.
@@ -88,6 +98,16 @@ abstract class ActivityHostApi {
   /// See https://developer.android.com/reference/android/content/Context#getPackageName().
   String getPackageName(
     String instanceId,
+  );
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  @async
+  ActivityResultPigeon startActivityForResult(
+    String instanceId,
+    String intentInstanceId,
+    int? requestCode,
   );
 }
 

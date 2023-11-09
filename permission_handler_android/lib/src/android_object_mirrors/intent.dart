@@ -8,8 +8,9 @@ import 'uri.dart';
 ///
 /// See https://developer.android.com/reference/android/content/Intent.
 class Intent extends JavaObject {
-  /// Instantiates an [Intent], creating and attaching it to an instance of the
-  /// associated native class.
+  /// Create an empty intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#Intent().
   Intent({
     InstanceManager? instanceManager,
     BinaryMessenger? binaryMessenger,
@@ -22,6 +23,25 @@ class Intent extends JavaObject {
           binaryMessenger: binaryMessenger,
         ) {
     _hostApi.createFromInstance(this);
+  }
+
+  /// Create an intent with a given action.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#Intent(java.lang.String).
+  Intent.action(
+    String action, {
+    InstanceManager? instanceManager,
+    BinaryMessenger? binaryMessenger,
+  })  : _hostApi = IntentHostApiImpl(
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        ),
+        super.detached(
+          instanceManager: instanceManager,
+          binaryMessenger: binaryMessenger,
+        ) {
+    _hostApi.createFromInstance(this);
+    setAction(action);
   }
 
   final IntentHostApiImpl _hostApi;

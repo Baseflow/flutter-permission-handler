@@ -60,10 +60,6 @@ public class PermissionHandlerPigeon {
   /**
    * Result of a permission request.
    *
-   * Contrary to the Android SDK, we do not make use of a `requestCode`, as
-   * permission results are returned as a [Future] instead of through a
-   * separate callback.
-   *
    * See https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
    *
    * Generated class from Pigeon that represents data sent in messages.
@@ -95,6 +91,16 @@ public class PermissionHandlerPigeon {
       this.grantResults = setterArg;
     }
 
+    private @Nullable Long requestCode;
+
+    public @Nullable Long getRequestCode() {
+      return requestCode;
+    }
+
+    public void setRequestCode(@Nullable Long setterArg) {
+      this.requestCode = setterArg;
+    }
+
     /** Constructor is non-public to enforce null safety; use Builder. */
     PermissionRequestResult() {}
 
@@ -114,19 +120,28 @@ public class PermissionHandlerPigeon {
         return this;
       }
 
+      private @Nullable Long requestCode;
+
+      public @NonNull Builder setRequestCode(@Nullable Long setterArg) {
+        this.requestCode = setterArg;
+        return this;
+      }
+
       public @NonNull PermissionRequestResult build() {
         PermissionRequestResult pigeonReturn = new PermissionRequestResult();
         pigeonReturn.setPermissions(permissions);
         pigeonReturn.setGrantResults(grantResults);
+        pigeonReturn.setRequestCode(requestCode);
         return pigeonReturn;
       }
     }
 
     @NonNull
     ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(2);
+      ArrayList<Object> toListResult = new ArrayList<Object>(3);
       toListResult.add(permissions);
       toListResult.add(grantResults);
+      toListResult.add(requestCode);
       return toListResult;
     }
 
@@ -136,6 +151,105 @@ public class PermissionHandlerPigeon {
       pigeonResult.setPermissions((List<String>) permissions);
       Object grantResults = list.get(1);
       pigeonResult.setGrantResults((List<Long>) grantResults);
+      Object requestCode = list.get(2);
+      pigeonResult.setRequestCode((requestCode == null) ? null : ((requestCode instanceof Integer) ? (Integer) requestCode : (Long) requestCode));
+      return pigeonResult;
+    }
+  }
+
+  /**
+   * Result of an activity-for-result request.
+   *
+   * See https://developer.android.com/reference/android/app/Activity#onActivityResult(int,%20int,%20android.content.Intent).
+   *
+   * Generated class from Pigeon that represents data sent in messages.
+   */
+  public static final class ActivityResultPigeon {
+    private @NonNull Long resultCode;
+
+    public @NonNull Long getResultCode() {
+      return resultCode;
+    }
+
+    public void setResultCode(@NonNull Long setterArg) {
+      if (setterArg == null) {
+        throw new IllegalStateException("Nonnull field \"resultCode\" is null.");
+      }
+      this.resultCode = setterArg;
+    }
+
+    private @Nullable String dataInstanceId;
+
+    public @Nullable String getDataInstanceId() {
+      return dataInstanceId;
+    }
+
+    public void setDataInstanceId(@Nullable String setterArg) {
+      this.dataInstanceId = setterArg;
+    }
+
+    private @Nullable Long requestCode;
+
+    public @Nullable Long getRequestCode() {
+      return requestCode;
+    }
+
+    public void setRequestCode(@Nullable Long setterArg) {
+      this.requestCode = setterArg;
+    }
+
+    /** Constructor is non-public to enforce null safety; use Builder. */
+    ActivityResultPigeon() {}
+
+    public static final class Builder {
+
+      private @Nullable Long resultCode;
+
+      public @NonNull Builder setResultCode(@NonNull Long setterArg) {
+        this.resultCode = setterArg;
+        return this;
+      }
+
+      private @Nullable String dataInstanceId;
+
+      public @NonNull Builder setDataInstanceId(@Nullable String setterArg) {
+        this.dataInstanceId = setterArg;
+        return this;
+      }
+
+      private @Nullable Long requestCode;
+
+      public @NonNull Builder setRequestCode(@Nullable Long setterArg) {
+        this.requestCode = setterArg;
+        return this;
+      }
+
+      public @NonNull ActivityResultPigeon build() {
+        ActivityResultPigeon pigeonReturn = new ActivityResultPigeon();
+        pigeonReturn.setResultCode(resultCode);
+        pigeonReturn.setDataInstanceId(dataInstanceId);
+        pigeonReturn.setRequestCode(requestCode);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(3);
+      toListResult.add(resultCode);
+      toListResult.add(dataInstanceId);
+      toListResult.add(requestCode);
+      return toListResult;
+    }
+
+    static @NonNull ActivityResultPigeon fromList(@NonNull ArrayList<Object> list) {
+      ActivityResultPigeon pigeonResult = new ActivityResultPigeon();
+      Object resultCode = list.get(0);
+      pigeonResult.setResultCode((resultCode == null) ? null : ((resultCode instanceof Integer) ? (Integer) resultCode : (Long) resultCode));
+      Object dataInstanceId = list.get(1);
+      pigeonResult.setDataInstanceId((String) dataInstanceId);
+      Object requestCode = list.get(2);
+      pigeonResult.setRequestCode((requestCode == null) ? null : ((requestCode instanceof Integer) ? (Integer) requestCode : (Long) requestCode));
       return pigeonResult;
     }
   }
@@ -156,6 +270,8 @@ public class PermissionHandlerPigeon {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
+          return ActivityResultPigeon.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 129:
           return PermissionRequestResult.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -164,8 +280,11 @@ public class PermissionHandlerPigeon {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof PermissionRequestResult) {
+      if (value instanceof ActivityResultPigeon) {
         stream.write(128);
+        writeValue(stream, ((ActivityResultPigeon) value).toList());
+      } else if (value instanceof PermissionRequestResult) {
+        stream.write(129);
         writeValue(stream, ((PermissionRequestResult) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -202,16 +321,12 @@ public class PermissionHandlerPigeon {
     /**
      * Requests permissions to be granted to this application.
      *
-     * Contrary to the Android SDK, we do not make use of a `requestCode`, as
-     * permission results are returned as a [Future] instead of through a
-     * separate callback.
-     *
      * See
      * https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
      * and
      * https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
      */
-    void requestPermissions(@NonNull String instanceId, @NonNull List<String> permissions, @NonNull Result<PermissionRequestResult> result);
+    void requestPermissions(@NonNull String instanceId, @NonNull List<String> permissions, @Nullable Long requestCode, @NonNull Result<PermissionRequestResult> result);
     /**
      * Launch a new activity.
      *
@@ -225,6 +340,12 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     String getPackageName(@NonNull String instanceId);
+    /**
+     * Start an activity for which the application would like a result when it finished.
+     *
+     * See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+     */
+    void startActivityForResult(@NonNull String instanceId, @NonNull String intentInstanceId, @Nullable Long requestCode, @NonNull Result<ActivityResultPigeon> result);
 
     /** The codec used by ActivityHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -293,6 +414,7 @@ public class PermissionHandlerPigeon {
                 ArrayList<Object> args = (ArrayList<Object>) message;
                 String instanceIdArg = (String) args.get(0);
                 List<String> permissionsArg = (List<String>) args.get(1);
+                Number requestCodeArg = (Number) args.get(2);
                 Result<PermissionRequestResult> resultCallback =
                     new Result<PermissionRequestResult>() {
                       public void success(PermissionRequestResult result) {
@@ -306,7 +428,7 @@ public class PermissionHandlerPigeon {
                       }
                     };
 
-                api.requestPermissions(instanceIdArg, permissionsArg, resultCallback);
+                api.requestPermissions(instanceIdArg, permissionsArg, (requestCodeArg == null) ? null : requestCodeArg.longValue(), resultCallback);
               });
         } else {
           channel.setMessageHandler(null);
@@ -356,6 +478,37 @@ public class PermissionHandlerPigeon {
                   wrapped = wrappedError;
                 }
                 reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                String intentInstanceIdArg = (String) args.get(1);
+                Number requestCodeArg = (Number) args.get(2);
+                Result<ActivityResultPigeon> resultCallback =
+                    new Result<ActivityResultPigeon>() {
+                      public void success(ActivityResultPigeon result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.startActivityForResult(instanceIdArg, intentInstanceIdArg, (requestCodeArg == null) ? null : requestCodeArg.longValue(), resultCallback);
               });
         } else {
           channel.setMessageHandler(null);

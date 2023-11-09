@@ -98,10 +98,6 @@ class ActivityHostApiImpl extends ActivityHostApi {
 
   /// Requests permissions to be granted to this application.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// permission results are returned as a [Future] instead of through a
-  /// separate callback.
-  ///
   /// See
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
@@ -109,12 +105,19 @@ class ActivityHostApiImpl extends ActivityHostApi {
   Future<PermissionRequestResult> requestPermissionsFromInstance(
     Activity activity,
     List<String> permissions,
+    int? requestCode,
   ) async {
+    assert(
+      requestCode == null || requestCode.bitLength + 1 <= 32,
+      'The request code must fit in a 32-bit integer.',
+    );
+
     final String activityInstanceId = instanceManager.getIdentifier(activity)!;
 
     return requestPermissions(
       activityInstanceId,
       permissions,
+      requestCode,
     );
   }
 
@@ -139,6 +142,38 @@ class ActivityHostApiImpl extends ActivityHostApi {
   ) async {
     return getPackageName(
       instanceManager.getIdentifier(activity)!,
+    );
+  }
+
+  /// Start an activity for which the application would like a result when it finished.
+  ///
+  /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
+  Future<ActivityResult> startActivityForResultFromInstance(
+    Activity activity,
+    Intent intent,
+    int? requestCode,
+  ) async {
+    assert(
+      requestCode == null || requestCode.bitLength + 1 <= 32,
+      'The request code must fit in a 32-bit integer.',
+    );
+
+    final ActivityResultPigeon activityResult = await startActivityForResult(
+      instanceManager.getIdentifier(activity)!,
+      instanceManager.getIdentifier(intent)!,
+      requestCode,
+    );
+
+    Intent? data;
+    final String? dataInstanceId = activityResult.dataInstanceId;
+    if (dataInstanceId != null) {
+      data = instanceManager.getInstanceWithWeakReference(dataInstanceId);
+    }
+
+    return ActivityResult(
+      resultCode: activityResult.resultCode,
+      data: data,
+      requestCode: requestCode,
     );
   }
 }
