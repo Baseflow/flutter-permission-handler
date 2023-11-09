@@ -63,16 +63,12 @@ abstract class ActivityTestHostApi {
 
   /// Requests permissions to be granted to this application.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// permission results are returned as a [Future] instead of through a
-  /// separate callback.
-  ///
   /// See
   /// https://developer.android.com/reference/android/app/Activity#requestPermissions(java.lang.String[],%20int)
   /// and
   /// https://developer.android.com/reference/android/app/Activity#onRequestPermissionsResult(int,%20java.lang.String[],%20int[]).
   Future<PermissionRequestResult> requestPermissions(
-      String instanceId, List<String?> permissions);
+      String instanceId, List<String?> permissions, int? requestCode);
 
   /// Launch a new activity.
   ///
@@ -95,12 +91,9 @@ abstract class ActivityTestHostApi {
 
   /// Start an activity for which the application would like a result when it finished.
   ///
-  /// Contrary to the Android SDK, we do not make use of a `requestCode`, as
-  /// activity results are returned as a [Future].
-  ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
   Future<ActivityResultPigeon> startActivityForResult(
-      String instanceId, String intentInstanceId);
+      String instanceId, String intentInstanceId, int? requestCode);
 
   static void setup(ActivityTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -180,8 +173,9 @@ abstract class ActivityTestHostApi {
               (args[1] as List<Object?>?)?.cast<String?>();
           assert(arg_permissions != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.requestPermissions was null, expected non-null List<String?>.');
-          final PermissionRequestResult output =
-              await api.requestPermissions(arg_instanceId!, arg_permissions!);
+          final int? arg_requestCode = (args[2] as int?);
+          final PermissionRequestResult output = await api.requestPermissions(
+              arg_instanceId!, arg_permissions!, arg_requestCode);
           return <Object?>[output];
         });
       }
@@ -283,8 +277,9 @@ abstract class ActivityTestHostApi {
           final String? arg_intentInstanceId = (args[1] as String?);
           assert(arg_intentInstanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult was null, expected non-null String.');
+          final int? arg_requestCode = (args[2] as int?);
           final ActivityResultPigeon output = await api.startActivityForResult(
-              arg_instanceId!, arg_intentInstanceId!);
+              arg_instanceId!, arg_intentInstanceId!, arg_requestCode);
           return <Object?>[output];
         });
       }

@@ -89,7 +89,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
 
     if (Permission.ignoreBatteryOptimizations == permission) {
       await _requestSpecialPermission(
-        Settings.actionRequestIgnoreBatteryOptimizations,
+        action: Settings.actionRequestIgnoreBatteryOptimizations,
       );
       return _checkIgnoreBatteryOptimizationStatus();
     }
@@ -103,9 +103,11 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   Future<PermissionStatus> _requestNormalPermission({
     required Activity activity,
     required Permission permission,
+    int? requestCode,
   }) async {
     final PermissionRequestResult result = await activity.requestPermissions(
       permission.manifestStrings,
+      requestCode,
     );
 
     final List<String> permissions =
@@ -127,9 +129,10 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     return statuses.strictest;
   }
 
-  Future<void> _requestSpecialPermission(
-    String action,
-  ) async {
+  Future<void> _requestSpecialPermission({
+    required String action,
+    int? requestCode,
+  }) async {
     await _activityManager.activity?.startActivityForResult(
       Intent()
         ..setAction(action)
@@ -138,6 +141,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
             'package:${await _activityManager.applicationContext.getPackageName()}',
           ),
         ),
+      requestCode,
     );
   }
 
