@@ -1,4 +1,5 @@
 export 'src/android_object_mirrors/activity.dart';
+export 'src/android_object_mirrors/alarm_manager.dart';
 export 'src/android_object_mirrors/build.dart';
 export 'src/android_object_mirrors/context.dart';
 export 'src/android_object_mirrors/intent.dart';

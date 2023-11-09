@@ -34,6 +34,10 @@ class Context extends JavaObject {
   /// the device on while you're running long tasks.
   static const String powerService = 'power';
 
+  /// Use with [Context.getSystemService] to retrieve an [AlarmManager] for
+  /// receiving intents at a time of your choosing.
+  static const String alarmService = 'alarm';
+
   /// Determine whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).

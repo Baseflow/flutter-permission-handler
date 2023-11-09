@@ -1,6 +1,7 @@
 package com.baseflow.permissionhandler;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.content.Intent;
 import android.os.PowerManager;
 
@@ -56,6 +57,8 @@ public class ActivityHostApiImpl implements
 
     private final PowerManagerFlutterApiImpl powerManagerFlutterApi;
 
+    private final AlarmManagerFlutterApiImpl alarmManagerFlutterApi;
+
     /**
      * Callbacks to complete a pending permission request.
      * <p>
@@ -80,9 +83,11 @@ public class ActivityHostApiImpl implements
      */
     public ActivityHostApiImpl(
         @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
+        @NonNull AlarmManagerFlutterApiImpl alarmManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
+        this.alarmManagerFlutterApi = alarmManagerFlutterApi;
         this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
@@ -237,6 +242,8 @@ public class ActivityHostApiImpl implements
 
         if (systemService instanceof PowerManager) {
             powerManagerFlutterApi.create((PowerManager) systemService);
+        } else if (systemService instanceof AlarmManager) {
+            alarmManagerFlutterApi.create((AlarmManager) systemService);
         }
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);

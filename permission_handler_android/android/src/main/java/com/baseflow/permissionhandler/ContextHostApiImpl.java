@@ -1,5 +1,6 @@
 package com.baseflow.permissionhandler;
 
+import android.app.AlarmManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
@@ -29,6 +30,8 @@ public class ContextHostApiImpl implements ContextHostApi {
 
     private final PowerManagerFlutterApiImpl powerManagerFlutterApi;
 
+    private final AlarmManagerFlutterApiImpl alarmManagerFlutterApi;
+
     /**
      * Constructs an {@link ContextHostApiImpl}.
      *
@@ -37,10 +40,12 @@ public class ContextHostApiImpl implements ContextHostApi {
      */
     public ContextHostApiImpl(
         @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
+        @NonNull AlarmManagerFlutterApiImpl alarmManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.powerManagerFlutterApi = powerManagerFlutterApi;
+        this.alarmManagerFlutterApi = alarmManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -92,6 +97,8 @@ public class ContextHostApiImpl implements ContextHostApi {
 
         if (systemService instanceof PowerManager) {
             powerManagerFlutterApi.create((PowerManager) systemService);
+        } else if (systemService instanceof AlarmManager) {
+            alarmManagerFlutterApi.create((AlarmManager) systemService);
         }
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
