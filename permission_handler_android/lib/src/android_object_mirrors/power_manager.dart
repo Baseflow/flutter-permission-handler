@@ -8,7 +8,7 @@ import 'build.dart';
 ///
 /// See: https://developer.android.com/reference/android/os/PowerManager
 class PowerManager extends JavaObject {
-  /// Instantiates an [PowerManager] without creating and attaching to an
+  /// Instantiates a [PowerManager] without creating and attaching to an
   /// instance of the associated native class.
   PowerManager.detached({
     BinaryMessenger? binaryMessenger,

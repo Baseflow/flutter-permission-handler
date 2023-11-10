@@ -739,7 +739,7 @@ abstract class AlarmManagerTestHostApi {
 /// are attached to a Dart instance or handle method calls on the associated
 /// native class or an instance of the class.
 ///
-/// See https://developer.android.com/reference/kotlin/android/content/pm/PackageManager.
+/// See https://developer.android.com/reference/android/content/pm/PackageManager.
 abstract class PackageManagerTestHostApi {
   static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
       TestDefaultBinaryMessengerBinding.instance;
@@ -784,7 +784,7 @@ abstract class PackageManagerTestHostApi {
 /// are attached to a Dart instance or handle method calls on the associated
 /// native class or an instance of the class.
 ///
-/// See https://developer.android.com/reference/kotlin/android/provider/Settings.
+/// See https://developer.android.com/reference/android/provider/Settings.
 abstract class SettingsTestHostApi {
   static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
       TestDefaultBinaryMessengerBinding.instance;
@@ -823,6 +823,86 @@ abstract class SettingsTestHostApi {
           assert(arg_contextInstanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.SettingsHostApi.canDrawOverlays was null, expected non-null String.');
           final bool output = api.canDrawOverlays(arg_contextInstanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `NotificationManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/app/NotificationManager.
+abstract class NotificationManagerTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Checks the ability to modify notification do not disturb policy for the calling package.
+  ///
+  /// Returns true if the calling package can modify notification policy.
+  ///
+  /// Apps can request policy access by sending the user to the activity that
+  /// matches the system intent action
+  /// [Settings.actionNotificationPolicyAccessSettings].
+  ///
+  /// See https://developer.android.com/reference/android/app/NotificationManager#isNotificationPolicyAccessGranted().
+  bool isNotificationPolicyAccessGranted(String instanceId);
+
+  /// Returns whether notifications from the calling package are enabled.
+  ///
+  /// See https://developer.android.com/reference/android/app/NotificationManager#areNotificationsEnabled().
+  bool areNotificationsEnabled(String instanceId);
+
+  static void setup(NotificationManagerTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.NotificationManagerHostApi.isNotificationPolicyAccessGranted',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.NotificationManagerHostApi.isNotificationPolicyAccessGranted was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.NotificationManagerHostApi.isNotificationPolicyAccessGranted was null, expected non-null String.');
+          final bool output =
+              api.isNotificationPolicyAccessGranted(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.NotificationManagerHostApi.areNotificationsEnabled',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.NotificationManagerHostApi.areNotificationsEnabled was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.NotificationManagerHostApi.areNotificationsEnabled was null, expected non-null String.');
+          final bool output = api.areNotificationsEnabled(arg_instanceId!);
           return <Object?>[output];
         });
       }

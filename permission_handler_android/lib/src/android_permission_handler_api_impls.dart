@@ -13,6 +13,7 @@ class AndroidPermissionHandlerFlutterApis {
     PowerManagerFlutterApiImpl? powerManagerFlutterApi,
     AlarmManagerFlutterApiImpl? alarmManagerFlutterApi,
     PackageManagerFlutterApiImpl? packageManagerFlutterApi,
+    NotificationManagerFlutterApiImpl? notificationManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -22,6 +23,8 @@ class AndroidPermissionHandlerFlutterApis {
         alarmManagerFlutterApi ?? AlarmManagerFlutterApiImpl();
     this.packageManagerFlutterApi =
         packageManagerFlutterApi ?? PackageManagerFlutterApiImpl();
+    this.notificationManagerFlutterApi =
+        notificationManagerFlutterApi ?? NotificationManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -50,6 +53,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [PackageManager].
   late final PackageManagerFlutterApiImpl packageManagerFlutterApi;
 
+  /// Flutter API for [NotificationManager].
+  late final NotificationManagerFlutterApiImpl notificationManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -58,6 +64,7 @@ class AndroidPermissionHandlerFlutterApis {
       PowerManagerFlutterApi.setup(powerManagerFlutterApi);
       AlarmManagerFlutterApi.setup(alarmManagerFlutterApi);
       PackageManagerFlutterApi.setup(packageManagerFlutterApi);
+      NotificationManagerFlutterApi.setup(notificationManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -648,5 +655,78 @@ class SettingsHostApiImpl extends SettingsHostApi {
     return canDrawOverlays(
       instanceManager.getIdentifier(context)!,
     );
+  }
+}
+
+/// Host API implementation of NotificationManager.
+class NotificationManagerHostApiImpl extends NotificationManagerHostApi {
+  /// Creates a new instance of [NotificationManagerHostApiImpl].
+  NotificationManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Checks the ability to modify notification do not disturb policy for the calling package.
+  ///
+  /// Returns true if the calling package can modify notification policy.
+  ///
+  /// Apps can request policy access by sending the user to the activity that
+  /// matches the system intent action
+  /// [Settings.actionNotificationPolicyAccessSettings].
+  ///
+  /// See https://developer.android.com/reference/android/app/NotificationManager#isNotificationPolicyAccessGranted().
+  Future<bool> isNotificationPolicyAccessGrantedFromInstance(
+    NotificationManager notificationManager,
+  ) {
+    return isNotificationPolicyAccessGranted(
+      instanceManager.getIdentifier(notificationManager)!,
+    );
+  }
+
+  /// Returns whether notifications from the calling package are enabled.
+  ///
+  /// See https://developer.android.com/reference/android/app/NotificationManager#areNotificationsEnabled().
+  Future<bool> areNotificationsEnabledFromInstance(
+    NotificationManager notificationManager,
+  ) {
+    return areNotificationsEnabled(
+      instanceManager.getIdentifier(notificationManager)!,
+    );
+  }
+}
+
+/// Flutter API implementation of NotificationManager.
+class NotificationManagerFlutterApiImpl extends NotificationManagerFlutterApi {
+  /// Constructs a new instance of [NotificationManagerFlutterApiImpl].
+  NotificationManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final NotificationManager notificationManager =
+        NotificationManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      notificationManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
   }
 }
