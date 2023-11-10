@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 
 import '../android_permission_handler_api_impls.dart';
+import 'build.dart';
 
 /// Class for retrieving various kinds of information related to the application
 /// packages that are currently installed on the device. You can find this class
@@ -35,7 +36,12 @@ class PackageManager extends JavaObject {
   /// Checks whether the calling package is allowed to request package installs through package installer.
   ///
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
-  Future<bool> canRequestPackageInstalls() {
+  Future<bool> canRequestPackageInstalls() async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return true;
+    }
+
     return _hostApi.canRequestPackageInstallsFromInstance(this);
   }
 }

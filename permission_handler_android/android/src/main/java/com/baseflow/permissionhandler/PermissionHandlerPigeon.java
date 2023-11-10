@@ -312,13 +312,6 @@ public class PermissionHandlerPigeon {
     @NonNull 
     Boolean shouldShowRequestPermissionRationale(@NonNull String instanceId, @NonNull String permission);
     /**
-     * Determine whether the application has been granted a particular permission.
-     *
-     * See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
-     */
-    @NonNull 
-    Long checkSelfPermission(@NonNull String instanceId, @NonNull String permission);
-    /**
      * Requests permissions to be granted to this application.
      *
      * See
@@ -328,42 +321,11 @@ public class PermissionHandlerPigeon {
      */
     void requestPermissions(@NonNull String instanceId, @NonNull List<String> permissions, @Nullable Long requestCode, @NonNull Result<PermissionRequestResult> result);
     /**
-     * Launch a new activity.
-     *
-     * See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
-     */
-    void startActivity(@NonNull String instanceId, @NonNull String intentInstanceId);
-    /**
-     * Returns the name of this application's package.
-     *
-     * See https://developer.android.com/reference/android/content/Context#getPackageName().
-     */
-    @NonNull 
-    String getPackageName(@NonNull String instanceId);
-    /**
-     * Return the handle to a system-level service by name.
-     *
-     * The class of the returned object varies by the requested name.
-     *
-     * Returns the instance ID of the service.
-     *
-     * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-     */
-    @NonNull 
-    String getSystemService(@NonNull String instanceId, @NonNull String name);
-    /**
      * Start an activity for which the application would like a result when it finished.
      *
      * See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
      */
     void startActivityForResult(@NonNull String instanceId, @NonNull String intentInstanceId, @Nullable Long requestCode, @NonNull Result<ActivityResultPigeon> result);
-    /**
-     * Returns the instance ID of a PackageManager instance to find global package information.
-     *
-     * See https://developer.android.com/reference/android/content/Context#getPackageManager().
-     */
-    @NonNull 
-    String getPackageManager(@NonNull String instanceId);
 
     /** The codec used by ActivityHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -384,31 +346,6 @@ public class PermissionHandlerPigeon {
                 String permissionArg = (String) args.get(1);
                 try {
                   Boolean output = api.shouldShowRequestPermissionRationale(instanceIdArg, permissionArg);
-                  wrapped.add(0, output);
-                }
- catch (Throwable exception) {
-                  ArrayList<Object> wrappedError = wrapError(exception);
-                  wrapped = wrappedError;
-                }
-                reply.reply(wrapped);
-              });
-        } else {
-          channel.setMessageHandler(null);
-        }
-      }
-      {
-        BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission", getCodec());
-        if (api != null) {
-          channel.setMessageHandler(
-              (message, reply) -> {
-                ArrayList<Object> wrapped = new ArrayList<Object>();
-                ArrayList<Object> args = (ArrayList<Object>) message;
-                String instanceIdArg = (String) args.get(0);
-                String permissionArg = (String) args.get(1);
-                try {
-                  Long output = api.checkSelfPermission(instanceIdArg, permissionArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {
@@ -455,80 +392,6 @@ public class PermissionHandlerPigeon {
       {
         BasicMessageChannel<Object> channel =
             new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity", getCodec());
-        if (api != null) {
-          channel.setMessageHandler(
-              (message, reply) -> {
-                ArrayList<Object> wrapped = new ArrayList<Object>();
-                ArrayList<Object> args = (ArrayList<Object>) message;
-                String instanceIdArg = (String) args.get(0);
-                String intentInstanceIdArg = (String) args.get(1);
-                try {
-                  api.startActivity(instanceIdArg, intentInstanceIdArg);
-                  wrapped.add(0, null);
-                }
- catch (Throwable exception) {
-                  ArrayList<Object> wrappedError = wrapError(exception);
-                  wrapped = wrappedError;
-                }
-                reply.reply(wrapped);
-              });
-        } else {
-          channel.setMessageHandler(null);
-        }
-      }
-      {
-        BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName", getCodec());
-        if (api != null) {
-          channel.setMessageHandler(
-              (message, reply) -> {
-                ArrayList<Object> wrapped = new ArrayList<Object>();
-                ArrayList<Object> args = (ArrayList<Object>) message;
-                String instanceIdArg = (String) args.get(0);
-                try {
-                  String output = api.getPackageName(instanceIdArg);
-                  wrapped.add(0, output);
-                }
- catch (Throwable exception) {
-                  ArrayList<Object> wrappedError = wrapError(exception);
-                  wrapped = wrappedError;
-                }
-                reply.reply(wrapped);
-              });
-        } else {
-          channel.setMessageHandler(null);
-        }
-      }
-      {
-        BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService", getCodec());
-        if (api != null) {
-          channel.setMessageHandler(
-              (message, reply) -> {
-                ArrayList<Object> wrapped = new ArrayList<Object>();
-                ArrayList<Object> args = (ArrayList<Object>) message;
-                String instanceIdArg = (String) args.get(0);
-                String nameArg = (String) args.get(1);
-                try {
-                  String output = api.getSystemService(instanceIdArg, nameArg);
-                  wrapped.add(0, output);
-                }
- catch (Throwable exception) {
-                  ArrayList<Object> wrappedError = wrapError(exception);
-                  wrapped = wrappedError;
-                }
-                reply.reply(wrapped);
-              });
-        } else {
-          channel.setMessageHandler(null);
-        }
-      }
-      {
-        BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(
                 binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult", getCodec());
         if (api != null) {
           channel.setMessageHandler(
@@ -552,30 +415,6 @@ public class PermissionHandlerPigeon {
                     };
 
                 api.startActivityForResult(instanceIdArg, intentInstanceIdArg, (requestCodeArg == null) ? null : requestCodeArg.longValue(), resultCallback);
-              });
-        } else {
-          channel.setMessageHandler(null);
-        }
-      }
-      {
-        BasicMessageChannel<Object> channel =
-            new BasicMessageChannel<>(
-                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager", getCodec());
-        if (api != null) {
-          channel.setMessageHandler(
-              (message, reply) -> {
-                ArrayList<Object> wrapped = new ArrayList<Object>();
-                ArrayList<Object> args = (ArrayList<Object>) message;
-                String instanceIdArg = (String) args.get(0);
-                try {
-                  String output = api.getPackageManager(instanceIdArg);
-                  wrapped.add(0, output);
-                }
- catch (Throwable exception) {
-                  ArrayList<Object> wrappedError = wrapError(exception);
-                  wrapped = wrappedError;
-                }
-                reply.reply(wrapped);
               });
         } else {
           channel.setMessageHandler(null);
@@ -1481,6 +1320,65 @@ public class PermissionHandlerPigeon {
       channel.send(
           new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
           channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `Settings`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/kotlin/android/provider/Settings.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface SettingsHostApi {
+    /**
+     * Checks if the specified context can draw on top of other apps.
+     *
+     * As of API level 23, an app cannot draw on top of other apps unless it
+     * declares the [Manifest.permission.systemAlertWindow] permission in its
+     * manifest, **and** the user specifically grants the app this capability. To
+     * prompt the user to grant this approval, the app must send an intent with
+     * the action [Settings.actionManageOverlayPermission], which causes the
+     * system to display a permission management screen.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
+     */
+    @NonNull 
+    Boolean canDrawOverlays(@NonNull String contextInstanceId);
+
+    /** The codec used by SettingsHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `SettingsHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable SettingsHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsHostApi.canDrawOverlays", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contextInstanceIdArg = (String) args.get(0);
+                try {
+                  Boolean output = api.canDrawOverlays(contextInstanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
     }
   }
 }

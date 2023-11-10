@@ -153,38 +153,6 @@ class ActivityHostApi {
     }
   }
 
-  /// Determine whether the application has been granted a particular permission.
-  ///
-  /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
-  Future<int> checkSelfPermission(
-      String arg_instanceId, String arg_permission) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission',
-        codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_instanceId, arg_permission]) as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
-      throw PlatformException(
-        code: 'null-error',
-        message: 'Host platform returned null value for non-null return value.',
-      );
-    } else {
-      return (replyList[0] as int?)!;
-    }
-  }
-
   /// Requests permissions to be granted to this application.
   ///
   /// See
@@ -221,101 +189,6 @@ class ActivityHostApi {
     }
   }
 
-  /// Launch a new activity.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
-  Future<void> startActivity(
-      String arg_instanceId, String arg_intentInstanceId) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity',
-        codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId, arg_intentInstanceId])
-            as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else {
-      return;
-    }
-  }
-
-  /// Returns the name of this application's package.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
-  Future<String> getPackageName(String arg_instanceId) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName',
-        codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
-      throw PlatformException(
-        code: 'null-error',
-        message: 'Host platform returned null value for non-null return value.',
-      );
-    } else {
-      return (replyList[0] as String?)!;
-    }
-  }
-
-  /// Return the handle to a system-level service by name.
-  ///
-  /// The class of the returned object varies by the requested name.
-  ///
-  /// Returns the instance ID of the service.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<String> getSystemService(
-      String arg_instanceId, String arg_name) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService',
-        codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList = await channel
-        .send(<Object?>[arg_instanceId, arg_name]) as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
-      throw PlatformException(
-        code: 'null-error',
-        message: 'Host platform returned null value for non-null return value.',
-      );
-    } else {
-      return (replyList[0] as String?)!;
-    }
-  }
-
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
@@ -346,37 +219,6 @@ class ActivityHostApi {
       );
     } else {
       return (replyList[0] as ActivityResultPigeon?)!;
-    }
-  }
-
-  /// Returns the instance ID of a PackageManager instance to find global package information.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
-  Future<String> getPackageManager(String arg_instanceId) async {
-    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-        'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager',
-        codec,
-        binaryMessenger: _binaryMessenger);
-    final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
-    if (replyList == null) {
-      throw PlatformException(
-        code: 'channel-error',
-        message: 'Unable to establish connection on channel.',
-      );
-    } else if (replyList.length > 1) {
-      throw PlatformException(
-        code: replyList[0]! as String,
-        message: replyList[1] as String?,
-        details: replyList[2],
-      );
-    } else if (replyList[0] == null) {
-      throw PlatformException(
-        code: 'null-error',
-        message: 'Host platform returned null value for non-null return value.',
-      );
-    } else {
-      return (replyList[0] as String?)!;
     }
   }
 }
@@ -1299,6 +1141,62 @@ abstract class PackageManagerFlutterApi {
           return;
         });
       }
+    }
+  }
+}
+
+/// Host API for `Settings`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/kotlin/android/provider/Settings.
+class SettingsHostApi {
+  /// Constructor for [SettingsHostApi].  The [binaryMessenger] named argument is
+  /// available for dependency injection.  If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  SettingsHostApi({BinaryMessenger? binaryMessenger})
+      : _binaryMessenger = binaryMessenger;
+  final BinaryMessenger? _binaryMessenger;
+
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Checks if the specified context can draw on top of other apps.
+  ///
+  /// As of API level 23, an app cannot draw on top of other apps unless it
+  /// declares the [Manifest.permission.systemAlertWindow] permission in its
+  /// manifest, **and** the user specifically grants the app this capability. To
+  /// prompt the user to grant this approval, the app must send an intent with
+  /// the action [Settings.actionManageOverlayPermission], which causes the
+  /// system to display a permission management screen.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
+  Future<bool> canDrawOverlays(String arg_contextInstanceId) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.SettingsHostApi.canDrawOverlays',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_contextInstanceId]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as bool?)!;
     }
   }
 }

@@ -56,11 +56,6 @@ abstract class ActivityTestHostApi {
   bool shouldShowRequestPermissionRationale(
       String instanceId, String permission);
 
-  /// Determine whether the application has been granted a particular permission.
-  ///
-  /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
-  int checkSelfPermission(String instanceId, String permission);
-
   /// Requests permissions to be granted to this application.
   ///
   /// See
@@ -70,35 +65,11 @@ abstract class ActivityTestHostApi {
   Future<PermissionRequestResult> requestPermissions(
       String instanceId, List<String?> permissions, int? requestCode);
 
-  /// Launch a new activity.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
-  void startActivity(String instanceId, String intentInstanceId);
-
-  /// Returns the name of this application's package.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
-  String getPackageName(String instanceId);
-
-  /// Return the handle to a system-level service by name.
-  ///
-  /// The class of the returned object varies by the requested name.
-  ///
-  /// Returns the instance ID of the service.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  String getSystemService(String instanceId, String name);
-
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
   Future<ActivityResultPigeon> startActivityForResult(
       String instanceId, String intentInstanceId, int? requestCode);
-
-  /// Returns the instance ID of a PackageManager instance to find global package information.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
-  String getPackageManager(String instanceId);
 
   static void setup(ActivityTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -125,33 +96,6 @@ abstract class ActivityTestHostApi {
               'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.shouldShowRequestPermissionRationale was null, expected non-null String.');
           final bool output = api.shouldShowRequestPermissionRationale(
               arg_instanceId!, arg_permission!);
-          return <Object?>[output];
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission',
-          codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel,
-                (Object? message) async {
-          assert(message != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission was null.');
-          final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_instanceId = (args[0] as String?);
-          assert(arg_instanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission was null, expected non-null String.');
-          final String? arg_permission = (args[1] as String?);
-          assert(arg_permission != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.checkSelfPermission was null, expected non-null String.');
-          final int output =
-              api.checkSelfPermission(arg_instanceId!, arg_permission!);
           return <Object?>[output];
         });
       }
@@ -187,82 +131,6 @@ abstract class ActivityTestHostApi {
     }
     {
       final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity',
-          codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel,
-                (Object? message) async {
-          assert(message != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity was null.');
-          final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_instanceId = (args[0] as String?);
-          assert(arg_instanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity was null, expected non-null String.');
-          final String? arg_intentInstanceId = (args[1] as String?);
-          assert(arg_intentInstanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivity was null, expected non-null String.');
-          api.startActivity(arg_instanceId!, arg_intentInstanceId!);
-          return <Object?>[];
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName',
-          codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel,
-                (Object? message) async {
-          assert(message != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName was null.');
-          final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_instanceId = (args[0] as String?);
-          assert(arg_instanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageName was null, expected non-null String.');
-          final String output = api.getPackageName(arg_instanceId!);
-          return <Object?>[output];
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService',
-          codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel,
-                (Object? message) async {
-          assert(message != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService was null.');
-          final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_instanceId = (args[0] as String?);
-          assert(arg_instanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService was null, expected non-null String.');
-          final String? arg_name = (args[1] as String?);
-          assert(arg_name != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getSystemService was null, expected non-null String.');
-          final String output =
-              api.getSystemService(arg_instanceId!, arg_name!);
-          return <Object?>[output];
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
           'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.startActivityForResult',
           codec,
           binaryMessenger: binaryMessenger);
@@ -285,29 +153,6 @@ abstract class ActivityTestHostApi {
           final int? arg_requestCode = (args[2] as int?);
           final ActivityResultPigeon output = await api.startActivityForResult(
               arg_instanceId!, arg_intentInstanceId!, arg_requestCode);
-          return <Object?>[output];
-        });
-      }
-    }
-    {
-      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
-          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager',
-          codec,
-          binaryMessenger: binaryMessenger);
-      if (api == null) {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel, null);
-      } else {
-        _testBinaryMessengerBinding!.defaultBinaryMessenger
-            .setMockDecodedMessageHandler<Object?>(channel,
-                (Object? message) async {
-          assert(message != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager was null.');
-          final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_instanceId = (args[0] as String?);
-          assert(arg_instanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager was null, expected non-null String.');
-          final String output = api.getPackageManager(arg_instanceId!);
           return <Object?>[output];
         });
       }
@@ -926,6 +771,58 @@ abstract class PackageManagerTestHostApi {
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.canRequestPackageInstalls was null, expected non-null String.');
           final bool output = api.canRequestPackageInstalls(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `Settings`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/kotlin/android/provider/Settings.
+abstract class SettingsTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Checks if the specified context can draw on top of other apps.
+  ///
+  /// As of API level 23, an app cannot draw on top of other apps unless it
+  /// declares the [Manifest.permission.systemAlertWindow] permission in its
+  /// manifest, **and** the user specifically grants the app this capability. To
+  /// prompt the user to grant this approval, the app must send an intent with
+  /// the action [Settings.actionManageOverlayPermission], which causes the
+  /// system to display a permission management screen.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
+  bool canDrawOverlays(String contextInstanceId);
+
+  static void setup(SettingsTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.SettingsHostApi.canDrawOverlays',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsHostApi.canDrawOverlays was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_contextInstanceId = (args[0] as String?);
+          assert(arg_contextInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsHostApi.canDrawOverlays was null, expected non-null String.');
+          final bool output = api.canDrawOverlays(arg_contextInstanceId!);
           return <Object?>[output];
         });
       }

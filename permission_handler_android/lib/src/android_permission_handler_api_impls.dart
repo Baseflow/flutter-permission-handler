@@ -97,21 +97,6 @@ class ActivityHostApiImpl extends ActivityHostApi {
     );
   }
 
-  /// Determine whether the application has been granted a particular permission.
-  ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
-  Future<int> checkSelfPermissionFromInstance(
-    Activity activity,
-    String permission,
-  ) async {
-    final String activityInstanceId = instanceManager.getIdentifier(activity)!;
-
-    return checkSelfPermission(
-      activityInstanceId,
-      permission,
-    );
-  }
-
   /// Requests permissions to be granted to this application.
   ///
   /// See
@@ -134,30 +119,6 @@ class ActivityHostApiImpl extends ActivityHostApi {
       activityInstanceId,
       permissions,
       requestCode,
-    );
-  }
-
-  /// Launch a new activity.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
-  Future<void> startActivityFromInstance(
-    Activity activity,
-    Intent intent,
-  ) async {
-    return startActivity(
-      instanceManager.getIdentifier(activity)!,
-      instanceManager.getIdentifier(intent)!,
-    );
-  }
-
-  /// Returns the name of this application's package.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
-  Future<String> getPackageNameFromInstance(
-    Activity activity,
-  ) async {
-    return getPackageName(
-      instanceManager.getIdentifier(activity)!,
     );
   }
 
@@ -191,37 +152,6 @@ class ActivityHostApiImpl extends ActivityHostApi {
       data: data,
       requestCode: requestCode,
     );
-  }
-
-  /// Return the handle to a system-level service by name.
-  ///
-  /// Returns the instance ID of the service.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<Object?> getSystemServiceFromInstance(
-    Activity activity,
-    String name,
-  ) async {
-    final String systemServiceId = await getSystemService(
-      instanceManager.getIdentifier(activity)!,
-      name,
-    );
-
-    return instanceManager.getInstanceWithWeakReference(systemServiceId);
-  }
-
-  /// Return PackageManager instance to find global package information.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
-  Future<PackageManager> getPackageManagerFromInstance(
-    Activity activity,
-  ) async {
-    final String packageManagerId = await getPackageManager(
-      instanceManager.getIdentifier(activity)!,
-    );
-
-    return instanceManager.getInstanceWithWeakReference(packageManagerId)
-        as PackageManager;
   }
 }
 
@@ -681,5 +611,42 @@ class PackageManagerFlutterApiImpl extends PackageManagerFlutterApi {
   @override
   void dispose(String instanceId) {
     _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of Settings.
+class SettingsHostApiImpl extends SettingsHostApi {
+  /// Creates a new instance of [SettingsHostApiImpl].
+  SettingsHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Checks if the specified context can draw on top of other apps.
+  ///
+  /// As of API level 23, an app cannot draw on top of other apps unless it
+  /// declares the [Manifest.permission.systemAlertWindow] permission in its
+  /// manifest, **and** the user specifically grants the app this capability. To
+  /// prompt the user to grant this approval, the app must send an intent with
+  /// the action [Settings.actionManageOverlayPermission], which causes the
+  /// system to display a permission management screen.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
+  Future<bool> canDrawOverlaysFromInstance(
+    Context context,
+  ) {
+    return canDrawOverlays(
+      instanceManager.getIdentifier(context)!,
+    );
   }
 }

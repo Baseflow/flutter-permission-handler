@@ -10,7 +10,7 @@ import '../android_permission_handler_api_impls.dart';
 /// An activity is a single, focused thing that the user can do.
 ///
 /// See https://developer.android.com/reference/android/app/Activity.
-class Activity extends JavaObject {
+class Activity extends Context {
   /// Instantiates an [Activity] without creating and attaching to an instance
   /// of the associated native class.
   Activity.detached({
@@ -30,10 +30,20 @@ class Activity extends JavaObject {
   /// Use with [Context.getSystemService] to retrieve a [PowerManager] for
   /// controlling power management, including "wake locks," which let you keep
   /// the device on while you're running long tasks.
+  ///
+  /// Copy of [Context.powerService], as static fields are not inherited in
+  /// Dart.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#POWER_SERVICE.
   static const String powerService = 'power';
 
   /// Use with [Context.getSystemService] to retrieve an [AlarmManager] for
   /// receiving intents at a time of your choosing.
+  ///
+  /// Copy of [Context.alarmService], as static fields are not inherited in
+  /// Dart.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#ALARM_SERVICE.
   static const String alarmService = 'alarm';
 
   /// Standard activity result: operation succeeded.
@@ -62,18 +72,6 @@ class Activity extends JavaObject {
     );
   }
 
-  /// Determines whether the application has been granted a particular permission.
-  ///
-  /// See https://developer.android.com/reference/android/content/ContextWrapper#checkSelfPermission(java.lang.String).
-  Future<int> checkSelfPermission(
-    String permission,
-  ) {
-    return _hostApi.checkSelfPermissionFromInstance(
-      this,
-      permission,
-    );
-  }
-
   /// Requests permissions to be granted to this application.
   ///
   /// See
@@ -91,27 +89,6 @@ class Activity extends JavaObject {
     );
   }
 
-  /// Launches a new activity.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
-  Future<void> startActivity(
-    Intent intent,
-  ) {
-    return _hostApi.startActivityFromInstance(
-      this,
-      intent,
-    );
-  }
-
-  /// Returns the name of this application's package.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
-  Future<String> getPackageName() {
-    return _hostApi.getPackageNameFromInstance(
-      this,
-    );
-  }
-
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
@@ -123,31 +100,6 @@ class Activity extends JavaObject {
       this,
       intent,
       requestCode,
-    );
-  }
-
-  /// Returns the handle to a system-level service by name.
-  ///
-  /// The class of the returned object varies by the requested name.
-  ///
-  /// Returns the instance ID of the service.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  Future<Object?> getSystemService(
-    String name,
-  ) {
-    return _hostApi.getSystemServiceFromInstance(
-      this,
-      name,
-    );
-  }
-
-  /// Returns a PackageManager instance to find global package information.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
-  Future<PackageManager> getPackageManager() {
-    return _hostApi.getPackageManagerFromInstance(
-      this,
     );
   }
 }
