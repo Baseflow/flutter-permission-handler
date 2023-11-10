@@ -909,3 +909,47 @@ abstract class NotificationManagerTestHostApi {
     }
   }
 }
+
+/// Host API for `Environment`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/Environment.
+abstract class EnvironmentTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Returns whether the calling app has All Files Access on the primary shared/external storage media.
+  ///
+  /// Declaring the permission [Manifest.permission.manageExternalStorage] is
+  /// not enough to gain the access. To request access, use
+  /// [Settings.actionManageAppAllFilesAccessPermission].
+  ///
+  /// See https://developer.android.com/reference/android/os/Environment#isExternalStorageManager().
+  bool isExternalStorageManager();
+
+  static void setup(EnvironmentTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.EnvironmentHostApi.isExternalStorageManager',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          // ignore message
+          final bool output = api.isExternalStorageManager();
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
