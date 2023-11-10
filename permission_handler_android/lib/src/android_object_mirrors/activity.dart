@@ -46,6 +46,15 @@ class Activity extends Context {
   /// See https://developer.android.com/reference/android/content/Context.html#ALARM_SERVICE.
   static const String alarmService = 'alarm';
 
+  /// Use with [Context.getSystemService] to retrieve a [NotificationManager]
+  /// for informing the user of background events.
+  ///
+  /// Copy of [Context.notificationService], as static fields are not inherited
+  /// in Dart.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#NOTIFICATION_SERVICE.
+  static const String notificationService = 'notification';
+
   /// Standard activity result: operation succeeded.
   ///
   /// Constant Value: -1 (0xffffffff).

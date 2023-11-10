@@ -355,7 +355,7 @@ abstract class AlarmManagerFlutterApi {
 /// are attached to a Dart instance or handle method calls on the associated
 /// native class or an instance of the class.
 ///
-/// See https://developer.android.com/reference/kotlin/android/content/pm/PackageManager.
+/// See https://developer.android.com/reference/android/content/pm/PackageManager.
 @HostApi(dartHostTestHandler: 'PackageManagerTestHostApi')
 abstract class PackageManagerHostApi {
   /// Checks whether the calling package is allowed to request package installs through package installer.
@@ -370,7 +370,7 @@ abstract class PackageManagerHostApi {
 /// attached to a native instance or receiving callback methods from an
 /// overridden native class.
 ///
-/// See https://developer.android.com/reference/kotlin/android/content/pm/PackageManager.
+/// See https://developer.android.com/reference/android/content/pm/PackageManager.
 @FlutterApi()
 abstract class PackageManagerFlutterApi {
   /// Create a new Dart instance and add it to the `InstanceManager`.
@@ -386,7 +386,7 @@ abstract class PackageManagerFlutterApi {
 /// are attached to a Dart instance or handle method calls on the associated
 /// native class or an instance of the class.
 ///
-/// See https://developer.android.com/reference/kotlin/android/provider/Settings.
+/// See https://developer.android.com/reference/android/provider/Settings.
 @HostApi(dartHostTestHandler: 'SettingsTestHostApi')
 abstract class SettingsHostApi {
   /// Checks if the specified context can draw on top of other apps.
@@ -402,4 +402,50 @@ abstract class SettingsHostApi {
   bool canDrawOverlays(
     String contextInstanceId,
   );
+}
+
+/// Host API for `NotificationManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/app/NotificationManager.
+@HostApi(dartHostTestHandler: 'NotificationManagerTestHostApi')
+abstract class NotificationManagerHostApi {
+  /// Checks the ability to modify notification do not disturb policy for the calling package.
+  ///
+  /// Returns true if the calling package can modify notification policy.
+  ///
+  /// Apps can request policy access by sending the user to the activity that
+  /// matches the system intent action
+  /// [Settings.actionNotificationPolicyAccessSettings].
+  ///
+  /// See https://developer.android.com/reference/android/app/NotificationManager#isNotificationPolicyAccessGranted().
+  bool isNotificationPolicyAccessGranted(
+    String instanceId,
+  );
+
+  /// Returns whether notifications from the calling package are enabled.
+  ///
+  /// See https://developer.android.com/reference/android/app/NotificationManager#areNotificationsEnabled().
+  bool areNotificationsEnabled(
+    String instanceId,
+  );
+}
+
+/// Flutter API for `NotificationManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/app/NotificationManager.
+@FlutterApi()
+abstract class NotificationManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
 }

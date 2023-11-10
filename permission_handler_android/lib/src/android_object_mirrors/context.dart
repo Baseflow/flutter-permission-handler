@@ -42,6 +42,12 @@ class Context extends JavaObject {
   /// See https://developer.android.com/reference/android/content/Context.html#ALARM_SERVICE.
   static const String alarmService = 'alarm';
 
+  /// Use with [Context.getSystemService] to retrieve a [NotificationManager]
+  /// for informing the user of background events.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#NOTIFICATION_SERVICE.
+  static const String notificationService = 'notification';
+
   /// Determines whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).

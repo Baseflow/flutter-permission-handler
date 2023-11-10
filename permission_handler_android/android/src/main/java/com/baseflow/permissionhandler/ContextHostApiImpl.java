@@ -1,6 +1,7 @@
 package com.baseflow.permissionhandler;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -35,6 +36,8 @@ public class ContextHostApiImpl implements ContextHostApi {
 
     private final PackageManagerFlutterApiImpl packageManagerFlutterApi;
 
+    private final NotificationManagerFlutterApiImpl notificationManagerFlutterApi;
+
     /**
      * Constructs an {@link ContextHostApiImpl}.
      *
@@ -45,12 +48,14 @@ public class ContextHostApiImpl implements ContextHostApi {
         @NonNull PowerManagerFlutterApiImpl powerManagerFlutterApi,
         @NonNull AlarmManagerFlutterApiImpl alarmManagerFlutterApi,
         @NonNull PackageManagerFlutterApiImpl packageManagerFlutterApi,
+        @NonNull NotificationManagerFlutterApiImpl notificationManagerFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.alarmManagerFlutterApi = alarmManagerFlutterApi;
         this.packageManagerFlutterApi = packageManagerFlutterApi;
+        this.notificationManagerFlutterApi = notificationManagerFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -104,6 +109,8 @@ public class ContextHostApiImpl implements ContextHostApi {
             powerManagerFlutterApi.create((PowerManager) systemService);
         } else if (systemService instanceof AlarmManager) {
             alarmManagerFlutterApi.create((AlarmManager) systemService);
+        } else if (systemService instanceof NotificationManager) {
+            notificationManagerFlutterApi.create((NotificationManager) systemService);
         }
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);

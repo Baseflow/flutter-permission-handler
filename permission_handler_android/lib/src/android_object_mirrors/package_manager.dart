@@ -10,7 +10,7 @@ import 'build.dart';
 ///
 /// See https://developer.android.com/reference/android/content/pm/PackageManager.
 class PackageManager extends JavaObject {
-  /// Instantiates an [PackageManager] without creating and attaching to an
+  /// Instantiates a [PackageManager] without creating and attaching to an
   /// instance of the associated native class.
   PackageManager.detached({
     BinaryMessenger? binaryMessenger,
