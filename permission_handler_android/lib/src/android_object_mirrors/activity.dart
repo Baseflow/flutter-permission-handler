@@ -81,9 +81,9 @@ class Activity extends JavaObject {
   /// and
   /// https://developer.android.com/reference/androidx/core/app/ActivityCompat.OnRequestPermissionsResultCallback.
   Future<PermissionRequestResult> requestPermissions(
-    List<String> permissions, [
+    List<String> permissions, {
     int? requestCode,
-  ]) {
+  }) {
     return _hostApi.requestPermissionsFromInstance(
       this,
       permissions,
@@ -116,9 +116,9 @@ class Activity extends JavaObject {
   ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
   Future<ActivityResult> startActivityForResult(
-    Intent intent, [
+    Intent intent, {
     int? requestCode,
-  ]) {
+  }) {
     return _hostApi.startActivityForResultFromInstance(
       this,
       intent,

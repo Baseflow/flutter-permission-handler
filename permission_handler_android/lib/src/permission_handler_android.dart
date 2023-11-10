@@ -109,7 +109,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
   }) async {
     final PermissionRequestResult result = await activity.requestPermissions(
       permission.manifestStrings,
-      requestCode,
+      requestCode: requestCode,
     );
 
     final List<String> permissions =
@@ -143,7 +143,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
             'package:${await _activityManager.applicationContext.getPackageName()}',
           ),
         ),
-      requestCode,
+      requestCode: requestCode,
     );
   }
 
