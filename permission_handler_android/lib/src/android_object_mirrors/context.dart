@@ -38,7 +38,7 @@ class Context extends JavaObject {
   /// receiving intents at a time of your choosing.
   static const String alarmService = 'alarm';
 
-  /// Determine whether the application has been granted a particular permission.
+  /// Determines whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
   Future<int> checkSelfPermission(
@@ -50,7 +50,7 @@ class Context extends JavaObject {
     );
   }
 
-  /// Launch a new activity.
+  /// Launches a new activity.
   ///
   /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
   Future<void> startActivity(
@@ -71,7 +71,7 @@ class Context extends JavaObject {
     );
   }
 
-  /// Return the handle to a system-level service by name.
+  /// Returns the handle to a system-level service by name.
   ///
   /// The class of the returned object varies by the requested name.
   ///
@@ -82,6 +82,15 @@ class Context extends JavaObject {
     return _hostApi.getSystemServiceFromInstance(
       this,
       name,
+    );
+  }
+
+  /// Returns a PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  Future<PackageManager> getPackageManager() {
+    return _hostApi.getPackageManagerFromInstance(
+      this,
     );
   }
 }

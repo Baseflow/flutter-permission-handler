@@ -12,6 +12,7 @@ class AndroidPermissionHandlerFlutterApis {
     ContextFlutterApiImpl? contextFlutterApi,
     PowerManagerFlutterApiImpl? powerManagerFlutterApi,
     AlarmManagerFlutterApiImpl? alarmManagerFlutterApi,
+    PackageManagerFlutterApiImpl? packageManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -19,6 +20,8 @@ class AndroidPermissionHandlerFlutterApis {
         powerManagerFlutterApi ?? PowerManagerFlutterApiImpl();
     this.alarmManagerFlutterApi =
         alarmManagerFlutterApi ?? AlarmManagerFlutterApiImpl();
+    this.packageManagerFlutterApi =
+        packageManagerFlutterApi ?? PackageManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -44,6 +47,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [AlarmManager].
   late final AlarmManagerFlutterApiImpl alarmManagerFlutterApi;
 
+  /// Flutter API for [PackageManager].
+  late final PackageManagerFlutterApiImpl packageManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -51,6 +57,7 @@ class AndroidPermissionHandlerFlutterApis {
       ContextFlutterApi.setup(contextFlutterApi);
       PowerManagerFlutterApi.setup(powerManagerFlutterApi);
       AlarmManagerFlutterApi.setup(alarmManagerFlutterApi);
+      PackageManagerFlutterApi.setup(packageManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -202,6 +209,20 @@ class ActivityHostApiImpl extends ActivityHostApi {
 
     return instanceManager.getInstanceWithWeakReference(systemServiceId);
   }
+
+  /// Return PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  Future<PackageManager> getPackageManagerFromInstance(
+    Activity activity,
+  ) async {
+    final String packageManagerId = await getPackageManager(
+      instanceManager.getIdentifier(activity)!,
+    );
+
+    return instanceManager.getInstanceWithWeakReference(packageManagerId)
+        as PackageManager;
+  }
 }
 
 /// Flutter API implementation of Activity.
@@ -298,6 +319,20 @@ class ContextHostApiImpl extends ContextHostApi {
     );
 
     return instanceManager.getInstanceWithWeakReference(systemServiceId);
+  }
+
+  /// Return PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  Future<PackageManager> getPackageManagerFromInstance(
+    Context context,
+  ) async {
+    final String packageManagerId = await getPackageManager(
+      instanceManager.getIdentifier(context)!,
+    );
+
+    return instanceManager.getInstanceWithWeakReference(packageManagerId)
+        as PackageManager;
   }
 }
 
@@ -584,6 +619,61 @@ class AlarmManagerFlutterApiImpl extends AlarmManagerFlutterApi {
     final AlarmManager alarmManager = AlarmManager.detached();
     _instanceManager.addHostCreatedInstance(
       alarmManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of PackageManager.
+class PackageManagerHostApiImpl extends PackageManagerHostApi {
+  /// Creates a new instance of [PackageManagerHostApiImpl].
+  PackageManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Checks whether the calling package is allowed to request package installs through package installer.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
+  Future<bool> canRequestPackageInstallsFromInstance(
+    PackageManager packageManager,
+  ) {
+    return canRequestPackageInstalls(
+      instanceManager.getIdentifier(packageManager)!,
+    );
+  }
+}
+
+/// Flutter API implementation of PackageManager.
+class PackageManagerFlutterApiImpl extends PackageManagerFlutterApi {
+  /// Constructs a new instance of [PackageManagerFlutterApiImpl].
+  PackageManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final PackageManager packageManager = PackageManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      packageManager,
       instanceId,
     );
   }

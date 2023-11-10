@@ -95,6 +95,11 @@ abstract class ActivityTestHostApi {
   Future<ActivityResultPigeon> startActivityForResult(
       String instanceId, String intentInstanceId, int? requestCode);
 
+  /// Returns the instance ID of a PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  String getPackageManager(String instanceId);
+
   static void setup(ActivityTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
     {
@@ -284,6 +289,29 @@ abstract class ActivityTestHostApi {
         });
       }
     }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ActivityHostApi.getPackageManager was null, expected non-null String.');
+          final String output = api.getPackageManager(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
   }
 }
 
@@ -322,6 +350,11 @@ abstract class ContextTestHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
   String getSystemService(String instanceId, String name);
+
+  /// Returns the instance ID of a PackageManager instance to find global package information.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
+  String getPackageManager(String instanceId);
 
   static void setup(ContextTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -424,6 +457,29 @@ abstract class ContextTestHostApi {
               'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getSystemService was null, expected non-null String.');
           final String output =
               api.getSystemService(arg_instanceId!, arg_name!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ContextHostApi.getPackageManager',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getPackageManager was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContextHostApi.getPackageManager was null, expected non-null String.');
+          final String output = api.getPackageManager(arg_instanceId!);
           return <Object?>[output];
         });
       }
@@ -825,6 +881,51 @@ abstract class AlarmManagerTestHostApi {
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.AlarmManagerHostApi.canScheduleExactAlarms was null, expected non-null String.');
           final bool output = api.canScheduleExactAlarms(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `PackageManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/kotlin/android/content/pm/PackageManager.
+abstract class PackageManagerTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Checks whether the calling package is allowed to request package installs through package installer.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
+  bool canRequestPackageInstalls(String instanceId);
+
+  static void setup(PackageManagerTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.canRequestPackageInstalls',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.canRequestPackageInstalls was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.canRequestPackageInstalls was null, expected non-null String.');
+          final bool output = api.canRequestPackageInstalls(arg_instanceId!);
           return <Object?>[output];
         });
       }
