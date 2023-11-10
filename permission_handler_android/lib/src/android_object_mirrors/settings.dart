@@ -1,8 +1,14 @@
+import '../android_permission_handler_api_impls.dart';
+import 'build.dart';
+import 'context.dart';
+
 /// The Settings provider contains global system-level device preferences.
 ///
 /// See https://developer.android.com/reference/android/provider/Settings.
 class Settings {
   const Settings._();
+
+  static final SettingsHostApiImpl _hostApi = SettingsHostApiImpl();
 
   /// Activity Action: Show screen of details about a particular application.
   ///
@@ -80,4 +86,30 @@ class Settings {
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_OVERLAY_PERMISSION.
   static const String actionRequestScheduleExactAlarm =
       'android.settings.REQUEST_SCHEDULE_EXACT_ALARM';
+
+  /// Checks if the specified context can draw on top of other apps.
+  ///
+  /// As of API level 23, an app cannot draw on top of other apps unless it
+  /// declares the [Manifest.permission.systemAlertWindow] permission in its
+  /// manifest, **and** the user specifically grants the app this capability. To
+  /// prompt the user to grant this approval, the app must send an intent with
+  /// the action [Settings.actionManageOverlayPermission], which causes the
+  /// system to display a permission management screen.
+  ///
+  /// Always returns true on devices running Android versions older than
+  /// [Build.versionCodes.m].
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
+  static Future<bool> canDrawOverlays(
+    Context context,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return true;
+    }
+
+    return _hostApi.canDrawOverlaysFromInstance(
+      context,
+    );
+  }
 }

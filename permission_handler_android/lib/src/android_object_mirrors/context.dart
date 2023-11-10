@@ -32,10 +32,14 @@ class Context extends JavaObject {
   /// Use with [Context.getSystemService] to retrieve a [PowerManager] for
   /// controlling power management, including "wake locks," which let you keep
   /// the device on while you're running long tasks.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#POWER_SERVICE.
   static const String powerService = 'power';
 
   /// Use with [Context.getSystemService] to retrieve an [AlarmManager] for
   /// receiving intents at a time of your choosing.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#ALARM_SERVICE.
   static const String alarmService = 'alarm';
 
   /// Determines whether the application has been granted a particular permission.

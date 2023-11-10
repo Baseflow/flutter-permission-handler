@@ -64,14 +64,6 @@ abstract class ActivityHostApi {
     String permission,
   );
 
-  /// Determine whether the application has been granted a particular permission.
-  ///
-  /// See https://developer.android.com/reference/android/app/Activity#checkSelfPermission(java.lang.String).
-  int checkSelfPermission(
-    String instanceId,
-    String permission,
-  );
-
   /// Requests permissions to be granted to this application.
   ///
   /// See
@@ -85,33 +77,6 @@ abstract class ActivityHostApi {
     int? requestCode,
   );
 
-  /// Launch a new activity.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#startActivity(android.content.Intent).
-  void startActivity(
-    String instanceId,
-    String intentInstanceId,
-  );
-
-  /// Returns the name of this application's package.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageName().
-  String getPackageName(
-    String instanceId,
-  );
-
-  /// Return the handle to a system-level service by name.
-  ///
-  /// The class of the returned object varies by the requested name.
-  ///
-  /// Returns the instance ID of the service.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  String getSystemService(
-    String instanceId,
-    String name,
-  );
-
   /// Start an activity for which the application would like a result when it finished.
   ///
   /// See https://developer.android.com/reference/android/app/Activity#startActivityForResult(android.content.Intent,%20int).
@@ -120,13 +85,6 @@ abstract class ActivityHostApi {
     String instanceId,
     String intentInstanceId,
     int? requestCode,
-  );
-
-  /// Returns the instance ID of a PackageManager instance to find global package information.
-  ///
-  /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
-  String getPackageManager(
-    String instanceId,
   );
 }
 
@@ -420,4 +378,28 @@ abstract class PackageManagerFlutterApi {
 
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
+}
+
+/// Host API for `Settings`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/kotlin/android/provider/Settings.
+@HostApi(dartHostTestHandler: 'SettingsTestHostApi')
+abstract class SettingsHostApi {
+  /// Checks if the specified context can draw on top of other apps.
+  ///
+  /// As of API level 23, an app cannot draw on top of other apps unless it
+  /// declares the [Manifest.permission.systemAlertWindow] permission in its
+  /// manifest, **and** the user specifically grants the app this capability. To
+  /// prompt the user to grant this approval, the app must send an intent with
+  /// the action [Settings.actionManageOverlayPermission], which causes the
+  /// system to display a permission management screen.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
+  bool canDrawOverlays(
+    String contextInstanceId,
+  );
 }
