@@ -114,7 +114,7 @@
 // Info.plist: [NSCalendarFullAccessUsageDescription]
 // dart: PermissionGroup.calendarFullAccess
 #ifndef PERMISSION_EVENTS_FULL_ACCESS
-#define PERMISSION_EVENTS_FULL_ACCESS 0
+    #define PERMISSION_EVENTS_FULL_ACCESS 0
 #endif
 
 typedef NS_ENUM(int, PermissionGroup) {

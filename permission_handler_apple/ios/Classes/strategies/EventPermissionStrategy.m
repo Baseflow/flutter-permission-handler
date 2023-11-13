@@ -126,7 +126,10 @@
                     return PermissionStatusPermanentlyDenied;
                 case EKAuthorizationStatusAuthorized:
                     return PermissionStatusGranted;
-            }
+                case EKAuthorizationStatusWriteOnly:
+                    //not available
+                    break;
+        }
     }
     
 

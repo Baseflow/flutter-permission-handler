@@ -86,6 +86,9 @@ post_install do |installer|
 
         ## dart: PermissionGroup.criticalAlerts
         'PERMISSION_CRITICAL_ALERTS=1',
+        
+         ## dart: PermissionGroup.calendarFullAccess
+        'PERMISSION_EVENTS_FULL_ACCESS=1',
       ]
 
     end
