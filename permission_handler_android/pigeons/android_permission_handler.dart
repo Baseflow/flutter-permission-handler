@@ -186,8 +186,7 @@ abstract class UriHostApi {
   /// Returns the instance ID of the created Uri.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  void parse(
-    String instanceId,
+  String parse(
     String uriString,
   );
 
@@ -202,6 +201,22 @@ abstract class UriHostApi {
   String toStringAsync(
     String instanceId,
   );
+}
+
+/// Flutter API for `Uri`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/net/Uri.
+@FlutterApi()
+abstract class UriFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
 }
 
 /// Host API for `Intent`.
@@ -362,6 +377,52 @@ abstract class PackageManagerHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
   bool canRequestPackageInstalls(String instanceId);
+
+  /// Retrieve overall information about an application package that is installed on the system.
+  ///
+  /// Use [getPackageInfoWithInfoFlags] when long flags are needed.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getPackageInfo(java.lang.String,%20int).
+  String? getPackageInfoWithFlags(
+    String instanceId,
+    String packageName,
+    int flags,
+  );
+
+  /// Retrieve overall information about an application package that is installed on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getPackageInfo(java.lang.String,%20android.content.pm.PackageManager.PackageInfoFlags).
+  String? getPackageInfoWithInfoFlags(
+    String instanceId,
+    String packageName,
+    String flagsInstanceId,
+  );
+
+  /// Check whether the given feature name is one of the available features as returned by getSystemAvailableFeatures().
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#hasSystemFeature(java.lang.String).
+  bool hasSystemFeature(
+    String instanceId,
+    String featureName,
+  );
+
+  /// Retrieve all activities that can be performed for the given intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20int).
+  List<String> queryIntentActivitiesWithFlags(
+    String instanceId,
+    String intentInstanceId,
+    int flags,
+  );
+
+  /// Retrieve all activities that can be performed for the given intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20android.content.pm.ResolveInfoFlags).
+  List<String> queryIntentActivitiesWithInfoFlags(
+    String instanceId,
+    String intentInstanceId,
+    String flagsInstanceId,
+  );
 }
 
 /// Flutter API for `PackageManager`.
@@ -467,4 +528,171 @@ abstract class EnvironmentHostApi {
   ///
   /// See https://developer.android.com/reference/android/os/Environment#isExternalStorageManager().
   bool isExternalStorageManager();
+}
+
+/// Host API for `PackageInfo`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageInfo.
+@HostApi(dartHostTestHandler: 'PackageInfoTestHostApi')
+abstract class PackageInfoHostApi {
+  /// Array of all <uses-permission> tags included under <manifest>, or null if there were none.
+  ///
+  /// This is only filled in if the flag PackageManager#GET_PERMISSIONS was set.
+  /// This list includes all permissions requested, even those that were not
+  /// granted or known by the system at install time.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageInfo#requestedPermissions.
+  List<String> getRequestedPermissions(String instanceId);
+}
+
+/// Flutter API for `PackageInfo`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageInfo.
+@FlutterApi()
+abstract class PackageInfoFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `PackageInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#PackageInfoFlags.
+@HostApi(dartHostTestHandler: 'PackageInfoFlagsTestHostApi')
+abstract class PackageInfoFlagsHostApi {
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.PackageInfoFlags#of(long).
+  String of(int value);
+}
+
+/// Flutter API for `PackageInfoFlags`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#PackageInfoFlags.
+@FlutterApi()
+abstract class PackageInfoFlagsFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `ResolveInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ResolveInfoFlags.
+@HostApi(dartHostTestHandler: 'ResolveInfoFlagsTestHostApi')
+abstract class ResolveInfoFlagsHostApi {
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ResolveInfoFlags#of(long).
+  String of(int value);
+}
+
+/// Flutter API for `ResolveInfoFlags`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ResolveInfoFlags.
+@FlutterApi()
+abstract class ResolveInfoFlagsFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `ApplicationInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ApplicationInfoFlags.
+@HostApi(dartHostTestHandler: 'ApplicationInfoFlagsTestHostApi')
+abstract class ApplicationInfoFlagsHostApi {
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ApplicationInfoFlags#of(long).
+  String of(int value);
+}
+
+/// Flutter API for `ApplicationInfoFlags`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ApplicationInfoFlags.
+@FlutterApi()
+abstract class ApplicationInfoFlagsFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `ComponentInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ComponentInfoFlags.
+@HostApi(dartHostTestHandler: 'ComponentInfoFlagsTestHostApi')
+abstract class ComponentInfoFlagsHostApi {
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ComponentInfoFlags#of(long).
+  String of(int value);
+}
+
+/// Flutter API for `ComponentInfoFlags`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ComponentInfoFlags.
+@FlutterApi()
+abstract class ComponentInfoFlagsFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Flutter API for `ResolveInfo`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/ResolveInfo.
+@FlutterApi()
+abstract class ResolveInfoFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
 }

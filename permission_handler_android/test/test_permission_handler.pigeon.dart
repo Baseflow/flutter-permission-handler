@@ -349,7 +349,7 @@ abstract class UriTestHostApi {
   /// Returns the instance ID of the created Uri.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  void parse(String instanceId, String uriString);
+  String parse(String uriString);
 
   /// Returns the encoded string representation of this URI.
   ///
@@ -377,14 +377,11 @@ abstract class UriTestHostApi {
           assert(message != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null.');
           final List<Object?> args = (message as List<Object?>?)!;
-          final String? arg_instanceId = (args[0] as String?);
-          assert(arg_instanceId != null,
-              'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null, expected non-null String.');
-          final String? arg_uriString = (args[1] as String?);
+          final String? arg_uriString = (args[0] as String?);
           assert(arg_uriString != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.UriHostApi.parse was null, expected non-null String.');
-          api.parse(arg_instanceId!, arg_uriString!);
-          return <Object?>[];
+          final String output = api.parse(arg_uriString!);
+          return <Object?>[output];
         });
       }
     }
@@ -750,6 +747,37 @@ abstract class PackageManagerTestHostApi {
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
   bool canRequestPackageInstalls(String instanceId);
 
+  /// Retrieve overall information about an application package that is installed on the system.
+  ///
+  /// Use [getPackageInfoWithInfoFlags] when long flags are needed.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getPackageInfo(java.lang.String,%20int).
+  String? getPackageInfoWithFlags(
+      String instanceId, String packageName, int flags);
+
+  /// Retrieve overall information about an application package that is installed on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getPackageInfo(java.lang.String,%20android.content.pm.PackageManager.PackageInfoFlags).
+  String? getPackageInfoWithInfoFlags(
+      String instanceId, String packageName, String flagsInstanceId);
+
+  /// Check whether the given feature name is one of the available features as returned by getSystemAvailableFeatures().
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#hasSystemFeature(java.lang.String).
+  bool hasSystemFeature(String instanceId, String featureName);
+
+  /// Retrieve all activities that can be performed for the given intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20int).
+  List<String?> queryIntentActivitiesWithFlags(
+      String instanceId, String intentInstanceId, int flags);
+
+  /// Retrieve all activities that can be performed for the given intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20android.content.pm.ResolveInfoFlags).
+  List<String?> queryIntentActivitiesWithInfoFlags(
+      String instanceId, String intentInstanceId, String flagsInstanceId);
+
   static void setup(PackageManagerTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
     {
@@ -771,6 +799,153 @@ abstract class PackageManagerTestHostApi {
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.canRequestPackageInstalls was null, expected non-null String.');
           final bool output = api.canRequestPackageInstalls(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithFlags',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithFlags was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithFlags was null, expected non-null String.');
+          final String? arg_packageName = (args[1] as String?);
+          assert(arg_packageName != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithFlags was null, expected non-null String.');
+          final int? arg_flags = (args[2] as int?);
+          assert(arg_flags != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithFlags was null, expected non-null int.');
+          final String? output = api.getPackageInfoWithFlags(
+              arg_instanceId!, arg_packageName!, arg_flags!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithInfoFlags',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithInfoFlags was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithInfoFlags was null, expected non-null String.');
+          final String? arg_packageName = (args[1] as String?);
+          assert(arg_packageName != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithInfoFlags was null, expected non-null String.');
+          final String? arg_flagsInstanceId = (args[2] as String?);
+          assert(arg_flagsInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getPackageInfoWithInfoFlags was null, expected non-null String.');
+          final String? output = api.getPackageInfoWithInfoFlags(
+              arg_instanceId!, arg_packageName!, arg_flagsInstanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.hasSystemFeature',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.hasSystemFeature was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.hasSystemFeature was null, expected non-null String.');
+          final String? arg_featureName = (args[1] as String?);
+          assert(arg_featureName != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.hasSystemFeature was null, expected non-null String.');
+          final bool output =
+              api.hasSystemFeature(arg_instanceId!, arg_featureName!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithFlags',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithFlags was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithFlags was null, expected non-null String.');
+          final String? arg_intentInstanceId = (args[1] as String?);
+          assert(arg_intentInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithFlags was null, expected non-null String.');
+          final int? arg_flags = (args[2] as int?);
+          assert(arg_flags != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithFlags was null, expected non-null int.');
+          final List<String?> output = api.queryIntentActivitiesWithFlags(
+              arg_instanceId!, arg_intentInstanceId!, arg_flags!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithInfoFlags',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithInfoFlags was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithInfoFlags was null, expected non-null String.');
+          final String? arg_intentInstanceId = (args[1] as String?);
+          assert(arg_intentInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithInfoFlags was null, expected non-null String.');
+          final String? arg_flagsInstanceId = (args[2] as String?);
+          assert(arg_flagsInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithInfoFlags was null, expected non-null String.');
+          final List<String?> output = api.queryIntentActivitiesWithInfoFlags(
+              arg_instanceId!, arg_intentInstanceId!, arg_flagsInstanceId!);
           return <Object?>[output];
         });
       }
@@ -947,6 +1122,228 @@ abstract class EnvironmentTestHostApi {
                 (Object? message) async {
           // ignore message
           final bool output = api.isExternalStorageManager();
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `PackageInfo`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageInfo.
+abstract class PackageInfoTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Array of all <uses-permission> tags included under <manifest>, or null if there were none.
+  ///
+  /// This is only filled in if the flag PackageManager#GET_PERMISSIONS was set.
+  /// This list includes all permissions requested, even those that were not
+  /// granted or known by the system at install time.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageInfo#requestedPermissions.
+  List<String?> getRequestedPermissions(String instanceId);
+
+  static void setup(PackageInfoTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageInfoHostApi.getRequestedPermissions',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageInfoHostApi.getRequestedPermissions was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageInfoHostApi.getRequestedPermissions was null, expected non-null String.');
+          final List<String?> output =
+              api.getRequestedPermissions(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `PackageInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#PackageInfoFlags.
+abstract class PackageInfoFlagsTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.PackageInfoFlags#of(long).
+  String of(int value);
+
+  static void setup(PackageInfoFlagsTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageInfoFlagsHostApi.of',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageInfoFlagsHostApi.of was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_value = (args[0] as int?);
+          assert(arg_value != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageInfoFlagsHostApi.of was null, expected non-null int.');
+          final String output = api.of(arg_value!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `ResolveInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ResolveInfoFlags.
+abstract class ResolveInfoFlagsTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ResolveInfoFlags#of(long).
+  String of(int value);
+
+  static void setup(ResolveInfoFlagsTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ResolveInfoFlagsHostApi.of',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ResolveInfoFlagsHostApi.of was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_value = (args[0] as int?);
+          assert(arg_value != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ResolveInfoFlagsHostApi.of was null, expected non-null int.');
+          final String output = api.of(arg_value!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `ApplicationInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ApplicationInfoFlags.
+abstract class ApplicationInfoFlagsTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ApplicationInfoFlags#of(long).
+  String of(int value);
+
+  static void setup(ApplicationInfoFlagsTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ApplicationInfoFlagsHostApi.of',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ApplicationInfoFlagsHostApi.of was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_value = (args[0] as int?);
+          assert(arg_value != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ApplicationInfoFlagsHostApi.of was null, expected non-null int.');
+          final String output = api.of(arg_value!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `ComponentInfoFlags`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/content/pm/PackageManager#ComponentInfoFlags.
+abstract class ComponentInfoFlagsTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ComponentInfoFlags#of(long).
+  String of(int value);
+
+  static void setup(ComponentInfoFlagsTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ComponentInfoFlagsHostApi.of',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ComponentInfoFlagsHostApi.of was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_value = (args[0] as int?);
+          assert(arg_value != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ComponentInfoFlagsHostApi.of was null, expected non-null int.');
+          final String output = api.of(arg_value!);
           return <Object?>[output];
         });
       }

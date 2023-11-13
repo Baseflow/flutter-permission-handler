@@ -14,40 +14,27 @@ import '../android_permission_handler_api_impls.dart';
 ///
 /// See https://developer.android.com/reference/android/net/Uri.
 class Uri extends JavaObject {
-  /// Instantiates a [Uri], creating and attaching it to an instance of the
+  /// Instantiates a [Uri] without creating and attaching to an instance of the
   /// associated native class.
-  ///
-  /// For internal use only. Instead, use [Uri.parse].
-  Uri._({
+  Uri.detached({
     InstanceManager? instanceManager,
     BinaryMessenger? binaryMessenger,
-  })  : _hostApi = UriHostApiImpl(
-          instanceManager: instanceManager,
-          binaryMessenger: binaryMessenger,
-        ),
-        super.detached(
+  }) : super.detached(
           instanceManager: instanceManager,
           binaryMessenger: binaryMessenger,
         );
 
-  final UriHostApiImpl _hostApi;
+  static final UriHostApiImpl _hostApi = UriHostApiImpl();
 
   /// Creates a [Uri] which parses the given encoded URI string.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  factory Uri.parse(
+  static Future<Uri> parse(
     String uriString, {
     BinaryMessenger? binaryMessenger,
     InstanceManager? instanceManager,
   }) {
-    final Uri uri = Uri._(
-      binaryMessenger: binaryMessenger,
-      instanceManager: instanceManager,
-    );
-
-    uri._hostApi.parseFromInstance(uri, uriString);
-
-    return uri;
+    return _hostApi.parseFromClass(uriString);
   }
 
   /// Returns the encoded string representation of this URI.

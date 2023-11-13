@@ -46,6 +46,11 @@ class Intent extends JavaObject {
 
   final IntentHostApiImpl _hostApi;
 
+  /// Activity Action: Perform a call to someone specified by the data.
+  ///
+  /// See https://developer.android.com/reference/android/content/Intent#ACTION_CALL.
+  static const String actionCall = 'android.intent.action.CALL';
+
   /// Sets the general action to be performed.
   ///
   /// See https://developer.android.com/reference/android/content/Intent#setAction(java.lang.String).
@@ -98,19 +103,19 @@ class Intent extends JavaObject {
   /// Constant Value: 268435456 (0x10000000).
   ///
   /// See https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NEW_TASK.
-  static const int flagActivityNewTask = 268435456;
+  static const int flagActivityNewTask = 0x10000000;
 
   /// If set, the new activity is not kept in the history stack.
   ///
   /// Constant Value: 1073741824 (0x40000000).
   ///
   /// See https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NO_HISTORY.
-  static const int flagActivityNoHistory = 1073741824;
+  static const int flagActivityNoHistory = 0x40000000;
 
   /// If set, the new activity is not kept in the list of recently launched activities.
   ///
   /// Constant Value: 8388608 (0x00800000).
   ///
   /// See https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS.
-  static const int flagActivityExcludeFromRecents = 8388608;
+  static const int flagActivityExcludeFromRecents = 0x00800000;
 }
