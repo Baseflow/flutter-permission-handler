@@ -1,6 +1,7 @@
 package com.baseflow.permissionhandler;
 
 import android.content.Intent;
+import android.content.pm.FeatureInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.PackageInfoFlags;
@@ -36,6 +37,8 @@ public class PackageManagerHostApiImpl implements PackageManagerHostApi {
 
     private final ResolveInfoFlutterApiImpl resolveInfoFlutterApi;
 
+    private final FeatureInfoFlutterApiImpl featureInfoFlutterApi;
+
     /**
      * Constructs an {@link PackageManagerHostApiImpl}.
      *
@@ -45,11 +48,13 @@ public class PackageManagerHostApiImpl implements PackageManagerHostApi {
     public PackageManagerHostApiImpl(
         @NonNull PackageInfoFlutterApiImpl packageInfoFlutterApi,
         @NonNull ResolveInfoFlutterApiImpl resolveInfoFlutterApi,
+        @NonNull FeatureInfoFlutterApiImpl featureInfoFlutterApi,
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.packageInfoFlutterApi = packageInfoFlutterApi;
         this.resolveInfoFlutterApi = resolveInfoFlutterApi;
+        this.featureInfoFlutterApi = featureInfoFlutterApi;
         this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
@@ -171,5 +176,23 @@ public class PackageManagerHostApiImpl implements PackageManagerHostApi {
         }
 
         return resolveInfoInstanceList;
+    }
+
+    @NonNull
+    @Override
+    public List<String> getSystemAvailableFeatures(@NonNull String instanceId) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final PackageManager packageManager = instanceManager.getInstance(instanceUuid);
+
+        final FeatureInfo[] featureInfoList = packageManager.getSystemAvailableFeatures();
+        final List<String> featureInfoInstanceList = new ArrayList<>();
+
+        for (FeatureInfo featureInfo : featureInfoList) {
+            featureInfoFlutterApi.create(featureInfo);
+            final UUID featureInfoUuid = instanceManager.getIdentifierForStrongReference(featureInfo);
+            featureInfoInstanceList.add(featureInfoUuid.toString());
+        }
+
+        return featureInfoInstanceList;
     }
 }

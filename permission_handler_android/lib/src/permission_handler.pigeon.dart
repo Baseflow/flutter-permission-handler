@@ -1307,6 +1307,38 @@ class PackageManagerHostApi {
       return (replyList[0] as List<Object?>?)!.cast<String?>();
     }
   }
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  Future<List<String?>> getSystemAvailableFeatures(
+      String arg_instanceId) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getSystemAvailableFeatures',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as List<Object?>?)!.cast<String?>();
+    }
+  }
 }
 
 /// Flutter API for `PackageManager`.

@@ -99,8 +99,16 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         final PackageInfoHostApi packageInfoHostApi = new PackageInfoHostApiImpl(binaryMessenger, instanceManager);
         PackageInfoHostApi.setup(binaryMessenger, packageInfoHostApi);
 
+        final FeatureInfoFlutterApiImpl featureInfoFlutterApi = new FeatureInfoFlutterApiImpl(binaryMessenger, instanceManager);
+
         final PackageManagerFlutterApiImpl packageManagerFlutterApi = new PackageManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(packageInfoFlutterApi, resolveInfoFlutterApi, binaryMessenger, instanceManager);
+        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(
+            packageInfoFlutterApi,
+            resolveInfoFlutterApi,
+            featureInfoFlutterApi,
+            binaryMessenger,
+            instanceManager
+        );
         PackageManagerHostApi.setup(binaryMessenger, packageManagerHostApi);
 
         final SettingsHostApi settingsHostApi = new SettingsHostApiImpl(binaryMessenger, instanceManager);
@@ -112,8 +120,6 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
         final EnvironmentHostApi environmentHostApi = new EnvironmentHostApiImpl(binaryMessenger, instanceManager);
         EnvironmentHostApi.setup(binaryMessenger, environmentHostApi);
-
-        final FeatureInfoFlutterApiImpl featureInfoFlutterApi = new FeatureInfoFlutterApiImpl(binaryMessenger, instanceManager);
 
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
         activityHostApi = new ActivityHostApiImpl(

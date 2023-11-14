@@ -790,6 +790,21 @@ class PackageManagerHostApiImpl extends PackageManagerHostApi {
             .getInstanceWithWeakReference(instanceId) as ResolveInfo)
         .toList();
   }
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  Future<List<FeatureInfo>> getSystemAvailableFeaturesFromInstance(
+    PackageManager packageManager,
+  ) async {
+    return (await getSystemAvailableFeatures(
+      instanceManager.getIdentifier(packageManager)!,
+    ))
+        .whereType<String>()
+        .map((String instanceId) => instanceManager
+            .getInstanceWithWeakReference(instanceId) as FeatureInfo)
+        .toList();
+  }
 }
 
 /// Flutter API implementation of PackageManager.

@@ -3,6 +3,7 @@ import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 import 'package:permission_handler_android/src/android_object_mirrors/package_info.dart';
 
 import '../android_permission_handler_api_impls.dart';
+import 'feature_info.dart';
 import 'intent.dart';
 import 'resolve_info.dart';
 
@@ -82,6 +83,13 @@ class PackageManager extends JavaObject {
     );
   }
 
+  /// Check whether the given feature name is one of the available features as returned by getSystemAvailableFeatures().
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#hasSystemFeature(java.lang.String).
+  Future<bool> hasSystemFeature(String name) {
+    return _hostApi.hasSystemFeatureFromInstance(this, name);
+  }
+
   /// Retrieve all activities that can be performed for the given intent.
   ///
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20int).
@@ -108,6 +116,13 @@ class PackageManager extends JavaObject {
       intent,
       resolveInfoFlags,
     );
+  }
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  Future<List<FeatureInfo>> getSystemAvailableFeatures() {
+    return _hostApi.getSystemAvailableFeaturesFromInstance(this);
   }
 }
 

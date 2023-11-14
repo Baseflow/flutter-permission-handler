@@ -778,6 +778,11 @@ abstract class PackageManagerTestHostApi {
   List<String?> queryIntentActivitiesWithInfoFlags(
       String instanceId, String intentInstanceId, String flagsInstanceId);
 
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  List<String?> getSystemAvailableFeatures(String instanceId);
+
   static void setup(PackageManagerTestHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
     {
@@ -946,6 +951,30 @@ abstract class PackageManagerTestHostApi {
               'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.queryIntentActivitiesWithInfoFlags was null, expected non-null String.');
           final List<String?> output = api.queryIntentActivitiesWithInfoFlags(
               arg_instanceId!, arg_intentInstanceId!, arg_flagsInstanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getSystemAvailableFeatures',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getSystemAvailableFeatures was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getSystemAvailableFeatures was null, expected non-null String.');
+          final List<String?> output =
+              api.getSystemAvailableFeatures(arg_instanceId!);
           return <Object?>[output];
         });
       }

@@ -423,6 +423,13 @@ abstract class PackageManagerHostApi {
     String intentInstanceId,
     String flagsInstanceId,
   );
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  List<String> getSystemAvailableFeatures(
+    String instanceId,
+  );
 }
 
 /// Flutter API for `PackageManager`.

@@ -1326,6 +1326,13 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     List<String> queryIntentActivitiesWithInfoFlags(@NonNull String instanceId, @NonNull String intentInstanceId, @NonNull String flagsInstanceId);
+    /**
+     * Get a list of features that are available on the system.
+     *
+     * See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+     */
+    @NonNull 
+    List<String> getSystemAvailableFeatures(@NonNull String instanceId);
 
     /** The codec used by PackageManagerHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -1474,6 +1481,30 @@ public class PermissionHandlerPigeon {
                 String flagsInstanceIdArg = (String) args.get(2);
                 try {
                   List<String> output = api.queryIntentActivitiesWithInfoFlags(instanceIdArg, intentInstanceIdArg, flagsInstanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getSystemAvailableFeatures", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  List<String> output = api.getSystemAvailableFeatures(instanceIdArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {
