@@ -765,3 +765,34 @@ abstract class TelephonyManagerFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 }
+
+/// Host API for `LocationManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/location/LocationManager.
+@HostApi(dartHostTestHandler: 'LocationManagerTestHostApi')
+abstract class LocationManagerHostApi {
+  /// Returns the current enabled/disabled status of location updates.
+  ///
+  /// See https://developer.android.com/reference/android/location/LocationManager#isLocationEnabled().
+  bool isLocationEnabled(String instanceId);
+}
+
+/// Flutter API for `LocationManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/location/LocationManager.
+@FlutterApi()
+abstract class LocationManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}

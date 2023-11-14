@@ -5,6 +5,7 @@ export 'src/android_object_mirrors/context.dart';
 export 'src/android_object_mirrors/environment.dart';
 export 'src/android_object_mirrors/feature_info.dart';
 export 'src/android_object_mirrors/intent.dart';
+export 'src/android_object_mirrors/location_manager.dart';
 export 'src/android_object_mirrors/manifest.dart';
 export 'src/android_object_mirrors/notification_manager.dart';
 export 'src/android_object_mirrors/package_info.dart';

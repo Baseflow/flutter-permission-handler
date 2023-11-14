@@ -23,6 +23,7 @@ class AndroidPermissionHandlerFlutterApis {
     NotificationManagerFlutterApiImpl? notificationManagerFlutterApi,
     FeatureInfoFlutterApiImpl? featureInfoFlutterApi,
     TelephonyManagerFlutterApiImpl? telephonyManagerFlutterApi,
+    LocationManagerFlutterApiImpl? locationManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -51,6 +52,8 @@ class AndroidPermissionHandlerFlutterApis {
         featureInfoFlutterApi ?? FeatureInfoFlutterApiImpl();
     this.telephonyManagerFlutterApi =
         telephonyManagerFlutterApi ?? TelephonyManagerFlutterApiImpl();
+    this.locationManagerFlutterApi =
+        locationManagerFlutterApi ?? LocationManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -109,6 +112,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [TelephonyManager].
   late final TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi;
 
+  /// Flutter API for [LocationManager].
+  late final LocationManagerFlutterApiImpl locationManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -127,6 +133,7 @@ class AndroidPermissionHandlerFlutterApis {
       NotificationManagerFlutterApi.setup(notificationManagerFlutterApi);
       FeatureInfoFlutterApi.setup(featureInfoFlutterApi);
       TelephonyManagerFlutterApi.setup(telephonyManagerFlutterApi);
+      LocationManagerFlutterApi.setup(locationManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -1340,6 +1347,7 @@ class FeatureInfoFlutterApiImpl extends FeatureInfoFlutterApi {
   }
 }
 
+/// Host API implementation of TelephonyManager.
 class TelephonyManagerHostApiImpl extends TelephonyManagerHostApi {
   /// Creates a new instance of [TelephonyManagerHostApiImpl].
   TelephonyManagerHostApiImpl({
@@ -1402,6 +1410,60 @@ class TelephonyManagerFlutterApiImpl extends TelephonyManagerFlutterApi {
     final TelephonyManager telephonyManager = TelephonyManager.detached();
     _instanceManager.addHostCreatedInstance(
       telephonyManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of LocationManager.
+class LocationManagerHostApiImpl extends LocationManagerHostApi {
+  /// Creates a new instance of [LocationManagerHostApiImpl].
+  LocationManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Returns the current enabled/disabled status of location updates.
+  ///
+  /// See https://developer.android.com/reference/android/location/LocationManager#isLocationEnabled().
+  Future<bool> isLocationEnabledFromInstance(
+    LocationManager locationManager,
+  ) {
+    return isLocationEnabled(instanceManager.getIdentifier(locationManager)!);
+  }
+}
+
+/// Flutter API implementation of LocationManager.
+class LocationManagerFlutterApiImpl extends LocationManagerFlutterApi {
+  /// Constructs a new instance of [LocationManagerFlutterApiImpl].
+  LocationManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final LocationManager locationManager = LocationManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      locationManager,
       instanceId,
     );
   }
