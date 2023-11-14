@@ -1580,3 +1580,48 @@ abstract class BluetoothAdapterTestHostApi {
     }
   }
 }
+
+/// Host API for `BluetoothManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/bluetooth/BluetoothManager.
+abstract class BluetoothManagerTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Get the BLUETOOTH Adapter for this device.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter().
+  String getAdapter(String instanceId);
+
+  static void setup(BluetoothManagerTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.BluetoothManagerHostApi.getAdapter',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.BluetoothManagerHostApi.getAdapter was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.BluetoothManagerHostApi.getAdapter was null, expected non-null String.');
+          final String output = api.getAdapter(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}

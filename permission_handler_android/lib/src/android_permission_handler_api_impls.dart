@@ -25,6 +25,7 @@ class AndroidPermissionHandlerFlutterApis {
     TelephonyManagerFlutterApiImpl? telephonyManagerFlutterApi,
     LocationManagerFlutterApiImpl? locationManagerFlutterApi,
     BluetoothAdapterFlutterApiImpl? bluetoothAdapterFlutterApi,
+    BluetoothManagerFlutterApiImpl? bluetoothManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -57,6 +58,8 @@ class AndroidPermissionHandlerFlutterApis {
         locationManagerFlutterApi ?? LocationManagerFlutterApiImpl();
     this.bluetoothAdapterFlutterApi =
         bluetoothAdapterFlutterApi ?? BluetoothAdapterFlutterApiImpl();
+    this.bluetoothManagerFlutterApi =
+        bluetoothManagerFlutterApi ?? BluetoothManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -121,6 +124,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [BluetoothAdapter].
   late final BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi;
 
+  /// Flutter API for [BluetoothManager].
+  late final BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -141,6 +147,7 @@ class AndroidPermissionHandlerFlutterApis {
       TelephonyManagerFlutterApi.setup(telephonyManagerFlutterApi);
       LocationManagerFlutterApi.setup(locationManagerFlutterApi);
       BluetoothAdapterFlutterApi.setup(bluetoothAdapterFlutterApi);
+      BluetoothManagerFlutterApi.setup(bluetoothManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -1544,6 +1551,64 @@ class BluetoothAdapterFlutterApiImpl extends BluetoothAdapterFlutterApi {
     final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.detached();
     _instanceManager.addHostCreatedInstance(
       bluetoothAdapter,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of BluetoothManager.
+class BluetoothManagerHostApiImpl extends BluetoothManagerHostApi {
+  /// Creates a new instance of [BluetoothManagerHostApiImpl].
+  BluetoothManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Get the BLUETOOTH Adapter for this device.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter().
+  Future<BluetoothAdapter> getAdapterFromInstance(
+    BluetoothManager bluetoothManager,
+  ) async {
+    final String adapterInstanceId =
+        await getAdapter(instanceManager.getIdentifier(bluetoothManager)!);
+
+    return instanceManager.getInstanceWithWeakReference(adapterInstanceId)
+        as BluetoothAdapter;
+  }
+}
+
+/// Flutter API implementation of BluetoothManager.
+class BluetoothManagerFlutterApiImpl extends BluetoothManagerFlutterApi {
+  /// Constructs a new instance of [BluetoothManagerFlutterApiImpl].
+  BluetoothManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final BluetoothManager bluetoothManager = BluetoothManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      bluetoothManager,
       instanceId,
     );
   }
