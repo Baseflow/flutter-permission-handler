@@ -2231,3 +2231,57 @@ abstract class ResolveInfoFlutterApi {
     }
   }
 }
+
+abstract class FeatureInfoFlutterApi {
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+
+  static void setup(FeatureInfoFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.create',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.create was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.create was null, expected non-null String.');
+          api.create(arg_instanceId!);
+          return;
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.dispose',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.dispose was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.dispose was null, expected non-null String.');
+          api.dispose(arg_instanceId!);
+          return;
+        });
+      }
+    }
+  }
+}

@@ -38,6 +38,15 @@ class PackageManager extends JavaObject {
   /// Constant Value: 0 (0x00000000)
   static const int permissionGranted = 0;
 
+  /// The device has a telephony radio with data communication support.
+  ///
+  /// Feature for [getSystemAvailableFeatures] and [hasSystemFeature].
+  ///
+  /// Constant Value: "android.hardware.telephony".
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#FEATURE_TELEPHONY.
+  static const String featureTelephony = 'android.hardware.telephony';
+
   /// Checks whether the calling package is allowed to request package installs through package installer.
   ///
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().

@@ -696,3 +696,12 @@ abstract class ResolveInfoFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 }
+
+@FlutterApi()
+abstract class FeatureInfoFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}

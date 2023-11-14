@@ -21,6 +21,7 @@ class AndroidPermissionHandlerFlutterApis {
     ComponentInfoFlagsFlutterApiImpl? componentInfoFlagsFlutterApi,
     ApplicationInfoFlagsFlutterApiImpl? applicationInfoFlagsFlutterApi,
     NotificationManagerFlutterApiImpl? notificationManagerFlutterApi,
+    FeatureInfoFlutterApiImpl? featureInfoFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -45,6 +46,8 @@ class AndroidPermissionHandlerFlutterApis {
         applicationInfoFlagsFlutterApi ?? ApplicationInfoFlagsFlutterApiImpl();
     this.notificationManagerFlutterApi =
         notificationManagerFlutterApi ?? NotificationManagerFlutterApiImpl();
+    this.featureInfoFlutterApi =
+        featureInfoFlutterApi ?? FeatureInfoFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -97,6 +100,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [NotificationManager].
   late final NotificationManagerFlutterApiImpl notificationManagerFlutterApi;
 
+  /// Flutter API for [FeatureInfo].
+  late final FeatureInfoFlutterApiImpl featureInfoFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -113,6 +119,7 @@ class AndroidPermissionHandlerFlutterApis {
       ComponentInfoFlagsFlutterApi.setup(componentInfoFlagsFlutterApi);
       ApplicationInfoFlagsFlutterApi.setup(applicationInfoFlagsFlutterApi);
       NotificationManagerFlutterApi.setup(notificationManagerFlutterApi);
+      FeatureInfoFlutterApi.setup(featureInfoFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -1276,6 +1283,31 @@ class ResolveInfoFlutterApiImpl extends ResolveInfoFlutterApi {
     final ResolveInfo resolveInfo = ResolveInfo.detached();
     _instanceManager.addHostCreatedInstance(
       resolveInfo,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Flutter API implementation of FeatureInfo.
+class FeatureInfoFlutterApiImpl extends FeatureInfoFlutterApi {
+  /// Constructs a new instance of [FeatureInfoFlutterApiImpl].
+  FeatureInfoFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final FeatureInfo featureInfo = FeatureInfo.detached();
+    _instanceManager.addHostCreatedInstance(
+      featureInfo,
       instanceId,
     );
   }

@@ -113,6 +113,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         final EnvironmentHostApi environmentHostApi = new EnvironmentHostApiImpl(binaryMessenger, instanceManager);
         EnvironmentHostApi.setup(binaryMessenger, environmentHostApi);
 
+        final FeatureInfoFlutterApiImpl featureInfoFlutterApi = new FeatureInfoFlutterApiImpl(binaryMessenger, instanceManager);
+
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
         activityHostApi = new ActivityHostApiImpl(
             binaryMessenger,
