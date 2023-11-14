@@ -54,7 +54,7 @@ jobs:
         working-directory: ${{env.source-directory}}
 
       # Build iOS version of the example App
-      - name: Run Android build
+      - name: Run iOS build
         run: flutter build ios --no-codesign --release
         working-directory: ${{env.example-directory}}
         
