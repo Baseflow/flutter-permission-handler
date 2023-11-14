@@ -2337,7 +2337,17 @@ public class PermissionHandlerPigeon {
           channelReply -> callback.reply(null));
     }
   }
-  /** Generated class from Pigeon that represents Flutter messages that can be called from Java. */
+  /**
+   * Flutter API for `FeatureInfo`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/content/pm/FeatureInfo.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
   public static class FeatureInfoFlutterApi {
     private final @NonNull BinaryMessenger binaryMessenger;
 
@@ -2368,6 +2378,141 @@ public class PermissionHandlerPigeon {
       BasicMessageChannel<Object> channel =
           new BasicMessageChannel<>(
               binaryMessenger, "dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `TelephonyManager`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/telephony/TelephonyManager.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface TelephonyManagerHostApi {
+    /**
+     * Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+     *
+     * Requires the [PackageManager.featureTelephony] feature which can be
+     * detected using [PackageManager.hasSystemFeature].
+     *
+     * See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+     */
+    @NonNull 
+    Long getPhoneType(@NonNull String instanceId);
+    /**
+     * Returns a constant indicating the state of the default SIM card.
+     *
+     * Requires the [PackageManager.featureTelephonySubscription] feature which
+     * can be detected using [PackageManager.hasSystemFeature].
+     *
+     * See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+     */
+    @NonNull 
+    Long getSimState(@NonNull String instanceId);
+
+    /** The codec used by TelephonyManagerHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `TelephonyManagerHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable TelephonyManagerHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getPhoneType", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Long output = api.getPhoneType(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getSimState", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Long output = api.getSimState(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `TelephonyManager`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/telephony/TelephonyManager.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class TelephonyManagerFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public TelephonyManagerFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by TelephonyManagerFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.dispose", getCodec());
       channel.send(
           new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
           channelReply -> callback.reply(null));

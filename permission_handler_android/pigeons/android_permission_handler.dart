@@ -704,8 +704,61 @@ abstract class ResolveInfoFlutterApi {
   void dispose(String instanceId);
 }
 
+/// Flutter API for `FeatureInfo`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/FeatureInfo.
 @FlutterApi()
 abstract class FeatureInfoFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+@HostApi(dartHostTestHandler: 'TelephonyManagerTestHostApi')
+abstract class TelephonyManagerHostApi {
+  /// Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+  ///
+  /// Requires the [PackageManager.featureTelephony] feature which can be
+  /// detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+  int getPhoneType(
+    String instanceId,
+  );
+
+  /// Returns a constant indicating the state of the default SIM card.
+  ///
+  /// Requires the [PackageManager.featureTelephonySubscription] feature which
+  /// can be detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+  int getSimState(
+    String instanceId,
+  );
+}
+
+/// Flutter API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+@FlutterApi()
+abstract class TelephonyManagerFlutterApi {
   /// Create a new Dart instance and add it to the `InstanceManager`.
   void create(String instanceId);
 

@@ -1379,3 +1379,82 @@ abstract class ComponentInfoFlagsTestHostApi {
     }
   }
 }
+
+/// Host API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+abstract class TelephonyManagerTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+  ///
+  /// Requires the [PackageManager.featureTelephony] feature which can be
+  /// detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+  int getPhoneType(String instanceId);
+
+  /// Returns a constant indicating the state of the default SIM card.
+  ///
+  /// Requires the [PackageManager.featureTelephonySubscription] feature which
+  /// can be detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+  int getSimState(String instanceId);
+
+  static void setup(TelephonyManagerTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getPhoneType',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getPhoneType was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getPhoneType was null, expected non-null String.');
+          final int output = api.getPhoneType(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getSimState',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getSimState was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getSimState was null, expected non-null String.');
+          final int output = api.getSimState(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}

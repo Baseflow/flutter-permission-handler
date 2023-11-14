@@ -12,6 +12,7 @@ export 'src/android_object_mirrors/package_manager.dart';
 export 'src/android_object_mirrors/power_manager.dart';
 export 'src/android_object_mirrors/resolve_info.dart';
 export 'src/android_object_mirrors/settings.dart';
+export 'src/android_object_mirrors/telephony_manager.dart';
 export 'src/android_object_mirrors/uri.dart';
 
 export 'src/activity_aware.dart';

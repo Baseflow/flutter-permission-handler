@@ -22,6 +22,7 @@ class AndroidPermissionHandlerFlutterApis {
     ApplicationInfoFlagsFlutterApiImpl? applicationInfoFlagsFlutterApi,
     NotificationManagerFlutterApiImpl? notificationManagerFlutterApi,
     FeatureInfoFlutterApiImpl? featureInfoFlutterApi,
+    TelephonyManagerFlutterApiImpl? telephonyManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -48,6 +49,8 @@ class AndroidPermissionHandlerFlutterApis {
         notificationManagerFlutterApi ?? NotificationManagerFlutterApiImpl();
     this.featureInfoFlutterApi =
         featureInfoFlutterApi ?? FeatureInfoFlutterApiImpl();
+    this.telephonyManagerFlutterApi =
+        telephonyManagerFlutterApi ?? TelephonyManagerFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -103,6 +106,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [FeatureInfo].
   late final FeatureInfoFlutterApiImpl featureInfoFlutterApi;
 
+  /// Flutter API for [TelephonyManager].
+  late final TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -120,6 +126,7 @@ class AndroidPermissionHandlerFlutterApis {
       ApplicationInfoFlagsFlutterApi.setup(applicationInfoFlagsFlutterApi);
       NotificationManagerFlutterApi.setup(notificationManagerFlutterApi);
       FeatureInfoFlutterApi.setup(featureInfoFlutterApi);
+      TelephonyManagerFlutterApi.setup(telephonyManagerFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -1323,6 +1330,78 @@ class FeatureInfoFlutterApiImpl extends FeatureInfoFlutterApi {
     final FeatureInfo featureInfo = FeatureInfo.detached();
     _instanceManager.addHostCreatedInstance(
       featureInfo,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+class TelephonyManagerHostApiImpl extends TelephonyManagerHostApi {
+  /// Creates a new instance of [TelephonyManagerHostApiImpl].
+  TelephonyManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+  ///
+  /// Requires the [PackageManager.featureTelephony] feature which can be
+  /// detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+  Future<int> getPhoneTypeFromInstance(
+    TelephonyManager telephonyManager,
+  ) {
+    return getPhoneType(
+      instanceManager.getIdentifier(telephonyManager)!,
+    );
+  }
+
+  /// Returns a constant indicating the state of the default SIM card.
+  ///
+  /// Requires the [PackageManager.featureTelephonySubscription] feature which
+  /// can be detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+  Future<int> getSimeStateFromInstance(
+    TelephonyManager telephonyManager,
+  ) {
+    return getSimState(
+      instanceManager.getIdentifier(telephonyManager)!,
+    );
+  }
+}
+
+/// Flutter API implementation of TelephonyManager.
+class TelephonyManagerFlutterApiImpl extends TelephonyManagerFlutterApi {
+  /// Constructs a new instance of [TelephonyManagerFlutterApiImpl].
+  TelephonyManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final TelephonyManager telephonyManager = TelephonyManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      telephonyManager,
       instanceId,
     );
   }

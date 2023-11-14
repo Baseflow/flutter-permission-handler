@@ -2264,6 +2264,13 @@ abstract class ResolveInfoFlutterApi {
   }
 }
 
+/// Flutter API for `FeatureInfo`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/FeatureInfo.
 abstract class FeatureInfoFlutterApi {
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
@@ -2310,6 +2317,153 @@ abstract class FeatureInfoFlutterApi {
           final String? arg_instanceId = (args[0] as String?);
           assert(arg_instanceId != null,
               'Argument for dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.dispose was null, expected non-null String.');
+          api.dispose(arg_instanceId!);
+          return;
+        });
+      }
+    }
+  }
+}
+
+/// Host API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+class TelephonyManagerHostApi {
+  /// Constructor for [TelephonyManagerHostApi].  The [binaryMessenger] named argument is
+  /// available for dependency injection.  If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  TelephonyManagerHostApi({BinaryMessenger? binaryMessenger})
+      : _binaryMessenger = binaryMessenger;
+  final BinaryMessenger? _binaryMessenger;
+
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+  ///
+  /// Requires the [PackageManager.featureTelephony] feature which can be
+  /// detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+  Future<int> getPhoneType(String arg_instanceId) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getPhoneType',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as int?)!;
+    }
+  }
+
+  /// Returns a constant indicating the state of the default SIM card.
+  ///
+  /// Requires the [PackageManager.featureTelephonySubscription] feature which
+  /// can be detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+  Future<int> getSimState(String arg_instanceId) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getSimState',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_instanceId]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as int?)!;
+    }
+  }
+}
+
+/// Flutter API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+abstract class TelephonyManagerFlutterApi {
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+
+  static void setup(TelephonyManagerFlutterApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.create',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.create was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.create was null, expected non-null String.');
+          api.create(arg_instanceId!);
+          return;
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.dispose',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.dispose was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.dispose was null, expected non-null String.');
           api.dispose(arg_instanceId!);
           return;
         });

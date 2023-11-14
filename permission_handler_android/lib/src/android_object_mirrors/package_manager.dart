@@ -48,6 +48,18 @@ class PackageManager extends JavaObject {
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#FEATURE_TELEPHONY.
   static const String featureTelephony = 'android.hardware.telephony';
 
+  /// The device supports Telephony APIs for the subscription.
+  ///
+  /// Feature for [getSystemAvailableFeatures] and [hasSystemFeature].
+  ///
+  /// This feature should only be defined if [featureTelephony] has been defined.
+  ///
+  /// Constant Value: "android.hardware.telephony.subscription".
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#FEATURE_TELEPHONY_SUBSCRIPTION.
+  static const String featureTelephonySubscription =
+      'android.hardware.telephony.subscription';
+
   /// Checks whether the calling package is allowed to request package installs through package installer.
   ///
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
