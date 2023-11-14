@@ -122,7 +122,7 @@
             case EKAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
             case EKAuthorizationStatusWriteOnly:
-                //not available
+                //not available on iOS 16 and below 
                 break;
         }
     }
