@@ -2616,4 +2616,140 @@ public class PermissionHandlerPigeon {
           channelReply -> callback.reply(null));
     }
   }
+  /**
+   * Host API for `BluetoothAdapter`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface BluetoothAdapterHostApi {
+    /**
+     * Get a handle to the default local Bluetooth adapter.
+     *
+     * Currently Android only supports one Bluetooth adapter, but the API could
+     * be extended to support more. This will always return the default adapter.
+     *
+     * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#getDefaultAdapter().
+     */
+    @NonNull 
+    String getDefaultAdapter();
+    /**
+     * Return true if Bluetooth is currently enabled and ready for use.
+     *
+     * Equivalent to: getBluetoothState() == STATE_ON.
+     *
+     * For apps targeting [Build.versionCodes.r] or lower, this requires the
+     * [Manifest.permission.bluetooth] permission which can be gained with a
+     * simple <uses-permission> manifest tag.
+     *
+     * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#isEnabled().
+     */
+    @NonNull 
+    Boolean isEnabled(@NonNull String instanceId);
+
+    /** The codec used by BluetoothAdapterHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `BluetoothAdapterHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable BluetoothAdapterHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.getDefaultAdapter", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  String output = api.getDefaultAdapter();
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.isEnabled", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Boolean output = api.isEnabled(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `BluetoothAdapter`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class BluetoothAdapterFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public BluetoothAdapterFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by BluetoothAdapterFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
 }

@@ -13,6 +13,7 @@ import com.baseflow.instancemanager.JavaObjectHostApiImpl;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.AlarmManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.BuildVersionHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.BluetoothAdapterHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ContextHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.EnvironmentHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.IntentHostApi;
@@ -130,6 +131,10 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         final LocationManagerFlutterApiImpl locationManagerFlutterApi = new LocationManagerFlutterApiImpl(binaryMessenger, instanceManager);
         final LocationManagerHostApi locationManagerHostApi = new LocationManagerHostApiImpl(binaryMessenger, instanceManager);
         LocationManagerHostApi.setup(binaryMessenger, locationManagerHostApi);
+
+        final BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi = new BluetoothAdapterFlutterApiImpl(binaryMessenger, instanceManager);
+        final BluetoothAdapterHostApi bluetoothAdapterHostApi = new BluetoothAdapterHostApiImpl(bluetoothAdapterFlutterApi, binaryMessenger, instanceManager);
+        BluetoothAdapterHostApi.setup(binaryMessenger, bluetoothAdapterHostApi);
 
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
         activityHostApi = new ActivityHostApiImpl(

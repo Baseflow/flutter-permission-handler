@@ -1503,3 +1503,80 @@ abstract class LocationManagerTestHostApi {
     }
   }
 }
+
+/// Host API for `BluetoothAdapter`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+abstract class BluetoothAdapterTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Get a handle to the default local Bluetooth adapter.
+  ///
+  /// Currently Android only supports one Bluetooth adapter, but the API could
+  /// be extended to support more. This will always return the default adapter.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#getDefaultAdapter().
+  String getDefaultAdapter();
+
+  /// Return true if Bluetooth is currently enabled and ready for use.
+  ///
+  /// Equivalent to: getBluetoothState() == STATE_ON.
+  ///
+  /// For apps targeting [Build.versionCodes.r] or lower, this requires the
+  /// [Manifest.permission.bluetooth] permission which can be gained with a
+  /// simple <uses-permission> manifest tag.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#isEnabled().
+  bool isEnabled(String instanceId);
+
+  static void setup(BluetoothAdapterTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.getDefaultAdapter',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          // ignore message
+          final String output = api.getDefaultAdapter();
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.isEnabled',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.isEnabled was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.isEnabled was null, expected non-null String.');
+          final bool output = api.isEnabled(arg_instanceId!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}
