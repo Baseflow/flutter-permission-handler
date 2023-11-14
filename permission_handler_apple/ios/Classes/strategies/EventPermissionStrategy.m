@@ -25,18 +25,20 @@
         return;
     }
 
-    if (permission == PermissionGroupCalendar) {
-        #if !PERMISSION_EVENTS
-        completionHandler(PermissionStatusDenied);
-        return;
-        #endif
+    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess) {
+        if (@available(iOS 17.0, *)) {
+            #if !PERMISSION_EVENTS_FULL_ACCESS
+            completionHandler(PermissionStatusDenied);
+            return;
+            #endif
+        } else {
+            #if !PERMISSION_EVENTS
+            completionHandler(PermissionStatusDenied);
+            return;
+            #endif
+        }
     } else if (permission == PermissionGroupCalendarWriteOnly) {
         #if !PERMISSION_EVENTS && !PERMISSION_EVENTS_FULL_ACCESS
-        completionHandler(PermissionStatusDenied);
-        return;
-        #endif
-    } else if (permission == PermissionGroupCalendarFullAccess) {
-        #if !PERMISSION_EVENTS_FULL_ACCESS
         completionHandler(PermissionStatusDenied);
         return;
         #endif
@@ -50,47 +52,41 @@
     EKEventStore *eventStore = [[EKEventStore alloc] init];
 
     if (@available(iOS 17.0, *)) {
-        if (permission == PermissionGroupCalendarFullAccess) {
-            #if PERMISSION_EVENTS_FULL_ACCESS
+        if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess) {
             [eventStore requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
-                    if (granted) {
-                        completionHandler(PermissionStatusGranted);
-                    } else {
-                        completionHandler(PermissionStatusPermanentlyDenied);
-                    }
-                }];
-            #endif
-        } else if (permission == PermissionGroupCalendarWriteOnly) {
-            #if PERMISSION_EVENTS || PERMISSION_EVENTS_FULL_ACCESS
-            [eventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
-                    if (granted) {
-                        completionHandler(PermissionStatusGranted);
-                    } else {
-                        completionHandler(PermissionStatusPermanentlyDenied);
-                    }
-                }];
-            #endif
-        } else if (permission == PermissionGroupReminders) {
-            #if PERMISSION_REMINDERS
-            [eventStore requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
-                                if (granted) {
-                                    completionHandler(PermissionStatusGranted);
-                                } else {
-                                    completionHandler(PermissionStatusPermanentlyDenied);
-                                }
-                   }];
-            #endif
-        }
-    } else {
-        EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
-
-        [eventStore requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     completionHandler(PermissionStatusGranted);
                 } else {
                     completionHandler(PermissionStatusPermanentlyDenied);
                 }
             }];
+        } else if (permission == PermissionGroupCalendarWriteOnly) {
+            [eventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
+                if (granted) {
+                    completionHandler(PermissionStatusGranted);
+                } else {
+                    completionHandler(PermissionStatusPermanentlyDenied);
+                }
+            }];
+        } else if (permission == PermissionGroupReminders) {
+            [eventStore requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
+                if (granted) {
+                    completionHandler(PermissionStatusGranted);
+                } else {
+                    completionHandler(PermissionStatusPermanentlyDenied);
+                }
+            }];
+        }
+    } else {
+        EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
+
+        [eventStore requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
+            if (granted) {
+                completionHandler(PermissionStatusGranted);
+            } else {
+                completionHandler(PermissionStatusPermanentlyDenied);
+            }
+        }];
     }
 
 }
@@ -101,34 +97,33 @@
 
     if (@available(iOS 17.0, *)) {
         switch (status) {
-                case EKAuthorizationStatusNotDetermined:
-                    return PermissionStatusDenied;
-                case EKAuthorizationStatusRestricted:
-                    return PermissionStatusRestricted;
-                case EKAuthorizationStatusDenied:
-                    return PermissionStatusPermanentlyDenied;
-                case EKAuthorizationStatusFullAccess:
+            case EKAuthorizationStatusNotDetermined:
+                return PermissionStatusDenied;
+            case EKAuthorizationStatusRestricted:
+                return PermissionStatusRestricted;
+            case EKAuthorizationStatusDenied:
+                return PermissionStatusPermanentlyDenied;
+            case EKAuthorizationStatusFullAccess:
+                return PermissionStatusGranted;
+            case EKAuthorizationStatusWriteOnly:
+                if (permission == PermissionGroupCalendarWriteOnly) {
                     return PermissionStatusGranted;
-                case EKAuthorizationStatusWriteOnly:
-                    if (permission == PermissionGroupCalendarWriteOnly) {
-                        return PermissionStatusGranted;
-                    }
-
-                    return PermissionStatusDenied;
-            }
+                }
+                return PermissionStatusDenied;
+        }
     } else {
         switch (status) {
-                case EKAuthorizationStatusNotDetermined:
-                    return PermissionStatusDenied;
-                case EKAuthorizationStatusRestricted:
-                    return PermissionStatusRestricted;
-                case EKAuthorizationStatusDenied:
-                    return PermissionStatusPermanentlyDenied;
-                case EKAuthorizationStatusAuthorized:
-                    return PermissionStatusGranted;
-                case EKAuthorizationStatusWriteOnly:
-                    //not available
-                    break;
+            case EKAuthorizationStatusNotDetermined:
+                return PermissionStatusDenied;
+            case EKAuthorizationStatusRestricted:
+                return PermissionStatusRestricted;
+            case EKAuthorizationStatusDenied:
+                return PermissionStatusPermanentlyDenied;
+            case EKAuthorizationStatusAuthorized:
+                return PermissionStatusGranted;
+            case EKAuthorizationStatusWriteOnly:
+                //not available
+                break;
         }
     }
     
