@@ -10,8 +10,6 @@ import com.baseflow.permissionhandler.PermissionHandlerPigeon.BluetoothAdapterHo
 
 import java.util.UUID;
 
-import io.flutter.plugin.common.BinaryMessenger;
-
 /**
  * Host API implementation for `BluetoothAdapter`.
  *
@@ -19,10 +17,6 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class BluetoothAdapterHostApiImpl implements BluetoothAdapterHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi;
@@ -30,16 +24,13 @@ public class BluetoothAdapterHostApiImpl implements BluetoothAdapterHostApi {
     /**
      * Constructs an {@link BluetoothAdapterHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public BluetoothAdapterHostApiImpl(
         @NonNull BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi,
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.bluetoothAdapterFlutterApi = bluetoothAdapterFlutterApi;
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 
