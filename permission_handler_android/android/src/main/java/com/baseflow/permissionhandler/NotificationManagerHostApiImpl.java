@@ -5,14 +5,11 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.baseflow.instancemanager.InstanceManager;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.NotificationManagerHostApi;
 
 import java.util.UUID;
-
-import io.flutter.plugin.common.BinaryMessenger;
 
 /**
  * Host API implementation for `NotificationManager`.
@@ -21,23 +18,16 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class NotificationManagerHostApiImpl implements NotificationManagerHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     /**
      * Constructs an {@link NotificationManagerHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public NotificationManagerHostApiImpl(
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 

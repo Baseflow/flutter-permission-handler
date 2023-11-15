@@ -1,7 +1,6 @@
 package com.baseflow.permissionhandler;
 
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.PackageInfoFlags;
 
 import androidx.annotation.NonNull;
 
@@ -19,10 +18,6 @@ import io.flutter.plugin.common.BinaryMessenger;
  * arguments of callbacks methods to a Dart instance.
  */
 public class PackageInfoFlutterApiImpl {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final PackageInfoFlutterApi api;
@@ -37,7 +32,6 @@ public class PackageInfoFlutterApiImpl {
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         api = new PackageInfoFlutterApi(binaryMessenger);
     }

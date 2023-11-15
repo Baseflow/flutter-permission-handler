@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import io.flutter.plugin.common.BinaryMessenger;
-
 /**
  * Host API implementation for `PackageManager`.
  *
@@ -27,10 +25,6 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class PackageManagerHostApiImpl implements PackageManagerHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final PackageInfoFlutterApiImpl packageInfoFlutterApi;
@@ -42,20 +36,17 @@ public class PackageManagerHostApiImpl implements PackageManagerHostApi {
     /**
      * Constructs an {@link PackageManagerHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public PackageManagerHostApiImpl(
         @NonNull PackageInfoFlutterApiImpl packageInfoFlutterApi,
         @NonNull ResolveInfoFlutterApiImpl resolveInfoFlutterApi,
         @NonNull FeatureInfoFlutterApiImpl featureInfoFlutterApi,
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.packageInfoFlutterApi = packageInfoFlutterApi;
         this.resolveInfoFlutterApi = resolveInfoFlutterApi;
         this.featureInfoFlutterApi = featureInfoFlutterApi;
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 

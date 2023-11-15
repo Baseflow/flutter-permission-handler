@@ -12,8 +12,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import io.flutter.plugin.common.BinaryMessenger;
-
 /**
  * Host API implementation for `PackageInfo`.
  *
@@ -21,23 +19,16 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class PackageInfoHostApiImpl implements PackageInfoHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     /**
      * Constructs an {@link PackageInfoHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public PackageInfoHostApiImpl(
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 
