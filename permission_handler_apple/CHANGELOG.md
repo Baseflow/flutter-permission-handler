@@ -1,3 +1,6 @@
+## 9.2.0
+* Adds the support for `Permission.calendarWriteOnly` and `Permission.calendarFullAccess` permissions which are introduced in iOS 17+.
+
 ## 9.1.4
 
 * Adds checking whether Bluetooth service is enabled through `Permission.bluetooth.serviceStatus`.
