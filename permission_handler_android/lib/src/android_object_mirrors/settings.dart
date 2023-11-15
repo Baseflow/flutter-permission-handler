@@ -17,8 +17,32 @@ class Settings {
   /// Activity Action: Show screen of details about a particular application.
   ///
   /// Constant Value: "android.settings.APPLICATION_DETAILS_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_APPLICATION_DETAILS_SETTINGS.
   static const String actionApplicationDetailsSettings =
       'android.settings.APPLICATION_DETAILS_SETTINGS';
+
+  /// Activity Action: Show settings to allow configuration of Bluetooth.
+  ///
+  /// In some cases, a matching Activity may not exist, so ensure you safeguard
+  /// against this.
+  ///
+  /// Constant Value: "android.settings.BLUETOOTH_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_BLUETOOTH_SETTINGS.
+  static const String actionBluetoothSettings =
+      'android.settings.BLUETOOTH_SETTINGS';
+
+  /// Activity Action: Show settings to allow configuration of current location sources.
+  ///
+  /// In some cases, a matching Activity may not exist, so ensure you safeguard
+  /// against this.
+  ///
+  /// Constant Value: "android.settings.LOCATION_SOURCE_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_LOCATION_SOURCE_SETTINGS.
+  static const String actionLocationSourceSettings =
+      'android.settings.LOCATION_SOURCE_SETTINGS';
 
   /// Activity Action: Ask the user to allow an app to ignore battery optimizations.
   ///
@@ -38,6 +62,8 @@ class Settings {
   /// You can use [PowerManager#isIgnoringBatteryOptimizations] to determine if
   /// an application is already ignoring optimizations.
   ///
+  /// Constant Value: "android.settings.IGNORE_BATTERY_OPTIMIZATIONS".
+  ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS.
   static const String actionRequestIgnoreBatteryOptimizations =
       'android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS';
@@ -48,11 +74,15 @@ class Settings {
   /// whose ability of managing external storage you want to control. For
   /// example "package:com.my.app".
   ///
+  /// Constant Value: "android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION".
+  ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
   static const String actionManagerAppAllFilesAccessPermission =
       'android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION';
 
   /// Activity Action: Show screen for controlling which apps can draw on top of other apps.
+  ///
+  /// Constant Value: "android.settings.action.MANAGE_OVERLAY_PERMISSION".
   ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_OVERLAY_PERMISSION.
   static const String actionManageOverlayPermission =
@@ -64,6 +94,8 @@ class Settings {
   /// package name to directly invoke the management GUI specific to the package
   /// name. For example "package:com.my.app".
   ///
+  /// Constant Value: "android.settings.MANAGE_UNKNOWN_APP_SOURCES".
+  ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_UNKNOWN_APP_SOURCES.
   static const String actionManageUnknownAppSources =
       'android.settings.MANAGE_UNKNOWN_APP_SOURCES';
@@ -72,6 +104,8 @@ class Settings {
   ///
   /// Users can grant and deny access to Do Not Disturb configuration from here.
   /// Managed profiles cannot grant Do Not Disturb access.
+  ///
+  /// Constant Value: "android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS".
   ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS.
   static const String actionNotificationPolicyAccessSettings =
@@ -87,9 +121,22 @@ class Settings {
   /// set to [Activity#RESULT_OK] if the permission was granted to the app.
   /// Otherwise, the result is set to [Activity#RESULT_CANCELED].
   ///
-  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_OVERLAY_PERMISSION.
+  /// Constant Value: "android.settings.REQUEST_SCHEDULE_EXACT_ALARM".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_SCHEDULE_EXACT_ALARM.
   static const String actionRequestScheduleExactAlarm =
       'android.settings.REQUEST_SCHEDULE_EXACT_ALARM';
+
+  /// Activity Action: Show settings to allow configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
+  ///
+  /// In some cases, a matching Activity may not exist, so ensure you safeguard
+  /// against this.
+  ///
+  /// Constant Value: "android.settings.WIRELESS_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_WIRELESS_SETTINGS.
+  static const String actionWirelessSettings =
+      'android.settings.WIRELESS_SETTINGS';
 
   /// Checks if the specified context can draw on top of other apps.
   ///
