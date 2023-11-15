@@ -18,10 +18,6 @@ import java.util.UUID;
  * arguments of callbacks methods to a Dart instance.
  */
 public class ActivityFlutterApiImpl {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final ActivityFlutterApi api;
@@ -36,7 +32,6 @@ public class ActivityFlutterApiImpl {
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         api = new ActivityFlutterApi(binaryMessenger);
     }

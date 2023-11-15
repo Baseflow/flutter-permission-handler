@@ -10,19 +10,39 @@ class AndroidPermissionHandlerFlutterApis {
   AndroidPermissionHandlerFlutterApis({
     ActivityFlutterApiImpl? activityFlutterApi,
     ContextFlutterApiImpl? contextFlutterApi,
+    UriFlutterApiImpl? uriFlutterApi,
     PowerManagerFlutterApiImpl? powerManagerFlutterApi,
     AlarmManagerFlutterApiImpl? alarmManagerFlutterApi,
     PackageManagerFlutterApiImpl? packageManagerFlutterApi,
+    PackageInfoFlutterApiImpl? packageInfoFlutterApi,
+    PackageInfoFlagsFlutterApiImpl? packageInfoFlagsFlutterApi,
+    ResolveInfoFlagsFlutterApiImpl? resolveInfoFlagsFlutterApi,
+    ResolveInfoFlutterApiImpl? resolveInfoFlutterApi,
+    ComponentInfoFlagsFlutterApiImpl? componentInfoFlagsFlutterApi,
+    ApplicationInfoFlagsFlutterApiImpl? applicationInfoFlagsFlutterApi,
     NotificationManagerFlutterApiImpl? notificationManagerFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
+    this.uriFlutterApi = uriFlutterApi ?? UriFlutterApiImpl();
     this.powerManagerFlutterApi =
         powerManagerFlutterApi ?? PowerManagerFlutterApiImpl();
     this.alarmManagerFlutterApi =
         alarmManagerFlutterApi ?? AlarmManagerFlutterApiImpl();
     this.packageManagerFlutterApi =
         packageManagerFlutterApi ?? PackageManagerFlutterApiImpl();
+    this.packageInfoFlutterApi =
+        packageInfoFlutterApi ?? PackageInfoFlutterApiImpl();
+    this.packageInfoFlagsFlutterApi =
+        packageInfoFlagsFlutterApi ?? PackageInfoFlagsFlutterApiImpl();
+    this.resolveInfoFlagsFlutterApi =
+        resolveInfoFlagsFlutterApi ?? ResolveInfoFlagsFlutterApiImpl();
+    this.resolveInfoFlutterApi =
+        resolveInfoFlutterApi ?? ResolveInfoFlutterApiImpl();
+    this.componentInfoFlagsFlutterApi =
+        componentInfoFlagsFlutterApi ?? ComponentInfoFlagsFlutterApiImpl();
+    this.applicationInfoFlagsFlutterApi =
+        applicationInfoFlagsFlutterApi ?? ApplicationInfoFlagsFlutterApiImpl();
     this.notificationManagerFlutterApi =
         notificationManagerFlutterApi ?? NotificationManagerFlutterApiImpl();
   }
@@ -44,6 +64,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [Context].
   late final ContextFlutterApiImpl contextFlutterApi;
 
+  /// Flutter API for [Uri].
+  late final UriFlutterApiImpl uriFlutterApi;
+
   /// Flutter API for [PowerManager].
   late final PowerManagerFlutterApiImpl powerManagerFlutterApi;
 
@@ -53,6 +76,24 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [PackageManager].
   late final PackageManagerFlutterApiImpl packageManagerFlutterApi;
 
+  /// Flutter API for [PackageInfo].
+  late final PackageInfoFlutterApiImpl packageInfoFlutterApi;
+
+  /// Flutter API for [PackageInfoFlags].
+  late final PackageInfoFlagsFlutterApiImpl packageInfoFlagsFlutterApi;
+
+  /// Flutter API for [ResolveInfoFlags].
+  late final ResolveInfoFlagsFlutterApiImpl resolveInfoFlagsFlutterApi;
+
+  /// Flutter API for [ResolveInfo].
+  late final ResolveInfoFlutterApiImpl resolveInfoFlutterApi;
+
+  /// Flutter API for [ComponentInfoFlags].
+  late final ComponentInfoFlagsFlutterApiImpl componentInfoFlagsFlutterApi;
+
+  /// Flutter API for [ApplicationInfoFlags].
+  late final ApplicationInfoFlagsFlutterApiImpl applicationInfoFlagsFlutterApi;
+
   /// Flutter API for [NotificationManager].
   late final NotificationManagerFlutterApiImpl notificationManagerFlutterApi;
 
@@ -61,9 +102,16 @@ class AndroidPermissionHandlerFlutterApis {
     if (!_haveBeenSetUp) {
       ActivityFlutterApi.setup(activityFlutterApi);
       ContextFlutterApi.setup(contextFlutterApi);
+      UriFlutterApi.setup(uriFlutterApi);
       PowerManagerFlutterApi.setup(powerManagerFlutterApi);
       AlarmManagerFlutterApi.setup(alarmManagerFlutterApi);
       PackageManagerFlutterApi.setup(packageManagerFlutterApi);
+      PackageInfoFlutterApi.setup(packageInfoFlutterApi);
+      PackageInfoFlagsFlutterApi.setup(packageInfoFlagsFlutterApi);
+      ResolveInfoFlagsFlutterApi.setup(resolveInfoFlagsFlutterApi);
+      ResolveInfoFlutterApi.setup(resolveInfoFlutterApi);
+      ComponentInfoFlagsFlutterApi.setup(componentInfoFlagsFlutterApi);
+      ApplicationInfoFlagsFlutterApi.setup(applicationInfoFlagsFlutterApi);
       NotificationManagerFlutterApi.setup(notificationManagerFlutterApi);
 
       _haveBeenSetUp = true;
@@ -321,13 +369,12 @@ class UriHostApiImpl extends UriHostApi {
   /// Creates a Uri which parses the given encoded URI string.
   ///
   /// See https://developer.android.com/reference/android/net/Uri#parse(java.lang.String).
-  void parseFromInstance(
-    Uri uriInstance,
+  Future<Uri> parseFromClass(
     String uriString,
   ) async {
-    final String instanceId =
-        instanceManager.addDartCreatedInstance(uriInstance);
-    await parse(instanceId, uriString);
+    final String instanceId = await parse(uriString);
+
+    return instanceManager.getInstanceWithWeakReference(instanceId) as Uri;
   }
 
   /// Returns the encoded string representation of this URI.
@@ -339,6 +386,31 @@ class UriHostApiImpl extends UriHostApi {
     Uri uriInstance,
   ) {
     return toStringAsync(instanceManager.getIdentifier(uriInstance)!);
+  }
+}
+
+/// Flutter API implementation of Uri.
+class UriFlutterApiImpl extends UriFlutterApi {
+  /// Constructs a new instance of [UriFlutterApiImpl].
+  UriFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final Uri uri = Uri.detached();
+    _instanceManager.addHostCreatedInstance(
+      uri,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
   }
 }
 
@@ -459,11 +531,15 @@ class PowerManagerHostApiImpl extends PowerManagerHostApi {
     PowerManager powerManager,
     String packageName,
   ) async {
-    return await Build.version.sdkInt >= Build.versionCodes.m &&
-        await isIgnoringBatteryOptimizations(
-          instanceManager.getIdentifier(powerManager)!,
-          packageName,
-        );
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return false;
+    }
+
+    return await isIgnoringBatteryOptimizations(
+      instanceManager.getIdentifier(powerManager)!,
+      packageName,
+    );
   }
 }
 
@@ -535,6 +611,11 @@ class AlarmManagerHostApiImpl extends AlarmManagerHostApi {
   Future<bool> canScheduleExactAlarmsFromInstance(
     AlarmManager alarmManager,
   ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.s) {
+      return true;
+    }
+
     return await canScheduleExactAlarms(
       instanceManager.getIdentifier(alarmManager)!,
     );
@@ -589,10 +670,118 @@ class PackageManagerHostApiImpl extends PackageManagerHostApi {
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#canRequestPackageInstalls().
   Future<bool> canRequestPackageInstallsFromInstance(
     PackageManager packageManager,
-  ) {
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return true;
+    }
+
     return canRequestPackageInstalls(
       instanceManager.getIdentifier(packageManager)!,
     );
+  }
+
+  /// Retrieve overall information about an application package that is installed on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getPackageInfo(java.lang.String,%20android.content.pm.PackageManager.PackageInfoFlags).
+  Future<PackageInfo?> getPackageInfoWithFlagsFromInstance(
+    PackageManager packageManager,
+    String packageName,
+    int flags,
+  ) async {
+    final String? instanceId = await getPackageInfoWithFlags(
+      instanceManager.getIdentifier(packageManager)!,
+      packageName,
+      flags,
+    );
+
+    if (instanceId == null) {
+      return null;
+    }
+    return instanceManager.getInstanceWithWeakReference(instanceId)
+        as PackageInfo;
+  }
+
+  /// Retrieve overall information about an application package that is installed on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getPackageInfo(java.lang.String,%20android.content.pm.PackageManager.PackageInfoFlags).
+  Future<PackageInfo?> getPackageInfoWithInfoFlagsFromInstance(
+    PackageManager packageManager,
+    String packageName,
+    PackageInfoFlags flags,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.tiramisu) {
+      return null;
+    }
+
+    final String? instanceId = await getPackageInfoWithInfoFlags(
+      instanceManager.getIdentifier(packageManager)!,
+      packageName,
+      instanceManager.getIdentifier(flags)!,
+    );
+
+    if (instanceId == null) {
+      return null;
+    }
+    return instanceManager.getInstanceWithWeakReference(instanceId)
+        as PackageInfo;
+  }
+
+  /// Check whether the given feature name is one of the available features as returned by getSystemAvailableFeatures().
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#hasSystemFeature(java.lang.String).
+  Future<bool> hasSystemFeatureFromInstance(
+    PackageManager packageManager,
+    String featureName,
+  ) {
+    return hasSystemFeature(
+      instanceManager.getIdentifier(packageManager)!,
+      featureName,
+    );
+  }
+
+  /// Retrieve all activities that can be performed for the given intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20int).
+  Future<List<ResolveInfo>> queryIntentActivitiesWithFlagsFromInstance(
+    PackageManager packageManager,
+    Intent intent,
+    int flags,
+  ) async {
+    return (await queryIntentActivitiesWithFlags(
+      instanceManager.getIdentifier(packageManager)!,
+      instanceManager.getIdentifier(intent)!,
+      flags,
+    ))
+        .whereType<String>()
+        .map((String instanceId) => instanceManager
+            .getInstanceWithWeakReference(instanceId) as ResolveInfo)
+        .toList();
+  }
+
+  /// Retrieve all activities that can be performed for the given intent.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20android.content.pm.PackageManager.ResolveInfoFlags).
+  Future<List<ResolveInfo>> queryIntentActivitiesWithInfoFlagsFromInstance(
+    PackageManager packageManager,
+    Intent intent,
+    ResolveInfoFlags resolveInfoFlags,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.tiramisu) {
+      return [];
+    }
+
+    return (await queryIntentActivitiesWithInfoFlags(
+      instanceManager.getIdentifier(packageManager)!,
+      instanceManager.getIdentifier(intent)!,
+      instanceManager.getIdentifier(resolveInfoFlags)!,
+    ))
+        .whereType<String>()
+        .map((String instanceId) => instanceManager
+            .getInstanceWithWeakReference(instanceId) as ResolveInfo)
+        .toList();
   }
 }
 
@@ -651,7 +840,12 @@ class SettingsHostApiImpl extends SettingsHostApi {
   /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
   Future<bool> canDrawOverlaysFromInstance(
     Context context,
-  ) {
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return true;
+    }
+
     return canDrawOverlays(
       instanceManager.getIdentifier(context)!,
     );
@@ -687,7 +881,12 @@ class NotificationManagerHostApiImpl extends NotificationManagerHostApi {
   /// See https://developer.android.com/reference/android/app/NotificationManager#isNotificationPolicyAccessGranted().
   Future<bool> isNotificationPolicyAccessGrantedFromInstance(
     NotificationManager notificationManager,
-  ) {
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.m) {
+      return true;
+    }
+
     return isNotificationPolicyAccessGranted(
       instanceManager.getIdentifier(notificationManager)!,
     );
@@ -698,7 +897,12 @@ class NotificationManagerHostApiImpl extends NotificationManagerHostApi {
   /// See https://developer.android.com/reference/android/app/NotificationManager#areNotificationsEnabled().
   Future<bool> areNotificationsEnabledFromInstance(
     NotificationManager notificationManager,
-  ) {
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.n) {
+      return true;
+    }
+
     return areNotificationsEnabled(
       instanceManager.getIdentifier(notificationManager)!,
     );
@@ -748,4 +952,336 @@ class EnvironmentHostApiImpl extends EnvironmentHostApi {
 
   /// Maintains instances stored to communicate with native language objects.
   final InstanceManager instanceManager;
+}
+
+/// Host API implementation of PackageInfoFlags.
+class PackageInfoFlagsHostApiImpl extends PackageInfoFlagsHostApi {
+  /// Creates a new instance of [PackageInfoFlagsHostApiImpl].
+  PackageInfoFlagsHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.PackageInfoFlags#of(long).
+  Future<PackageInfoFlags> ofFromClass(
+    int value,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.tiramisu) {
+      throw UnsupportedError(
+        'ApplicationInfoFlags.of() is only supported on Android 13 and above.',
+      );
+    }
+
+    final String instanceId = await of(value);
+    final PackageInfoFlags flags = instanceManager
+        .getInstanceWithWeakReference(instanceId) as PackageInfoFlags;
+    return flags;
+  }
+}
+
+/// Flutter API implementation of PackageInfoFlags.
+class PackageInfoFlagsFlutterApiImpl extends PackageInfoFlagsFlutterApi {
+  /// Constructs a new instance of [PackageInfoFlagsFlutterApiImpl].
+  PackageInfoFlagsFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final PackageInfoFlags packageInfoFlags = PackageInfoFlags.detached();
+    _instanceManager.addHostCreatedInstance(
+      packageInfoFlags,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of PackageInfoFlags.
+class ResolveInfoFlagsHostApiImpl extends ResolveInfoFlagsHostApi {
+  /// Creates a new instance of [ResolveInfoFlagsHostApiImpl].
+  ResolveInfoFlagsHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ResolveInfoFlags#of(long).
+  Future<ResolveInfoFlags> ofFromClass(
+    int value,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.tiramisu) {
+      throw UnsupportedError(
+        'ApplicationInfoFlags.of() is only supported on Android 13 and above.',
+      );
+    }
+
+    final String instanceId = await of(value);
+    final ResolveInfoFlags flags = instanceManager
+        .getInstanceWithWeakReference(instanceId) as ResolveInfoFlags;
+    return flags;
+  }
+}
+
+/// Flutter API implementation of ResolveInfoFlags.
+class ResolveInfoFlagsFlutterApiImpl extends ResolveInfoFlagsFlutterApi {
+  /// Constructs a new instance of [ResolveInfoFlagsFlutterApiImpl].
+  ResolveInfoFlagsFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final ResolveInfoFlags resolveInfoFlags = ResolveInfoFlags.detached();
+    _instanceManager.addHostCreatedInstance(
+      resolveInfoFlags,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of ApplicationInfoFlags.
+class ApplicationInfoFlagsHostApiImpl extends ApplicationInfoFlagsHostApi {
+  /// Creates a new instance of [ApplicationInfoFlagsHostApiImpl].
+  ApplicationInfoFlagsHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ApplicationInfoFlags#of(long).
+  Future<ApplicationInfoFlags> ofFromClass(
+    int value,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.tiramisu) {
+      throw UnsupportedError(
+        'ApplicationInfoFlags.of() is only supported on Android 13 and above.',
+      );
+    }
+
+    final String instanceId = await of(value);
+    final ApplicationInfoFlags flags = instanceManager
+        .getInstanceWithWeakReference(instanceId) as ApplicationInfoFlags;
+    return flags;
+  }
+}
+
+/// Flutter API implementation of ApplicationInfoFlags.
+class ApplicationInfoFlagsFlutterApiImpl
+    extends ApplicationInfoFlagsFlutterApi {
+  /// Constructs a new instance of [ApplicationInfoFlagsFlutterApiImpl].
+  ApplicationInfoFlagsFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final ApplicationInfoFlags applicationInfoFlags =
+        ApplicationInfoFlags.detached();
+    _instanceManager.addHostCreatedInstance(
+      applicationInfoFlags,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of ComponentInfoFlags.
+class ComponentInfoFlagsHostApiImpl extends ComponentInfoFlagsHostApi {
+  /// Creates a new instance of [ComponentInfoFlagsHostApiImpl].
+  ComponentInfoFlagsHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager.ComponentInfoFlags#of(long).
+  Future<ComponentInfoFlags> ofFromClass(
+    int value,
+  ) async {
+    final int sdkVersion = await Build.version.sdkInt;
+    if (sdkVersion < Build.versionCodes.tiramisu) {
+      throw UnsupportedError(
+        'ApplicationInfoFlags.of() is only supported on Android 13 and above.',
+      );
+    }
+
+    final String instanceId = await of(value);
+    final ComponentInfoFlags flags = instanceManager
+        .getInstanceWithWeakReference(instanceId) as ComponentInfoFlags;
+    return flags;
+  }
+}
+
+/// Flutter API implementation of ComponentInfoFlags.
+class ComponentInfoFlagsFlutterApiImpl extends ComponentInfoFlagsFlutterApi {
+  /// Constructs a new instance of [ComponentInfoFlagsFlutterApiImpl].
+  ComponentInfoFlagsFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final ComponentInfoFlags componentInfoFlags = ComponentInfoFlags.detached();
+    _instanceManager.addHostCreatedInstance(
+      componentInfoFlags,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of PackageInfo.
+class PackageInfoHostApiImpl extends PackageInfoHostApi {
+  /// Creates a new instance of [PackageInfoHostApiImpl].
+  PackageInfoHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Array of all <uses-permission> tags included under <manifest>, or null if there were none.
+  ///
+  /// This is only filled in if the flag PackageManager#GET_PERMISSIONS was set.
+  /// This list includes all permissions requested, even those that were not
+  /// granted or known by the system at install time.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageInfo#requestedPermissions.
+  Future<List<String>> getRequestedPermissionsFromInstance(
+    PackageInfo packageInfo,
+  ) async {
+    return (await getRequestedPermissions(
+      instanceManager.getIdentifier(packageInfo)!,
+    ))
+        .whereType<String>()
+        .toList();
+  }
+}
+
+/// Flutter API implementation of PackageInfo.
+class PackageInfoFlutterApiImpl extends PackageInfoFlutterApi {
+  /// Constructs a new instance of [PackageInfoFlutterApiImpl].
+  PackageInfoFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final PackageInfo packageInfo = PackageInfo.detached();
+    _instanceManager.addHostCreatedInstance(
+      packageInfo,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Flutter API implementation of ResolveInfo.
+class ResolveInfoFlutterApiImpl extends ResolveInfoFlutterApi {
+  /// Constructs a new instance of [ResolveInfoFlutterApiImpl].
+  ResolveInfoFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final ResolveInfo resolveInfo = ResolveInfo.detached();
+    _instanceManager.addHostCreatedInstance(
+      resolveInfo,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
 }

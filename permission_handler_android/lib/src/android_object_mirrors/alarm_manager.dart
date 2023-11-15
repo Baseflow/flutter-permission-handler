@@ -2,8 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 import 'package:permission_handler_android/src/android_permission_handler_api_impls.dart';
 
-import 'build.dart';
-
 /// This class provides access to the system alarm services.
 ///
 /// These allow you to schedule your application to be run at some point in the
@@ -28,7 +26,10 @@ class AlarmManager extends JavaObject {
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final AlarmManagerHostApiImpl _hostApi;
 
@@ -38,12 +39,7 @@ class AlarmManager extends JavaObject {
   /// [Build.versionCodes.s].
   ///
   /// See https://developer.android.com/reference/android/app/AlarmManager#canScheduleExactAlarms().
-  Future<bool> canScheduleExactAlarms() async {
-    final int sdkVersion = await Build.version.sdkInt;
-    if (sdkVersion < Build.versionCodes.s) {
-      return true;
-    }
-
+  Future<bool> canScheduleExactAlarms() {
     return _hostApi.canScheduleExactAlarmsFromInstance(this);
   }
 }

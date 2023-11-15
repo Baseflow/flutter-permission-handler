@@ -13,8 +13,8 @@ import '../android_permission_handler_api_impls.dart';
 ///
 /// See https://developer.android.com/reference/android/content/Context.
 class Context extends JavaObject {
-  /// Instantiates an [Context] without creating and attaching to an instance
-  /// of the associated native class.
+  /// Instantiates a [Context] without creating and attaching to an instance of
+  /// the associated native class.
   Context.detached({
     InstanceManager? instanceManager,
     BinaryMessenger? binaryMessenger,

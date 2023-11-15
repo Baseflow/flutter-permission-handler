@@ -102,12 +102,7 @@ class Settings {
   /// See https://developer.android.com/reference/android/provider/Settings#canDrawOverlays(android.content.Context).
   static Future<bool> canDrawOverlays(
     Context context,
-  ) async {
-    final int sdkVersion = await Build.version.sdkInt;
-    if (sdkVersion < Build.versionCodes.m) {
-      return true;
-    }
-
+  ) {
     return _hostApi.canDrawOverlaysFromInstance(
       context,
     );

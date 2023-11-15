@@ -9,8 +9,6 @@ import com.baseflow.permissionhandler.PermissionHandlerPigeon.UriHostApi;
 
 import java.util.UUID;
 
-import io.flutter.plugin.common.BinaryMessenger;
-
 /**
  * Host API implementation for `Uri`.
  *
@@ -18,34 +16,32 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class UriHostApiImpl implements UriHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
+
+    private final UriFlutterApiImpl flutterApi;
 
     /**
      * Constructs an {@link UriHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public UriHostApiImpl(
-        @NonNull BinaryMessenger binaryMessenger,
+        @NonNull UriFlutterApiImpl flutterApi,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
+        this.flutterApi = flutterApi;
         this.instanceManager = instanceManager;
     }
 
     @Override
-    public void parse(
-        @NonNull String instanceId,
+    @NonNull
+    public String parse(
         @NonNull String uriString
     ) {
         final Uri uri = Uri.parse(uriString);
-        final UUID instanceUuid = UUID.fromString(instanceId);
-        instanceManager.addDartCreatedInstance(uri, instanceUuid);
+        flutterApi.create(uri);
+        final UUID instanceId = instanceManager.getIdentifierForStrongReference(uri);
+        return instanceId.toString();
     }
 
     @Override

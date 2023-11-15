@@ -139,7 +139,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
       Intent()
         ..setAction(action)
         ..setData(
-          Uri.parse(
+          await Uri.parse(
             'package:${await _activityManager.applicationContext.getPackageName()}',
           ),
         ),
@@ -153,7 +153,7 @@ class PermissionHandlerAndroid extends PermissionHandlerPlatform {
     final Context applicationContext = _activityManager.applicationContext;
 
     final String packageName = await applicationContext.getPackageName();
-    final Uri uri = Uri.parse('package:$packageName');
+    final Uri uri = await Uri.parse('package:$packageName');
 
     final Intent intent = Intent();
     intent.setAction(Settings.actionApplicationDetailsSettings);

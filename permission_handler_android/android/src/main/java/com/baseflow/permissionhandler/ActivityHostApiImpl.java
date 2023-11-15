@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.PluginRegistry;
 
 /**
@@ -47,10 +46,6 @@ public class ActivityHostApiImpl implements
      */
     static final int DEFAULT_REQUEST_CODE_ACTIVITY_FOR_RESULT = 834370754;
 
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     /**
@@ -72,14 +67,11 @@ public class ActivityHostApiImpl implements
     /**
      * Constructs an {@link ActivityHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ActivityHostApiImpl(
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 

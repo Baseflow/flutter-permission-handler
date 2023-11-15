@@ -2,8 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 import 'package:permission_handler_android/src/android_permission_handler_api_impls.dart';
 
-import 'build.dart';
-
 /// Class to notify the user of events that happen.
 ///
 /// This is how you tell the user that something has happened in the background.
@@ -19,7 +17,10 @@ class NotificationManager extends JavaObject {
           binaryMessenger: binaryMessenger,
           instanceManager: instanceManager,
         ),
-        super.detached();
+        super.detached(
+          binaryMessenger: binaryMessenger,
+          instanceManager: instanceManager,
+        );
 
   final NotificationManagerHostApiImpl _hostApi;
 
@@ -32,24 +33,14 @@ class NotificationManager extends JavaObject {
   /// [Settings.actionNotificationPolicyAccessSettings].
   ///
   /// See https://developer.android.com/reference/android/app/NotificationManager#isNotificationPolicyAccessGranted().
-  Future<bool> isNotificationPolicyAccessGranted() async {
-    final int sdkVersion = await Build.version.sdkInt;
-    if (sdkVersion < Build.versionCodes.m) {
-      return true;
-    }
-
+  Future<bool> isNotificationPolicyAccessGranted() {
     return _hostApi.isNotificationPolicyAccessGrantedFromInstance(this);
   }
 
   /// Returns whether notifications from the calling package are enabled.
   ///
   /// See https://developer.android.com/reference/android/app/NotificationManager#areNotificationsEnabled().
-  Future<bool> areNotificationsEnabled() async {
-    final int sdkVersion = await Build.version.sdkInt;
-    if (sdkVersion < Build.versionCodes.n) {
-      return true;
-    }
-
+  Future<bool> areNotificationsEnabled() {
     return _hostApi.areNotificationsEnabledFromInstance(this);
   }
 }
