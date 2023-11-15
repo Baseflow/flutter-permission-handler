@@ -63,61 +63,58 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         JavaObjectHostApi.setup(binaryMessenger, javaObjectHostApi);
 
         final UriFlutterApiImpl uriFlutterApi = new UriFlutterApiImpl(binaryMessenger, instanceManager);
-        final UriHostApi uriHostApi = new UriHostApiImpl(uriFlutterApi, binaryMessenger, instanceManager);
+        final UriHostApi uriHostApi = new UriHostApiImpl(uriFlutterApi, instanceManager);
         UriHostApi.setup(binaryMessenger, uriHostApi);
 
-        final IntentHostApi intentHostApi = new IntentHostApiImpl(binaryMessenger, instanceManager);
+        final IntentHostApi intentHostApi = new IntentHostApiImpl(instanceManager);
         IntentHostApi.setup(binaryMessenger, intentHostApi);
 
         final PowerManagerFlutterApiImpl powerManagerFlutterApi = new PowerManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final PowerManagerHostApi powerManagerHostApi = new PowerManagerHostApiImpl(binaryMessenger, instanceManager);
+        final PowerManagerHostApi powerManagerHostApi = new PowerManagerHostApiImpl(instanceManager);
         PowerManagerHostApi.setup(binaryMessenger, powerManagerHostApi);
 
         final AlarmManagerFlutterApiImpl alarmManagerFlutterApi = new AlarmManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final AlarmManagerHostApi alarmManagerHostApi = new AlarmManagerHostApiImpl(binaryMessenger, instanceManager);
+        final AlarmManagerHostApi alarmManagerHostApi = new AlarmManagerHostApiImpl(instanceManager);
         AlarmManagerHostApi.setup(binaryMessenger, alarmManagerHostApi);
 
         final PackageInfoFlagsFlutterApiImpl packageInfoFlagsFlutterApi = new PackageInfoFlagsFlutterApiImpl(binaryMessenger, instanceManager);
-        final PackageInfoFlagsHostApi packageInfoFlagsHostApi = new PackageInfoFlagsHostApiImpl(packageInfoFlagsFlutterApi, binaryMessenger, instanceManager);
+        final PackageInfoFlagsHostApi packageInfoFlagsHostApi = new PackageInfoFlagsHostApiImpl(packageInfoFlagsFlutterApi, instanceManager);
         PackageInfoFlagsHostApi.setup(binaryMessenger, packageInfoFlagsHostApi);
 
         final ResolveInfoFlagsFlutterApiImpl resolveInfoFlagsFlutterApi = new ResolveInfoFlagsFlutterApiImpl(binaryMessenger, instanceManager);
-        final ResolveInfoFlagsHostApi resolveInfoFlagsHostApi = new ResolveInfoFlagsHostApiImpl(resolveInfoFlagsFlutterApi, binaryMessenger, instanceManager);
+        final ResolveInfoFlagsHostApi resolveInfoFlagsHostApi = new ResolveInfoFlagsHostApiImpl(resolveInfoFlagsFlutterApi, instanceManager);
         ResolveInfoFlagsHostApi.setup(binaryMessenger, resolveInfoFlagsHostApi);
 
         final ResolveInfoFlutterApiImpl resolveInfoFlutterApi = new ResolveInfoFlutterApiImpl(binaryMessenger, instanceManager);
 
         final ComponentInfoFlagsFlutterApiImpl componentInfoFlagsFlutterApi = new ComponentInfoFlagsFlutterApiImpl(binaryMessenger, instanceManager);
-        final ComponentInfoFlagsHostApi componentInfoFlagsHostApi = new ComponentInfoFlagsHostApiImpl(componentInfoFlagsFlutterApi, binaryMessenger, instanceManager);
+        final ComponentInfoFlagsHostApi componentInfoFlagsHostApi = new ComponentInfoFlagsHostApiImpl(componentInfoFlagsFlutterApi, instanceManager);
         ComponentInfoFlagsHostApi.setup(binaryMessenger, componentInfoFlagsHostApi);
 
         final ApplicationInfoFlagsFlutterApiImpl applicationInfoFlagsFlutterApi = new ApplicationInfoFlagsFlutterApiImpl(binaryMessenger, instanceManager);
-        final ApplicationInfoFlagsHostApi applicationInfoFlagsHostApi = new ApplicationInfoFlagsHostApiImpl(applicationInfoFlagsFlutterApi, binaryMessenger, instanceManager);
+        final ApplicationInfoFlagsHostApi applicationInfoFlagsHostApi = new ApplicationInfoFlagsHostApiImpl(applicationInfoFlagsFlutterApi, instanceManager);
         ApplicationInfoFlagsHostApi.setup(binaryMessenger, applicationInfoFlagsHostApi);
 
         final PackageInfoFlutterApiImpl packageInfoFlutterApi = new PackageInfoFlutterApiImpl(binaryMessenger, instanceManager);
-        final PackageInfoHostApi packageInfoHostApi = new PackageInfoHostApiImpl(binaryMessenger, instanceManager);
+        final PackageInfoHostApi packageInfoHostApi = new PackageInfoHostApiImpl(instanceManager);
         PackageInfoHostApi.setup(binaryMessenger, packageInfoHostApi);
 
         final PackageManagerFlutterApiImpl packageManagerFlutterApi = new PackageManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(packageInfoFlutterApi, resolveInfoFlutterApi, binaryMessenger, instanceManager);
+        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(packageInfoFlutterApi, resolveInfoFlutterApi, instanceManager);
         PackageManagerHostApi.setup(binaryMessenger, packageManagerHostApi);
 
-        final SettingsHostApi settingsHostApi = new SettingsHostApiImpl(binaryMessenger, instanceManager);
+        final SettingsHostApi settingsHostApi = new SettingsHostApiImpl(instanceManager);
         SettingsHostApi.setup(binaryMessenger, settingsHostApi);
 
         final NotificationManagerFlutterApiImpl notificationManagerFlutterApi = new NotificationManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final NotificationManagerHostApi notificationManagerHostApi = new NotificationManagerHostApiImpl(binaryMessenger, instanceManager);
+        final NotificationManagerHostApi notificationManagerHostApi = new NotificationManagerHostApiImpl(instanceManager);
         NotificationManagerHostApi.setup(binaryMessenger, notificationManagerHostApi);
 
-        final EnvironmentHostApi environmentHostApi = new EnvironmentHostApiImpl(binaryMessenger, instanceManager);
+        final EnvironmentHostApi environmentHostApi = new EnvironmentHostApiImpl(instanceManager);
         EnvironmentHostApi.setup(binaryMessenger, environmentHostApi);
 
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
-        activityHostApi = new ActivityHostApiImpl(
-            binaryMessenger,
-            instanceManager
-        );
+        activityHostApi = new ActivityHostApiImpl(instanceManager);
         ActivityHostApi.setup(binaryMessenger, activityHostApi);
 
         contextFlutterApi = new ContextFlutterApiImpl(binaryMessenger, instanceManager);
@@ -126,7 +123,6 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
             alarmManagerFlutterApi,
             packageManagerFlutterApi,
             notificationManagerFlutterApi,
-            binaryMessenger,
             instanceManager
         );
         ContextHostApi.setup(binaryMessenger, contextHostApi);

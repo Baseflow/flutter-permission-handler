@@ -9,8 +9,6 @@ import androidx.annotation.RequiresApi;
 import com.baseflow.instancemanager.InstanceManager;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ComponentInfoFlagsHostApi;
 
-import io.flutter.plugin.common.BinaryMessenger;
-
 /**
  * Host API implementation for `ComponentInfoFlags`.
  *
@@ -18,10 +16,6 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class ComponentInfoFlagsHostApiImpl implements ComponentInfoFlagsHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final ComponentInfoFlagsFlutterApiImpl flutterApi;
@@ -29,16 +23,13 @@ public class ComponentInfoFlagsHostApiImpl implements ComponentInfoFlagsHostApi 
     /**
      * Constructs an {@link ComponentInfoFlagsHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public ComponentInfoFlagsHostApiImpl(
         @NonNull ComponentInfoFlagsFlutterApiImpl flutterApi,
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.flutterApi = flutterApi;
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 

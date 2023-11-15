@@ -9,8 +9,6 @@ import androidx.annotation.RequiresApi;
 import com.baseflow.instancemanager.InstanceManager;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PackageInfoFlagsHostApi;
 
-import io.flutter.plugin.common.BinaryMessenger;
-
 /**
  * Host API implementation for `PackageInfoFlags`.
  *
@@ -18,10 +16,6 @@ import io.flutter.plugin.common.BinaryMessenger;
  * Dart instance or handle method calls on the associated native class or an instance of the class.
  */
 public class PackageInfoFlagsHostApiImpl implements PackageInfoFlagsHostApi {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final PackageInfoFlagsFlutterApiImpl flutterApi;
@@ -29,16 +23,13 @@ public class PackageInfoFlagsHostApiImpl implements PackageInfoFlagsHostApi {
     /**
      * Constructs an {@link PackageInfoFlagsHostApiImpl}.
      *
-     * @param binaryMessenger used to communicate with Dart over asynchronous messages
      * @param instanceManager maintains instances stored to communicate with attached Dart objects
      */
     public PackageInfoFlagsHostApiImpl(
         @NonNull PackageInfoFlagsFlutterApiImpl flutterApi,
-        @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
         this.flutterApi = flutterApi;
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
     }
 
