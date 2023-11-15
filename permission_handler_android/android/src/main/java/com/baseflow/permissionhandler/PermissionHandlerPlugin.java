@@ -106,7 +106,12 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         final FeatureInfoFlutterApiImpl featureInfoFlutterApi = new FeatureInfoFlutterApiImpl(binaryMessenger, instanceManager);
         
         final PackageManagerFlutterApiImpl packageManagerFlutterApi = new PackageManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(packageInfoFlutterApi, resolveInfoFlutterApi, instanceManager);
+        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(
+            packageInfoFlutterApi,
+            resolveInfoFlutterApi,
+            featureInfoFlutterApi,
+            instanceManager
+        );
         PackageManagerHostApi.setup(binaryMessenger, packageManagerHostApi);
 
         final SettingsHostApi settingsHostApi = new SettingsHostApiImpl(instanceManager);
@@ -120,20 +125,22 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         EnvironmentHostApi.setup(binaryMessenger, environmentHostApi);
 
         final TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi = new TelephonyManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final TelephonyManagerHostApi telephonyManagerHostApi = new TelephonyManagerHostApiImpl(binaryMessenger, instanceManager);
+        final TelephonyManagerHostApi telephonyManagerHostApi = new TelephonyManagerHostApiImpl(instanceManager);
         TelephonyManagerHostApi.setup(binaryMessenger, telephonyManagerHostApi);
 
         final LocationManagerFlutterApiImpl locationManagerFlutterApi = new LocationManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final LocationManagerHostApi locationManagerHostApi = new LocationManagerHostApiImpl(binaryMessenger, instanceManager);
+        final LocationManagerHostApi locationManagerHostApi = new LocationManagerHostApiImpl(instanceManager);
         LocationManagerHostApi.setup(binaryMessenger, locationManagerHostApi);
 
         final BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi = new BluetoothAdapterFlutterApiImpl(binaryMessenger, instanceManager);
-        final BluetoothAdapterHostApi bluetoothAdapterHostApi = new BluetoothAdapterHostApiImpl(bluetoothAdapterFlutterApi, binaryMessenger, instanceManager);
+        final BluetoothAdapterHostApi bluetoothAdapterHostApi = new BluetoothAdapterHostApiImpl(bluetoothAdapterFlutterApi, instanceManager);
         BluetoothAdapterHostApi.setup(binaryMessenger, bluetoothAdapterHostApi);
 
         final BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi = new BluetoothManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final BluetoothManagerHostApi bluetoothManagerHostApi = new BluetoothManagerHostApiImpl(bluetoothAdapterFlutterApi, binaryMessenger, instanceManager);
+        final BluetoothManagerHostApi bluetoothManagerHostApi = new BluetoothManagerHostApiImpl(bluetoothAdapterFlutterApi, instanceManager);
         BluetoothManagerHostApi.setup(binaryMessenger, bluetoothManagerHostApi);
+
+        final ContentResolverFlutterApiImpl contentResolverFlutterApi = new ContentResolverFlutterApiImpl(binaryMessenger, instanceManager);
 
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
         activityHostApi = new ActivityHostApiImpl(instanceManager);

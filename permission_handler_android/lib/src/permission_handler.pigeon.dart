@@ -2727,3 +2727,61 @@ abstract class BluetoothManagerFlutterApi {
     }
   }
 }
+
+/// Flutter API for `ContentResolver`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/ContentResolver.
+abstract class ContentResolverFlutterApi {
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+
+  static void setup(ContentResolverFlutterApi? api, {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.create', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.create was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.create was null, expected non-null String.');
+          api.create(arg_instanceId!);
+          return;
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.dispose', codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        channel.setMessageHandler(null);
+      } else {
+        channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.dispose was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_instanceId = (args[0] as String?);
+          assert(arg_instanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.dispose was null, expected non-null String.');
+          api.dispose(arg_instanceId!);
+          return;
+        });
+      }
+    }
+  }
+}

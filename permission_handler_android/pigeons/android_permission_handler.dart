@@ -876,3 +876,19 @@ abstract class BluetoothManagerFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 }
+
+/// Flutter API for `ContentResolver`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/ContentResolver.
+@FlutterApi()
+abstract class ContentResolverFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}

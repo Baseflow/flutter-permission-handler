@@ -26,6 +26,7 @@ class AndroidPermissionHandlerFlutterApis {
     LocationManagerFlutterApiImpl? locationManagerFlutterApi,
     BluetoothAdapterFlutterApiImpl? bluetoothAdapterFlutterApi,
     BluetoothManagerFlutterApiImpl? bluetoothManagerFlutterApi,
+    ContentResolverFlutterApiImpl? contentResolverFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -60,6 +61,8 @@ class AndroidPermissionHandlerFlutterApis {
         bluetoothAdapterFlutterApi ?? BluetoothAdapterFlutterApiImpl();
     this.bluetoothManagerFlutterApi =
         bluetoothManagerFlutterApi ?? BluetoothManagerFlutterApiImpl();
+    this.contentResolverFlutterApi =
+        contentResolverFlutterApi ?? ContentResolverFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -127,6 +130,9 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [BluetoothManager].
   late final BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi;
 
+  /// Flutter API for [ContentResolver].
+  late final ContentResolverFlutterApiImpl contentResolverFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -148,6 +154,7 @@ class AndroidPermissionHandlerFlutterApis {
       LocationManagerFlutterApi.setup(locationManagerFlutterApi);
       BluetoothAdapterFlutterApi.setup(bluetoothAdapterFlutterApi);
       BluetoothManagerFlutterApi.setup(bluetoothManagerFlutterApi);
+      ContentResolverFlutterApi.setup(contentResolverFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -1609,6 +1616,31 @@ class BluetoothManagerFlutterApiImpl extends BluetoothManagerFlutterApi {
     final BluetoothManager bluetoothManager = BluetoothManager.detached();
     _instanceManager.addHostCreatedInstance(
       bluetoothManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Flutter API implementation of ContentResolver.
+class ContentResolverFlutterApiImpl extends ContentResolverFlutterApi {
+  /// Constructs a new instance of [ContentResolverFlutterApiImpl].
+  ContentResolverFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final ContentResolver contentResolver = ContentResolver.detached();
+    _instanceManager.addHostCreatedInstance(
+      contentResolver,
       instanceId,
     );
   }
