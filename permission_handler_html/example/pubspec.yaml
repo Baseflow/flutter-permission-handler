@@ -1,5 +1,5 @@
 name: permission_handler_html_example
-description: Demonstrates how to use the permission_handler_web plugin..
+description: Demonstrates how to use the permission_handler_html plugin.
 
 environment:
   sdk: ">=3.0.5 <4.0.0"
