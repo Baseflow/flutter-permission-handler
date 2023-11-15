@@ -45,8 +45,11 @@ post_install do |installer|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
 
-        ## dart: PermissionGroup.calendar
+        ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (until iOS 16)]
         'PERMISSION_EVENTS=1',
+        
+        ## dart: [PermissionGroup.calendarFullAccess, PermissionGroup.calendar (from iOS 17)]
+       'PERMISSION_EVENTS_FULL_ACCESS=1',
 
         ## dart: PermissionGroup.reminders
         'PERMISSION_REMINDERS=1',
@@ -86,9 +89,6 @@ post_install do |installer|
 
         ## dart: PermissionGroup.criticalAlerts
         'PERMISSION_CRITICAL_ALERTS=1',
-        
-         ## dart: PermissionGroup.calendarFullAccess
-        'PERMISSION_EVENTS_FULL_ACCESS=1',
       ]
 
     end

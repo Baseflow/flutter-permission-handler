@@ -105,7 +105,5 @@
     <true/>
     <key>UIApplicationSupportsIndirectInputEvents</key>
     <true/>
-	<key>NSCalendarsFullAccessUsageDescription</key>
-	<string>Calendar full access</string>
 </dict>
 </plist>
