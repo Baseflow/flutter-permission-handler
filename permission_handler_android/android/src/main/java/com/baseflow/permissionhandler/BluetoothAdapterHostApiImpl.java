@@ -34,6 +34,7 @@ public class BluetoothAdapterHostApiImpl implements BluetoothAdapterHostApi {
         this.instanceManager = instanceManager;
     }
 
+    @Deprecated
     @NonNull
     @Override
     public String getDefaultAdapter() {

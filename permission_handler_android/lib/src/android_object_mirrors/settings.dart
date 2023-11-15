@@ -130,35 +130,35 @@ class _Secure {
   /// Constant Value: "location_mode".
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE.
-  static String get locationMode => 'location_mode';
+  String get locationMode => 'location_mode';
 
   /// This mode no longer has any distinct meaning, but is interpreted as the location mode is on.
   ///
   /// Constant Value: 2 (0x00000002).
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_BATTERY_SAVING.
-  static int get locationModeBatterySaving => 2;
+  int get locationModeBatterySaving => 2;
 
   /// This mode no longer has any distinct meaning, but is interpreted as the location mode is on.
   ///
   /// Constant Value: 3 (0x00000003).
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_HIGH_ACCURACY.
-  static int get locationModeHighAccuracy => 3;
+  int get locationModeHighAccuracy => 3;
 
   /// Location mode is off.
   ///
   /// Constant Value: 0 (0x00000000).
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_OFF.
-  static int get locationModeOff => 0;
+  int get locationModeOff => 0;
 
   /// This mode no longer has any distinct meaning, but is interpreted as the location mode is on.
   ///
   /// Constant Value: 1 (0x00000001).
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_SENSORS_ONLY.
-  static int get locationModeSensorsOnly => 1;
+  int get locationModeSensorsOnly => 1;
 
   /// Comma-separated list of location providers that are enabled.
   ///
@@ -174,7 +174,7 @@ class _Secure {
   /// Constant Value: "location_providers_allowed".
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_PROVIDERS_ALLOWED.
-  static String get locationProvidersAllowed => 'location_providers_allowed';
+  String get locationProvidersAllowed => 'location_providers_allowed';
 
   /// Convenience function for retrieving a single secure settings value as an integer.
   ///
@@ -185,7 +185,7 @@ class _Secure {
   /// set, or the string value is not a number, it returns null.
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
-  static Future<int?> getInt(
+  Future<int?> getInt(
     ContentResolver contentResolver,
     String name,
   ) {
@@ -201,7 +201,7 @@ class _Secure {
   /// integer.
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
-  static Future<int> getIntWithDefault(
+  Future<int> getIntWithDefault(
     ContentResolver contentResolver,
     String name,
     int defaultValue,
@@ -216,7 +216,7 @@ class _Secure {
   /// Look up a name in the database.
   ///
   /// See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
-  static Future<String?> getString(
+  Future<String?> getString(
     ContentResolver contentResolver,
     String name,
   ) async {
