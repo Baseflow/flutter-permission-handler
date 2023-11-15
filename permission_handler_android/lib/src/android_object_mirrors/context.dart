@@ -48,6 +48,24 @@ class Context extends JavaObject {
   /// See https://developer.android.com/reference/android/content/Context.html#NOTIFICATION_SERVICE.
   static const String notificationService = 'notification';
 
+  /// Use with [Context.getSystemService] to retrieve a [TelephonyManager] for
+  /// handling management the telephony features of the device.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#TELEPHONY_SERVICE.
+  static const String telephonyService = 'phone';
+
+  /// Use with [Context.getSystemService] to retrieve a [LocationManager] for
+  /// controlling location updates.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#LOCATION_SERVICE.
+  static const String locationService = 'location';
+
+  /// Use with [Context.getSystemService] to retrieve a [BluetoothManager] for
+  /// using Bluetooth.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#BLUETOOTH_SERVICE.
+  static const String bluetoothService = 'bluetooth';
+
   /// Determines whether the application has been granted a particular permission.
   ///
   /// See https://developer.android.com/reference/android/content/Context#checkSelfPermission(java.lang.String).
@@ -100,6 +118,15 @@ class Context extends JavaObject {
   /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
   Future<PackageManager> getPackageManager() {
     return _hostApi.getPackageManagerFromInstance(
+      this,
+    );
+  }
+
+  /// Returns a ContentResolver instance for your application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getContentResolver().
+  Future<ContentResolver> getContentResolver() {
+    return _hostApi.getContentResolverFromInstance(
       this,
     );
   }

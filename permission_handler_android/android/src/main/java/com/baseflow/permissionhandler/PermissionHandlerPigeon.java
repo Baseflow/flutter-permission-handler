@@ -509,7 +509,7 @@ public class PermissionHandlerPigeon {
      *
      * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
      */
-    @NonNull 
+    @Nullable 
     String getSystemService(@NonNull String instanceId, @NonNull String name);
     /**
      * Returns the instance ID of a PackageManager instance to find global package information.
@@ -518,6 +518,13 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     String getPackageManager(@NonNull String instanceId);
+    /**
+     * Return a ContentResolver instance for your application's package.
+     *
+     * See https://developer.android.com/reference/android/content/Context#getContentResolver().
+     */
+    @NonNull 
+    String getContentResolver(@NonNull String instanceId);
 
     /** The codec used by ContextHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -636,6 +643,30 @@ public class PermissionHandlerPigeon {
                 String instanceIdArg = (String) args.get(0);
                 try {
                   String output = api.getPackageManager(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextHostApi.getContentResolver", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  String output = api.getContentResolver(instanceIdArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {

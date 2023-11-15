@@ -143,7 +143,7 @@ abstract class ContextHostApi {
   /// Returns the instance ID of the service.
   ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  String getSystemService(
+  String? getSystemService(
     String instanceId,
     String name,
   );
@@ -152,6 +152,13 @@ abstract class ContextHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
   String getPackageManager(
+    String instanceId,
+  );
+
+  /// Return a ContentResolver instance for your application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getContentResolver().
+  String getContentResolver(
     String instanceId,
   );
 }

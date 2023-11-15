@@ -2,10 +2,15 @@ package com.baseflow.permissionhandler;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
+import android.bluetooth.BluetoothManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.PowerManager;
+import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -32,6 +37,14 @@ public class ContextHostApiImpl implements ContextHostApi {
 
     private final NotificationManagerFlutterApiImpl notificationManagerFlutterApi;
 
+    private final TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi;
+
+    private final LocationManagerFlutterApiImpl locationManagerFlutterApi;
+
+    private final BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi;
+
+    private final ContentResolverFlutterApiImpl contentResolverFlutterApi;
+
     /**
      * Constructs an {@link ContextHostApiImpl}.
      *
@@ -42,12 +55,20 @@ public class ContextHostApiImpl implements ContextHostApi {
         @NonNull AlarmManagerFlutterApiImpl alarmManagerFlutterApi,
         @NonNull PackageManagerFlutterApiImpl packageManagerFlutterApi,
         @NonNull NotificationManagerFlutterApiImpl notificationManagerFlutterApi,
+        @NonNull TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi,
+        @NonNull LocationManagerFlutterApiImpl locationManagerFlutterApi,
+        @NonNull BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi,
+        @NonNull ContentResolverFlutterApiImpl contentResolverFlutterApi,
         @NonNull InstanceManager instanceManager
     ) {
         this.powerManagerFlutterApi = powerManagerFlutterApi;
         this.alarmManagerFlutterApi = alarmManagerFlutterApi;
         this.packageManagerFlutterApi = packageManagerFlutterApi;
         this.notificationManagerFlutterApi = notificationManagerFlutterApi;
+        this.telephonyManagerFlutterApi = telephonyManagerFlutterApi;
+        this.locationManagerFlutterApi = locationManagerFlutterApi;
+        this.bluetoothManagerFlutterApi = bluetoothManagerFlutterApi;
+        this.contentResolverFlutterApi = contentResolverFlutterApi;
         this.instanceManager = instanceManager;
     }
 
@@ -87,7 +108,7 @@ public class ContextHostApiImpl implements ContextHostApi {
     }
 
     @Override
-    @NonNull public String getSystemService(
+    public String getSystemService(
         @NonNull String instanceId,
         @NonNull String name
     ) {
@@ -102,9 +123,21 @@ public class ContextHostApiImpl implements ContextHostApi {
             alarmManagerFlutterApi.create((AlarmManager) systemService);
         } else if (systemService instanceof NotificationManager) {
             notificationManagerFlutterApi.create((NotificationManager) systemService);
+        } else if (systemService instanceof TelephonyManager) {
+            telephonyManagerFlutterApi.create((TelephonyManager) systemService);
+        } else if (systemService instanceof LocationManager) {
+            locationManagerFlutterApi.create((LocationManager) systemService);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (systemService instanceof BluetoothManager) {
+                bluetoothManagerFlutterApi.create((BluetoothManager) systemService);
+            }
         }
 
         final UUID systemServiceUuid = instanceManager.getIdentifierForStrongReference(systemService);
+        
+        if (systemServiceUuid == null) {
+            return null;
+        }
         return systemServiceUuid.toString();
     }
 
@@ -121,5 +154,20 @@ public class ContextHostApiImpl implements ContextHostApi {
 
         final UUID packageManagerUuid = instanceManager.getIdentifierForStrongReference(packageManager);
         return packageManagerUuid.toString();
+    }
+
+    @Override
+    @NonNull public String getContentResolver(
+        @NonNull String instanceId
+    ) {
+        final UUID instanceUuid = UUID.fromString(instanceId);
+        final Context context = instanceManager.getInstance(instanceUuid);
+
+        final ContentResolver contentResolver = context.getContentResolver();
+
+        contentResolverFlutterApi.create(contentResolver);
+
+        final UUID contentResolverUuid = instanceManager.getIdentifierForStrongReference(contentResolver);
+        return contentResolverUuid.toString();
     }
 }

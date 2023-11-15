@@ -152,6 +152,10 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
             alarmManagerFlutterApi,
             packageManagerFlutterApi,
             notificationManagerFlutterApi,
+            telephonyManagerFlutterApi,
+            locationManagerFlutterApi,
+            bluetoothManagerFlutterApi,
+            contentResolverFlutterApi,
             instanceManager
         );
         ContextHostApi.setup(binaryMessenger, contextHostApi);

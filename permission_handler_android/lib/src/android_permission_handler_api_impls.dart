@@ -340,10 +340,14 @@ class ContextHostApiImpl extends ContextHostApi {
     Context context,
     String name,
   ) async {
-    final String systemServiceId = await getSystemService(
+    final String? systemServiceId = await getSystemService(
       instanceManager.getIdentifier(context)!,
       name,
     );
+
+    if (systemServiceId == null) {
+      return null;
+    }
 
     return instanceManager.getInstanceWithWeakReference(systemServiceId);
   }
@@ -360,6 +364,20 @@ class ContextHostApiImpl extends ContextHostApi {
 
     return instanceManager.getInstanceWithWeakReference(packageManagerId)
         as PackageManager;
+  }
+
+  /// Return a ContentResolver instance for your application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getContentResolver().
+  Future<ContentResolver> getContentResolverFromInstance(
+    Context context,
+  ) async {
+    final String contentResolverId = await getContentResolver(
+      instanceManager.getIdentifier(context)!,
+    );
+
+    return instanceManager.getInstanceWithWeakReference(contentResolverId)
+        as ContentResolver;
   }
 }
 
