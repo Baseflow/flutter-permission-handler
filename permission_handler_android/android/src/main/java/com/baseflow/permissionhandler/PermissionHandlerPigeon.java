@@ -2927,4 +2927,124 @@ public class PermissionHandlerPigeon {
           channelReply -> callback.reply(null));
     }
   }
+  /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
+  public interface SettingsSecureHostApi {
+    /**
+     * Convenience function for retrieving a single secure settings value as an integer.
+     *
+     * Note that internally setting values are always stored as strings; this
+     * function converts the string to an integer for you.
+     *
+     * This version does not take a default value. If the setting has not been
+     * set, or the string value is not a number, it returns null.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+     */
+    @Nullable 
+    Long getInt(@NonNull String contentResolverInstanceId, @NonNull String name);
+    /**
+     * Convenience function for retrieving a single secure settings value as an integer.
+     *
+     * Note that internally setting values are always stored as strings; this
+     * function converts the string to an integer for you.
+     *
+     * The default value will be returned if the setting is not defined or not an
+     * integer.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+     */
+    @NonNull 
+    Long getIntWithDefault(@NonNull String contentResolverInstanceId, @NonNull String name, @NonNull Long defaultValue);
+    /**
+     * Look up a name in the database.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+     */
+    @Nullable 
+    String getString(@NonNull String contentResolverInstanceId, @NonNull String name);
+
+    /** The codec used by SettingsSecureHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `SettingsSecureHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable SettingsSecureHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getInt", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contentResolverInstanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  Long output = api.getInt(contentResolverInstanceIdArg, nameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contentResolverInstanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                Number defaultValueArg = (Number) args.get(2);
+                try {
+                  Long output = api.getIntWithDefault(contentResolverInstanceIdArg, nameArg, (defaultValueArg == null) ? null : defaultValueArg.longValue());
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getString", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contentResolverInstanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  String output = api.getString(contentResolverInstanceIdArg, nameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
 }

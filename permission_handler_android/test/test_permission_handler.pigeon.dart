@@ -1653,3 +1653,125 @@ abstract class BluetoothManagerTestHostApi {
     }
   }
 }
+
+abstract class ContentResolverTestHostApi {
+  static TestDefaultBinaryMessengerBinding? get _testBinaryMessengerBinding =>
+      TestDefaultBinaryMessengerBinding.instance;
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// This version does not take a default value. If the setting has not been
+  /// set, or the string value is not a number, it returns null.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+  int? getInt(String contentResolverInstanceId, String name);
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// The default value will be returned if the setting is not defined or not an
+  /// integer.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+  int getIntWithDefault(
+      String contentResolverInstanceId, String name, int defaultValue);
+
+  /// Look up a name in the database.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+  String? getString(String contentResolverInstanceId, String name);
+
+  static void setup(ContentResolverTestHostApi? api,
+      {BinaryMessenger? binaryMessenger}) {
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getInt',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getInt was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_contentResolverInstanceId = (args[0] as String?);
+          assert(arg_contentResolverInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getInt was null, expected non-null String.');
+          final String? arg_name = (args[1] as String?);
+          assert(arg_name != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getInt was null, expected non-null String.');
+          final int? output =
+              api.getInt(arg_contentResolverInstanceId!, arg_name!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_contentResolverInstanceId = (args[0] as String?);
+          assert(arg_contentResolverInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault was null, expected non-null String.');
+          final String? arg_name = (args[1] as String?);
+          assert(arg_name != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault was null, expected non-null String.');
+          final int? arg_defaultValue = (args[2] as int?);
+          assert(arg_defaultValue != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault was null, expected non-null int.');
+          final int output = api.getIntWithDefault(
+              arg_contentResolverInstanceId!, arg_name!, arg_defaultValue!);
+          return <Object?>[output];
+        });
+      }
+    }
+    {
+      final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getString',
+          codec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel, null);
+      } else {
+        _testBinaryMessengerBinding!.defaultBinaryMessenger
+            .setMockDecodedMessageHandler<Object?>(channel,
+                (Object? message) async {
+          assert(message != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getString was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final String? arg_contentResolverInstanceId = (args[0] as String?);
+          assert(arg_contentResolverInstanceId != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getString was null, expected non-null String.');
+          final String? arg_name = (args[1] as String?);
+          assert(arg_name != null,
+              'Argument for dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getString was null, expected non-null String.');
+          final String? output =
+              api.getString(arg_contentResolverInstanceId!, arg_name!);
+          return <Object?>[output];
+        });
+      }
+    }
+  }
+}

@@ -28,6 +28,7 @@ import com.baseflow.permissionhandler.PermissionHandlerPigeon.ApplicationInfoFla
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PackageManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PowerManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.SettingsHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.SettingsSecureHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.TelephonyManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.UriHostApi;
 
@@ -116,6 +117,9 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
         final SettingsHostApi settingsHostApi = new SettingsHostApiImpl(instanceManager);
         SettingsHostApi.setup(binaryMessenger, settingsHostApi);
+
+        final SettingsSecureHostApiImpl settingsSecureHostApi = new SettingsSecureHostApiImpl(instanceManager);
+        SettingsSecureHostApi.setup(binaryMessenger, settingsSecureHostApi);
 
         final NotificationManagerFlutterApiImpl notificationManagerFlutterApi = new NotificationManagerFlutterApiImpl(binaryMessenger, instanceManager);
         final NotificationManagerHostApi notificationManagerHostApi = new NotificationManagerHostApiImpl(instanceManager);

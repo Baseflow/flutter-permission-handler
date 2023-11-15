@@ -1668,3 +1668,81 @@ class ContentResolverFlutterApiImpl extends ContentResolverFlutterApi {
     _instanceManager.remove(instanceId);
   }
 }
+
+/// Host API implementation of Settings.Secure.
+class SettingsSecureHostApiImpl extends SettingsSecureHostApi {
+  /// Creates a new instance of [SettingsSecureHostApiImpl].
+  SettingsSecureHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// This version does not take a default value. If the setting has not been
+  /// set, or the string value is not a number, it returns null.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+  Future<int?> getIntFromClass(
+    ContentResolver contentResolver,
+    String name,
+  ) {
+    return getInt(
+      instanceManager.getIdentifier(contentResolver)!,
+      name,
+    );
+  }
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// The default value will be returned if the setting is not defined or not an
+  /// integer.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+  Future<int> getIntWithDefaultFromClass(
+    ContentResolver contentResolver,
+    String name,
+    int defaultValue,
+  ) {
+    assert(
+      defaultValue.bitLength + 1 <= 32,
+      'The default value must fit in a 32-bit integer.',
+    );
+
+    return getIntWithDefault(
+      instanceManager.getIdentifier(contentResolver)!,
+      name,
+      defaultValue,
+    );
+  }
+
+  /// Look up a name in the database.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+  Future<String?> getStringFromClass(
+    ContentResolver contentResolver,
+    String name,
+  ) {
+    return getString(
+      instanceManager.getIdentifier(contentResolver)!,
+      name,
+    );
+  }
+}
