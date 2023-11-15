@@ -730,3 +730,22 @@ class NotificationManagerFlutterApiImpl extends NotificationManagerFlutterApi {
     _instanceManager.remove(instanceId);
   }
 }
+
+/// Host API implementation of Environment.
+class EnvironmentHostApiImpl extends EnvironmentHostApi {
+  /// Creates a new instance of [EnvironmentHostApiImpl].
+  EnvironmentHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(binaryMessenger: binaryMessenger);
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to
+  /// the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+}

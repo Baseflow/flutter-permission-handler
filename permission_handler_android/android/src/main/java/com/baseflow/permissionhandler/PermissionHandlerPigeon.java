@@ -1516,4 +1516,58 @@ public class PermissionHandlerPigeon {
           channelReply -> callback.reply(null));
     }
   }
+  /**
+   * Host API for `Environment`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/os/Environment.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface EnvironmentHostApi {
+    /**
+     * Returns whether the calling app has All Files Access on the primary shared/external storage media.
+     *
+     * Declaring the permission [Manifest.permission.manageExternalStorage] is
+     * not enough to gain the access. To request access, use
+     * [Settings.actionManageAppAllFilesAccessPermission].
+     *
+     * See https://developer.android.com/reference/android/os/Environment#isExternalStorageManager().
+     */
+    @NonNull 
+    Boolean isExternalStorageManager();
+
+    /** The codec used by EnvironmentHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `EnvironmentHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable EnvironmentHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.EnvironmentHostApi.isExternalStorageManager", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  Boolean output = api.isExternalStorageManager();
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
 }

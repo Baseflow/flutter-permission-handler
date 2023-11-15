@@ -449,3 +449,22 @@ abstract class NotificationManagerFlutterApi {
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
 }
+
+/// Host API for `Environment`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/Environment.
+@HostApi(dartHostTestHandler: 'EnvironmentTestHostApi')
+abstract class EnvironmentHostApi {
+  /// Returns whether the calling app has All Files Access on the primary shared/external storage media.
+  ///
+  /// Declaring the permission [Manifest.permission.manageExternalStorage] is
+  /// not enough to gain the access. To request access, use
+  /// [Settings.actionManageAppAllFilesAccessPermission].
+  ///
+  /// See https://developer.android.com/reference/android/os/Environment#isExternalStorageManager().
+  bool isExternalStorageManager();
+}

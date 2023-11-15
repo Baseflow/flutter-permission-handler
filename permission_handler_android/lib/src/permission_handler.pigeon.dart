@@ -1347,3 +1347,55 @@ abstract class NotificationManagerFlutterApi {
     }
   }
 }
+
+/// Host API for `Environment`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/os/Environment.
+class EnvironmentHostApi {
+  /// Constructor for [EnvironmentHostApi].  The [binaryMessenger] named argument is
+  /// available for dependency injection.  If it is left null, the default
+  /// BinaryMessenger will be used which routes to the host platform.
+  EnvironmentHostApi({BinaryMessenger? binaryMessenger})
+      : _binaryMessenger = binaryMessenger;
+  final BinaryMessenger? _binaryMessenger;
+
+  static const MessageCodec<Object?> codec = StandardMessageCodec();
+
+  /// Returns whether the calling app has All Files Access on the primary shared/external storage media.
+  ///
+  /// Declaring the permission [Manifest.permission.manageExternalStorage] is
+  /// not enough to gain the access. To request access, use
+  /// [Settings.actionManageAppAllFilesAccessPermission].
+  ///
+  /// See https://developer.android.com/reference/android/os/Environment#isExternalStorageManager().
+  Future<bool> isExternalStorageManager() async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.permission_handler_android.EnvironmentHostApi.isExternalStorageManager',
+        codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList = await channel.send(null) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as bool?)!;
+    }
+  }
+}

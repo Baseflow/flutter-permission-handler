@@ -2,6 +2,7 @@ export 'src/android_object_mirrors/activity.dart';
 export 'src/android_object_mirrors/alarm_manager.dart';
 export 'src/android_object_mirrors/build.dart';
 export 'src/android_object_mirrors/context.dart';
+export 'src/android_object_mirrors/environment.dart';
 export 'src/android_object_mirrors/intent.dart';
 export 'src/android_object_mirrors/manifest.dart';
 export 'src/android_object_mirrors/notification_manager.dart';
