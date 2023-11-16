@@ -5,7 +5,7 @@ homepage: https://github.com/baseflow/flutter-permission-handler
 
 environment:
   sdk: ">=3.0.5 <4.0.0"
-  flutter: ">=3.3.0"
+  flutter: ">=3.16.0"
 
 dependencies:
   flutter:
