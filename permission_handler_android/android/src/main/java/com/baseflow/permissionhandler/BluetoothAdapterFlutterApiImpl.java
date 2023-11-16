@@ -18,10 +18,6 @@ import io.flutter.plugin.common.BinaryMessenger;
  * arguments of callbacks methods to a Dart instance.
  */
 public class BluetoothAdapterFlutterApiImpl {
-    // To ease adding additional methods, this value is added prematurely.
-    @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    private final BinaryMessenger binaryMessenger;
-
     private final InstanceManager instanceManager;
 
     private final BluetoothAdapterFlutterApi api;
@@ -36,7 +32,6 @@ public class BluetoothAdapterFlutterApiImpl {
         @NonNull BinaryMessenger binaryMessenger,
         @NonNull InstanceManager instanceManager
     ) {
-        this.binaryMessenger = binaryMessenger;
         this.instanceManager = instanceManager;
         api = new BluetoothAdapterFlutterApi(binaryMessenger);
     }
