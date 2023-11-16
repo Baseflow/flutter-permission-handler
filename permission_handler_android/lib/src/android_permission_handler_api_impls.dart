@@ -21,6 +21,12 @@ class AndroidPermissionHandlerFlutterApis {
     ComponentInfoFlagsFlutterApiImpl? componentInfoFlagsFlutterApi,
     ApplicationInfoFlagsFlutterApiImpl? applicationInfoFlagsFlutterApi,
     NotificationManagerFlutterApiImpl? notificationManagerFlutterApi,
+    FeatureInfoFlutterApiImpl? featureInfoFlutterApi,
+    TelephonyManagerFlutterApiImpl? telephonyManagerFlutterApi,
+    LocationManagerFlutterApiImpl? locationManagerFlutterApi,
+    BluetoothAdapterFlutterApiImpl? bluetoothAdapterFlutterApi,
+    BluetoothManagerFlutterApiImpl? bluetoothManagerFlutterApi,
+    ContentResolverFlutterApiImpl? contentResolverFlutterApi,
   }) {
     this.activityFlutterApi = activityFlutterApi ?? ActivityFlutterApiImpl();
     this.contextFlutterApi = contextFlutterApi ?? ContextFlutterApiImpl();
@@ -45,6 +51,18 @@ class AndroidPermissionHandlerFlutterApis {
         applicationInfoFlagsFlutterApi ?? ApplicationInfoFlagsFlutterApiImpl();
     this.notificationManagerFlutterApi =
         notificationManagerFlutterApi ?? NotificationManagerFlutterApiImpl();
+    this.featureInfoFlutterApi =
+        featureInfoFlutterApi ?? FeatureInfoFlutterApiImpl();
+    this.telephonyManagerFlutterApi =
+        telephonyManagerFlutterApi ?? TelephonyManagerFlutterApiImpl();
+    this.locationManagerFlutterApi =
+        locationManagerFlutterApi ?? LocationManagerFlutterApiImpl();
+    this.bluetoothAdapterFlutterApi =
+        bluetoothAdapterFlutterApi ?? BluetoothAdapterFlutterApiImpl();
+    this.bluetoothManagerFlutterApi =
+        bluetoothManagerFlutterApi ?? BluetoothManagerFlutterApiImpl();
+    this.contentResolverFlutterApi =
+        contentResolverFlutterApi ?? ContentResolverFlutterApiImpl();
   }
 
   static bool _haveBeenSetUp = false;
@@ -97,6 +115,24 @@ class AndroidPermissionHandlerFlutterApis {
   /// Flutter API for [NotificationManager].
   late final NotificationManagerFlutterApiImpl notificationManagerFlutterApi;
 
+  /// Flutter API for [FeatureInfo].
+  late final FeatureInfoFlutterApiImpl featureInfoFlutterApi;
+
+  /// Flutter API for [TelephonyManager].
+  late final TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi;
+
+  /// Flutter API for [LocationManager].
+  late final LocationManagerFlutterApiImpl locationManagerFlutterApi;
+
+  /// Flutter API for [BluetoothAdapter].
+  late final BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi;
+
+  /// Flutter API for [BluetoothManager].
+  late final BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi;
+
+  /// Flutter API for [ContentResolver].
+  late final ContentResolverFlutterApiImpl contentResolverFlutterApi;
+
   /// Ensures all the Flutter APIs have been setup to receive calls from native code.
   void ensureSetUp() {
     if (!_haveBeenSetUp) {
@@ -113,6 +149,12 @@ class AndroidPermissionHandlerFlutterApis {
       ComponentInfoFlagsFlutterApi.setup(componentInfoFlagsFlutterApi);
       ApplicationInfoFlagsFlutterApi.setup(applicationInfoFlagsFlutterApi);
       NotificationManagerFlutterApi.setup(notificationManagerFlutterApi);
+      FeatureInfoFlutterApi.setup(featureInfoFlutterApi);
+      TelephonyManagerFlutterApi.setup(telephonyManagerFlutterApi);
+      LocationManagerFlutterApi.setup(locationManagerFlutterApi);
+      BluetoothAdapterFlutterApi.setup(bluetoothAdapterFlutterApi);
+      BluetoothManagerFlutterApi.setup(bluetoothManagerFlutterApi);
+      ContentResolverFlutterApi.setup(contentResolverFlutterApi);
 
       _haveBeenSetUp = true;
     }
@@ -298,10 +340,14 @@ class ContextHostApiImpl extends ContextHostApi {
     Context context,
     String name,
   ) async {
-    final String systemServiceId = await getSystemService(
+    final String? systemServiceId = await getSystemService(
       instanceManager.getIdentifier(context)!,
       name,
     );
+
+    if (systemServiceId == null) {
+      return null;
+    }
 
     return instanceManager.getInstanceWithWeakReference(systemServiceId);
   }
@@ -318,6 +364,20 @@ class ContextHostApiImpl extends ContextHostApi {
 
     return instanceManager.getInstanceWithWeakReference(packageManagerId)
         as PackageManager;
+  }
+
+  /// Return a ContentResolver instance for your application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getContentResolver().
+  Future<ContentResolver> getContentResolverFromInstance(
+    Context context,
+  ) async {
+    final String contentResolverId = await getContentResolver(
+      instanceManager.getIdentifier(context)!,
+    );
+
+    return instanceManager.getInstanceWithWeakReference(contentResolverId)
+        as ContentResolver;
   }
 }
 
@@ -781,6 +841,21 @@ class PackageManagerHostApiImpl extends PackageManagerHostApi {
         .whereType<String>()
         .map((String instanceId) => instanceManager
             .getInstanceWithWeakReference(instanceId) as ResolveInfo)
+        .toList();
+  }
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  Future<List<FeatureInfo>> getSystemAvailableFeaturesFromInstance(
+    PackageManager packageManager,
+  ) async {
+    return (await getSystemAvailableFeatures(
+      instanceManager.getIdentifier(packageManager)!,
+    ))
+        .whereType<String>()
+        .map((String instanceId) => instanceManager
+            .getInstanceWithWeakReference(instanceId) as FeatureInfo)
         .toList();
   }
 }
@@ -1283,5 +1358,391 @@ class ResolveInfoFlutterApiImpl extends ResolveInfoFlutterApi {
   @override
   void dispose(String instanceId) {
     _instanceManager.remove(instanceId);
+  }
+}
+
+/// Flutter API implementation of FeatureInfo.
+class FeatureInfoFlutterApiImpl extends FeatureInfoFlutterApi {
+  /// Constructs a new instance of [FeatureInfoFlutterApiImpl].
+  FeatureInfoFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final FeatureInfo featureInfo = FeatureInfo.detached();
+    _instanceManager.addHostCreatedInstance(
+      featureInfo,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of TelephonyManager.
+class TelephonyManagerHostApiImpl extends TelephonyManagerHostApi {
+  /// Creates a new instance of [TelephonyManagerHostApiImpl].
+  TelephonyManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+  ///
+  /// Requires the [PackageManager.featureTelephony] feature which can be
+  /// detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+  Future<int> getPhoneTypeFromInstance(
+    TelephonyManager telephonyManager,
+  ) {
+    return getPhoneType(
+      instanceManager.getIdentifier(telephonyManager)!,
+    );
+  }
+
+  /// Returns a constant indicating the state of the default SIM card.
+  ///
+  /// Requires the [PackageManager.featureTelephonySubscription] feature which
+  /// can be detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+  Future<int> getSimeStateFromInstance(
+    TelephonyManager telephonyManager,
+  ) {
+    return getSimState(
+      instanceManager.getIdentifier(telephonyManager)!,
+    );
+  }
+}
+
+/// Flutter API implementation of TelephonyManager.
+class TelephonyManagerFlutterApiImpl extends TelephonyManagerFlutterApi {
+  /// Constructs a new instance of [TelephonyManagerFlutterApiImpl].
+  TelephonyManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final TelephonyManager telephonyManager = TelephonyManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      telephonyManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of LocationManager.
+class LocationManagerHostApiImpl extends LocationManagerHostApi {
+  /// Creates a new instance of [LocationManagerHostApiImpl].
+  LocationManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Returns the current enabled/disabled status of location updates.
+  ///
+  /// See https://developer.android.com/reference/android/location/LocationManager#isLocationEnabled().
+  Future<bool> isLocationEnabledFromInstance(
+    LocationManager locationManager,
+  ) {
+    return isLocationEnabled(instanceManager.getIdentifier(locationManager)!);
+  }
+}
+
+/// Flutter API implementation of LocationManager.
+class LocationManagerFlutterApiImpl extends LocationManagerFlutterApi {
+  /// Constructs a new instance of [LocationManagerFlutterApiImpl].
+  LocationManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final LocationManager locationManager = LocationManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      locationManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of BluetoothAdapter.
+class BluetoothAdapterHostApiImpl extends BluetoothAdapterHostApi {
+  /// Creates a new instance of [BluetoothAdapterHostApiImpl].
+  BluetoothAdapterHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Get a handle to the default local Bluetooth adapter.
+  ///
+  /// Currently Android only supports one Bluetooth adapter, but the API could
+  /// be extended to support more. This will always return the default adapter.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#getDefaultAdapter().
+  Future<BluetoothAdapter> getDefaultAdapterFromClass() async {
+    final String instanceId = await getDefaultAdapter();
+
+    return instanceManager.getInstanceWithWeakReference(instanceId)
+        as BluetoothAdapter;
+  }
+
+  /// Return true if Bluetooth is currently enabled and ready for use.
+  ///
+  /// Equivalent to: getBluetoothState() == STATE_ON.
+  ///
+  /// For apps targeting [Build.versionCodes.r] or lower, this requires the
+  /// [Manifest.permission.bluetooth] permission which can be gained with a
+  /// simple <uses-permission> manifest tag.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#isEnabled().
+  Future<bool> isEnabledFromInstance(
+    BluetoothAdapter bluetoothAdapter,
+  ) {
+    return isEnabled(instanceManager.getIdentifier(bluetoothAdapter)!);
+  }
+}
+
+/// Flutter API implementation of BluetoothAdapter.
+class BluetoothAdapterFlutterApiImpl extends BluetoothAdapterFlutterApi {
+  /// Constructs a new instance of [BluetoothAdapterFlutterApiImpl].
+  BluetoothAdapterFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.detached();
+    _instanceManager.addHostCreatedInstance(
+      bluetoothAdapter,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of BluetoothManager.
+class BluetoothManagerHostApiImpl extends BluetoothManagerHostApi {
+  /// Creates a new instance of [BluetoothManagerHostApiImpl].
+  BluetoothManagerHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Get the BLUETOOTH Adapter for this device.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter().
+  Future<BluetoothAdapter> getAdapterFromInstance(
+    BluetoothManager bluetoothManager,
+  ) async {
+    final String adapterInstanceId =
+        await getAdapter(instanceManager.getIdentifier(bluetoothManager)!);
+
+    return instanceManager.getInstanceWithWeakReference(adapterInstanceId)
+        as BluetoothAdapter;
+  }
+}
+
+/// Flutter API implementation of BluetoothManager.
+class BluetoothManagerFlutterApiImpl extends BluetoothManagerFlutterApi {
+  /// Constructs a new instance of [BluetoothManagerFlutterApiImpl].
+  BluetoothManagerFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final BluetoothManager bluetoothManager = BluetoothManager.detached();
+    _instanceManager.addHostCreatedInstance(
+      bluetoothManager,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Flutter API implementation of ContentResolver.
+class ContentResolverFlutterApiImpl extends ContentResolverFlutterApi {
+  /// Constructs a new instance of [ContentResolverFlutterApiImpl].
+  ContentResolverFlutterApiImpl({
+    InstanceManager? instanceManager,
+  }) : _instanceManager = instanceManager ?? JavaObject.globalInstanceManager;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager _instanceManager;
+
+  @override
+  void create(String instanceId) {
+    final ContentResolver contentResolver = ContentResolver.detached();
+    _instanceManager.addHostCreatedInstance(
+      contentResolver,
+      instanceId,
+    );
+  }
+
+  @override
+  void dispose(String instanceId) {
+    _instanceManager.remove(instanceId);
+  }
+}
+
+/// Host API implementation of Settings.Secure.
+class SettingsSecureHostApiImpl extends SettingsSecureHostApi {
+  /// Creates a new instance of [SettingsSecureHostApiImpl].
+  SettingsSecureHostApiImpl({
+    this.binaryMessenger,
+    InstanceManager? instanceManager,
+  })  : instanceManager = instanceManager ?? JavaObject.globalInstanceManager,
+        super(
+          binaryMessenger: binaryMessenger,
+        );
+
+  /// Sends binary data across the Flutter platform barrier.
+  ///
+  /// If it is null, the default BinaryMessenger will be used which routes to the host platform.
+  final BinaryMessenger? binaryMessenger;
+
+  /// Maintains instances stored to communicate with native language objects.
+  final InstanceManager instanceManager;
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// This version does not take a default value. If the setting has not been
+  /// set, or the string value is not a number, it returns null.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+  Future<int?> getIntFromClass(
+    ContentResolver contentResolver,
+    String name,
+  ) {
+    return getInt(
+      instanceManager.getIdentifier(contentResolver)!,
+      name,
+    );
+  }
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// The default value will be returned if the setting is not defined or not an
+  /// integer.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+  Future<int> getIntWithDefaultFromClass(
+    ContentResolver contentResolver,
+    String name,
+    int defaultValue,
+  ) {
+    assert(
+      defaultValue.bitLength + 1 <= 32,
+      'The default value must fit in a 32-bit integer.',
+    );
+
+    return getIntWithDefault(
+      instanceManager.getIdentifier(contentResolver)!,
+      name,
+      defaultValue,
+    );
+  }
+
+  /// Look up a name in the database.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+  Future<String?> getStringFromClass(
+    ContentResolver contentResolver,
+    String name,
+  ) {
+    return getString(
+      instanceManager.getIdentifier(contentResolver)!,
+      name,
+    );
   }
 }

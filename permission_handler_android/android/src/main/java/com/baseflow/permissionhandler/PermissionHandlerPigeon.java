@@ -509,7 +509,7 @@ public class PermissionHandlerPigeon {
      *
      * See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
      */
-    @NonNull 
+    @Nullable 
     String getSystemService(@NonNull String instanceId, @NonNull String name);
     /**
      * Returns the instance ID of a PackageManager instance to find global package information.
@@ -518,6 +518,13 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     String getPackageManager(@NonNull String instanceId);
+    /**
+     * Return a ContentResolver instance for your application's package.
+     *
+     * See https://developer.android.com/reference/android/content/Context#getContentResolver().
+     */
+    @NonNull 
+    String getContentResolver(@NonNull String instanceId);
 
     /** The codec used by ContextHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -636,6 +643,30 @@ public class PermissionHandlerPigeon {
                 String instanceIdArg = (String) args.get(0);
                 try {
                   String output = api.getPackageManager(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContextHostApi.getContentResolver", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  String output = api.getContentResolver(instanceIdArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {
@@ -1326,6 +1357,13 @@ public class PermissionHandlerPigeon {
      */
     @NonNull 
     List<String> queryIntentActivitiesWithInfoFlags(@NonNull String instanceId, @NonNull String intentInstanceId, @NonNull String flagsInstanceId);
+    /**
+     * Get a list of features that are available on the system.
+     *
+     * See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+     */
+    @NonNull 
+    List<String> getSystemAvailableFeatures(@NonNull String instanceId);
 
     /** The codec used by PackageManagerHostApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -1474,6 +1512,30 @@ public class PermissionHandlerPigeon {
                 String flagsInstanceIdArg = (String) args.get(2);
                 try {
                   List<String> output = api.queryIntentActivitiesWithInfoFlags(instanceIdArg, intentInstanceIdArg, flagsInstanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.PackageManagerHostApi.getSystemAvailableFeatures", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  List<String> output = api.getSystemAvailableFeatures(instanceIdArg);
                   wrapped.add(0, output);
                 }
  catch (Throwable exception) {
@@ -2304,6 +2366,685 @@ public class PermissionHandlerPigeon {
       channel.send(
           new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
           channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Flutter API for `FeatureInfo`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/content/pm/FeatureInfo.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class FeatureInfoFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public FeatureInfoFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by FeatureInfoFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.FeatureInfoFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `TelephonyManager`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/telephony/TelephonyManager.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface TelephonyManagerHostApi {
+    /**
+     * Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+     *
+     * Requires the [PackageManager.featureTelephony] feature which can be
+     * detected using [PackageManager.hasSystemFeature].
+     *
+     * See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+     */
+    @NonNull 
+    Long getPhoneType(@NonNull String instanceId);
+    /**
+     * Returns a constant indicating the state of the default SIM card.
+     *
+     * Requires the [PackageManager.featureTelephonySubscription] feature which
+     * can be detected using [PackageManager.hasSystemFeature].
+     *
+     * See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+     */
+    @NonNull 
+    Long getSimState(@NonNull String instanceId);
+
+    /** The codec used by TelephonyManagerHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `TelephonyManagerHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable TelephonyManagerHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getPhoneType", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Long output = api.getPhoneType(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerHostApi.getSimState", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Long output = api.getSimState(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `TelephonyManager`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/telephony/TelephonyManager.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class TelephonyManagerFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public TelephonyManagerFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by TelephonyManagerFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.TelephonyManagerFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `LocationManager`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/location/LocationManager.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface LocationManagerHostApi {
+    /**
+     * Returns the current enabled/disabled status of location updates.
+     *
+     * See https://developer.android.com/reference/android/location/LocationManager#isLocationEnabled().
+     */
+    @NonNull 
+    Boolean isLocationEnabled(@NonNull String instanceId);
+
+    /** The codec used by LocationManagerHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `LocationManagerHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable LocationManagerHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.LocationManagerHostApi.isLocationEnabled", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Boolean output = api.isLocationEnabled(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `LocationManager`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/location/LocationManager.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class LocationManagerFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public LocationManagerFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by LocationManagerFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.LocationManagerFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.LocationManagerFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `BluetoothAdapter`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface BluetoothAdapterHostApi {
+    /**
+     * Get a handle to the default local Bluetooth adapter.
+     *
+     * Currently Android only supports one Bluetooth adapter, but the API could
+     * be extended to support more. This will always return the default adapter.
+     *
+     * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#getDefaultAdapter().
+     */
+    @NonNull 
+    String getDefaultAdapter();
+    /**
+     * Return true if Bluetooth is currently enabled and ready for use.
+     *
+     * Equivalent to: getBluetoothState() == STATE_ON.
+     *
+     * For apps targeting [Build.versionCodes.r] or lower, this requires the
+     * [Manifest.permission.bluetooth] permission which can be gained with a
+     * simple <uses-permission> manifest tag.
+     *
+     * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#isEnabled().
+     */
+    @NonNull 
+    Boolean isEnabled(@NonNull String instanceId);
+
+    /** The codec used by BluetoothAdapterHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `BluetoothAdapterHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable BluetoothAdapterHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.getDefaultAdapter", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  String output = api.getDefaultAdapter();
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterHostApi.isEnabled", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  Boolean output = api.isEnabled(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `BluetoothAdapter`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class BluetoothAdapterFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public BluetoothAdapterFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by BluetoothAdapterFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothAdapterFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Host API for `BluetoothManager`.
+   *
+   * This class may handle instantiating and adding native object instances that
+   * are attached to a Dart instance or handle method calls on the associated
+   * native class or an instance of the class.
+   *
+   * See https://developer.android.com/reference/android/bluetooth/BluetoothManager.
+   *
+   * Generated interface from Pigeon that represents a handler of messages from Flutter.
+   */
+  public interface BluetoothManagerHostApi {
+    /**
+     * Get the BLUETOOTH Adapter for this device.
+     *
+     * See https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter().
+     */
+    @NonNull 
+    String getAdapter(@NonNull String instanceId);
+
+    /** The codec used by BluetoothManagerHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `BluetoothManagerHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable BluetoothManagerHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothManagerHostApi.getAdapter", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String instanceIdArg = (String) args.get(0);
+                try {
+                  String output = api.getAdapter(instanceIdArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+    }
+  }
+  /**
+   * Flutter API for `BluetoothManager`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/bluetooth/BluetoothManager.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class BluetoothManagerFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public BluetoothManagerFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by BluetoothManagerFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothManagerFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.BluetoothManagerFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /**
+   * Flutter API for `ContentResolver`.
+   *
+   * This class may handle instantiating and adding Dart instances that are
+   * attached to a native instance or receiving callback methods from an
+   * overridden native class.
+   *
+   * See https://developer.android.com/reference/android/content/ContentResolver.
+   *
+   * Generated class from Pigeon that represents Flutter messages that can be called from Java.
+   */
+  public static class ContentResolverFlutterApi {
+    private final @NonNull BinaryMessenger binaryMessenger;
+
+    public ContentResolverFlutterApi(@NonNull BinaryMessenger argBinaryMessenger) {
+      this.binaryMessenger = argBinaryMessenger;
+    }
+
+    /** Public interface for sending reply. */ 
+    @SuppressWarnings("UnknownNullness")
+    public interface Reply<T> {
+      void reply(T reply);
+    }
+    /** The codec used by ContentResolverFlutterApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /** Create a new Dart instance and add it to the `InstanceManager`. */
+    public void create(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.create", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+    /** Dispose of the Dart instance and remove it from the `InstanceManager`. */
+    public void dispose(@NonNull String instanceIdArg, @NonNull Reply<Void> callback) {
+      BasicMessageChannel<Object> channel =
+          new BasicMessageChannel<>(
+              binaryMessenger, "dev.flutter.pigeon.permission_handler_android.ContentResolverFlutterApi.dispose", getCodec());
+      channel.send(
+          new ArrayList<Object>(Collections.singletonList(instanceIdArg)),
+          channelReply -> callback.reply(null));
+    }
+  }
+  /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
+  public interface SettingsSecureHostApi {
+    /**
+     * Convenience function for retrieving a single secure settings value as an integer.
+     *
+     * Note that internally setting values are always stored as strings; this
+     * function converts the string to an integer for you.
+     *
+     * This version does not take a default value. If the setting has not been
+     * set, or the string value is not a number, it returns null.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+     */
+    @Nullable 
+    Long getInt(@NonNull String contentResolverInstanceId, @NonNull String name);
+    /**
+     * Convenience function for retrieving a single secure settings value as an integer.
+     *
+     * Note that internally setting values are always stored as strings; this
+     * function converts the string to an integer for you.
+     *
+     * The default value will be returned if the setting is not defined or not an
+     * integer.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+     */
+    @NonNull 
+    Long getIntWithDefault(@NonNull String contentResolverInstanceId, @NonNull String name, @NonNull Long defaultValue);
+    /**
+     * Look up a name in the database.
+     *
+     * See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+     */
+    @Nullable 
+    String getString(@NonNull String contentResolverInstanceId, @NonNull String name);
+
+    /** The codec used by SettingsSecureHostApi. */
+    static @NonNull MessageCodec<Object> getCodec() {
+      return new StandardMessageCodec();
+    }
+    /**Sets up an instance of `SettingsSecureHostApi` to handle messages through the `binaryMessenger`. */
+    static void setup(@NonNull BinaryMessenger binaryMessenger, @Nullable SettingsSecureHostApi api) {
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getInt", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contentResolverInstanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  Long output = api.getInt(contentResolverInstanceIdArg, nameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getIntWithDefault", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contentResolverInstanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                Number defaultValueArg = (Number) args.get(2);
+                try {
+                  Long output = api.getIntWithDefault(contentResolverInstanceIdArg, nameArg, (defaultValueArg == null) ? null : defaultValueArg.longValue());
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.permission_handler_android.SettingsSecureHostApi.getString", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                ArrayList<Object> args = (ArrayList<Object>) message;
+                String contentResolverInstanceIdArg = (String) args.get(0);
+                String nameArg = (String) args.get(1);
+                try {
+                  String output = api.getString(contentResolverInstanceIdArg, nameArg);
+                  wrapped.add(0, output);
+                }
+ catch (Throwable exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  wrapped = wrappedError;
+                }
+                reply.reply(wrapped);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
     }
   }
 }

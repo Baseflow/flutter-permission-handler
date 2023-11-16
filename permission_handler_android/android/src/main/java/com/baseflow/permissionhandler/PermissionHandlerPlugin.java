@@ -13,9 +13,12 @@ import com.baseflow.instancemanager.JavaObjectHostApiImpl;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ActivityHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.AlarmManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.BuildVersionHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.BluetoothAdapterHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.BluetoothManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.ContextHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.EnvironmentHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.IntentHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.LocationManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.NotificationManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PackageInfoFlagsHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PackageInfoHostApi;
@@ -25,6 +28,8 @@ import com.baseflow.permissionhandler.PermissionHandlerPigeon.ApplicationInfoFla
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PackageManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.PowerManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.SettingsHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.SettingsSecureHostApi;
+import com.baseflow.permissionhandler.PermissionHandlerPigeon.TelephonyManagerHostApi;
 import com.baseflow.permissionhandler.PermissionHandlerPigeon.UriHostApi;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
@@ -99,12 +104,22 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
         final PackageInfoHostApi packageInfoHostApi = new PackageInfoHostApiImpl(instanceManager);
         PackageInfoHostApi.setup(binaryMessenger, packageInfoHostApi);
 
+        final FeatureInfoFlutterApiImpl featureInfoFlutterApi = new FeatureInfoFlutterApiImpl(binaryMessenger, instanceManager);
+        
         final PackageManagerFlutterApiImpl packageManagerFlutterApi = new PackageManagerFlutterApiImpl(binaryMessenger, instanceManager);
-        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(packageInfoFlutterApi, resolveInfoFlutterApi, instanceManager);
+        final PackageManagerHostApi packageManagerHostApi = new PackageManagerHostApiImpl(
+            packageInfoFlutterApi,
+            resolveInfoFlutterApi,
+            featureInfoFlutterApi,
+            instanceManager
+        );
         PackageManagerHostApi.setup(binaryMessenger, packageManagerHostApi);
 
         final SettingsHostApi settingsHostApi = new SettingsHostApiImpl(instanceManager);
         SettingsHostApi.setup(binaryMessenger, settingsHostApi);
+
+        final SettingsSecureHostApiImpl settingsSecureHostApi = new SettingsSecureHostApiImpl(instanceManager);
+        SettingsSecureHostApi.setup(binaryMessenger, settingsSecureHostApi);
 
         final NotificationManagerFlutterApiImpl notificationManagerFlutterApi = new NotificationManagerFlutterApiImpl(binaryMessenger, instanceManager);
         final NotificationManagerHostApi notificationManagerHostApi = new NotificationManagerHostApiImpl(instanceManager);
@@ -112,6 +127,24 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
         final EnvironmentHostApi environmentHostApi = new EnvironmentHostApiImpl(instanceManager);
         EnvironmentHostApi.setup(binaryMessenger, environmentHostApi);
+
+        final TelephonyManagerFlutterApiImpl telephonyManagerFlutterApi = new TelephonyManagerFlutterApiImpl(binaryMessenger, instanceManager);
+        final TelephonyManagerHostApi telephonyManagerHostApi = new TelephonyManagerHostApiImpl(instanceManager);
+        TelephonyManagerHostApi.setup(binaryMessenger, telephonyManagerHostApi);
+
+        final LocationManagerFlutterApiImpl locationManagerFlutterApi = new LocationManagerFlutterApiImpl(binaryMessenger, instanceManager);
+        final LocationManagerHostApi locationManagerHostApi = new LocationManagerHostApiImpl(instanceManager);
+        LocationManagerHostApi.setup(binaryMessenger, locationManagerHostApi);
+
+        final BluetoothAdapterFlutterApiImpl bluetoothAdapterFlutterApi = new BluetoothAdapterFlutterApiImpl(binaryMessenger, instanceManager);
+        final BluetoothAdapterHostApi bluetoothAdapterHostApi = new BluetoothAdapterHostApiImpl(bluetoothAdapterFlutterApi, instanceManager);
+        BluetoothAdapterHostApi.setup(binaryMessenger, bluetoothAdapterHostApi);
+
+        final BluetoothManagerFlutterApiImpl bluetoothManagerFlutterApi = new BluetoothManagerFlutterApiImpl(binaryMessenger, instanceManager);
+        final BluetoothManagerHostApi bluetoothManagerHostApi = new BluetoothManagerHostApiImpl(bluetoothAdapterFlutterApi, instanceManager);
+        BluetoothManagerHostApi.setup(binaryMessenger, bluetoothManagerHostApi);
+
+        final ContentResolverFlutterApiImpl contentResolverFlutterApi = new ContentResolverFlutterApiImpl(binaryMessenger, instanceManager);
 
         activityFlutterApi = new ActivityFlutterApiImpl(binaryMessenger, instanceManager);
         activityHostApi = new ActivityHostApiImpl(instanceManager);
@@ -123,6 +156,10 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
             alarmManagerFlutterApi,
             packageManagerFlutterApi,
             notificationManagerFlutterApi,
+            telephonyManagerFlutterApi,
+            locationManagerFlutterApi,
+            bluetoothManagerFlutterApi,
+            contentResolverFlutterApi,
             instanceManager
         );
         ContextHostApi.setup(binaryMessenger, contextHostApi);

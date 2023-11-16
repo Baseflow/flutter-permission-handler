@@ -1,5 +1,6 @@
 import '../android_permission_handler_api_impls.dart';
 import 'build.dart';
+import 'content_resolver.dart';
 import 'context.dart';
 
 /// The Settings provider contains global system-level device preferences.
@@ -10,11 +11,38 @@ class Settings {
 
   static final SettingsHostApiImpl _hostApi = SettingsHostApiImpl();
 
+  /// Secure system settings, containing system preferences that applications
+  static _Secure get secure => _Secure();
+
   /// Activity Action: Show screen of details about a particular application.
   ///
   /// Constant Value: "android.settings.APPLICATION_DETAILS_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_APPLICATION_DETAILS_SETTINGS.
   static const String actionApplicationDetailsSettings =
       'android.settings.APPLICATION_DETAILS_SETTINGS';
+
+  /// Activity Action: Show settings to allow configuration of Bluetooth.
+  ///
+  /// In some cases, a matching Activity may not exist, so ensure you safeguard
+  /// against this.
+  ///
+  /// Constant Value: "android.settings.BLUETOOTH_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_BLUETOOTH_SETTINGS.
+  static const String actionBluetoothSettings =
+      'android.settings.BLUETOOTH_SETTINGS';
+
+  /// Activity Action: Show settings to allow configuration of current location sources.
+  ///
+  /// In some cases, a matching Activity may not exist, so ensure you safeguard
+  /// against this.
+  ///
+  /// Constant Value: "android.settings.LOCATION_SOURCE_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_LOCATION_SOURCE_SETTINGS.
+  static const String actionLocationSourceSettings =
+      'android.settings.LOCATION_SOURCE_SETTINGS';
 
   /// Activity Action: Ask the user to allow an app to ignore battery optimizations.
   ///
@@ -34,6 +62,8 @@ class Settings {
   /// You can use [PowerManager#isIgnoringBatteryOptimizations] to determine if
   /// an application is already ignoring optimizations.
   ///
+  /// Constant Value: "android.settings.IGNORE_BATTERY_OPTIMIZATIONS".
+  ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS.
   static const String actionRequestIgnoreBatteryOptimizations =
       'android.settings.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS';
@@ -44,11 +74,15 @@ class Settings {
   /// whose ability of managing external storage you want to control. For
   /// example "package:com.my.app".
   ///
+  /// Constant Value: "android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION".
+  ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION.
   static const String actionManagerAppAllFilesAccessPermission =
       'android.settings.MANAGE_APP_ALL_FILES_ACCESS_PERMISSION';
 
   /// Activity Action: Show screen for controlling which apps can draw on top of other apps.
+  ///
+  /// Constant Value: "android.settings.action.MANAGE_OVERLAY_PERMISSION".
   ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_OVERLAY_PERMISSION.
   static const String actionManageOverlayPermission =
@@ -60,6 +94,8 @@ class Settings {
   /// package name to directly invoke the management GUI specific to the package
   /// name. For example "package:com.my.app".
   ///
+  /// Constant Value: "android.settings.MANAGE_UNKNOWN_APP_SOURCES".
+  ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_UNKNOWN_APP_SOURCES.
   static const String actionManageUnknownAppSources =
       'android.settings.MANAGE_UNKNOWN_APP_SOURCES';
@@ -68,6 +104,8 @@ class Settings {
   ///
   /// Users can grant and deny access to Do Not Disturb configuration from here.
   /// Managed profiles cannot grant Do Not Disturb access.
+  ///
+  /// Constant Value: "android.settings.NOTIFICATION_POLICY_ACCESS_SETTINGS".
   ///
   /// See https://developer.android.com/reference/android/provider/Settings#ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS.
   static const String actionNotificationPolicyAccessSettings =
@@ -83,9 +121,22 @@ class Settings {
   /// set to [Activity#RESULT_OK] if the permission was granted to the app.
   /// Otherwise, the result is set to [Activity#RESULT_CANCELED].
   ///
-  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_MANAGE_OVERLAY_PERMISSION.
+  /// Constant Value: "android.settings.REQUEST_SCHEDULE_EXACT_ALARM".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_REQUEST_SCHEDULE_EXACT_ALARM.
   static const String actionRequestScheduleExactAlarm =
       'android.settings.REQUEST_SCHEDULE_EXACT_ALARM';
+
+  /// Activity Action: Show settings to allow configuration of wireless controls such as Wi-Fi, Bluetooth and Mobile networks.
+  ///
+  /// In some cases, a matching Activity may not exist, so ensure you safeguard
+  /// against this.
+  ///
+  /// Constant Value: "android.settings.WIRELESS_SETTINGS".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings#ACTION_WIRELESS_SETTINGS.
+  static const String actionWirelessSettings =
+      'android.settings.WIRELESS_SETTINGS';
 
   /// Checks if the specified context can draw on top of other apps.
   ///
@@ -105,6 +156,120 @@ class Settings {
   ) {
     return _hostApi.canDrawOverlaysFromInstance(
       context,
+    );
+  }
+}
+
+/// Secure system settings, containing system preferences that applications
+/// can read but are not allowed to write. These are for preferences that the
+/// user must explicitly modify through the system UI or specialized APIs for
+/// those values, not modified directly by applications.
+///
+/// See https://developer.android.com/reference/android/provider/Settings.Secure.
+class _Secure {
+  static final SettingsSecureHostApiImpl _hostApi = SettingsSecureHostApiImpl();
+
+  /// The current location mode of the device.
+  ///
+  /// Do not rely on this value being present or on ContentObserver
+  /// notifications on the corresponding Uri.
+  ///
+  /// Constant Value: "location_mode".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE.
+  String get locationMode => 'location_mode';
+
+  /// This mode no longer has any distinct meaning, but is interpreted as the location mode is on.
+  ///
+  /// Constant Value: 2 (0x00000002).
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_BATTERY_SAVING.
+  int get locationModeBatterySaving => 2;
+
+  /// This mode no longer has any distinct meaning, but is interpreted as the location mode is on.
+  ///
+  /// Constant Value: 3 (0x00000003).
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_HIGH_ACCURACY.
+  int get locationModeHighAccuracy => 3;
+
+  /// Location mode is off.
+  ///
+  /// Constant Value: 0 (0x00000000).
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_OFF.
+  int get locationModeOff => 0;
+
+  /// This mode no longer has any distinct meaning, but is interpreted as the location mode is on.
+  ///
+  /// Constant Value: 1 (0x00000001).
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_MODE_SENSORS_ONLY.
+  int get locationModeSensorsOnly => 1;
+
+  /// Comma-separated list of location providers that are enabled.
+  ///
+  /// **NOTE:** This constant was deprecated in API level 19.
+  /// This setting no longer exists from Android S onwards as it no longer is
+  /// capable of realistically reflecting location settings. Use
+  /// [LocationManager.isProviderEnabled] or
+  /// [LocationManager.isLocationEnabled] instead.
+  ///
+  /// Do not rely on this value being present or correct, or on ContentObserver
+  /// notifications on the corresponding Uri.
+  ///
+  /// Constant Value: "location_providers_allowed".
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#LOCATION_PROVIDERS_ALLOWED.
+  String get locationProvidersAllowed => 'location_providers_allowed';
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// This version does not take a default value. If the setting has not been
+  /// set, or the string value is not a number, it returns null.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+  Future<int?> getInt(
+    ContentResolver contentResolver,
+    String name,
+  ) {
+    return _hostApi.getIntFromClass(contentResolver, name);
+  }
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// The default value will be returned if the setting is not defined or not an
+  /// integer.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+  Future<int> getIntWithDefault(
+    ContentResolver contentResolver,
+    String name,
+    int defaultValue,
+  ) async {
+    return _hostApi.getIntWithDefaultFromClass(
+      contentResolver,
+      name,
+      defaultValue,
+    );
+  }
+
+  /// Look up a name in the database.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+  Future<String?> getString(
+    ContentResolver contentResolver,
+    String name,
+  ) async {
+    return _hostApi.getStringFromClass(
+      contentResolver,
+      name,
     );
   }
 }

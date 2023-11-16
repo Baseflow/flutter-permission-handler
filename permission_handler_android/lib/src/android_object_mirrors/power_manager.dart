@@ -4,7 +4,7 @@ import 'package:permission_handler_android/src/android_permission_handler_api_im
 
 /// This class lets you query and request control of aspects of the device's power state.
 ///
-/// See: https://developer.android.com/reference/android/os/PowerManager
+/// See: https://developer.android.com/reference/android/os/PowerManager.
 class PowerManager extends JavaObject {
   /// Instantiates a [PowerManager] without creating and attaching to an
   /// instance of the associated native class.

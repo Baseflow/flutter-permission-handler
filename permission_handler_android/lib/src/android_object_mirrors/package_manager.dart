@@ -3,6 +3,7 @@ import 'package:flutter_instance_manager/flutter_instance_manager.dart';
 import 'package:permission_handler_android/src/android_object_mirrors/package_info.dart';
 
 import '../android_permission_handler_api_impls.dart';
+import 'feature_info.dart';
 import 'intent.dart';
 import 'resolve_info.dart';
 
@@ -37,6 +38,27 @@ class PackageManager extends JavaObject {
   ///
   /// Constant Value: 0 (0x00000000)
   static const int permissionGranted = 0;
+
+  /// The device has a telephony radio with data communication support.
+  ///
+  /// Feature for [getSystemAvailableFeatures] and [hasSystemFeature].
+  ///
+  /// Constant Value: "android.hardware.telephony".
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#FEATURE_TELEPHONY.
+  static const String featureTelephony = 'android.hardware.telephony';
+
+  /// The device supports Telephony APIs for the subscription.
+  ///
+  /// Feature for [getSystemAvailableFeatures] and [hasSystemFeature].
+  ///
+  /// This feature should only be defined if [featureTelephony] has been defined.
+  ///
+  /// Constant Value: "android.hardware.telephony.subscription".
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#FEATURE_TELEPHONY_SUBSCRIPTION.
+  static const String featureTelephonySubscription =
+      'android.hardware.telephony.subscription';
 
   /// Checks whether the calling package is allowed to request package installs through package installer.
   ///
@@ -73,6 +95,13 @@ class PackageManager extends JavaObject {
     );
   }
 
+  /// Check whether the given feature name is one of the available features as returned by getSystemAvailableFeatures().
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#hasSystemFeature(java.lang.String).
+  Future<bool> hasSystemFeature(String name) {
+    return _hostApi.hasSystemFeatureFromInstance(this, name);
+  }
+
   /// Retrieve all activities that can be performed for the given intent.
   ///
   /// See https://developer.android.com/reference/android/content/pm/PackageManager#queryIntentActivities(android.content.Intent,%20int).
@@ -99,6 +128,13 @@ class PackageManager extends JavaObject {
       intent,
       resolveInfoFlags,
     );
+  }
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  Future<List<FeatureInfo>> getSystemAvailableFeatures() {
+    return _hostApi.getSystemAvailableFeaturesFromInstance(this);
   }
 }
 

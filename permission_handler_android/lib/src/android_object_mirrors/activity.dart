@@ -55,6 +55,33 @@ class Activity extends Context {
   /// See https://developer.android.com/reference/android/content/Context.html#NOTIFICATION_SERVICE.
   static const String notificationService = 'notification';
 
+  /// Use with [Context.getSystemService] to retrieve a [TelephonyManager] for
+  /// handling management the telephony features of the device.
+  ///
+  /// Copy of [Context.telephonyService], as static fields are not inherited in
+  /// Dart.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#TELEPHONY_SERVICE.
+  static const String telephonyService = 'phone';
+
+  /// Use with [Context.getSystemService] to retrieve a [LocationManager] for
+  /// controlling location updates.
+  ///
+  /// Copy of [Context.locationService], as static fields are not inherited in
+  /// Dart.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#LOCATION_SERVICE.
+  static const String locationService = 'location';
+
+  /// Use with [Context.getSystemService] to retrieve a [BluetoothManager] for
+  /// using Bluetooth.
+  ///
+  /// Copy of [Context.bluetoothService], as static fields are not inherited in
+  /// Dart.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context.html#BLUETOOTH_SERVICE.
+  static const String bluetoothService = 'bluetooth';
+
   /// Standard activity result: operation succeeded.
   ///
   /// Constant Value: -1 (0xffffffff).

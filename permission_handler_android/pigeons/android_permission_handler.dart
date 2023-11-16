@@ -143,7 +143,7 @@ abstract class ContextHostApi {
   /// Returns the instance ID of the service.
   ///
   /// See https://developer.android.com/reference/android/content/Context#getSystemService(java.lang.String).
-  String getSystemService(
+  String? getSystemService(
     String instanceId,
     String name,
   );
@@ -152,6 +152,13 @@ abstract class ContextHostApi {
   ///
   /// See https://developer.android.com/reference/android/content/Context#getPackageManager().
   String getPackageManager(
+    String instanceId,
+  );
+
+  /// Return a ContentResolver instance for your application's package.
+  ///
+  /// See https://developer.android.com/reference/android/content/Context#getContentResolver().
+  String getContentResolver(
     String instanceId,
   );
 }
@@ -422,6 +429,13 @@ abstract class PackageManagerHostApi {
     String instanceId,
     String intentInstanceId,
     String flagsInstanceId,
+  );
+
+  /// Get a list of features that are available on the system.
+  ///
+  /// See https://developer.android.com/reference/android/content/pm/PackageManager#getSystemAvailableFeatures().
+  List<String> getSystemAvailableFeatures(
+    String instanceId,
   );
 }
 
@@ -695,4 +709,233 @@ abstract class ResolveInfoFlutterApi {
 
   /// Dispose of the Dart instance and remove it from the `InstanceManager`.
   void dispose(String instanceId);
+}
+
+/// Flutter API for `FeatureInfo`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/pm/FeatureInfo.
+@FlutterApi()
+abstract class FeatureInfoFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+@HostApi(dartHostTestHandler: 'TelephonyManagerTestHostApi')
+abstract class TelephonyManagerHostApi {
+  /// Returns a constant indicating the device phone type. This indicates the type of radio used to transmit voice calls.
+  ///
+  /// Requires the [PackageManager.featureTelephony] feature which can be
+  /// detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getPhoneType().
+  int getPhoneType(
+    String instanceId,
+  );
+
+  /// Returns a constant indicating the state of the default SIM card.
+  ///
+  /// Requires the [PackageManager.featureTelephonySubscription] feature which
+  /// can be detected using [PackageManager.hasSystemFeature].
+  ///
+  /// See https://developer.android.com/reference/android/telephony/TelephonyManager#getSimState(int).
+  int getSimState(
+    String instanceId,
+  );
+}
+
+/// Flutter API for `TelephonyManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/telephony/TelephonyManager.
+@FlutterApi()
+abstract class TelephonyManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `LocationManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/location/LocationManager.
+@HostApi(dartHostTestHandler: 'LocationManagerTestHostApi')
+abstract class LocationManagerHostApi {
+  /// Returns the current enabled/disabled status of location updates.
+  ///
+  /// See https://developer.android.com/reference/android/location/LocationManager#isLocationEnabled().
+  bool isLocationEnabled(String instanceId);
+}
+
+/// Flutter API for `LocationManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/location/LocationManager.
+@FlutterApi()
+abstract class LocationManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `BluetoothAdapter`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+@HostApi(dartHostTestHandler: 'BluetoothAdapterTestHostApi')
+abstract class BluetoothAdapterHostApi {
+  /// Get a handle to the default local Bluetooth adapter.
+  ///
+  /// Currently Android only supports one Bluetooth adapter, but the API could
+  /// be extended to support more. This will always return the default adapter.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#getDefaultAdapter().
+  String getDefaultAdapter();
+
+  /// Return true if Bluetooth is currently enabled and ready for use.
+  ///
+  /// Equivalent to: getBluetoothState() == STATE_ON.
+  ///
+  /// For apps targeting [Build.versionCodes.r] or lower, this requires the
+  /// [Manifest.permission.bluetooth] permission which can be gained with a
+  /// simple <uses-permission> manifest tag.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter#isEnabled().
+  bool isEnabled(
+    String instanceId,
+  );
+}
+
+/// Flutter API for `BluetoothAdapter`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/bluetooth/BluetoothAdapter.
+@FlutterApi()
+abstract class BluetoothAdapterFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Host API for `BluetoothManager`.
+///
+/// This class may handle instantiating and adding native object instances that
+/// are attached to a Dart instance or handle method calls on the associated
+/// native class or an instance of the class.
+///
+/// See https://developer.android.com/reference/android/bluetooth/BluetoothManager.
+@HostApi(dartHostTestHandler: 'BluetoothManagerTestHostApi')
+abstract class BluetoothManagerHostApi {
+  /// Get the BLUETOOTH Adapter for this device.
+  ///
+  /// See https://developer.android.com/reference/android/bluetooth/BluetoothManager#getAdapter().
+  String getAdapter(
+    String instanceId,
+  );
+}
+
+/// Flutter API for `BluetoothManager`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/bluetooth/BluetoothManager.
+@FlutterApi()
+abstract class BluetoothManagerFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+/// Flutter API for `ContentResolver`.
+///
+/// This class may handle instantiating and adding Dart instances that are
+/// attached to a native instance or receiving callback methods from an
+/// overridden native class.
+///
+/// See https://developer.android.com/reference/android/content/ContentResolver.
+@FlutterApi()
+abstract class ContentResolverFlutterApi {
+  /// Create a new Dart instance and add it to the `InstanceManager`.
+  void create(String instanceId);
+
+  /// Dispose of the Dart instance and remove it from the `InstanceManager`.
+  void dispose(String instanceId);
+}
+
+@HostApi(dartHostTestHandler: 'ContentResolverTestHostApi')
+abstract class SettingsSecureHostApi {
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// This version does not take a default value. If the setting has not been
+  /// set, or the string value is not a number, it returns null.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String).
+  int? getInt(
+    String contentResolverInstanceId,
+    String name,
+  );
+
+  /// Convenience function for retrieving a single secure settings value as an integer.
+  ///
+  /// Note that internally setting values are always stored as strings; this
+  /// function converts the string to an integer for you.
+  ///
+  /// The default value will be returned if the setting is not defined or not an
+  /// integer.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getInt(android.content.ContentResolver,%20java.lang.String,%20int).
+  int getIntWithDefault(
+    String contentResolverInstanceId,
+    String name,
+    int defaultValue,
+  );
+
+  /// Look up a name in the database.
+  ///
+  /// See https://developer.android.com/reference/android/provider/Settings.Secure#getString(android.content.ContentResolver,%20java.lang.String).
+  String? getString(
+    String contentResolverInstanceId,
+    String name,
+  );
 }
