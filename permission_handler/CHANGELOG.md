@@ -1,9 +1,12 @@
 ## 11.1.0
 * Adds support for iOS 17+ [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels).
-* On iOS 17+ use `Permission.calendarWriteOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
+* Deprecates `Permission.calendar`. Use `Permission.calendarWriteOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
 * For `Permission.calendarFullAccess` on iOS 17+ use `PERMISSION_EVENTS_FULL_ACCESS` in Podfile instead of  `PERMISSION_EVENTS`.
+* Adds web support by endorsing `permission_handler_html` as the web implementation of the permission handler. Only some permissions are supported at this time.
+* Updates `permission_handler_android` dependency to version 12.0.1.
 * Updates `permission_handler_apple` dependency to version 9.2.0.
-* Updates `permission_handler_platform_interface` dependency to version 4.0.0.
+* Updates `permission_handler_windows` dependency to version 0.2.0.
+* Updates `permission_handler_platform_interface` dependency to version 4.0.2.
 
 ## 11.0.1
 
