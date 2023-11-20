@@ -83,10 +83,10 @@ You must list the permission you want to use in your application:
          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
            '$(inherited)',
 
-           ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (until iOS 16)]
+           ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (iOS 16 and below)]
            # 'PERMISSION_EVENTS=1',
    
-           ## dart: [PermissionGroup.calendarFullAccess, PermissionGroup.calendar (from iOS 17)]
+           ## dart: [PermissionGroup.calendarFullAccess, PermissionGroup.calendar (iOS 17 and above)]
            # 'PERMISSION_EVENTS_FULL_ACCESS=1',
   
            ## dart: PermissionGroup.reminders
