@@ -33,6 +33,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      # Override current Xcode version with version 15.0.1.
+      #
+      # TODO(mvanbeusekom): Remove when the macos-latest image supports version 15.0.1
+      # out of the box (see https://github.com/actions/runner-images/blob/main/README.md).
+      - name: Select Xcode version
+        run: sudo xcode-select -s '/Applications/Xcode_15.0.1.app/Contents/Developer'
+
       # Make sure JAVA version 17 is installed on build agent.
       - uses: actions/setup-java@v3
         with:
