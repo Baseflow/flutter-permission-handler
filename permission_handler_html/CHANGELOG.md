@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Fixed plugin initialization for non-https web app.
+
 ## 0.1.0+1
 
 * Updates `permission_handler_platform_interface` dependency to version `^4.0.2`.
