@@ -34,7 +34,8 @@ class WebDelegate {
   static const _notificationsPermissionName = 'notifications';
 
   /// The permission name to request access to the user's location.
-  static const _locationPermissionName = 'location';
+  /// https://developer.mozilla.org/en-US/docs/Web/API/Permissions/query#name
+  static const _locationPermissionName = 'geolocation';
 
   /// The status indicates that permission has been granted by the user.
   static const _grantedPermissionStatus = 'granted';
