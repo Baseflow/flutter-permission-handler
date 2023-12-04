@@ -1,6 +1,8 @@
 ## 0.1.1
 
 * Fixed plugin initialization for non-https web app.
+* Fixed location permission name
+* Improved error handling in the example app
 
 ## 0.1.0+1
 
