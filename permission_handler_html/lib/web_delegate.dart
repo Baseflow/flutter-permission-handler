@@ -97,7 +97,7 @@ class WebDelegate {
     }
 
     try {
-      html.MediaStream? mediaStream = await _devices!.getUserMedia({'video': true});
+      html.MediaStream mediaStream = await _devices!.getUserMedia({'video': true});
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
