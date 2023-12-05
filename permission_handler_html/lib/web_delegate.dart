@@ -64,8 +64,12 @@ class WebDelegate {
   }
 
   Future<bool> _requestMicrophonePermission() async {
+    if (_devices == null) {
+      return false;
+    }
+
     try {
-      html.MediaStream? mediaStream = await _devices?.getUserMedia({'audio': true});
+      html.MediaStream mediaStream = await _devices!.getUserMedia({'audio': true});
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
@@ -74,8 +78,8 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream?.active ?? false) {
-        final audioTracks = mediaStream!.getAudioTracks();
+      if (mediaStream.active ?? false) {
+        final audioTracks = mediaStream.getAudioTracks();
         if (audioTracks.isNotEmpty) {
           audioTracks[0].stop();
         }
@@ -88,8 +92,12 @@ class WebDelegate {
   }
 
   Future<bool> _requestCameraPermission() async {
+    if (_devices == null) {
+      return false;
+    }
+
     try {
-      html.MediaStream? mediaStream = await _devices?.getUserMedia({'video': true});
+      html.MediaStream? mediaStream = await _devices!.getUserMedia({'video': true});
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
@@ -98,8 +106,8 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream?.active ?? false) {
-        final videoTracks = mediaStream!.getVideoTracks();
+      if (mediaStream.active ?? false) {
+        final videoTracks = mediaStream.getVideoTracks();
         if (videoTracks.isNotEmpty) {
           videoTracks[0].stop();
         }
