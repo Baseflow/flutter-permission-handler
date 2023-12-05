@@ -34,7 +34,8 @@ class WebDelegate {
   static const _notificationsPermissionName = 'notifications';
 
   /// The permission name to request access to the user's location.
-  static const _locationPermissionName = 'location';
+  /// https://developer.mozilla.org/en-US/docs/Web/API/Permissions/query#name
+  static const _locationPermissionName = 'geolocation';
 
   /// The status indicates that permission has been granted by the user.
   static const _grantedPermissionStatus = 'granted';
@@ -57,18 +58,18 @@ class WebDelegate {
     }
   }
 
-  Future<PermissionStatus> _permissionStatusState(
-      String webPermissionName, html.Permissions? permissions) async {
-    final webPermissionStatus =
-        await permissions?.query({'name': webPermissionName});
+  Future<PermissionStatus> _permissionStatusState(String webPermissionName, html.Permissions? permissions) async {
+    final webPermissionStatus = await permissions?.query({'name': webPermissionName});
     return _toPermissionStatus(webPermissionStatus?.state);
   }
 
-  Future<bool> _requestMicrophonePermission(html.MediaDevices devices) async {
-    html.MediaStream? mediaStream;
+  Future<bool> _requestMicrophonePermission() async {
+    if (_devices == null) {
+      return false;
+    }
 
     try {
-      mediaStream = await devices.getUserMedia({'audio': true});
+      html.MediaStream mediaStream = await _devices!.getUserMedia({'audio': true});
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
@@ -77,7 +78,7 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream.active!) {
+      if (mediaStream.active ?? false) {
         final audioTracks = mediaStream.getAudioTracks();
         if (audioTracks.isNotEmpty) {
           audioTracks[0].stop();
@@ -90,11 +91,13 @@ class WebDelegate {
     return true;
   }
 
-  Future<bool> _requestCameraPermission(html.MediaDevices devices) async {
-    html.MediaStream? mediaStream;
+  Future<bool> _requestCameraPermission() async {
+    if (_devices == null) {
+      return false;
+    }
 
     try {
-      mediaStream = await devices.getUserMedia({'video': true});
+      html.MediaStream mediaStream = await _devices!.getUserMedia({'video': true});
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
@@ -103,7 +106,7 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream.active!) {
+      if (mediaStream.active ?? false) {
         final videoTracks = mediaStream.getVideoTracks();
         if (videoTracks.isNotEmpty) {
           videoTracks[0].stop();
@@ -117,45 +120,25 @@ class WebDelegate {
   }
 
   Future<bool> _requestNotificationPermission() async {
-    bool granted = false;
-    html.Notification.requestPermission().then((permission) => {
-          if (permission == "granted") {granted = true}
-        });
-
-    return granted;
+    return html.Notification.requestPermission().then((permission) => permission == "granted");
   }
 
-  Future<bool> _requestLocationPermission(html.Geolocation geolocation) async {
+  Future<bool> _requestLocationPermission() async {
     try {
-      await geolocation.getCurrentPosition();
-      return true;
+      return await _geolocation?.getCurrentPosition().then((value) => true) ?? false;
     } on html.PositionError {
       return false;
     }
   }
 
-  Future<PermissionStatus> _requestSingularPermission(
-      Permission permission) async {
-    bool permissionGranted = false;
-
-    switch (permission) {
-      case Permission.microphone:
-        permissionGranted = await _requestMicrophonePermission(_devices!);
-        break;
-      case Permission.camera:
-        permissionGranted = await _requestCameraPermission(_devices!);
-        break;
-      case Permission.notification:
-        permissionGranted = await _requestNotificationPermission();
-        break;
-      case Permission.location:
-        permissionGranted = await _requestLocationPermission(_geolocation!);
-        break;
-      default:
-        throw UnsupportedError(
-          'The ${permission.toString()} permission is currently not supported on web.',
-        );
-    }
+  Future<PermissionStatus> _requestSingularPermission(Permission permission) async {
+    bool permissionGranted = switch (permission) {
+      Permission.microphone => await _requestMicrophonePermission(),
+      Permission.camera => await _requestCameraPermission(),
+      Permission.notification => await _requestNotificationPermission(),
+      Permission.location => await _requestLocationPermission(),
+      _ => throw UnsupportedError('The ${permission.toString()} permission is currently not supported on web.')
+    };
 
     if (!permissionGranted) {
       return PermissionStatus.permanentlyDenied;
@@ -167,14 +150,12 @@ class WebDelegate {
   /// they have not already been granted before.
   ///
   /// Returns a [Map] containing the status per requested [Permission].
-  Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) async {
+  Future<Map<Permission, PermissionStatus>> requestPermissions(List<Permission> permissions) async {
     final Map<Permission, PermissionStatus> permissionStatusMap = {};
 
     for (final permission in permissions) {
       try {
-        permissionStatusMap[permission] =
-            await _requestSingularPermission(permission);
+        permissionStatusMap[permission] = await _requestSingularPermission(permission);
       } on UnimplementedError {
         rethrow;
       }
