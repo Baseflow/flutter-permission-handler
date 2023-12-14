@@ -10,6 +10,7 @@ dependencies:
     sdk: flutter
 
 dev_dependencies:
+  flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
 
@@ -29,6 +30,3 @@ flutter:
   assets:
     - res/images/baseflow_logo_def_light-02.png
     - res/images/poweredByBaseflowLogoLight@3x.png
-    - packages/baseflow_plugin_template/logo.png
-    - packages/baseflow_plugin_template/poweredByBaseflow.png
-
