@@ -107,6 +107,9 @@ You must list the permission you want to use in your application:
            ## dart: PermissionGroup.photos
            # 'PERMISSION_PHOTOS=1',
 
+           ## dart: PermissionGroup.photosAddOnly
+           # 'PERMISSION_PHOTOS_ADD_ONLY=1',
+
            ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
            # 'PERMISSION_LOCATION=1',
 
@@ -157,6 +160,7 @@ You must list the permission you want to use in your application:
 | PermissionGroup.microphone                                                                | NSMicrophoneUsageDescription                                                                                  | PERMISSION_MICROPHONE                |
 | PermissionGroup.speech                                                                    | NSSpeechRecognitionUsageDescription                                                                           | PERMISSION_SPEECH_RECOGNIZER         |
 | PermissionGroup.photos                                                                    | NSPhotoLibraryUsageDescription                                                                                | PERMISSION_PHOTOS                    |
+| PermissionGroup.photosAddOnly                                                             | NSPhotoLibraryAddUsageDescription                                                                             | PERMISSION_PHOTOS_ADD_ONLY           |
 | PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse | NSLocationUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationWhenInUseUsageDescription | PERMISSION_LOCATION                  |
 | PermissionGroup.notification                                                              | PermissionGroupNotification                                                                                   | PERMISSION_NOTIFICATIONS             |
 | PermissionGroup.mediaLibrary                                                              | NSAppleMusicUsageDescription, kTCCServiceMedia
