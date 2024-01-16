@@ -160,9 +160,9 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupAudio,
     PermissionGroupScheduleExactAlarm,
     PermissionGroupSensorsAlways,
-    PermissionGroupAssistant
     PermissionGroupCalendarWriteOnly,
-    PermissionGroupCalendarFullAccess
+    PermissionGroupCalendarFullAccess,
+    PermissionGroupAssistant
 };
 
 typedef NS_ENUM(int, PermissionStatus) {
