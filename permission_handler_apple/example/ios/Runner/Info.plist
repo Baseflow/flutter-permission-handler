@@ -61,6 +61,8 @@
     <!-- Permission options for the `calendar` group -->
     <key>NSCalendarsUsageDescription</key>
     <string>Calendars</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>Calendar full access</string>
 
     <!-- Permission options for the `camera` group -->
     <key>NSCameraUsageDescription</key>

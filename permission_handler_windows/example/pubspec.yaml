@@ -22,7 +22,7 @@ dev_dependencies:
     path: ../
 
   url_launcher: ^6.0.12
-  
+
 flutter:
   uses-material-design: true
 
@@ -31,4 +31,3 @@ flutter:
     - res/images/poweredByBaseflowLogoLight@3x.png
     - packages/baseflow_plugin_template/logo.png
     - packages/baseflow_plugin_template/poweredByBaseflow.png
-

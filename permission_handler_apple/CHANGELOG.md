@@ -1,3 +1,6 @@
+## 9.2.0
+* Adds the support for `Permission.calendarWriteOnly` and `Permission.calendarFullAccess` permissions which are introduced in iOS 17+.
+
 ## 9.1.4
 
 * Adds checking whether Bluetooth service is enabled through `Permission.bluetooth.serviceStatus`.
@@ -36,11 +39,11 @@
 
 ## 9.0.4
 
-* Adds flag inside `UserDefaults` to save whether locationAlways has already been requested and prevent further requests, which would be left unanswered by the system.
+* Adds flag inside `UserDefaults` to save whether `locationAlways` has already been requested and prevent further requests, which would be left unanswered by the system.
 
 ## 9.0.3
 
-* Ensures a request for `locationAlways` permission returns a result unblocking the permission request and preventing the `ERROR_ALREADY_REQUESTING_PERMISSIONS` error for subsequent permission request.
+* Ensures a request for `locationAlways` permission returns a result unblocking the permission request and preventing the `ERROR_ALREADY_REQUESTING_PERMISSIONS` error for subsequent permission requests.
 
 ## 9.0.2
 
