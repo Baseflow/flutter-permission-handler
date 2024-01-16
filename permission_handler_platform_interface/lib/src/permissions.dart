@@ -318,6 +318,10 @@ class Permission {
 
   /// Permission for reading from and writing to the device's calendar.
   static const calendarFullAccess = Permission._(37);
+    
+  /// Android: Nothing
+  /// iOS: SiriKit
+  static const assistant = Permission._(38);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
@@ -360,6 +364,7 @@ class Permission {
     sensorsAlways,
     calendarWriteOnly,
     calendarFullAccess,
+    assistant,
   ];
 
   static const List<String> _names = <String>[
@@ -401,6 +406,7 @@ class Permission {
     'sensorsAlways',
     'calendarWriteOnly',
     'calendarFullAccess',
+    'assistant',
   ];
 
   @override

@@ -6,7 +6,7 @@ void main() {
       () {
     const values = Permission.values;
 
-    expect(values.length, 38);
+    expect(values.length, 39);
   });
 
   test('check if byValue returns corresponding PermissionGroup value', () {
