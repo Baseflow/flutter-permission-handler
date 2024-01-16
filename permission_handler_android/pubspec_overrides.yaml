@@ -1,3 +1,0 @@
-dependency_overrides:
-  permission_handler_platform_interface:
-    path: ../permission_handler_platform_interface
