@@ -75,7 +75,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
             binding.getActivity()
         );
 
-        this.pluginBinding = binding;
+        pluginBinding = binding;
         registerListeners();
     }
 
@@ -87,8 +87,8 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Override
     public void onDetachedFromActivity() {
         stopListeningToActivity();
-
         deregisterListeners();
+        pluginBinding = null;
     }
 
     @Override
