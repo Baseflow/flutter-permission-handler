@@ -1,3 +1,7 @@
+## 12.0.2
+
+* Fixes bug where Android activity is leaked when embedded in native Android application.
+
 ## 12.0.1
 
 * Fixes a bug where the `ignoreBatteryOptimizations` permission didn't report the correct status when the permission is requested and granted.
