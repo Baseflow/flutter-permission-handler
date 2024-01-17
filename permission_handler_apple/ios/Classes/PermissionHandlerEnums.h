@@ -102,18 +102,12 @@
     #define PERMISSION_APP_TRACKING_TRANSPARENCY 0
 #endif
 
+
 // ios: PermissionGroupCriticalAlerts
 // Info.plist: UNAuthorizationOptionCriticalAlert
 // dart: PermissionGroup.criticalAlerts
 #ifndef PERMISSION_CRITICAL_ALERTS
     #define PERMISSION_CRITICAL_ALERTS 0
-#endif
-
-// ios: PermissionGroupAssistant
-// Info.plist: [NSSiriUsageDescription]
-// dart: PermissionGroup.assistant
-#ifndef PERMISSION_ASSISTANT
-    #define PERMISSION_ASSISTANT 0
 #endif
 
 // ios: PermissionGroupCalendarFullAccess
@@ -161,8 +155,7 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupScheduleExactAlarm,
     PermissionGroupSensorsAlways,
     PermissionGroupCalendarWriteOnly,
-    PermissionGroupCalendarFullAccess,
-    PermissionGroupAssistant
+    PermissionGroupCalendarFullAccess
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

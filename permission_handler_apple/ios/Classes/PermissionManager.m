@@ -147,8 +147,6 @@
             return [AppTrackingTransparencyPermissionStrategy new];
         case PermissionGroupCriticalAlerts:
             return [CriticalAlertsPermissionStrategy new];
-        case PermissionGroupAssistant:
-            return [AssistantPermissionStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }

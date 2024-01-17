@@ -28,7 +28,7 @@ dependencies:
   permission_handler_apple: ^9.2.0
   permission_handler_html: ^0.1.0+1
   permission_handler_windows: ^0.2.0
-  permission_handler_platform_interface: ^4.1.0
+  permission_handler_platform_interface: ^4.0.2
 
 dev_dependencies:
   flutter_lints: ^1.0.4

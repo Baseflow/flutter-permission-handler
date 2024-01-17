@@ -25,7 +25,6 @@
 #import "UnknownPermissionStrategy.h"
 #import "NotificationPermissionStrategy.h"
 #import "CriticalAlertsPermissionStrategy.h"
-#import "AssistantPermissionStrategy.h"
 #import "PermissionHandlerEnums.h"
 #import "Codec.h"
 
