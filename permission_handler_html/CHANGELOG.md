@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support only for iOS).
+
 ## 0.1.0+2
 
 * Fixes plugin initialization for non-https web app.

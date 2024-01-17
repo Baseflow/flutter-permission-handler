@@ -1,3 +1,7 @@
+## 12.0.3
+
+* Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support only for iOS).
+
 ## 12.0.2
 
 * Fixes bug where Android activity is leaked when embedded in native Android application.
