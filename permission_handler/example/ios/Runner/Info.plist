@@ -106,9 +106,9 @@
     <key>NSSiriUsageDescription</key>
     <string>The example app would like access to Siri Kit to demonstrate requesting authorization.</string>
 
-	<key>CADisableMinimumFrameDurationOnPhone</key>
-	<true/>
-	<key>UIApplicationSupportsIndirectInputEvents</key>
-	<true/>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
 </dict>
 </plist>
