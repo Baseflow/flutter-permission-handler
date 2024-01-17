@@ -1,4 +1,9 @@
+## 11.2.0
+
+* Adds the `Permission.assistant` which allows users to request permissions to access SiriKit on iOS and macOS platforms. This is a no-op on all other platforms.
+
 ## 11.1.0
+
 * Adds support for iOS 17+ [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels).
 * Deprecates `Permission.calendar`. Use `Permission.calendarWriteOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
 * For `Permission.calendarFullAccess` on iOS 17+ use `PERMISSION_EVENTS_FULL_ACCESS` in Podfile instead of  `PERMISSION_EVENTS`.
