@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-# platform :ios, '9.0'
+# platform :ios, '11.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -45,8 +45,11 @@ post_install do |installer|
       config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
         '$(inherited)',
 
-        ## dart: PermissionGroup.calendar
+        ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (until iOS 16)]
         'PERMISSION_EVENTS=1',
+        
+        ## dart: [PermissionGroup.calendarFullAccess, PermissionGroup.calendar (from iOS 17)]
+       'PERMISSION_EVENTS_FULL_ACCESS=1',
 
         ## dart: PermissionGroup.reminders
         'PERMISSION_REMINDERS=1',
@@ -68,7 +71,7 @@ post_install do |installer|
 
         ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
         'PERMISSION_LOCATION=1',
-       
+
         ## dart: PermissionGroup.notification
         'PERMISSION_NOTIFICATIONS=1',
 
@@ -86,6 +89,9 @@ post_install do |installer|
 
         ## dart: PermissionGroup.criticalAlerts
         'PERMISSION_CRITICAL_ALERTS=1',
+
+        ## dart: PermissionGroup.assistant
+        'PERMISSION_ASSISTANT=1',
       ]
 
     end

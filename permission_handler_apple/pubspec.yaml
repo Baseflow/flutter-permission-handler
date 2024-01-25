@@ -1,10 +1,11 @@
 name: permission_handler_apple
 description: Permission plugin for Flutter. This plugin provides the iOS API to request and check permissions.
-version: 9.0.7
-homepage: https://github.com/baseflow/flutter-permission-handler
+repository: https://github.com/baseflow/flutter-permission-handler
+issue_tracker: https://github.com/Baseflow/flutter-permission-handler/issues
+version: 9.3.0
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.15.0 <4.0.0"
   flutter: ">=2.8.0"
 
 flutter:
@@ -19,7 +20,7 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler_platform_interface: ^3.7.0
+  permission_handler_platform_interface: ^4.1.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4

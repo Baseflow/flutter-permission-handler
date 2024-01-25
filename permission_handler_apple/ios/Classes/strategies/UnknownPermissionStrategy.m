@@ -12,8 +12,8 @@
     return PermissionStatusDenied;
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    return ServiceStatusDisabled;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler(ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {

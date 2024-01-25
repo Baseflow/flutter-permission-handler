@@ -37,37 +37,29 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: ListView(
-        children: [
-          ...Permission.values.where((permission) {
-            return permission != Permission.unknown &&
-                permission != Permission.sms &&
-                permission != Permission.storage &&
-                permission != Permission.ignoreBatteryOptimizations &&
-                permission != Permission.accessMediaLocation &&
-                permission != Permission.activityRecognition &&
-                permission != Permission.manageExternalStorage &&
-                permission != Permission.systemAlertWindow &&
-                permission != Permission.requestInstallPackages &&
-                permission != Permission.accessNotificationPolicy &&
-                permission != Permission.bluetoothScan &&
-                permission != Permission.bluetoothAdvertise &&
-                permission != Permission.bluetoothConnect;
-          }).map((permission) => PermissionWidget(permission)),
-          ListTile(
-            title: Text(
-              "Open app settings",
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-            trailing: const Icon(
-              Icons.settings,
-              color: Colors.white,
-            ),
-            onTap: () {
-              PermissionHandlerPlatform.instance.openAppSettings();
-            },
-          ),
-        ],
-      ),
+          children: Permission.values
+              .where((permission) {
+                return permission != Permission.unknown &&
+                    permission != Permission.phone &&
+                    permission != Permission.sms &&
+                    permission != Permission.ignoreBatteryOptimizations &&
+                    permission != Permission.accessMediaLocation &&
+                    permission != Permission.activityRecognition &&
+                    permission != Permission.manageExternalStorage &&
+                    permission != Permission.systemAlertWindow &&
+                    permission != Permission.requestInstallPackages &&
+                    permission != Permission.accessNotificationPolicy &&
+                    permission != Permission.bluetoothScan &&
+                    permission != Permission.bluetoothAdvertise &&
+                    permission != Permission.bluetoothConnect &&
+                    permission != Permission.nearbyWifiDevices &&
+                    permission != Permission.videos &&
+                    permission != Permission.audio &&
+                    permission != Permission.scheduleExactAlarm &&
+                    permission != Permission.sensorsAlways;
+              })
+              .map((permission) => PermissionWidget(permission))
+              .toList()),
     );
   }
 }
@@ -80,7 +72,7 @@ class PermissionWidget extends StatefulWidget {
   final Permission _permission;
 
   @override
-  State<PermissionWidget> createState() => _PermissionState();
+  State<PermissionWidget> createState() => _PermissionState(_permission);
 }
 
 class _PermissionState extends State<PermissionWidget> {

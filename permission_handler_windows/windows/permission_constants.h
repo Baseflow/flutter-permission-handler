@@ -45,7 +45,11 @@ public:
         NEARBY_WIFI_DEVICES = 31,
         VIDEOS = 32,
         AUDIO = 33,
-        SCHEDULE_EXACT_ALARM = 34
+        SCHEDULE_EXACT_ALARM = 34,
+        SENSORS_ALWAYS = 35,
+        CALENDAR_WRITE_ONLY = 36,
+        CALENDAR_FULL_ACCESS = 37,
+        ASSISTANT = 38
     };
 
     //PERMISSION_STATUS

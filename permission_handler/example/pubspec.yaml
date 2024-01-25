@@ -2,7 +2,7 @@ name: permission_handler_example
 description: Demonstrates how to use the permission_handler plugin.
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.15.0 <4.0.0"
 
 dependencies:
   baseflow_plugin_template: ^2.1.1
@@ -21,7 +21,7 @@ dev_dependencies:
     # the parent directory to use the current plugin's version.
     path: ../
 
-  url_launcher: ^6.0.12
+  url_launcher: ^6.1.11
 
 flutter:
   uses-material-design: true
@@ -29,6 +29,3 @@ flutter:
   assets:
     - res/images/baseflow_logo_def_light-02.png
     - res/images/poweredByBaseflowLogoLight@3x.png
-    - packages/baseflow_plugin_template/logo.png
-    - packages/baseflow_plugin_template/poweredByBaseflow.png
-

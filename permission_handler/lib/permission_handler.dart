@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
@@ -21,7 +23,69 @@ Future<bool> openAppSettings() => _handler.openAppSettings();
 
 /// Actions that can be executed on a permission.
 extension PermissionActions on Permission {
-  /// The current status of this permission.
+  /// Callback for when permission is denied.
+  static FutureOr<void>? Function()? _onDenied;
+
+  /// Callback for when permission is granted.
+  static FutureOr<void>? Function()? _onGranted;
+
+  /// Callback for when permission is permanently denied.
+  static FutureOr<void>? Function()? _onPermanentlyDenied;
+
+  /// Callback for when permission is restricted.
+  static FutureOr<void>? Function()? _onRestricted;
+
+  /// Callback for when permission is limited.
+  static FutureOr<void>? Function()? _onLimited;
+
+  /// Callback for when permission is Provisional.
+  static FutureOr<void>? Function()? _onProvisional;
+
+  /// Method to set a callback for when permission is denied.
+  Permission onDeniedCallback(FutureOr<void>? Function()? callback) {
+    _onDenied = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is granted.
+  Permission onGrantedCallback(FutureOr<void>? Function()? callback) {
+    _onGranted = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is permanently denied.
+  Permission onPermanentlyDeniedCallback(FutureOr<void>? Function()? callback) {
+    _onPermanentlyDenied = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is restricted.
+  Permission onRestrictedCallback(FutureOr<void>? Function()? callback) {
+    _onRestricted = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is limited.
+  Permission onLimitedCallback(FutureOr<void>? Function()? callback) {
+    _onLimited = callback;
+    return this;
+  }
+
+  /// Method to set a callback for when permission is provisional.
+  Permission onProvisionalCallback(FutureOr<void>? Function()? callback) {
+    _onProvisional = callback;
+    return this;
+  }
+
+  /// Checks the current status of the given [Permission].
+  ///
+  /// Notes about specific permissions:
+  /// - **[Permission.bluetooth]**
+  ///   - iOS 13.0 only:
+  ///     - The method will **always** return [PermissionStatus.denied],
+  ///       regardless of the actual status. For the actual permission state,
+  ///       use [Permission.bluetooth.request]. Note that this will show a
+  ///       permission dialog if the permission was not yet requested.
   Future<PermissionStatus> get status => _handler.checkPermissionStatus(this);
 
   /// If you should show a rationale for requesting permission.
@@ -41,8 +105,24 @@ extension PermissionActions on Permission {
   ///
   /// Returns the new [PermissionStatus].
   Future<PermissionStatus> request() async {
-    final permissionStatus = (await [this].request())[this];
-    return permissionStatus ?? PermissionStatus.denied;
+    final permissionStatus =
+        (await [this].request())[this] ?? PermissionStatus.denied;
+
+    if (permissionStatus.isDenied) {
+      _onDenied?.call();
+    } else if (permissionStatus.isGranted) {
+      _onGranted?.call();
+    } else if (permissionStatus.isPermanentlyDenied) {
+      _onPermanentlyDenied?.call();
+    } else if (permissionStatus.isRestricted) {
+      _onRestricted?.call();
+    } else if (permissionStatus.isLimited) {
+      _onLimited?.call();
+    } else if (permissionStatus.isProvisional) {
+      _onProvisional?.call();
+    }
+
+    return permissionStatus;
   }
 }
 
@@ -70,11 +150,16 @@ extension PermissionCheckShortcuts on Permission {
   /// be showed to the user. Consuming Apps should redirect the user to the
   /// App settings to change permissions.
   Future<bool> get isPermanentlyDenied => status.isPermanentlyDenied;
+
+  /// If the application is provisionally authorized to post noninterruptive user notifications.
+  /// *Only supported on iOS.*
+  Future<bool> get isProvisional => status.isProvisional;
 }
 
 /// Actions that apply only to permissions that have an associated service.
 extension ServicePermissionActions on PermissionWithService {
-  /// Checks the current status of the service associated with this permission.
+  /// Checks the current status of the service associated with the given
+  /// [Permission].
   ///
   /// Notes about specific permissions:
   /// - **[Permission.phone]**
@@ -94,6 +179,14 @@ extension ServicePermissionActions on PermissionWithService {
   ///   - **PLEASE NOTE that this is still not a perfect indication** of the
   ///     device's capability to place & connect phone calls as it also depends
   ///     on the network condition.
+  /// - **[Permission.bluetooth]**
+  ///   - iOS:
+  ///     - The method will **always** return [ServiceStatus.disabled] when the
+  ///       Bluetooth permission was denied by the user. It is impossible to
+  ///       obtain the actual Bluetooth service status without having the
+  ///       Bluetooth permission granted.
+  ///     - The method will prompt the user for Bluetooth permission if the
+  ///       permission was not yet requested.
   Future<ServiceStatus> get serviceStatus => _handler.checkServiceStatus(this);
 }
 

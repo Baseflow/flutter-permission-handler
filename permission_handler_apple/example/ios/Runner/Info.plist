@@ -61,6 +61,8 @@
     <!-- Permission options for the `calendar` group -->
     <key>NSCalendarsUsageDescription</key>
     <string>Calendars</string>
+    <key>NSCalendarsFullAccessUsageDescription</key>
+    <string>Calendar full access</string>
 
     <!-- Permission options for the `camera` group -->
     <key>NSCameraUsageDescription</key>
@@ -99,5 +101,14 @@
     <!-- Permission options for the `appTrackingTransparency` -->
     <key>NSUserTrackingUsageDescription</key>
     <string>appTrackingTransparency</string>
+
+    <!-- Permission options for the `assistant` group -->
+    <key>NSSiriUsageDescription</key>
+    <string>The example app would like access to Siri Kit to demonstrate requesting authorization.</string>
+
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
 </dict>
 </plist>

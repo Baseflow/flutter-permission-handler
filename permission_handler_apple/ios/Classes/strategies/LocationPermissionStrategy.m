@@ -17,6 +17,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     CLLocationManager *_locationManager;
     PermissionStatusHandler _permissionStatusHandler;
     PermissionGroup _requestedPermission;
+    BOOL _previousStatusWasNotDetermined;
 }
 
 - (instancetype)initWithLocationManager {
@@ -24,6 +25,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     if (self) {
         _locationManager = [CLLocationManager new];
         _locationManager.delegate = self;
+        _previousStatusWasNotDetermined = NO;
     }
     
     return self;
@@ -33,8 +35,8 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     return [LocationPermissionStrategy permissionStatus:permission];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    return [CLLocationManager locationServicesEnabled] ? ServiceStatusEnabled : ServiceStatusDisabled;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler([CLLocationManager locationServicesEnabled] ? ServiceStatusEnabled : ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
@@ -98,21 +100,32 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 // This is called when the location manager is first initialized and raises the following situations:
 // 1. When we first request [PermissionGroupLocationWhenInUse] and then [PermissionGroupLocationAlways]
 //    this will be called when the [CLLocationManager] is first initialized with
-//    [kCLAuthorizationStatusAuthorizedWhenInUse]. As a consequence we send back the result to early.
+//    [kCLAuthorizationStatusAuthorizedWhenInUse]. As a consequence we send back the result too early.
 // 2. When we first request [PermissionGroupLocationWhenInUse] and then [PermissionGroupLocationAlways]
 //    and the user doesn't allow for [kCLAuthorizationStatusAuthorizedAlways] this method is not called
 //    at all.
+// 3. When the permission dialog is opened, this method is called with [kCLAuthorizationStatusNotDetermined].
+//    The method should not return at this point, but instead wait for the next [CLAuthorizationStatus] to
+//    determine what to send back. If the method is called with [kCLAuthorizationStatusNotDetermined] for a
+//    second time, assume that the permission was not granted. This might catch situations where the user
+//    dismisses the dialog without making a decision.
 - (void)locationManager:(CLLocationManager *)manager didChangeAuthorizationStatus:(CLAuthorizationStatus)status {
-    if (status == kCLAuthorizationStatusNotDetermined) {
-        return;
-    }
-    
     if (_permissionStatusHandler == nil || @(_requestedPermission) == nil) {
         return;
     }
+    
+    if (status == kCLAuthorizationStatusNotDetermined) {
+        if (_previousStatusWasNotDetermined) {
+            _permissionStatusHandler(PermissionStatusDenied);
+        }
+        _previousStatusWasNotDetermined = YES;
+        return;
+    }
+    _previousStatusWasNotDetermined = NO;
 
     if ((_requestedPermission == PermissionGroupLocationAlways && status == kCLAuthorizationStatusAuthorizedWhenInUse)) {
-            return;
+        _permissionStatusHandler(PermissionStatusDenied);
+        return;
     }
 
     PermissionStatus permissionStatus = [LocationPermissionStrategy
