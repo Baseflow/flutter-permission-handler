@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
 import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
@@ -17,14 +19,16 @@ final MaterialColor themeMaterialColor =
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
+  const PermissionHandlerWidget({Key? key}) : super(key: key);
+
   /// Create a page containing the functionality of this plugin
   static ExamplePage createPage() {
     return ExamplePage(
-        Icons.location_on, (context) => PermissionHandlerWidget());
+        Icons.location_on, (context) => const PermissionHandlerWidget());
   }
 
   @override
-  _PermissionHandlerWidgetState createState() =>
+  State<PermissionHandlerWidget> createState() =>
       _PermissionHandlerWidgetState();
 }
 
@@ -34,30 +38,27 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
     return Center(
       child: ListView(
         children: [
-          ...Permission.values
-              .where((permission) {
-                return permission != Permission.unknown &&
-                    permission != Permission.sms &&
-                    permission != Permission.storage &&
-                    permission != Permission.ignoreBatteryOptimizations &&
-                    permission != Permission.accessMediaLocation &&
-                    permission != Permission.activityRecognition &&
-                    permission != Permission.manageExternalStorage &&
-                    permission != Permission.systemAlertWindow &&
-                    permission != Permission.requestInstallPackages &&
-                    permission != Permission.accessNotificationPolicy &&
-                    permission != Permission.bluetoothScan &&
-                    permission != Permission.bluetoothAdvertise &&
-                    permission != Permission.bluetoothConnect;
-              })
-              .map((permission) => PermissionWidget(permission))
-              .toList(),
+          ...Permission.values.where((permission) {
+            return permission != Permission.unknown &&
+                permission != Permission.sms &&
+                permission != Permission.storage &&
+                permission != Permission.ignoreBatteryOptimizations &&
+                permission != Permission.accessMediaLocation &&
+                permission != Permission.activityRecognition &&
+                permission != Permission.manageExternalStorage &&
+                permission != Permission.systemAlertWindow &&
+                permission != Permission.requestInstallPackages &&
+                permission != Permission.accessNotificationPolicy &&
+                permission != Permission.bluetoothScan &&
+                permission != Permission.bluetoothAdvertise &&
+                permission != Permission.bluetoothConnect;
+          }).map((permission) => PermissionWidget(permission)),
           ListTile(
             title: Text(
               "Open app settings",
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
-            trailing: Icon(
+            trailing: const Icon(
               Icons.settings,
               color: Colors.white,
             ),
@@ -74,18 +75,19 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
 /// Permission widget containing information about the passed [Permission]
 class PermissionWidget extends StatefulWidget {
   /// Constructs a [PermissionWidget] for the supplied [Permission]
-  const PermissionWidget(this._permission);
+  const PermissionWidget(this._permission, {Key? key}) : super(key: key);
 
   final Permission _permission;
 
   @override
-  _PermissionState createState() => _PermissionState(_permission);
+  State<PermissionWidget> createState() => _PermissionState();
 }
 
 class _PermissionState extends State<PermissionWidget> {
-  _PermissionState(this._permission);
+  _PermissionState();
 
-  final Permission _permission;
+  Permission get _permission => widget._permission;
+
   final PermissionHandlerPlatform _permissionHandler =
       PermissionHandlerPlatform.instance;
   PermissionStatus _permissionStatus = PermissionStatus.denied;
@@ -120,7 +122,7 @@ class _PermissionState extends State<PermissionWidget> {
     return ListTile(
       title: Text(
         _permission.toString(),
-        style: Theme.of(context).textTheme.bodyText1,
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
         _permissionStatus.toString(),

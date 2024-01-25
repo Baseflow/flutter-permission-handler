@@ -16,6 +16,7 @@ void main() {
       pluginName: "",
       githubURL: "",
       pubDevURL: "",
+      // ignore: prefer_const_literals_to_create_immutables
       pages: [],
     ));
 
