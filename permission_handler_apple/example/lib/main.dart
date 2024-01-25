@@ -72,7 +72,7 @@ class PermissionWidget extends StatefulWidget {
   final Permission _permission;
 
   @override
-  State<PermissionWidget> createState() => _PermissionState(_permission);
+  State<PermissionWidget> createState() => _PermissionState();
 }
 
 class _PermissionState extends State<PermissionWidget> {
