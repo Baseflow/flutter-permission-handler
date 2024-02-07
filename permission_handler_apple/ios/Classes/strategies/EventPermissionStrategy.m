@@ -133,13 +133,11 @@
 }
 
 + (EKEntityType)getEntityType:(PermissionGroup)permission {
-    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess || permission == PermissionGroupCalendarWriteOnly) {
-        return EKEntityTypeEvent;
-    } else if (permission == PermissionGroupReminders) {
+    if (permission == PermissionGroupReminders) {
         return EKEntityTypeReminder;
     }
 
-    return nil;
+    return EKEntityTypeEvent;
 }
 
 @end
