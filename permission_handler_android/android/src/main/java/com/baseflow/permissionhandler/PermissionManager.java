@@ -131,10 +131,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 status = alarmManager.canScheduleExactAlarms()
                     ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
-                permission = PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
             } else {
-                return false;
+                status = PermissionConstants.PERMISSION_STATUS_GRANTED;
             }
+            permission = PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
         } else {
             return false;
         }
