@@ -1,3 +1,8 @@
+## 12.0.4
+
+* Returns `granted` on permission `Permission.scheduleExactAlarm` for devices running lower than Android S (API 31), before this change the default return was `denied`.
+* Updates `minSdkVersion` version to `flutter.minSdkVersion`.
+
 ## 12.0.3
 
 * Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS or macOS).
