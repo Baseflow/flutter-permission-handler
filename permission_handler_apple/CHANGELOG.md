@@ -1,3 +1,7 @@
+## 9.3.1
+
+* Fix potentially-nil return type of EventPermissionStrategy#getEntityType.
+
 ## 9.3.0
 
 * Adds support to request authorization to access SiriKit via the `Permission.assistant` permission.
