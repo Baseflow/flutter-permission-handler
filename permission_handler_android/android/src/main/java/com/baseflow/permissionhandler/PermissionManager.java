@@ -126,15 +126,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 return false;
             }
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
+            AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
                 status = alarmManager.canScheduleExactAlarms()
                     ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
                 permission = PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
-            } else {
-                return false;
-            }
         } else {
             return false;
         }
