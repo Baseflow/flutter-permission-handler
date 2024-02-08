@@ -60,6 +60,7 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_SENSORS_ALWAYS = 35;
     static final int PERMISSION_GROUP_CALENDAR_WRITE_ONLY = 36;
     static final int PERMISSION_GROUP_CALENDAR_FULL_ACCESS = 37;
+    static final int PERMISSION_GROUP_ASSISTANT = 38;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -97,7 +98,8 @@ final class PermissionConstants {
             PERMISSION_GROUP_AUDIO,
             PERMISSION_GROUP_SCHEDULE_EXACT_ALARM,
             PERMISSION_GROUP_CALENDAR_WRITE_ONLY,
-            PERMISSION_GROUP_CALENDAR_FULL_ACCESS
+            PERMISSION_GROUP_CALENDAR_FULL_ACCESS,
+            PERMISSION_GROUP_ASSISTANT
     })
     @interface PermissionGroup {
     }

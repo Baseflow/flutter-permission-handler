@@ -1,6 +1,10 @@
-## 9.2.1
+## 9.3.1
 
 * Updates plist key from `NSPhotoLibraryUsageDescription` to `NSPhotoLibraryAddUsageDescription`.
+
+## 9.3.0
+
+* Adds support to request authorization to access SiriKit via the `Permission.assistant` permission.
 
 ## 9.2.0
 

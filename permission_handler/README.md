@@ -287,6 +287,25 @@ If your application needs access to Android's file system, it is possible to req
 
 Starting with Android 10, apps are required to first obtain permission to read the device's location in the foreground, before requesting to read the location in the background as well. When requesting the 'location always' permission directly, or when requesting both permissions at the same time, the system will ignore the request. So, instead of calling only `Permission.location.request()`, make sure to first call either `Permission.location.request()` or `Permission.locationWhenInUse.request()`, and obtain permission to read the GPS. Once you obtain this permission, you can call `Permission.locationAlways.request()`. This will present the user with the option to update the settings so the location can always be read in the background. For more information, visit the [Android documentation on requesting location permissions](https://developer.android.com/training/location/permissions#request-only-foreground).
 
+### Checking or requesting a permission terminates the application on iOS. What can I do?
+
+First of all make sure all that the `ios/Runner/Info.plist` file contains entries for all the permissions the application requires. If an entry is missing iOS will terminate the application as soon as the particular permission is being checked or requested.
+
+If the application requires access to SiriKit (by requesting the `Permission.assistant` permission), also make sure to add the `com.apple.developer.siri` entitlement to the application configuration. To do so create a file (if it doesn't exists already) called `Runner.entitlements` in the `ios/Runner` folder that is part of the project. Open the file and add the following contents:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.siri</key>
+	<true/>
+</dict>
+</plist>
+```
+
+The important part here is the `key` with value `com.apple.developer.siri` and the element `<true/>`. It is possible that this file also contains other entitlements depending on the needs of the application.
+
 ## Issues
 
 Please file any issues, bugs, or feature requests as an issue on our [GitHub](https://github.com/Baseflow/flutter-permission-handler/issues) page. Commercial support is available if you need help with integration with your app or services. You can contact us at [hello@baseflow.com](mailto:hello@baseflow.com).

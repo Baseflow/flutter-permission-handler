@@ -1,3 +1,16 @@
+## 12.0.4
+
+* Returns `granted` on permission `Permission.scheduleExactAlarm` for devices running lower than Android S (API 31), before this change the default return was `denied`.
+* Updates `minSdkVersion` version to `flutter.minSdkVersion`.
+
+## 12.0.3
+
+* Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS or macOS).
+
+## 12.0.2
+
+* Fixes bug where Android activity is leaked when embedded in native Android application.
+
 ## 12.0.1
 
 * Fixes a bug where the `ignoreBatteryOptimizations` permission didn't report the correct status when the permission is requested and granted.

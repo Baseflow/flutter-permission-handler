@@ -1,6 +1,10 @@
-## 11.1.1
+## 11.2.1
 
 * Adds `PermissionGroup.photosAddOnly` to the README.
+
+## 11.2.0
+
+* Adds the `Permission.assistant` which allows users to request permissions to access SiriKit on iOS and macOS platforms. This is a no-op on all other platforms.
 
 ## 11.1.0
 
