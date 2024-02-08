@@ -1,4 +1,5 @@
 ## 9.2.1
+
 * Updates plist key from `NSPhotoLibraryUsageDescription` to `NSPhotoLibraryAddUsageDescription`.
 
 ## 9.2.0
