@@ -1,3 +1,6 @@
+## 9.2.1
+* Updates plist key from `NSPhotoLibraryUsageDescription` to `NSPhotoLibraryAddUsageDescription`.
+
 ## 9.2.0
 * Adds the support for `Permission.calendarWriteOnly` and `Permission.calendarFullAccess` permissions which are introduced in iOS 17+.
 

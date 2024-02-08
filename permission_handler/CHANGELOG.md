@@ -1,3 +1,6 @@
+## 11.1.1
+* Adds `PermissionGroup.photosAddOnly` to the README.
+
 ## 11.1.0
 * Adds support for iOS 17+ [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels).
 * Deprecates `Permission.calendar`. Use `Permission.calendarWriteOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
