@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
-import 'package:permission_handler_web/web_delegate.dart';
+import 'package:permission_handler_html/web_delegate.dart';
 import 'permission_handler_web_test.mocks.dart';
 
 @GenerateMocks([

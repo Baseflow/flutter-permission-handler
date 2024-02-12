@@ -5,7 +5,7 @@ void main() {
   test('Permission has the right amount of possible Permission values', () {
     const values = Permission.values;
 
-    expect(values.length, 37);
+    expect(values.length, 40);
   });
 
   test('check if byValue returns corresponding Permission value', () {

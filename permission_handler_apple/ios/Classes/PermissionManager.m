@@ -98,6 +98,8 @@
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
         case PermissionGroupCalendar:
+        case PermissionGroupCalendarWriteOnly:
+        case PermissionGroupCalendarFullAccess:
             return [EventPermissionStrategy new];
         case PermissionGroupCamera:
             return [AudioVideoPermissionStrategy new];
@@ -145,6 +147,8 @@
             return [AppTrackingTransparencyPermissionStrategy new];
         case PermissionGroupCriticalAlerts:
             return [CriticalAlertsPermissionStrategy new];
+        case PermissionGroupAssistant:
+            return [AssistantPermissionStrategy new];
         case PermissionGroupBackgroundRefresh:
             return [BackgroundRefreshStrategy new];
         default:

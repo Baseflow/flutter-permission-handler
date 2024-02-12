@@ -4,11 +4,12 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
-import 'package:permission_handler_web/web_delegate.dart';
+
+import 'web_delegate.dart';
 
 /// Platform implementation of the permission_handler Flutter plugin.
 class WebPermissionHandler extends PermissionHandlerPlatform {
-  static final html.MediaDevices _devices = html.window.navigator.mediaDevices!;
+  static final html.MediaDevices? _devices = html.window.navigator.mediaDevices;
   static final html.Geolocation _geolocation =
       html.window.navigator.geolocation;
   static final html.Permissions? _htmlPermissions =

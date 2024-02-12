@@ -42,6 +42,7 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                     permission != Permission.bluetooth &&
                     permission != Permission.appTrackingTransparency &&
                     permission != Permission.criticalAlerts &&
+                    permission != Permission.assistant &&
                     permission != Permission.backgroundRefresh;
               })
               .map((permission) => PermissionWidget(permission))

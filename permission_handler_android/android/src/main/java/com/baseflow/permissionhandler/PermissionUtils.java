@@ -27,8 +27,8 @@ public class PermissionUtils {
     @PermissionConstants.PermissionGroup
     static int parseManifestName(String permission) {
         switch (permission) {
-            case Manifest.permission.READ_CALENDAR:
             case Manifest.permission.WRITE_CALENDAR:
+            case Manifest.permission.READ_CALENDAR:
                 return PermissionConstants.PERMISSION_GROUP_CALENDAR;
             case Manifest.permission.CAMERA:
                 return PermissionConstants.PERMISSION_GROUP_CAMERA;
@@ -103,11 +103,17 @@ public class PermissionUtils {
         final ArrayList<String> permissionNames = new ArrayList<>();
 
         switch (permission) {
-            case PermissionConstants.PERMISSION_GROUP_CALENDAR:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
-                    permissionNames.add(Manifest.permission.READ_CALENDAR);
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_WRITE_ONLY:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_CALENDAR))
                     permissionNames.add(Manifest.permission.WRITE_CALENDAR);
+                break;
+
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS:
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR:
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_CALENDAR))
+                    permissionNames.add(Manifest.permission.WRITE_CALENDAR);
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
+                    permissionNames.add(Manifest.permission.READ_CALENDAR);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_CAMERA:
@@ -342,9 +348,8 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.READ_MEDIA_AUDIO);
                 break;
             case PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM:
-                // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, meaning we should
-                // not handle permissions on pre Android S devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
+                // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, before Android 31 it should alway return Granted
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
                     permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
