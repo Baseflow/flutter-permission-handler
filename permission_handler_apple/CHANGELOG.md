@@ -1,7 +1,3 @@
-## 9.4.0
-
-* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status.
-
 ## 9.3.1
 
 * Updates plist key from `NSPhotoLibraryUsageDescription` to `NSPhotoLibraryAddUsageDescription`.
