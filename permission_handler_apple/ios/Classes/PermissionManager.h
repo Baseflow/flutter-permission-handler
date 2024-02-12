@@ -11,6 +11,7 @@
 
 #import "AudioVideoPermissionStrategy.h"
 #import "AppTrackingTransparencyPermissionStrategy.h"
+#import "BackgroundRefreshStrategy.h"
 #import "BluetoothPermissionStrategy.h"
 #import "ContactPermissionStrategy.h"
 #import "EventPermissionStrategy.h"

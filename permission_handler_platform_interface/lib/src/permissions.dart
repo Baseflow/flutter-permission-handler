@@ -323,6 +323,9 @@ class Permission {
   /// iOS: SiriKit
   static const assistant = Permission._(38);
 
+  /// Permission for reading the current background refresh status. (iOS only)
+  static const backgroundRefresh = Permission._(39);
+
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
     // ignore: deprecated_member_use_from_same_package
@@ -365,6 +368,7 @@ class Permission {
     calendarWriteOnly,
     calendarFullAccess,
     assistant,
+    backgroundRefresh,
   ];
 
   static const List<String> _names = <String>[
@@ -407,6 +411,7 @@ class Permission {
     'calendarWriteOnly',
     'calendarFullAccess',
     'assistant',
+    'backgroundRefresh'
   ];
 
   @override

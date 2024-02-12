@@ -149,6 +149,8 @@
             return [CriticalAlertsPermissionStrategy new];
         case PermissionGroupAssistant:
             return [AssistantPermissionStrategy new];
+        case PermissionGroupBackgroundRefresh:
+            return [BackgroundRefreshStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }
