@@ -9,7 +9,7 @@ import 'package:pigeon/pigeon.dart';
     dartOut: 'lib/src/permission_handler.pigeon.dart',
     dartTestOut: 'test/test_permission_handler.pigeon.dart',
     javaOut:
-        'android/src/main/java/com/baseflow/permissionhandler/PermissionHandlerPigeon.java',
+        'android/src/main/java/com/baseflow/permissionhandler/next/PermissionHandlerPigeon.java',
     javaOptions: JavaOptions(
       package: 'com.baseflow.permissionhandler',
       className: 'PermissionHandlerPigeon',
