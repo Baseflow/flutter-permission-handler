@@ -1,3 +1,7 @@
+## 9.4.1
+
+* Fix typo in comment for full calendar access.
+
 ## 9.4.0
 
 * Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status.
