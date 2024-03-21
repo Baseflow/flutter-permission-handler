@@ -1,6 +1,12 @@
+## 9.4.2
+
+* Updates the privacy manifest to include the use of the `NSUserDefaults` API. 
+The permission_handler stores a boolean value to track if permission to always 
+access the device location has been requested.
+
 ## 9.4.1
 
-* Adds privacy manifest.
+* Adds empty privacy manifest.
 
 ## 9.4.0
 
