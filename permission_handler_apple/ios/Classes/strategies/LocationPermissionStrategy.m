@@ -5,7 +5,7 @@
 
 #import "LocationPermissionStrategy.h"
 
-#if PERMISSION_LOCATION
+#if PERMISSION_LOCATION || PERMISSION_LOCATION_WHENINUSE || PERMISSION_LOCATION_ALWAYS
 
 NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_handler_apple.permission_requested";
 
@@ -39,7 +39,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     completionHandler([CLLocationManager locationServicesEnabled] ? ServiceStatusEnabled : ServiceStatusDisabled);
 }
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
         BOOL alreadyRequested = [[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]; // check if already requested the permantent permission
@@ -56,26 +56,47 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
     _requestedPermission = permission;
     
     if (permission == PermissionGroupLocation) {
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
+#if PERMISSION_LOCATION
+        bool hasAlwaysInInfoPlist = ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil || [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysAndWhenInUseUsageDescription"] != nil);
+        
+        if (hasAlwaysInInfoPlist && [CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
             [_locationManager requestAlwaysAuthorization];
         } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
             [_locationManager requestWhenInUseAuthorization];
         } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            return;
         }
+#else
+        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil ) {
+            [_locationManager requestWhenInUseAuthorization];
+        } else {
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            return;
+        }
+#endif
     } else if (permission == PermissionGroupLocationAlways) {
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil) {
+#if PERMISSION_LOCATION
+        if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+            errorHandler(@"MISSING_WHENINUSE_PERMISSION", @"Must have \"When in use\" permission before it is allowed to request \"Always\" permission.");
+            return;
+        }
+        
+        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysUsageDescription"] != nil || [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationAlwaysAndWhenInUseUsageDescription"] != nil ) {
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveActivityNotification:) name:UIApplicationDidBecomeActiveNotification object:nil];
             [_locationManager requestAlwaysAuthorization];
             [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:UserDefaultPermissionRequestedKey];
         } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define NSLocationAlwaysUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To always use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            return;
         }
+#endif
     } else if (permission == PermissionGroupLocationWhenInUse) {
-        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
+        if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil ) {
             [_locationManager requestWhenInUseAuthorization];
         } else {
-            [[NSException exceptionWithName:NSInternalInconsistencyException reason:@"To use location in iOS8 you need to define NSLocationWhenInUseUsageDescription in the app bundle's Info.plist file" userInfo:nil] raise];
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            return;
         }
     }
 }
