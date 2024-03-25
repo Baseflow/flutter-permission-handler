@@ -64,14 +64,14 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
         } else if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil) {
             [_locationManager requestWhenInUseAuthorization];
         } else {
-            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location from iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
             return;
         }
 #else
         if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil ) {
             [_locationManager requestWhenInUseAuthorization];
         } else {
-            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location from iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
             return;
         }
 #endif
@@ -87,7 +87,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
             [_locationManager requestAlwaysAuthorization];
             [[NSUserDefaults standardUserDefaults] setBool:TRUE forKey:UserDefaultPermissionRequestedKey];
         } else {
-            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To always use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To always use location from iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
             return;
         }
 #endif
@@ -95,7 +95,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
         if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationWhenInUseUsageDescription"] != nil ) {
             [_locationManager requestWhenInUseAuthorization];
         } else {
-            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location in iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
+            errorHandler(@"MISSING_USAGE_DESCRIPTION", @"To use location from iOS8 you need to define at least NSLocationWhenInUseUsageDescription and optionally NSLocationAlwaysAndWhenInUseUsageDescription in the app bundle's Info.plist file");
             return;
         }
     }
