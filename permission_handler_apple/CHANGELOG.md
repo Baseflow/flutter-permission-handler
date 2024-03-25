@@ -1,7 +1,7 @@
 ## 9.4.3
 
 * Adds the `PERMISSION_LOCATION_WHENINUSE` macro, which can be used instead of
-the `PERMISSION_LOCATION` macro and only enable the `requestWhenInUseAuthorization`
+the `PERMISSION_LOCATION` macro, and exclusively enables the `requestWhenInUseAuthorization`
 and remove the `requestAlwaysAuthorization` when requesting location permission.
 * Improves error handling when `Info.plist` doesn't contain the correct declarations.
 * Adds support for the `NSLocationAlwaysAndWhenInUseUsageDescription` property list
