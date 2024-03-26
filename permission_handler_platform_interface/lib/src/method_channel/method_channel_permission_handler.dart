@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../../permission_handler_platform_interface.dart';
@@ -88,6 +89,10 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   @override
   Future<bool> shouldShowRequestPermissionRationale(
       Permission permission) async {
+    if (defaultTargetPlatform != TargetPlatform.android) {
+      return false;
+    }
+
     final shouldShowRationale = await _methodChannel.invokeMethod(
         'shouldShowRequestPermissionRationale', permission.value);
 
