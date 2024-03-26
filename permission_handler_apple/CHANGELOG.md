@@ -1,3 +1,7 @@
+## 9.4.4
+
+* Fixes typo in comment for full calendar access.
+
 ## 9.4.3
 
 * Adds the `PERMISSION_LOCATION_WHENINUSE` macro, which can be used instead of
