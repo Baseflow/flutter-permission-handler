@@ -1,6 +1,6 @@
 ## 11.3.1
 
-* Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` marco on iOS.
+* Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
 
 ## 11.3.0
 
