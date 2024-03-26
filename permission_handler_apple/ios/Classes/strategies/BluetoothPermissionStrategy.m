@@ -70,7 +70,7 @@
     _serviceStatusHandler(serviceStatus);
 }
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
     [self initManagerIfNeeded];
     PermissionStatus status = [self checkPermissionStatus:permission];
     

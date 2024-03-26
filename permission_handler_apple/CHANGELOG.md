@@ -1,6 +1,25 @@
+## 9.4.4
+
+* Fixes typo in comment for full calendar access.
+
+## 9.4.3
+
+* Adds the `PERMISSION_LOCATION_WHENINUSE` macro, which can be used instead of
+the `PERMISSION_LOCATION` macro, and exclusively enables the `requestWhenInUseAuthorization`
+and remove the `requestAlwaysAuthorization` when requesting location permission.
+* Improves error handling when `Info.plist` doesn't contain the correct declarations.
+* Adds support for the `NSLocationAlwaysAndWhenInUseUsageDescription` property list
+key.
+
+## 9.4.2
+
+* Updates the privacy manifest to include the use of the `NSUserDefaults` API. 
+The permission_handler stores a boolean value to track if permission to always 
+access the device location has been requested.
+
 ## 9.4.1
 
-* Fix typo in comment for full calendar access.
+* Adds empty privacy manifest.
 
 ## 9.4.0
 
