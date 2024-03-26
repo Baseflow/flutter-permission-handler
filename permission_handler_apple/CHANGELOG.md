@@ -1,6 +1,7 @@
 ## 9.4.4
 
-* Fixes typo in comment for full calendar access.
+* Fixes potentially-nil return type of EventPermissionStrategy#getEntityType.
+* * Fixes typo in comment for full calendar access.
 
 ## 9.4.3
 
