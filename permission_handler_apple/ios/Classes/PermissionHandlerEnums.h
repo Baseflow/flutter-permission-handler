@@ -55,7 +55,7 @@
 #endif
 
 // ios: PermissionGroupPhotosAddOnly
-// Info.plist: NSPhotoLibraryUsageDescription
+// Info.plist: NSPhotoLibraryAddUsageDescription
 // dart: PermissionGroup.photosAddOnly
 #ifndef PERMISSION_PHOTOS_ADD_ONLY
     #define PERMISSION_PHOTOS_ADD_ONLY 0
@@ -117,7 +117,7 @@
 #endif
 
 // ios: PermissionGroupCalendarFullAccess
-// Info.plist: [NSCalendarFullAccessUsageDescription]
+// Info.plist: [NSCalendarsFullAccessUsageDescription]
 // dart: PermissionGroup.calendarFullAccess
 #ifndef PERMISSION_EVENTS_FULL_ACCESS
     #define PERMISSION_EVENTS_FULL_ACCESS 0
@@ -162,7 +162,8 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupSensorsAlways,
     PermissionGroupCalendarWriteOnly,
     PermissionGroupCalendarFullAccess,
-    PermissionGroupAssistant
+    PermissionGroupAssistant,
+    PermissionGroupBackgroundRefresh
 };
 
 typedef NS_ENUM(int, PermissionStatus) {

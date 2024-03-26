@@ -11,6 +11,7 @@
 
 #import "AudioVideoPermissionStrategy.h"
 #import "AppTrackingTransparencyPermissionStrategy.h"
+#import "BackgroundRefreshStrategy.h"
 #import "BluetoothPermissionStrategy.h"
 #import "ContactPermissionStrategy.h"
 #import "EventPermissionStrategy.h"
@@ -34,7 +35,7 @@ typedef void (^PermissionRequestCompletion)(NSDictionary *permissionRequestResul
 @interface PermissionManager : NSObject
 
 - (instancetype)initWithStrategyInstances;
-- (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion;
+- (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion errorHandler:(PermissionErrorHandler)errorHandler;
 
 + (void)checkPermissionStatus:(enum PermissionGroup)permission result:(FlutterResult)result;
 + (void)checkServiceStatus:(enum PermissionGroup)permission result:(FlutterResult)result;

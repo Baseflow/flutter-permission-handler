@@ -49,7 +49,8 @@ public:
         SENSORS_ALWAYS = 35,
         CALENDAR_WRITE_ONLY = 36,
         CALENDAR_FULL_ACCESS = 37,
-        ASSISTANT = 38
+        ASSISTANT = 38,
+        BACKGROUND_REFRESH = 39
     };
 
     //PERMISSION_STATUS

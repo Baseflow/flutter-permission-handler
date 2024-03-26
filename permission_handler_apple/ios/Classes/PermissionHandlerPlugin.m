@@ -47,7 +47,11 @@
              }
              
              self->_methodResult = nil;
-         }];
+        } errorHandler:^(NSString *errorCode, NSString *errorDescription) {
+            self->_methodResult([FlutterError errorWithCode:errorCode message:errorDescription details:nil]);
+            self->_methodResult = nil;
+        }
+];
         
     } else if ([@"shouldShowRequestPermissionRationale" isEqualToString:call.method]) {
         result(@false);

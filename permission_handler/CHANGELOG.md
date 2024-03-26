@@ -1,3 +1,13 @@
+## 11.3.0
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status via:
+  * Updates `permission_handler_apple` dependency to version 9.1.5.
+  * Updates `permission_handler_platform_interface` dependency to version 3.11.6.
+
+## 11.2.1
+
+* Adds `PermissionGroup.photosAddOnly` to the README.
+
 ## 11.2.0
 
 * Adds the `Permission.assistant` which allows users to request permissions to access SiriKit on iOS and macOS platforms. This is a no-op on all other platforms.

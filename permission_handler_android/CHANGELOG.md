@@ -1,3 +1,7 @@
+## 12.0.5
+
+* Upgrades Gradle and Android Gradle plugin.
+
 ## 12.0.4
 
 * Returns `granted` on permission `Permission.scheduleExactAlarm` for devices running lower than Android S (API 31), before this change the default return was `denied`.
