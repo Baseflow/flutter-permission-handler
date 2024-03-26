@@ -8,11 +8,12 @@
 
 typedef void (^ServiceStatusHandler)(ServiceStatus serviceStatus);
 typedef void (^PermissionStatusHandler)(PermissionStatus permissionStatus);
+typedef void (^PermissionErrorHandler)(NSString* errorCode, NSString* errorDescription);
 
 @protocol PermissionStrategy <NSObject>
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission;
 
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler;
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler;
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler;
 @end
