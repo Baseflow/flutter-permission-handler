@@ -1,3 +1,7 @@
+## 11.3.1
+
+* Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
+
 ## 11.3.0
 
 * Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status via:
