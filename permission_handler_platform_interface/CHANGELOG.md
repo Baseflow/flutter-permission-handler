@@ -1,3 +1,7 @@
+## 4.2.1
+
+* Resolves an error that occurred when calling the `shouldShowRequestPermissionRationale` on iOS.
+
 ## 4.2.0
 
 * Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status on iOS & macOS platforms. This is a no-op on all other platforms.
