@@ -30,30 +30,6 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     @Nullable
     private MethodCallHandlerImpl methodCallHandler;
 
-    /**
-     * Registers a plugin implementation that uses the stable {@code io.flutter.plugin.common}
-     * package.
-     *
-     * <p>Calling this automatically initializes the plugin. However plugins initialized this way
-     * won't react to changes in activity or context, unlike {@link PermissionHandlerPlugin}.
-     */
-    @SuppressWarnings("deprecation")
-    public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
-        final PermissionHandlerPlugin plugin = new PermissionHandlerPlugin();
-
-        plugin.pluginRegistrar = registrar;
-        plugin.permissionManager = new PermissionManager(registrar.context());
-        plugin.registerListeners();
-
-        plugin.startListening(registrar.context(), registrar.messenger());
-
-        if (registrar.activeContext() instanceof Activity) {
-            plugin.startListeningToActivity(
-                registrar.activity()
-            );
-        }
-    }
-
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
         this.permissionManager = new PermissionManager(binding.getApplicationContext());
