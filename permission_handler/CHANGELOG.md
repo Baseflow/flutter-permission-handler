@@ -1,3 +1,8 @@
+## 11.3.2
+
+* Update `permission_handler_apple` dependency to version 9.4.5
+* Fix Xcode warning: unreponsive in main thread when calling isLocationEnabled.
+
 ## 11.3.1
 
 * Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
