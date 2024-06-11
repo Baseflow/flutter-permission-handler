@@ -1,3 +1,7 @@
+## 12.0.7
+
+* Removes additional Android v1 embedding class reference.
+
 ## 12.0.6
 
 * Removes deprecated support for Android V1 embedding as support will be removed from Flutter (see [flutter/flutter#144726](https://github.com/flutter/flutter/pull/144726)).
