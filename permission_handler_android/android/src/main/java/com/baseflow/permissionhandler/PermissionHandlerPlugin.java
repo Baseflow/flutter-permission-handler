@@ -22,9 +22,6 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
 
     private MethodChannel methodChannel;
 
-    @SuppressWarnings("deprecation")
-    @Nullable private io.flutter.plugin.common.PluginRegistry.Registrar pluginRegistrar;
-
     @Nullable private ActivityPluginBinding pluginBinding;
 
     @Nullable
@@ -109,10 +106,7 @@ public final class PermissionHandlerPlugin implements FlutterPlugin, ActivityAwa
     }
 
     private void registerListeners() {
-        if (this.pluginRegistrar != null) {
-            this.pluginRegistrar.addActivityResultListener(this.permissionManager);
-            this.pluginRegistrar.addRequestPermissionsResultListener(this.permissionManager);
-        } else if (pluginBinding != null) {
+        if (pluginBinding != null) {
             this.pluginBinding.addActivityResultListener(this.permissionManager);
             this.pluginBinding.addRequestPermissionsResultListener(this.permissionManager);
         }
