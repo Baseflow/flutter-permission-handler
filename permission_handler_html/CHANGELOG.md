@@ -1,3 +1,7 @@
+## 0.1.2
+
+* Migrate to package:web and adding wasm support.
+
 ## 0.1.1
 
 * Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS and macOS).
