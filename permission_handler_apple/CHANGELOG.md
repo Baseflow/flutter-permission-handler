@@ -1,3 +1,7 @@
+## 9.4.5
+
+* Fixes issue #1002, Xcode warning of the unresponsive of main thread when checking isLocationEnabled.
+  
 ## 9.4.4
 
 * Fixes potentially-nil return type of EventPermissionStrategy#getEntityType.
