@@ -94,6 +94,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_AUDIO;
             case Manifest.permission.SCHEDULE_EXACT_ALARM:
                 return PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
+            case Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED:
+                return PermissionConstants.PERMISSION_GROUP_PARTIAL_MEDIA;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -351,6 +353,11 @@ public class PermissionUtils {
                 // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, before Android 31 it should alway return Granted
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
                     permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_PARTIAL_MEDIA:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE & hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED)){
+                    permissionNames.add(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+                }
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
