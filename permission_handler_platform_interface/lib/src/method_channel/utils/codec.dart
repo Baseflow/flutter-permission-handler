@@ -18,6 +18,11 @@ Map<Permission, PermissionStatus> decodePermissionRequestResult(
       Permission.byValue(key), PermissionStatusValue.statusByValue(value)));
 }
 
+/// Convert the given [value] into a [LocationAccuracyStatus] instance.
+LocationAccuracyStatus decodeLocationAccuracyStatus(int value) {
+  return LocationAccuracyStatusValue.statusByValue(value);
+}
+
 /// Converts the given [List] of [Permission]s into a [List] of [int]s which
 /// can be sent on the Flutter method channel.
 List<int> encodePermissions(List<Permission> permissions) {

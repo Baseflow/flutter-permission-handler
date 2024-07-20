@@ -57,7 +57,9 @@
         result(@false);
     } else if ([@"openAppSettings" isEqualToString:call.method]) {
         [PermissionManager openAppSettings:result];
-    } else {
+    } else if ([@"getLocationAccuracy" isEqualToString:call.method]) {
+        result(@0);
+    }  else {
         result(FlutterMethodNotImplemented);
     }
 }

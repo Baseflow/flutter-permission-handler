@@ -12,3 +12,29 @@ enum LocationAccuracyStatus {
   /// We can't determine the location accuracy status.
   unknown,
 }
+
+/// Conversion extension methods for the [LocationAccuracyStatus] type.
+extension LocationAccuracyStatusValue on LocationAccuracyStatus {
+  /// Converts the [LocationAccuracyStatus] value into an integer.
+  int get value {
+    switch (this) {
+      case LocationAccuracyStatus.reduced:
+        return 0;
+      case LocationAccuracyStatus.precise:
+        return 1;
+      case LocationAccuracyStatus.unknown:
+        return 2;
+      default:
+        throw UnimplementedError();
+    }
+  }
+
+  /// Converts the supplied integer value into a [LocationAccuracyStatus] enum.
+  static LocationAccuracyStatus statusByValue(int value) {
+    return [
+      LocationAccuracyStatus.reduced,
+      LocationAccuracyStatus.precise,
+      LocationAccuracyStatus.unknown,
+    ][value];
+  }
+}
