@@ -23,6 +23,10 @@ dev_dependencies:
 
   url_launcher: ^6.0.12
 
+dependency_overrides:
+  permission_handler_platform_interface:
+    path: ../../permission_handler_platform_interface
+
 flutter:
   uses-material-design: true
 

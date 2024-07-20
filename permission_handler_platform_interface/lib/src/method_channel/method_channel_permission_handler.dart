@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:meta/meta.dart';
 
 import '../../permission_handler_platform_interface.dart';
 import 'utils/codec.dart';
@@ -97,5 +98,10 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
         'shouldShowRequestPermissionRationale', permission.value);
 
     return shouldShowRationale ?? false;
+  }
+
+  @override
+  Future<LocationAccuracyStatus> getLocationAccuracy() async {
+    return LocationAccuracyStatus.unknown;
   }
 }

@@ -104,6 +104,14 @@ class _PermissionState extends State<PermissionWidget> {
     }
   }
 
+  Widget getCheckPermissionServiceStatus() {
+    return _InfoButton(
+      onPressed: () {
+        checkServiceStatus(context, _permission as PermissionWithService);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -116,15 +124,18 @@ class _PermissionState extends State<PermissionWidget> {
         style: TextStyle(color: getPermissionColor()),
       ),
       trailing: (_permission is PermissionWithService)
-          ? IconButton(
-              icon: const Icon(
-                Icons.info,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                checkServiceStatus(
-                    context, _permission as PermissionWithService);
-              })
+          ? _permission == Permission.location
+              ? Wrap(
+                  children: [
+                    _InfoButton(onPressed: () {
+                      checkLocationAccuracy(
+                        context,
+                      );
+                    }),
+                    getCheckPermissionServiceStatus()
+                  ],
+                )
+              : getCheckPermissionServiceStatus()
           : null,
       onTap: () {
         requestPermission(_permission);
@@ -140,6 +151,13 @@ class _PermissionState extends State<PermissionWidget> {
     ));
   }
 
+  void checkLocationAccuracy(BuildContext context) async {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content:
+          Text((await _permissionHandler.getLocationAccuracy()).toString()),
+    ));
+  }
+
   Future<void> requestPermission(Permission permission) async {
     final status = await _permissionHandler.requestPermissions([permission]);
 
@@ -148,5 +166,25 @@ class _PermissionState extends State<PermissionWidget> {
       _permissionStatus = status[permission] ?? PermissionStatus.denied;
       print(_permissionStatus);
     });
+  }
+}
+
+class _InfoButton extends StatelessWidget {
+  const _InfoButton({
+    Key? key,
+    required this.onPressed,
+  }) : super(key: key);
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(
+        Icons.info,
+        color: Colors.white,
+      ),
+      onPressed: onPressed,
+    );
   }
 }

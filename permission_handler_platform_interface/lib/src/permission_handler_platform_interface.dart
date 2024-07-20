@@ -87,6 +87,8 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   }
 
   /// Get the location accuracy given to your app.
+  ///
+  /// Currently only supported on iOS 14.0 and higher.
   Future<LocationAccuracyStatus> getLocationAccuracy() {
     throw UnimplementedError('getLocationAccuracy() has not been implemented.');
   }
