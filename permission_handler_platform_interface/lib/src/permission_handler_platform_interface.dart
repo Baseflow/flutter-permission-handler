@@ -85,4 +85,9 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
     throw UnimplementedError(
         'shouldShowRequestPermissionRationale() has not been implemented.');
   }
+
+  /// Get the location accuracy given to your app.
+  Future<LocationAccuracyStatus> getLocationAccuracy() {
+    throw UnimplementedError('getLocationAccuracy() has not been implemented.');
+  }
 }
