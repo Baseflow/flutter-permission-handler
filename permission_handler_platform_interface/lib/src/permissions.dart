@@ -326,8 +326,6 @@ class Permission {
   /// Permission for reading the current background refresh status. (iOS only)
   static const backgroundRefresh = Permission._(39);
 
-  /// Permission for partial media access on Android 14+
-  static const partialMediaAccess = Permission._(40);
 
   /// Returns a list of all possible [PermissionGroup] values.
   static const List<Permission> values = <Permission>[
