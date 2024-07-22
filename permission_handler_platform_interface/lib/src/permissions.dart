@@ -372,7 +372,6 @@ class Permission {
     calendarFullAccess,
     assistant,
     backgroundRefresh,
-    partialMediaAccess
   ];
 
   static const List<String> _names = <String>[
@@ -416,7 +415,6 @@ class Permission {
     'calendarFullAccess',
     'assistant',
     'backgroundRefresh',
-    'partialMediaAccess'
   ];
 
   @override

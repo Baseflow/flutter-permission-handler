@@ -541,7 +541,6 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         final int permissionStatusLimited = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
                         final int permissionStatus = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES);
                         if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED){
-                            //return PermissionConstants.PERMISSION_STATUS_LIMITED;
                             permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
                         }
                         else{
