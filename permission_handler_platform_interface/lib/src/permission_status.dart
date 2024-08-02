@@ -19,7 +19,7 @@ enum PermissionStatus {
   /// The user has authorized this application for limited access. So far this
   /// is only relevant for the Photo Library picker.
   ///
-  /// *Only supported on iOS (iOS14+).*
+  /// *Only supported on iOS (iOS14+) and Android (Android 14+)*
   limited,
 
   /// Permission to the requested feature is permanently denied, the permission
