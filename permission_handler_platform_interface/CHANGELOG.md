@@ -1,3 +1,6 @@
+## 4.2.2
+* Adds limited access permission for Android 14+.
+
 ## 4.2.1
 
 * Resolves an error that occurred when calling the `shouldShowRequestPermissionRationale` on iOS.
