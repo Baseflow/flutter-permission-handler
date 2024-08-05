@@ -100,7 +100,7 @@ final class PermissionConstants {
             PERMISSION_GROUP_SCHEDULE_EXACT_ALARM,
             PERMISSION_GROUP_CALENDAR_WRITE_ONLY,
             PERMISSION_GROUP_CALENDAR_FULL_ACCESS,
-            PERMISSION_GROUP_ASSISTANT
+            PERMISSION_GROUP_ASSISTANT,
     })
     @interface PermissionGroup {
     }

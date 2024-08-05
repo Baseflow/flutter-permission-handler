@@ -1,3 +1,7 @@
+## 12.0.8
+
+* Added support for limited photo and video permission on Android. 
+
 ## 12.0.7
 
 * Removes additional Android v1 embedding class reference.

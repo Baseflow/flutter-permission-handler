@@ -537,7 +537,18 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     } else {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     }
-                } else {
+                } else if (permission ==  PermissionConstants.PERMISSION_GROUP_PHOTOS || permission ==  PermissionConstants.PERMISSION_GROUP_VIDEOS){
+                        final int permissionStatusLimited = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+                        final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                        if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED){
+                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
+                        }
+                        else{
+                            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                                permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
+                            }
+                    }
+                }else {
                     final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                     if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                         permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
