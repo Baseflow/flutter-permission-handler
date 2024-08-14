@@ -538,15 +538,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     }
                 } else if (permission ==  PermissionConstants.PERMISSION_GROUP_PHOTOS || permission ==  PermissionConstants.PERMISSION_GROUP_VIDEOS){
-                        final int permissionStatusLimited = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
-                        final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                        if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED){
-                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
-                        }
-                        else{
-                            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                                permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
-                            }
+                    final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                    int permissionStatusLimited = permissionStatus;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        permissionStatusLimited = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+                    }
+                    if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED && permissionStatus == PackageManager.PERMISSION_DENIED) {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
+                    } else if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED && permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
+                    }else {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
                 }else {
                     final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
