@@ -545,7 +545,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }
                     if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED && permissionStatus == PackageManager.PERMISSION_DENIED) {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
-                    } else if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED && permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                    } else if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     }else {
                         permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
