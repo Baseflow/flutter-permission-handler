@@ -1,3 +1,7 @@
+## 12.0.12
+
+* Fixes permission status returned from `Permission.photos.request()` or `Permission.videos.request()` when limited access selected
+
 ## 12.0.11
 
 * Adds `TargetApi` annotation to `getManifestNames` method in `PermissionUtils.java`.
