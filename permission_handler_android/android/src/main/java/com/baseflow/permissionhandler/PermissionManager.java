@@ -260,6 +260,12 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 }
 
                 requestResults.put(permission, permissionStatus);
+            // [grantResults] can only contain PermissionConstants.PERMISSION_STATUS_GRANTED or PermissionConstants.PERMISSION_STATUS_DENIED status.
+            // But these permissions can have status PermissionConstants.PERMISSION_STATUS_LIMITED, so we need to recheck status
+            } else if (permission == PermissionConstants.PERMISSION_GROUP_PHOTOS || permission == PermissionConstants.PERMISSION_GROUP_VIDEOS) {
+                requestResults.put(
+                    permission,
+                    determinePermissionStatus(permission));
             } else if (!requestResults.containsKey(permission)) {
                 requestResults.put(
                     permission,
