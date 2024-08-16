@@ -1,6 +1,10 @@
-## 0.1.2+1
+## 0.1.3+1
 
-- Fixed the PermissionDescriptor Error when getting the permission status
+- Fixes the PermissionDescriptor Error when getting the permission status.
+
+## 0.1.3
+
+* Adds support for `web: ^1.0.0`
 
 ## 0.1.2
 
