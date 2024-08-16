@@ -74,6 +74,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
+        // The [onActivityResult] with a [requestResult] that is `null` when the Application was
+        // terminated while not in the foreground with a permission request in progress (e.g. when
+        // Android decides to kill apps while requesting one of the special permissions). In these
+        // cases we should casually return and make sure the `pendingRequestCount` is set to `0`.
+        if (requestResults == null) {
+            pendingRequestCount = 0;
+            return false;
+        }
+
         int status, permission;
 
         if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {

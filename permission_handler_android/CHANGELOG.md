@@ -1,8 +1,14 @@
+## 12.0.10
+
+* Fixes a bug that causes a `NullPointerException` when the application is restarted after being killed by Android during the request of special permissions (like, `Permission.ignoreBatteryOptimizations`, `Permission.systemAlertWindow`, `Permission.accessNotificationPolicy`, `Permission.scheduleExactAlarm` and `Permission.manageExternalStorage`).
+
 ## 12.0.9
-* Added Make the status return of the READ_MEDIA_VISUAL_USER_SELECTED permission more accurate.
+
+* Makes the status returned when requesting the READ_MEDIA_VISUAL_USER_SELECTED permission more accurate.
+
 ## 12.0.8
 
-* Added support for limited photo and video permission on Android. 
+* Adds support for limited photo and video permission on Android. 
 
 ## 12.0.7
 
