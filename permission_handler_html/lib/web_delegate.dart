@@ -62,8 +62,9 @@ class WebDelegate {
 
   Future<PermissionStatus> _permissionStatusState(
       String webPermissionName, web.Permissions? permissions) async {
-    final webPermissionStatus =
-        await permissions?.query({'name': webPermissionName}.toJSBox).toDart;
+    final webPermissionStatus = await permissions
+        ?.query(web.PermissionDescriptor(name: webPermissionName))
+        .toDart;
     return _toPermissionStatus(webPermissionStatus?.state);
   }
 
