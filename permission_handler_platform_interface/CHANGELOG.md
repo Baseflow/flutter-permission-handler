@@ -1,3 +1,19 @@
+## 4.2.2
+
+* Adds limited access permission for Android 14+.
+
+## 4.2.1
+
+* Resolves an error that occurred when calling the `shouldShowRequestPermissionRationale` on iOS.
+
+## 4.2.0
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status on iOS & macOS platforms. This is a no-op on all other platforms.
+
+## 4.1.0
+
+* Adds the `Permission.assistant` which allows users to request permissions to access SiriKit on iOS and macOS platforms. This is a no-op on all other platforms.
+
 ## 4.0.2
 
 * Improved the documentation around the `PermissionStatus`, `PermissionStatusGetters` and `FuturePermissionStatusGetters`.

@@ -1,3 +1,41 @@
+## 12.0.10
+
+* Fixes a bug that causes a `NullPointerException` when the application is restarted after being killed by Android during the request of special permissions (like, `Permission.ignoreBatteryOptimizations`, `Permission.systemAlertWindow`, `Permission.accessNotificationPolicy`, `Permission.scheduleExactAlarm` and `Permission.manageExternalStorage`).
+
+## 12.0.9
+
+* Makes the status returned when requesting the READ_MEDIA_VISUAL_USER_SELECTED permission more accurate.
+
+## 12.0.8
+
+* Adds support for limited photo and video permission on Android. 
+
+## 12.0.7
+
+* Removes additional Android v1 embedding class reference.
+
+## 12.0.6
+
+* Removes deprecated support for Android V1 embedding as support will be removed from Flutter (see [flutter/flutter#144726](https://github.com/flutter/flutter/pull/144726)).
+
+
+## 12.0.5
+
+* Upgrades Gradle and Android Gradle plugin.
+
+## 12.0.4
+
+* Returns `granted` on permission `Permission.scheduleExactAlarm` for devices running lower than Android S (API 31), before this change the default return was `denied`.
+* Updates `minSdkVersion` version to `flutter.minSdkVersion`.
+
+## 12.0.3
+
+* Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS or macOS).
+
+## 12.0.2
+
+* Fixes bug where Android activity is leaked when embedded in native Android application.
+
 ## 12.0.1
 
 * Fixes a bug where the `ignoreBatteryOptimizations` permission didn't report the correct status when the permission is requested and granted.

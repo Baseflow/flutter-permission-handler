@@ -1,6 +1,6 @@
-# permission_handler_web
+# permission_handler_html
 
-[![pub package](https://img.shields.io/pub/v/permission_handler_web.svg)](https://pub.dartlang.org/packages/permission_handler_web) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/permission_handler_web/badge.svg?branch=master) [![style: flutter lints](https://img.shields.io/badge/style-flutter_lints-40c4ff.svg)](https://pub.dev/packages/flutter_lints)
+[![pub package](https://img.shields.io/pub/v/permission_handler_html.svg)](https://pub.dartlang.org/packages/permission_handler_html) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/permission_handler_html/badge.svg?branch=master) [![style: flutter lints](https://img.shields.io/badge/style-flutter_lints-40c4ff.svg)](https://pub.dev/packages/flutter_lints)
 
 The official web implementation of the [permission_handler](https://pub.dev/packages/permission_handler) plugin by [Baseflow](https://baseflow.com).
 

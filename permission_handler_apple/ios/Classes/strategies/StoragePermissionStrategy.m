@@ -17,7 +17,7 @@
     completionHandler(ServiceStatusNotApplicable);
 }
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
     completionHandler([StoragePermissionStrategy permissionStatus]);
 }
 

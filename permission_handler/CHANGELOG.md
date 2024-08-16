@@ -1,3 +1,32 @@
+## 11.3.1
+
+* Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
+
+## 11.3.0
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status via:
+  * Updates `permission_handler_apple` dependency to version 9.1.5.
+  * Updates `permission_handler_platform_interface` dependency to version 3.11.6.
+
+## 11.2.1
+
+* Adds `PermissionGroup.photosAddOnly` to the README.
+
+## 11.2.0
+
+* Adds the `Permission.assistant` which allows users to request permissions to access SiriKit on iOS and macOS platforms. This is a no-op on all other platforms.
+
+## 11.1.0
+
+* Adds support for iOS 17+ [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels).
+* Deprecates `Permission.calendar`. Use `Permission.calendarWriteOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
+* For `Permission.calendarFullAccess` on iOS 17+ use `PERMISSION_EVENTS_FULL_ACCESS` in Podfile instead of  `PERMISSION_EVENTS`.
+* Adds web support by endorsing `permission_handler_html` as the web implementation of the permission handler. Only some permissions are supported at this time.
+* Updates `permission_handler_android` dependency to version 12.0.1.
+* Updates `permission_handler_apple` dependency to version 9.2.0.
+* Updates `permission_handler_windows` dependency to version 0.2.0.
+* Updates `permission_handler_platform_interface` dependency to version 4.0.2.
+
 ## 11.0.1
 
 * Adds extension methods to the `PermissionStatus` enum allowing developers to register callback methods, which will improve code readability.
@@ -74,7 +103,7 @@
 
 ## 9.0.2
 
-* Fixes regression when requesting 'locationAlways' permission on Andriod 9 (Pie) and earlier.
+* Fixes regression when requesting 'locationAlways' permission on Android 9 (Pie) and earlier.
 
 ## 9.0.1
 

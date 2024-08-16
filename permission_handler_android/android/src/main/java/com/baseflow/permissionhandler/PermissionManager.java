@@ -74,6 +74,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return false;
         }
 
+        // The [onActivityResult] with a [requestResult] that is `null` when the Application was
+        // terminated while not in the foreground with a permission request in progress (e.g. when
+        // Android decides to kill apps while requesting one of the special permissions). In these
+        // cases we should casually return and make sure the `pendingRequestCount` is set to `0`.
+        if (requestResults == null) {
+            pendingRequestCount = 0;
+            return false;
+        }
+
         int status, permission;
 
         if (requestCode == PermissionConstants.PERMISSION_CODE_IGNORE_BATTERY_OPTIMIZATIONS) {
@@ -126,14 +135,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 return false;
             }
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_SCHEDULE_EXACT_ALARM) {
+            permission = PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
+            AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                AlarmManager alarmManager = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
                 status = alarmManager.canScheduleExactAlarms()
                     ? PermissionConstants.PERMISSION_STATUS_GRANTED
                     : PermissionConstants.PERMISSION_STATUS_DENIED;
-                permission = PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
             } else {
-                return false;
+                status = PermissionConstants.PERMISSION_STATUS_GRANTED;
             }
         } else {
             return false;
@@ -537,7 +546,20 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     } else {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
                     }
-                } else {
+                } else if (permission ==  PermissionConstants.PERMISSION_GROUP_PHOTOS || permission ==  PermissionConstants.PERMISSION_GROUP_VIDEOS){
+                    final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
+                    int permissionStatusLimited = permissionStatus;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        permissionStatusLimited = ContextCompat.checkSelfPermission(context, Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED);
+                    }
+                    if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED && permissionStatus == PackageManager.PERMISSION_DENIED) {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
+                    } else if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
+                    }else {
+                        permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
+                    }
+                }else {
                     final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                     if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                         permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));

@@ -76,8 +76,9 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void _listenForPermissionStatus() async {
-    final status = await _permissionHandler.checkPermissionStatus(_permission);
-    setState(() => _permissionStatus = status);
+    await _permissionHandler.checkPermissionStatus(_permission).then(
+        (status) => setState(() => _permissionStatus = status),
+        onError: (error, st) => print('$error'));
   }
 
   Color getPermissionColor() {
@@ -130,12 +131,12 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   Future<void> requestPermission(Permission permission) async {
-    final status = await _permissionHandler.requestPermissions([permission]);
-
-    setState(() {
-      print(status);
-      _permissionStatus = status[permission] ?? PermissionStatus.denied;
-      print(_permissionStatus);
-    });
+    await _permissionHandler.requestPermissions([permission]).then(
+        (status) => setState(() {
+              print(status);
+              _permissionStatus = status[permission] ?? PermissionStatus.denied;
+              print(_permissionStatus);
+            }),
+        onError: (error, st) => print('$error'));
   }
 }

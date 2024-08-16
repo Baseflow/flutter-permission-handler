@@ -2,7 +2,7 @@ name: permission_handler_android_example
 description: Demonstrates how to use the permission_handler_android plugin.
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
   baseflow_plugin_template: ^2.1.2
