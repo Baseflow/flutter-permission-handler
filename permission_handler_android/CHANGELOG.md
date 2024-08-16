@@ -1,3 +1,5 @@
+## 12.0.9
+* Added Make the status return of the READ_MEDIA_VISUAL_USER_SELECTED permission more accurate.
 ## 12.0.8
 
 * Added support for limited photo and video permission on Android. 
