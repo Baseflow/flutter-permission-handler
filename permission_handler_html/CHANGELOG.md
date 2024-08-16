@@ -1,3 +1,7 @@
+## 1.6.8
+
+* Adds support for `web: ^1.0.0`
+
 ## 0.1.2
 
 * Migrate to package:web and adding wasm support.
