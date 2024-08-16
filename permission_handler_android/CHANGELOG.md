@@ -1,3 +1,7 @@
+## 12.0.11
+
+* Adds `TargetApi` annotation to `getManifestNames` method in `PermissionUtils.java`.
+
 ## 12.0.10
 
 * Fixes a bug that causes a `NullPointerException` when the application is restarted after being killed by Android during the request of special permissions (like, `Permission.ignoreBatteryOptimizations`, `Permission.systemAlertWindow`, `Permission.accessNotificationPolicy`, `Permission.scheduleExactAlarm` and `Permission.manageExternalStorage`).
@@ -17,7 +21,6 @@
 ## 12.0.6
 
 * Removes deprecated support for Android V1 embedding as support will be removed from Flutter (see [flutter/flutter#144726](https://github.com/flutter/flutter/pull/144726)).
-
 
 ## 12.0.5
 
