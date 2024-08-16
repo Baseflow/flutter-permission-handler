@@ -2,6 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.baseflow.permissionhandler.example">
 
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <!--
     Internet permissions do not affect the `permission_handler` plugin, but are required if your app needs access to
     the internet.
@@ -19,6 +26,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <!-- Permissions options for the `camera` group -->
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -37,7 +45,6 @@
     <uses-permission android:name="android.permission.USE_SIP"/>
     <uses-permission android:name="android.permission.READ_CALL_LOG"/>
     <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
-    <uses-permission android:name="android.permission.BIND_CALL_REDIRECTION_SERVICE"/>
 
     <!-- Permissions options for the `calendar` group -->
     <uses-permission android:name="android.permission.READ_CALENDAR" />

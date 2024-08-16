@@ -2,8 +2,10 @@ package com.baseflow.permissionhandler;
 
 import androidx.annotation.IntDef;
 
+import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 final class PermissionConstants {
     static final String LOG_TAG = "permissions_handler";
@@ -15,7 +17,11 @@ final class PermissionConstants {
     static final int PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY = 213;
     static final int PERMISSION_CODE_SCHEDULE_EXACT_ALARM = 214;
 
-    //PERMISSION_GROUP
+
+    // PERMISSION_GROUP
+
+    // Deprecated in favor of PERMISSION_GROUP_CALENDAR_WRITE_ONLY and
+    // PERMISSION_GROUP_CALENDAR_FULL_ACCESS.
     static final int PERMISSION_GROUP_CALENDAR = 0;
     static final int PERMISSION_GROUP_CAMERA = 1;
     static final int PERMISSION_GROUP_CONTACTS = 2;
@@ -52,6 +58,10 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_AUDIO = 33;
     static final int PERMISSION_GROUP_SCHEDULE_EXACT_ALARM = 34;
     static final int PERMISSION_GROUP_SENSORS_ALWAYS = 35;
+    static final int PERMISSION_GROUP_CALENDAR_WRITE_ONLY = 36;
+    static final int PERMISSION_GROUP_CALENDAR_FULL_ACCESS = 37;
+    static final int PERMISSION_GROUP_ASSISTANT = 38;
+    static final int PERMISSION_GROUP_BACKGROUND_REFRESH = 39;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -87,7 +97,10 @@ final class PermissionConstants {
             PERMISSION_GROUP_NEARBY_WIFI_DEVICES,
             PERMISSION_GROUP_VIDEOS,
             PERMISSION_GROUP_AUDIO,
-            PERMISSION_GROUP_SCHEDULE_EXACT_ALARM
+            PERMISSION_GROUP_SCHEDULE_EXACT_ALARM,
+            PERMISSION_GROUP_CALENDAR_WRITE_ONLY,
+            PERMISSION_GROUP_CALENDAR_FULL_ACCESS,
+            PERMISSION_GROUP_ASSISTANT,
     })
     @interface PermissionGroup {
     }
@@ -99,6 +112,7 @@ final class PermissionConstants {
     static final int PERMISSION_STATUS_LIMITED = 3;
     static final int PERMISSION_STATUS_NEVER_ASK_AGAIN = 4;
 
+    @Target(ElementType.TYPE_USE)
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             PERMISSION_STATUS_DENIED,

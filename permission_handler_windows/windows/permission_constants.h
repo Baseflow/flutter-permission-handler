@@ -46,7 +46,11 @@ public:
         VIDEOS = 32,
         AUDIO = 33,
         SCHEDULE_EXACT_ALARM = 34,
-        SENSORS_ALWAYS = 35
+        SENSORS_ALWAYS = 35,
+        CALENDAR_WRITE_ONLY = 36,
+        CALENDAR_FULL_ACCESS = 37,
+        ASSISTANT = 38,
+        BACKGROUND_REFRESH = 39
     };
 
     //PERMISSION_STATUS

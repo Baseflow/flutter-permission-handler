@@ -18,6 +18,8 @@ import androidx.core.app.ActivityCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class PermissionUtils {
@@ -26,8 +28,8 @@ public class PermissionUtils {
     @PermissionConstants.PermissionGroup
     static int parseManifestName(String permission) {
         switch (permission) {
-            case Manifest.permission.READ_CALENDAR:
             case Manifest.permission.WRITE_CALENDAR:
+            case Manifest.permission.READ_CALENDAR:
                 return PermissionConstants.PERMISSION_GROUP_CALENDAR;
             case Manifest.permission.CAMERA:
                 return PermissionConstants.PERMISSION_GROUP_CAMERA;
@@ -49,7 +51,6 @@ public class PermissionUtils {
             case Manifest.permission.WRITE_CALL_LOG:
             case Manifest.permission.ADD_VOICEMAIL:
             case Manifest.permission.USE_SIP:
-            case Manifest.permission.BIND_CALL_REDIRECTION_SERVICE:
                 return PermissionConstants.PERMISSION_GROUP_PHONE;
             case Manifest.permission.BODY_SENSORS:
                 return PermissionConstants.PERMISSION_GROUP_SENSORS;
@@ -104,11 +105,17 @@ public class PermissionUtils {
         final ArrayList<String> permissionNames = new ArrayList<>();
 
         switch (permission) {
-            case PermissionConstants.PERMISSION_GROUP_CALENDAR:
-                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
-                    permissionNames.add(Manifest.permission.READ_CALENDAR);
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_WRITE_ONLY:
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_CALENDAR))
                     permissionNames.add(Manifest.permission.WRITE_CALENDAR);
+                break;
+
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS:
+            case PermissionConstants.PERMISSION_GROUP_CALENDAR:
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.WRITE_CALENDAR))
+                    permissionNames.add(Manifest.permission.WRITE_CALENDAR);
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_CALENDAR))
+                    permissionNames.add(Manifest.permission.READ_CALENDAR);
                 break;
 
             case PermissionConstants.PERMISSION_GROUP_CAMERA:
@@ -156,9 +163,8 @@ public class PermissionUtils {
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_STATE))
                     permissionNames.add(Manifest.permission.READ_PHONE_STATE);
 
-                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_NUMBERS)) {
+                if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.READ_PHONE_NUMBERS))
                     permissionNames.add(Manifest.permission.READ_PHONE_NUMBERS);
-                }
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.CALL_PHONE))
                     permissionNames.add(Manifest.permission.CALL_PHONE);
@@ -174,9 +180,6 @@ public class PermissionUtils {
 
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.USE_SIP))
                     permissionNames.add(Manifest.permission.USE_SIP);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, permissionNames, Manifest.permission.BIND_CALL_REDIRECTION_SERVICE))
-                    permissionNames.add(Manifest.permission.BIND_CALL_REDIRECTION_SERVICE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && hasPermissionInManifest(context, permissionNames, Manifest.permission.ANSWER_PHONE_CALLS))
                     permissionNames.add(Manifest.permission.ANSWER_PHONE_CALLS);
@@ -278,34 +281,40 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.ACCESS_NOTIFICATION_POLICY);
                 break;
             case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_SCAN: {
-                // The BLUETOOTH_SCAN permission is introduced in Android S, meaning we should
-                // not handle permissions on pre Android S devices.
-                String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_SCAN);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    // The BLUETOOTH_SCAN permission is introduced in Android S, meaning we should
+                    // not handle permissions on pre Android S devices.
+                    String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_SCAN);
 
-                if (result != null) {
-                    permissionNames.add(result);
+                    if (result != null) {
+                        permissionNames.add(result);
+                    }
                 }
 
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_ADVERTISE: {
-                // The BLUETOOTH_ADVERTISE permission is introduced in Android S, meaning we should
-                // not handle permissions on pre Android S devices.
-                String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    // The BLUETOOTH_ADVERTISE permission is introduced in Android S, meaning we should
+                    // not handle permissions on pre Android S devices.
+                    String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_ADVERTISE);
 
-                if (result != null) {
-                    permissionNames.add(result);
+                    if (result != null) {
+                        permissionNames.add(result);
+                    }
                 }
 
                 break;
             }
             case PermissionConstants.PERMISSION_GROUP_BLUETOOTH_CONNECT: {
-                // The BLUETOOTH_CONNECT permission is introduced in Android S, meaning we should
-                // not handle permissions on pre Android S devices.
-                String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_CONNECT);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    // The BLUETOOTH_CONNECT permission is introduced in Android S, meaning we should
+                    // not handle permissions on pre Android S devices.
+                    String result = determineBluetoothPermission(context, Manifest.permission.BLUETOOTH_CONNECT);
 
-                if (result != null) {
-                    permissionNames.add(result);
+                    if (result != null) {
+                        permissionNames.add(result);
+                    }
                 }
 
                 break;
@@ -341,9 +350,8 @@ public class PermissionUtils {
                     permissionNames.add(Manifest.permission.READ_MEDIA_AUDIO);
                 break;
             case PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM:
-                // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, meaning we should
-                // not handle permissions on pre Android S devices.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
+                // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, before Android 31 it should alway return Granted
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
                     permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
@@ -460,6 +468,32 @@ public class PermissionUtils {
         return PermissionConstants.PERMISSION_STATUS_GRANTED;
     }
 
+    @NonNull
+    @PermissionConstants.PermissionStatus
+    static Integer strictestStatus(final @NonNull Collection<@PermissionConstants.PermissionStatus Integer> statuses) {
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN))
+            return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_RESTRICTED))
+            return PermissionConstants.PERMISSION_STATUS_RESTRICTED;
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_DENIED))
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        if (statuses.contains(PermissionConstants.PERMISSION_STATUS_LIMITED))
+            return PermissionConstants.PERMISSION_STATUS_LIMITED;
+        return PermissionConstants.PERMISSION_STATUS_GRANTED;
+    }
+
+    @NonNull
+    @PermissionConstants.PermissionStatus
+    static Integer strictestStatus(
+        final @Nullable @PermissionConstants.PermissionStatus Integer statusA,
+        final @Nullable @PermissionConstants.PermissionStatus Integer statusB) {
+
+        final Collection<@PermissionConstants.PermissionStatus Integer> statuses = new HashSet<>();
+        statuses.add(statusA);
+        statuses.add(statusB);
+        return strictestStatus(statuses);
+    }
+
     /**
      * Determines whether a permission was either 'denied' or 'permanently denied'.
      * <p>
@@ -501,21 +535,6 @@ public class PermissionUtils {
         return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
-    static void updatePermissionShouldShowStatus(
-        @Nullable final Activity activity,
-        @PermissionConstants.PermissionGroup int permission) {
-
-        if (activity == null) {
-            return;
-        }
-
-        List<String> names = getManifestNames(activity, permission);
-
-        if (names == null || names.isEmpty()) {
-            return;
-        }
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.M)
     static boolean isNeverAskAgainSelected(
         @NonNull final Activity activity,
@@ -536,7 +555,7 @@ public class PermissionUtils {
             }
 
             return null;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
+        } else if (hasPermissionInManifest(context, null, Manifest.permission.ACCESS_FINE_LOCATION)) {
             return Manifest.permission.ACCESS_FINE_LOCATION;
         }
 

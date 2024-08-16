@@ -1,3 +1,36 @@
+## 11.3.1
+
+* Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
+
+## 11.3.0
+
+* Adds a new permission `Permission.backgroundRefresh` to check the background refresh permission status via:
+  * Updates `permission_handler_apple` dependency to version 9.1.5.
+  * Updates `permission_handler_platform_interface` dependency to version 3.11.6.
+
+## 11.2.1
+
+* Adds `PermissionGroup.photosAddOnly` to the README.
+
+## 11.2.0
+
+* Adds the `Permission.assistant` which allows users to request permissions to access SiriKit on iOS and macOS platforms. This is a no-op on all other platforms.
+
+## 11.1.0
+
+* Adds support for iOS 17+ [Calendar access levels](https://developer.apple.com/documentation/technotes/tn3152-migrating-to-the-latest-calendar-access-levels).
+* Deprecates `Permission.calendar`. Use `Permission.calendarWriteOnly` to request a write-only access to the calendar. For full access to calendar use `Permission.calendarFullAccess`.
+* For `Permission.calendarFullAccess` on iOS 17+ use `PERMISSION_EVENTS_FULL_ACCESS` in Podfile instead of  `PERMISSION_EVENTS`.
+* Adds web support by endorsing `permission_handler_html` as the web implementation of the permission handler. Only some permissions are supported at this time.
+* Updates `permission_handler_android` dependency to version 12.0.1.
+* Updates `permission_handler_apple` dependency to version 9.2.0.
+* Updates `permission_handler_windows` dependency to version 0.2.0.
+* Updates `permission_handler_platform_interface` dependency to version 4.0.2.
+
+## 11.0.1
+
+* Adds extension methods to the `PermissionStatus` enum allowing developers to register callback methods, which will improve code readability.
+
 ## 11.0.0
 
 * **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 11.0.0.
@@ -37,8 +70,8 @@
 
 ## 10.2.1
 
-* Fixes missing POST_NOTIFICATIONS permission in Android example project.
-  
+* Fix missing POST_NOTIFICATIONS permission in the Android example project.
+
 ## 10.2.0
 
 * Added support for the new Android 13 permissions: SCHEDULE_EXACT_ALARM, READ_MEDIA_IMAGES, READ_MEDIA_VIDEO and READ_MEDIA_AUDIO
@@ -53,12 +86,12 @@
 
 ## 10.0.1
 
-- Fix PermissionHandlerEnums link in the README.md
+* Fix the PermissionHandlerEnums link in the README.md
 
 ## 10.0.0
 
-* __BREAKING CHANGE__: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
-> When updating to version 10.0.0 make sure to update the `android/app/build.gradle` file and set the `compileSdkVersion` to `33`.
+* **BREAKING CHANGE**: Updated Android `compileSdkVersion` to `33` to handle the new `POST_NOTIFICATIONS` permission.
+  > When updating to version 10.0.0 make sure to update the `android/app/build.gradle` file and set the `compileSdkVersion` to `33`.
 
 ## 9.2.0
 
@@ -70,7 +103,7 @@
 
 ## 9.0.2
 
-* Fixes regression when requesting 'locationAlways' permission on Andriod 9 (Pie) and earlier.
+* Fixes regression when requesting 'locationAlways' permission on Android 9 (Pie) and earlier.
 
 ## 9.0.1
 
@@ -80,15 +113,15 @@
 ## 9.0.0
 
 * iOS: Bluetooth permission dialog now appears when requested instead of when the app is initialized.
-Note: Requesting Bluetooth status will also prompt the permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
+  Note: Requesting Bluetooth status will also prompt the permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
 
 ## 8.3.0
 
-* Updated Android Gradle Plugin to 4.1.0 and Gradle Wrapper to 6.7 which is inline with the current Flutter stable version (Flutter 2.5.3).
+* Updated Android Gradle Plugin to 4.1.0 and Gradle Wrapper to 6.7 which is in line with the current Flutter stable version (Flutter 2.5.3).
 
 ## 8.2.6
 
-* Fixed broken androidx migration link in the README.md.
+* Fixed broken Androidx migration link in the README.md.
 
 ## 8.2.5
 
@@ -96,11 +129,11 @@ Note: Requesting Bluetooth status will also prompt the permission dialog (see is
 
 ## 8.2.4
 
-* Solved bug where output would log that there is no permission in manifest for BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT on Android 11 devices and lower(see issue [#691](https://github.com/Baseflow/flutter-permission-handler/issues/691)).
+* Solved bug where output would log that there is no permission in the manifest for BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE, and BLUETOOTH_CONNECT on Android 11 devices and lower(see issue [#691](https://github.com/Baseflow/flutter-permission-handler/issues/691)).
 
 ## 8.2.3
 
-* iOS: Enhanced the `bluetooth` permission for iOS 13 and up, so the user gets prompted with the "bluetooth" permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
+* iOS: Enhanced the `bluetooth` permission for iOS 13 and up, so the user gets prompted with the "Bluetooth" permission dialog (see issue [#591](https://github.com/Baseflow/flutter-permission-handler/issues/591)).
 
 ## 8.2.2
 
@@ -109,23 +142,24 @@ Note: Requesting Bluetooth status will also prompt the permission dialog (see is
 
 ## 8.2.1
 
-* Resolved an issue where checking permissions on pre Android M devices always resolved to `PermissionStatus.denied` (see issue [#60](https://github.com/Baseflow/flutter-permission-plugins/issues/60));
+* Resolved an issue where checking permissions on pre-Android M devices always resolved to `PermissionStatus.denied` (see issue [#60](https://github.com/Baseflow/flutter-permission-plugins/issues/60));
 * Updated the url_launcher dependency in the example App to `^6.0.12`.
 
 ## 8.2.0
 
-> **IMPORTANT:** when updating to version 8.2.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `31`.
+> **IMPORTANT:** When updating to version 8.2.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `31`.
 
-* Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE and BLUETOOTH_CONNECT.
+* Added support for the new Android 12 Bluetooth permissions: BLUETOOTH_SCAN, BLUETOOTH_ADVERTISE, and BLUETOOTH_CONNECT.
 * Updated Android compile and target SDK to 31 (Android 12 (S)).
-* Updated Gradle and dependencies of Android project.
-* Updated applicationID of example app
+* Updated Gradle and dependencies of the Android project.
+* Updated application of the example app
 
 ## 8.1.6
 
 * Android: Fixed a `NullPointerException` when changing permissions in the Location Settings intent.
 
 ## 8.1.5
+
 * Android: Fixed deprecation warnings/errors when `compileSdkVersion` was set to 31 (Android S/12).
 
 ## 8.1.4+2
@@ -147,7 +181,7 @@ Note: Requesting Bluetooth status will also prompt the permission dialog (see is
 
 ## 8.1.2
 
-* Suppress deprecation warnings on iOS for code that specifically targets older iOS versions (see issue [#607](https://github.com/Baseflow/flutter-permission-handler/issues/607)). 
+* Suppress deprecation warnings on iOS for code that specifically targets older iOS versions (see issue [#607](https://github.com/Baseflow/flutter-permission-handler/issues/607)).
 
 ## 8.1.1
 
@@ -156,9 +190,9 @@ Note: Requesting Bluetooth status will also prompt the permission dialog (see is
 ## 8.1.0
 
 * Added support for iOS 12+ Critical Alerts permission requesting.
-    * NOTE: This requires applying to Apple and receiving a special entitlement from them inorder to work. See [this article](https://medium.com/@shashidharyamsani/implementing-ios-critical-alerts-7d82b4bb5026) for an explination on how to use Critical Alerts.
+  * NOTE: This requires applying to Apple and receiving a special entitlement from them in order to work. See [this article](https://medium.com/@shashidharyamsani/implementing-ios-critical-alerts-7d82b4bb5026) for an explanation of how to use Critical Alerts.
 * Added support for Android M+ Access Notification Policy permission requesting (ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS).
-    * Note: This opens a general page in settings, not specific to the package. 
+  * Note: This opens a general page in settings, not specific to the package.
 
 ## 8.0.1
 
@@ -175,8 +209,9 @@ Note: Requesting Bluetooth status will also prompt the permission dialog (see is
 
 ## 8.0.0
 
-This release contains the following **breaking changes**: 
-* Starting from this version the permissions on iOS are disabled by default. To enable a permission, specify the correct `GCC_PREPROCESSOR_DEFINITIONS` in the `ios/Podfile` file. For an example check out the [Podfile](permission_handler/example/ios/Podfile) of the example application. 
+This release contains the following **breaking changes**:
+
+* Starting from this version the permissions on iOS are disabled by default. To enable permission, specify the correct `GCC_PREPROCESSOR_DEFINITIONS` in the `ios/Podfile` file. For an example check out the [Podfile](permission_handler/example/ios/Podfile) of the example application.
 * Added support for the "AppTrackingTransparency" permission on iOS.
 
 ## 7.2.0
@@ -185,7 +220,7 @@ This release contains the following **breaking changes**:
 
 ## 7.1.1
 
-* Improved the example app by using the Baseflow Plugin Template and move all the functionality to the `main.dart` file.
+* Improved the example app by using the Baseflow Plugin Template and moving all the functionality to the `main.dart` file.
 
 ## 7.1.0
 
@@ -193,29 +228,30 @@ This release contains the following **breaking changes**:
 
 ## 7.0.0
 
-This release contains the following **breaking changes**: 
+This release contains the following **breaking changes**:
+
 * Updated compile SDK version to 30 in the build.gradle for handling the MANAGE_EXTERNAL_STORAGE permission;
 * Added the MANAGE_EXTERNAL_STORAGE permission for Android R and up;
-* Registered listeners on the plugin level to prevent memory leaks or unwanted behaviour.
+* Registered listeners on the plugin level to prevent memory leaks or unwanted behavior.
 
 ## 6.1.3
 
 * Implement equality operator on the `Permission` class;
-* Updated the README.md with instructions on enabling/ disabling the bluetooth permissions on iOS;
+* Updated the README.md with instructions on enabling/ disabling the Bluetooth permissions on iOS;
 * Corrected some spelling mistakes in the `CHANGELOG.md`.
 
 ## 6.1.2
 
-* Correctly handle the ACCESS_MEDIA_LOCATION and ACCESS_ACTIVITY_RECOGNITION permissions on pre Android Q devices (permissions should be implicitly granted on pre Android Q). 
+* Correctly handle the ACCESS_MEDIA_LOCATION and ACCESS_ACTIVITY_RECOGNITION permissions on pre-Android Q devices (permissions should be implicitly granted on pre-Android Q).
 
 ## 6.1.1
 
-* Added unit-tests to guard API against breaking changes.
+* Added unit tests to guard API against breaking changes.
 
 ## 6.1.0
 
-* Added support for bluetooth permissions;
-* Workaround for ignore battery optimizations on pre-M Android devices (see PR [#376](https://github.com/Baseflow/flutter-permission-handler/pull/376)). 
+* Added support for Bluetooth permissions;
+* Workaround for ignoring battery optimizations on pre-M Android devices (see PR [#376](https://github.com/Baseflow/flutter-permission-handler/pull/376)).
 
 ## 6.0.1+1
 
@@ -223,26 +259,27 @@ This release contains the following **breaking changes**:
 
 ## 6.0.1
 
-* Fixed deprecation warning when building Android project.
+* Fixed deprecation warning when building Android projects.
 
 ## 6.0.0
 
 This release includes the following **breaking changes**:
-* Migrated to null safety 
+
+* Migrated to null safety
 * Removed PermissionStatus.undetermined, PermissionStatus.denied will be used instead (see our "[Changes in 6.0.0](https://github.com/Baseflow/flutter-permission-handler/wiki/Changes-in-6.0.0)" wiki page for more details).
 
 ## 5.1.0+2
 
-* Solve mismatch with permission constants between Dart and Android (due to addition of permission on iOS);
-* Fix compile error which occurred when on iOS the "PERMISSION_PHOTOS" macro is deactivated (meaning code dealing with the `PHPhotoLibrary` library is removed from the code base).
+* Solve mismatch with permission constants between Dart and Android (due to the addition of permission on iOS);
+* Fix the compile error that occurred when on iOS the "PERMISSION_PHOTOS" macro is deactivated (meaning code dealing with the `PHPhotoLibrary` library is removed from the code base).
 
 ## 5.1.0+1
 
-* Recreate the iOS part of the example project based on the Flutter stable channel (previous version was accidentally created with the Flutter beta channel).
+* Recreate the iOS part of the example project based on the Flutter stable channel (the previous version was accidentally created with the Flutter beta channel).
 
 ## 5.1.0
 
-* Added support for the limited photos permission available on iOS 14 and up;
+* Added support for the limited photo permission available on iOS 14 and up;
 * Fixed deprecated warning on iOS;
 * Added support for the "READ_PHONE_NUMBERS" permission on Android;
 * Fix a link to the contribution guide in the README.md.
@@ -254,7 +291,7 @@ This release includes the following **breaking changes**:
 ## 5.0.1+1
 
 * Fixes Typo
-* Issue #233 - on 5.0: Solved a bug that prevented Android applications running in the background to check the permission status.
+* Issue #233 * on 5.0: Solved a bug that prevented Android applications running in the background to check the permission status.
 
 ## 5.0.1
 
@@ -282,7 +319,7 @@ This release includes the following **breaking changes**:
 
 ## 5.0.0+hotfix.5
 
-* Remove use of the deprecated pre iOS 8 API causing users compile issues (see issue [#277](https://github.com/Baseflow/flutter-permission-handler/issues/277)).
+* Remove the use of the deprecated pre-iOS 8 API causing users to compile issues (see issue [#277](https://github.com/Baseflow/flutter-permission-handler/issues/277)).
 
 ## 5.0.0+hotfix.4
 
@@ -290,7 +327,7 @@ This release includes the following **breaking changes**:
 
 ## 5.0.0+hotfix.3
 
-* Includes the changes of 4.4.0+hotfix.4 (which was released to be backwards compatible).
+* Includes the changes of 4.4.0+hotfix.4 (which was released to be backward compatible).
 
 ## 5.0.0+hotfix.2
 
@@ -314,19 +351,19 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 ## 4.4.0+hotfix.2
 
-* Issue #235: Solved a bug which made it impossible to request service status on Android 7;
-* Issue #237: Solved a bug which crashes the application when cancelling the "Ignore battery optimizations" request for permissions.
+* Issue #235: Solved a bug that made it impossible to request service status on Android 7;
+* Issue #237: Solved a bug that crashes the application when canceling the "Ignore battery optimizations" request for permissions.
 
 ## 4.4.0+hotfix.1
 
-* Issue #233: Solved a bug that prevented Android applications running in the background to check the permission status.
+* Issue #233: Solved a bug that prevented Android applications from running in the background to check the permission status.
 
 ## 4.4.0
 
-* Updated plugin structure to confirm to the Flutter federated plugin architecture. This will make it easier to add new platform implementations (see: https://medium.com/flutter/how-to-write-a-flutter-web-plugin-part-2-afdddb69ece6);
+* Updated plugin structure to conform to the Flutter federated plugin architecture. This will make it easier to add new platform implementations (see: https://medium.com/flutter/how-to-write-a-flutter-web-plugin-part-2-afdddb69ece6);
 * Android: Migrate to FlutterPlugin Android API (better support for Add-to-App);
 * Android: Suppress JAVA warnings which are generated to old platform code (only executes on older platforms);
-* Android: Fixed issue which sometimes resulting in illegal cast exception.
+* Android: Fixed issue which sometimes results in illegal cast exception.
 
 ## 4.3.0
 
@@ -344,14 +381,13 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 * Android: Fixes a bug where permissions are reported as `neverAskAgain` incorrectly after calling `requestPermissions` method.
 
-
 ## 4.2.0+hotfix.1
 
 * Android: Fixes a bug where permissions are reported as `neverAskAgain` incorrectly.
 
 ## 4.2.0
 
-* Android: Methods `checkPermissionStatus` and `requestPermissions` now support addition `neverAskAgain` status.
+* Android: Methods `checkPermissionStatus` and `requestPermissions` now support the additional `neverAskAgain` status.
 
 ## 4.1.0
 
@@ -368,7 +404,7 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 ## 3.3.0
 
 * Android: Add support for requesting the background location permission within the `locationAlways` group.
-* Android: Update AGP, Gradle and AndroidX dependencies
+* Android: Update AGP, Gradle, and AndroidX dependencies
 
 ## 3.2.2
 
@@ -380,7 +416,7 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 ## 3.2.1
 
-* Updated dependency on 'meta' to latest version.
+* Updated dependency on 'meta' to the latest version.
 
 ## 3.2.0
 
@@ -395,7 +431,7 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 ## 3.0.2
 
 * Fixed bug when rapidly requesting permissions (#23);
-* Rename Enums.h to PermissionHandlerEnums.h to prevent conflicts with geolocator (#104);
+* Rename Enums.h to PermissionHandlerEnums.h to prevent conflicts with the geolocator (#104);
 * Update the Android permission request code to prevent conflicts with geolocator (#111);
 * Update Gradle infrastructure.
 
@@ -414,14 +450,14 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 ## 2.1.3
 
-* Fixed bug on iOS where result of the `openAppSettings` call always returned `false`;
-* Upgrade Android plugin to support AndroidX and latest Gradle and Kotlin versions;
+* Fixed bug on iOS where the result of the `openAppSettings` call always returned `false`;
+* Upgrade the Android plugin to support AndroidX and the latest Gradle and Kotlin versions;
 * Added Swift version number to the Podfile of the plugin;
-* Updated flutter static analyzes to conform to latest recommendations.
+* Updated flutter static analyses to conform to the latest recommendations.
 
 ## 2.1.2
 
-* Make sure the Permission Handler compiles with latest iOS SDK
+* Make sure the Permission Handler compiles with the latest iOS SDK
 
 ## 2.1.1
 
@@ -440,12 +476,12 @@ IGNORE THIS VERSION, it was released by accident and contains the same code as 4
 
 ## 2.0.0
 
-* Make methods non static so users can create an instance or override
+* Make methods non-static so users can create an instance or override
 
 ## 1.0.1
 
 * Converted the plugin into a library so that developers don't have to import additional files;
-* Updated the README.md to fix example code.
+* Updated the README.md to fix the example code.
 
 ## 1.0.0
 

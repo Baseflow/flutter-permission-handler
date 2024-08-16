@@ -17,10 +17,15 @@ final MaterialColor themeMaterialColor =
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
+  /// Creates a [PermissionHandlerWidget].
+  const PermissionHandlerWidget({
+    super.key,
+  });
+
   /// Create a page containing the functionality of this plugin
   static ExamplePage createPage() {
     return ExamplePage(
-        Icons.location_on, (context) => PermissionHandlerWidget());
+        Icons.location_on, (context) => const PermissionHandlerWidget());
   }
 
   @override
@@ -41,7 +46,9 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                     permission != Permission.reminders &&
                     permission != Permission.bluetooth &&
                     permission != Permission.appTrackingTransparency &&
-                    permission != Permission.criticalAlerts;
+                    permission != Permission.criticalAlerts &&
+                    permission != Permission.assistant &&
+                    permission != Permission.backgroundRefresh;
               })
               .map((permission) => PermissionWidget(permission))
               .toList()),
@@ -52,18 +59,20 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
 /// Permission widget containing information about the passed [Permission]
 class PermissionWidget extends StatefulWidget {
   /// Constructs a [PermissionWidget] for the supplied [Permission]
-  const PermissionWidget(this._permission);
+  const PermissionWidget(
+    this._permission, {
+    super.key,
+  });
 
   final Permission _permission;
 
   @override
-  _PermissionState createState() => _PermissionState(_permission);
+  _PermissionState createState() => _PermissionState();
 }
 
 class _PermissionState extends State<PermissionWidget> {
-  _PermissionState(this._permission);
+  _PermissionState();
 
-  final Permission _permission;
   final PermissionHandlerPlatform _permissionHandler =
       PermissionHandlerPlatform.instance;
   PermissionStatus _permissionStatus = PermissionStatus.denied;
@@ -76,7 +85,8 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void _listenForPermissionStatus() async {
-    final status = await _permissionHandler.checkPermissionStatus(_permission);
+    final status =
+        await _permissionHandler.checkPermissionStatus(widget._permission);
     setState(() => _permissionStatus = status);
   }
 
@@ -97,14 +107,14 @@ class _PermissionState extends State<PermissionWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        _permission.toString(),
+        widget._permission.toString(),
         style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
         _permissionStatus.toString(),
         style: TextStyle(color: getPermissionColor()),
       ),
-      trailing: (_permission is PermissionWithService)
+      trailing: (widget._permission is PermissionWithService)
           ? IconButton(
               icon: const Icon(
                 Icons.info,
@@ -112,11 +122,11 @@ class _PermissionState extends State<PermissionWidget> {
               ),
               onPressed: () {
                 checkServiceStatus(
-                    context, _permission as PermissionWithService);
+                    context, widget._permission as PermissionWithService);
               })
           : null,
       onTap: () {
-        requestPermission(_permission);
+        requestPermission(widget._permission);
       },
     );
   }
@@ -133,9 +143,7 @@ class _PermissionState extends State<PermissionWidget> {
     final status = await _permissionHandler.requestPermissions([permission]);
 
     setState(() {
-      print(status);
       _permissionStatus = status[permission] ?? PermissionStatus.denied;
-      print(_permissionStatus);
     });
   }
 }
