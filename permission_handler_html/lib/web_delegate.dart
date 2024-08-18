@@ -63,7 +63,7 @@ class WebDelegate {
   Future<PermissionStatus> _permissionStatusState(
       String webPermissionName, web.Permissions? permissions) async {
     final webPermissionStatus = await permissions
-        ?.query(web.PermissionDescriptor(name: webPermissionName))
+        ?.query(_PermissionDescriptor(name: webPermissionName))
         .toDart;
     return _toPermissionStatus(webPermissionStatus?.state);
   }
@@ -227,4 +227,12 @@ class WebDelegate {
       rethrow;
     }
   }
+}
+
+// copied from https://github.com/dart-lang/web/commit/7604578eb538c471d438608673c037121d95dba5#diff-6f4c7956b6e25b547b16fc561e54d5e7d520d2c79a59ace4438c60913cc2b1a2L35-L40
+extension type _PermissionDescriptor._(JSObject _) implements JSObject {
+  external factory _PermissionDescriptor({required String name});
+
+  external set name(String value);
+  external String get name;
 }
