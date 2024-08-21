@@ -75,7 +75,7 @@ class WebDelegate {
 
     try {
       web.MediaStream? mediaStream = await _devices
-          ?.getUserMedia(web.MediaStreamConstraints(audio: true.toJS))
+          .getUserMedia(web.MediaStreamConstraints(audio: true.toJS))
           .toDart;
 
       // In browsers, calling [getUserMedia] will start the recording
@@ -85,8 +85,8 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream?.active ?? false) {
-        final audioTracks = mediaStream?.getAudioTracks().toDart ?? [];
+      if (mediaStream.active) {
+        final audioTracks = mediaStream.getAudioTracks().toDart;
         if (audioTracks.isNotEmpty) {
           audioTracks[0].stop();
         }
@@ -105,7 +105,7 @@ class WebDelegate {
 
     try {
       web.MediaStream? mediaStream = await _devices
-          ?.getUserMedia(web.MediaStreamConstraints(video: true.toJS))
+          .getUserMedia(web.MediaStreamConstraints(video: true.toJS))
           .toDart;
 
       // In browsers, calling [getUserMedia] will start the recording
@@ -115,8 +115,8 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream?.active ?? false) {
-        final videoTracks = mediaStream?.getVideoTracks().toDart ?? [];
+      if (mediaStream.active) {
+        final videoTracks = mediaStream.getVideoTracks().toDart;
         if (videoTracks.isNotEmpty) {
           videoTracks[0].stop();
         }
