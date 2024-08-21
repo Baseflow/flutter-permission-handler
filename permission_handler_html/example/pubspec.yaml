@@ -5,6 +5,7 @@ environment:
   sdk: ">=3.0.5 <4.0.0"
 
 dependencies:
+  permission_handler_platform_interface: ^4.2.0
   baseflow_plugin_template: ^2.1.2
   flutter:
     sdk: flutter
