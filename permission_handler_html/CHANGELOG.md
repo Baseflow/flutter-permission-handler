@@ -1,3 +1,7 @@
+## 0.1.3+2
+
+- `web: 1.0.0` compatibility: `PermissionDescriptor` was removed in web package.
+
 ## 0.1.3+1
 
 - Fixes the PermissionDescriptor Error when getting the permission status.
