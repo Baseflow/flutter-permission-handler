@@ -19,8 +19,7 @@ final MaterialColor themeMaterialColor =
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
-
-    /// Creates a [PermissionHandlerWidget].
+  /// Creates a [PermissionHandlerWidget].
   const PermissionHandlerWidget({
     super.key,
   });
