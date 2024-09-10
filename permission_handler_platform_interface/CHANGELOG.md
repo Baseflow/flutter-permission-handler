@@ -1,3 +1,6 @@
+## 4.2.3
+* Fixed class name references.
+
 ## 4.2.2
 
 * Adds limited access permission for Android 14+.
