@@ -1,5 +1,6 @@
 ## 4.2.3
-* Fixed class name references.
+
+* Fixes class name references in the API documentation.
 
 ## 4.2.2
 
