@@ -1,6 +1,6 @@
 name: permission_handler_html
 description: Permission plugin for Flutter. This plugin provides the web API to request and check permissions.
-version: 0.1.3+2
+version: 0.1.3+3
 
 homepage: https://github.com/baseflow/flutter-permission-handler
 

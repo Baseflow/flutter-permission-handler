@@ -20,7 +20,7 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
     if (!web.window.navigator.has("permissions")) {
       return null;
     }
-    return  web.window.navigator.permissions;
+    return web.window.navigator.permissions;
   })();
 
   final WebDelegate _webDelegate;
