@@ -191,7 +191,11 @@ winrt::fire_and_forget PermissionHandlerWindowsPlugin::IsBluetoothServiceEnabled
 
 void PermissionHandlerWindowsPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar) {
-  PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
+  try {
+    PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
       PluginRegistrarManager::GetInstance()
           ->GetRegistrar<PluginRegistrarWindows>(registrar));
+  } catch (...) {
+    /* Do nothing */
+  }
 }
