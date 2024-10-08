@@ -1,3 +1,7 @@
+## Next
+
+* Updated targetSdkVersion and compileSdkVersion of the android example project from 33 to 34.
+
 ## 11.3.1
 
 * Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
