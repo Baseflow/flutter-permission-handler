@@ -1,3 +1,7 @@
+## 0.1.3+3
+
+- Safari < 16 compatibility: Don't crash on missing `window.navigator.permissions` property
+
 ## 0.1.3+2
 
 - `web: 1.0.0` compatibility: `PermissionDescriptor` was removed in web package.
