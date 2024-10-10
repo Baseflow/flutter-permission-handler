@@ -45,6 +45,8 @@
                 return PermissionStatusPermanentlyDenied;
             case CNAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
+            case CNAuthorizationStatusLimited:
+                return PermissionStatusLimited;
         }
 
     } else {
@@ -73,7 +75,8 @@
 
     [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError *__nullable error) {
         if (granted) {
-            completionHandler(PermissionStatusGranted);
+            const PermissionStatus updatedStatus = [self permissionStatus];
+            completionHandler(updatedStatus);
         } else {
             completionHandler(PermissionStatusPermanentlyDenied);
         }
