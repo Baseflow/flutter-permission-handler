@@ -140,8 +140,8 @@ extension PermissionCheckShortcuts on Permission {
   /// *Only supported on iOS.*
   Future<bool> get isRestricted => status.isRestricted;
 
-  /// User has authorized this application for limited photo library access.
-  /// *Only supported on iOS.(iOS14+)*
+  /// User has authorized this application for limited access.
+  /// *Only supported on iOS.(iOS14+ for photos, ios18+ for contacts)*
   Future<bool> get isLimited => status.isLimited;
 
   /// Returns `true` when permissions are denied permanently.
