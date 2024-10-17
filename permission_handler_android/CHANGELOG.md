@@ -1,3 +1,7 @@
+## 12.0.13
+
+* Updates the Android min SDK to use `flutter.minSdkVersion` which is set to the minimum Android SDK supported by the installed Flutter version of the app developer.
+
 ## 12.0.12
 
 * Fixes permission status returned from `Permission.photos.request()` or `Permission.videos.request()` when limited access selected
