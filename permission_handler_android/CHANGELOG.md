@@ -1,6 +1,7 @@
 ## 12.0.13
 
-* Updates the Android min SDK to use `flutter.minSdkVersion` which is set to the minimum Android SDK supported by the installed Flutter version of the app developer.
+* Updates the Android min SDK to 19 (from 16).
+* Migrates example app away from deprecated imperative apply in gradle (see: https://docs.flutter.dev/release/breaking-changes/flutter-gradle-plugin-apply)
 
 ## 12.0.12
 
