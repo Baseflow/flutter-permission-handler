@@ -1,6 +1,6 @@
 ## 0.1.3+4
 
-- http compatibility: Don't crash on missing `window.navigator.mediaDevices` property
+- Fixes a bug causing the application to crash when running on HTTP protocol (not HTTPS or localhost) and the `window.navigator.mediaDevices` property is `null`.
 
 ## 0.1.3+3
 
