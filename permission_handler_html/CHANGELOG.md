@@ -1,3 +1,7 @@
+## 0.1.3+4
+
+- http compatibility: Don't crash on missing `window.navigator.mediaDevices` property
+
 ## 0.1.3+3
 
 - Safari < 16 compatibility: Don't crash on missing `window.navigator.permissions` property
