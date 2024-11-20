@@ -1,3 +1,7 @@
+## 0.1.3+5
+
+- wasm compatibility: Changed way how `window.navigator.mediaDevices` is accessed
+
 ## 0.1.3+4
 
 - Fixes a bug causing the application to crash when running on HTTP protocol (not HTTPS or localhost) and the `window.navigator.mediaDevices` property is `null`.
