@@ -1,6 +1,6 @@
 ## 0.1.3+5
 
-- wasm compatibility: Changed way how `window.navigator.mediaDevices` is accessed
+- Updates the way how `window.navigator.mediaDevices` is accessed to keep supporting WASM.
 
 ## 0.1.3+4
 
