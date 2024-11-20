@@ -1,3 +1,7 @@
+## 0.1.3+5
+
+- wasm compatibility: Changed way how `window.navigator.mediaDevices` is accessed
+
 ## 0.1.3+4
 
 - http compatibility: Don't crash on missing `window.navigator.mediaDevices` property

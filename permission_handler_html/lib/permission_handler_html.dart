@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:js_interop_unsafe';
-import 'dart:js_util' as js_util;
 
 import 'package:web/web.dart' as web;
 
@@ -12,10 +11,12 @@ import 'web_delegate.dart';
 
 /// Platform implementation of the permission_handler Flutter plugin.
 class WebPermissionHandler extends PermissionHandlerPlatform {
-  static final web.MediaDevices? _devices = 
-     js_util.hasProperty(web.window.navigator, 'mediaDevices') 
-          ? js_util.getProperty(web.window.navigator, 'mediaDevices') 
-          : null;
+  static final web.MediaDevices? _devices = (() {
+    if (!web.window.navigator.has('mediaDevices')) {
+      return null;
+    }
+    return web.window.navigator.mediaDevices;
+  })();
   static final web.Geolocation _geolocation = web.window.navigator.geolocation;
   static final web.Permissions? _htmlPermissions = (() {
     // Using unsafe interop to check availability of `permissions`.
