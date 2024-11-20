@@ -20,6 +20,8 @@ flutter:
         default_package: permission_handler_html
       windows:
         default_package: permission_handler_windows
+      macos:
+        default_package: permission_handler_apple
 
 dependencies:
   flutter:
