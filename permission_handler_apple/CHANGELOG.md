@@ -1,3 +1,7 @@
+## 9.4.6
+
+* Adds the ability to handle `CNAuthorizationStatusLimited` introduced in ios18
+
 ## 9.4.5
 
 * Fixes issue #1002, Xcode warning of the unresponsive of main thread when checking isLocationEnabled.
