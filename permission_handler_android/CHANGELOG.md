@@ -1,3 +1,7 @@
+## 12.0.14
+
+* On Android 12+, check for different Bluetooth declarations in the Android manifest.
+
 ## 12.0.13
 
 * Updates the Android min SDK to 19 (from 16).
