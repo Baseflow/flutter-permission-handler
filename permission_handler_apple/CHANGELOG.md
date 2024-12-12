@@ -1,3 +1,7 @@
+## 9.4.6
+
+* refactor: Avoid creating a new EKEventStore every time that the permission is requested
+
 ## 9.4.5
 
 * Fixes issue #1002, Xcode warning of the unresponsive of main thread when checking isLocationEnabled.
