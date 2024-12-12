@@ -9,6 +9,17 @@
 
 @implementation EventPermissionStrategy
 
++ (EKEventStore *)sharedEventStore {
+    static EKEventStore *sharedEventStore = nil;
+    static dispatch_once_t onceToken;
+    
+    dispatch_once(&onceToken, ^{
+        sharedEventStore = [[EKEventStore alloc] init];
+    });
+    
+    return sharedEventStore;
+}
+
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
     return [EventPermissionStrategy permissionStatus:permission];
 }
@@ -49,11 +60,9 @@
         #endif
     }
 
-    EKEventStore *eventStore = [[EKEventStore alloc] init];
-
     if (@available(iOS 17.0, *)) {
         if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess) {
-            [eventStore requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
+            [[EventPermissionStrategy sharedEventStore] requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     completionHandler(PermissionStatusGranted);
                 } else {
@@ -61,7 +70,7 @@
                 }
             }];
         } else if (permission == PermissionGroupCalendarWriteOnly) {
-            [eventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
+            [[EventPermissionStrategy sharedEventStore] requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     completionHandler(PermissionStatusGranted);
                 } else {
@@ -69,7 +78,7 @@
                 }
             }];
         } else if (permission == PermissionGroupReminders) {
-            [eventStore requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
+            [[EventPermissionStrategy sharedEventStore] requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
                 if (granted) {
                     completionHandler(PermissionStatusGranted);
                 } else {
@@ -80,7 +89,7 @@
     } else {
         EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
 
-        [eventStore requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
+        [[EventPermissionStrategy sharedEventStore] requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
             if (granted) {
                 completionHandler(PermissionStatusGranted);
             } else {
