@@ -92,4 +92,10 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   Future<LocationAccuracyStatus> getLocationAccuracy() {
     throw UnimplementedError('getLocationAccuracy() has not been implemented.');
   }
+
+  /// Request precise location access
+  Future<LocationAccuracyStatus> requestPreciseLocation() {
+    throw UnimplementedError(
+        'requestPreciseLocation() has not been implemented.');
+  }
 }

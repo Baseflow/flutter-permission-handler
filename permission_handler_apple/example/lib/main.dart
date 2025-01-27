@@ -152,9 +152,23 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void checkLocationAccuracy(BuildContext context) async {
+    final locationAccuracyStatus =
+        await _permissionHandler.getLocationAccuracy();
+    _showLocationAccuracySnackBar(context, locationAccuracyStatus);
+  }
+
+  void _showLocationAccuracySnackBar(
+      BuildContext context, LocationAccuracyStatus locationAccuracyStatus) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content:
-          Text((await _permissionHandler.getLocationAccuracy()).toString()),
+      content: Text(locationAccuracyStatus.toString()),
+      action: SnackBarAction(
+        label: 'Request',
+        onPressed: () async {
+          final locationAccuracyStatus =
+              await _permissionHandler.requestPreciseLocation();
+          _showLocationAccuracySnackBar(context, locationAccuracyStatus);
+        },
+      ),
     ));
   }
 

@@ -58,8 +58,12 @@
     } else if ([@"openAppSettings" isEqualToString:call.method]) {
         [PermissionManager openAppSettings:result];
     } else if ([@"getLocationAccuracy" isEqualToString:call.method]) {
+        // TODO: Implement getLocationAccuracy to return the actual location accuracy status
         result(@0);
-    }  else {
+    } else if ([@"requestPreciseLocation" isEqualToString:call.method]) {
+        // TODO: Implement requestPreciseLocation to request precise location access
+        result(@0);
+    } else {
         result(FlutterMethodNotImplemented);
     }
 }
