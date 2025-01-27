@@ -32,5 +32,10 @@ void main() {
 
       expect(integers.first, isA<int>());
     });
+
+    test('decodeLocationAccuracyStatus should return a LocationAccuracyStatus',
+        () {
+      expect(decodeLocationAccuracyStatus(0), LocationAccuracyStatus.reduced);
+    });
   });
 }
