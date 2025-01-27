@@ -38,3 +38,28 @@ extension LocationAccuracyStatusValue on LocationAccuracyStatus {
     ][value];
   }
 }
+
+/// Utility getter extensions for the [LocationAccuracyStatus] type.
+extension LocationAccuracyStatusGetters on LocationAccuracyStatus {
+  /// If the location accuracy is reduced.
+  bool get isReduced => this == LocationAccuracyStatus.reduced;
+
+  /// If the location accuracy is precise.
+  bool get isPrecise => this == LocationAccuracyStatus.precise;
+
+  /// If the location accuracy status is unknown.
+  bool get isUnknown => this == LocationAccuracyStatus.unknown;
+}
+
+/// Utility getter extensions for the `Future<LocationAccuracyStatus>` type.
+extension FutureLocationAccuracyStatusGetters
+    on Future<LocationAccuracyStatus> {
+  /// If the location accuracy is reduced.
+  Future<bool> get isReduced async => (await this).isReduced;
+
+  /// If the location accuracy is precise.
+  Future<bool> get isPrecise async => (await this).isPrecise;
+
+  /// If the location accuracy status is unknown.
+  Future<bool> get isUnknown async => (await this).isUnknown;
+}
