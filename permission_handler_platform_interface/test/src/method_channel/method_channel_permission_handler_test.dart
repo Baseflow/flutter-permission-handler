@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 import 'package:permission_handler_platform_interface/src/method_channel/method_channel_permission_handler.dart';
@@ -200,6 +201,64 @@ void main() {
           .shouldShowRequestPermissionRationale(mockPermissions.first);
 
       expect(shouldShowRationale, true);
+    });
+  });
+
+  group('getLocationAccuracy:', () {
+    final supportedPlatforms = [TargetPlatform.iOS];
+    tearDown(() {
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    group('Unsupported platform', () {
+      final unsupportedPlatforms = TargetPlatform.values
+          .where((element) => !supportedPlatforms.contains(element));
+      for (final platform in unsupportedPlatforms) {
+        test('Should return unknown accuracy on $platform', () async {
+          debugDefaultTargetPlatformOverride = platform;
+          // We mock the return of a precise location accuracy status
+          // since this platform does not support location accuracy,
+          // we expect the result to be unknown.
+          MethodChannelMock(
+            channelName: 'flutter.baseflow.com/permissions/methods',
+            method: 'getLocationAccuracy',
+            result: LocationAccuracyStatus.precise.value,
+          );
+
+          final accuracy =
+              await MethodChannelPermissionHandler().getLocationAccuracy();
+          expect(accuracy, LocationAccuracyStatus.unknown);
+        });
+      }
+    });
+
+    group('Supported Platform', () {
+      for (final platform in supportedPlatforms) {
+        test('Should return precise accuracy on $platform', () async {
+          debugDefaultTargetPlatformOverride = platform;
+          MethodChannelMock(
+            channelName: 'flutter.baseflow.com/permissions/methods',
+            method: 'getLocationAccuracy',
+            result: LocationAccuracyStatus.precise.value,
+          );
+
+          final accuracy =
+              await MethodChannelPermissionHandler().getLocationAccuracy();
+          expect(accuracy, LocationAccuracyStatus.precise);
+        });
+        test('Should return reduced accuracy on $platform', () async {
+          debugDefaultTargetPlatformOverride = platform;
+          MethodChannelMock(
+            channelName: 'flutter.baseflow.com/permissions/methods',
+            method: 'getLocationAccuracy',
+            result: LocationAccuracyStatus.reduced.value,
+          );
+
+          final accuracy =
+              await MethodChannelPermissionHandler().getLocationAccuracy();
+          expect(accuracy, LocationAccuracyStatus.reduced);
+        });
+      }
     });
   });
 }
