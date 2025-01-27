@@ -72,7 +72,7 @@ You must list the permission you want to use in your application:
 
       target.build_configurations.each do |config|
         # You can remove unused permissions here
-        # for more information: https://github.com/BaseflowIT/flutter-permission-handler/blob/master/permission_handler/ios/Classes/PermissionHandlerEnums.h
+        # for more information: https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
         # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
           '$(inherited)',
@@ -286,6 +286,10 @@ If your application needs access to Android's file system, it is possible to req
 ### Requesting `Permission.locationAlways` always returns "denied" on Android 10+ (API 29+). What can I do?
 
 Starting with Android 10, apps are required to first obtain permission to read the device's location in the foreground, before requesting to read the location in the background as well. When requesting the 'location always' permission directly, or when requesting both permissions at the same time, the system will ignore the request. So, instead of calling only `Permission.location.request()`, make sure to first call either `Permission.location.request()` or `Permission.locationWhenInUse.request()`, and obtain permission to read the GPS. Once you obtain this permission, you can call `Permission.locationAlways.request()`. This will present the user with the option to update the settings so the location can always be read in the background. For more information, visit the [Android documentation on requesting location permissions](https://developer.android.com/training/location/permissions#request-only-foreground).
+
+### onRequestPermissionsResult is called without results. What can I do?
+
+It is probably caused by a difference between completeSdkVersion and targetSdkVersion. It can be depending on the flutter version that you use. `targetSdkVersion = flutter.targetSdkVersion` in the app/build.gradle indicates that the targetSdkVersion is flutter version dependant. For more information: [issue 1222](https://github.com/Baseflow/flutter-permission-handler/issues/1222)
 
 ### Checking or requesting a permission terminates the application on iOS. What can I do?
 

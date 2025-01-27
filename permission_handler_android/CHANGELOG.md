@@ -1,3 +1,28 @@
+## 12.0.13
+
+* Updates the Android min SDK to 19 (from 16).
+* Migrates example app away from deprecated imperative apply in gradle (see: https://docs.flutter.dev/release/breaking-changes/flutter-gradle-plugin-apply).
+
+## 12.0.12
+
+* Fixes permission status returned from `Permission.photos.request()` or `Permission.videos.request()` when limited access selected
+
+## 12.0.11
+
+* Adds `TargetApi` annotation to `getManifestNames` method in `PermissionUtils.java`.
+
+## 12.0.10
+
+* Fixes a bug that causes a `NullPointerException` when the application is restarted after being killed by Android during the request of special permissions (like, `Permission.ignoreBatteryOptimizations`, `Permission.systemAlertWindow`, `Permission.accessNotificationPolicy`, `Permission.scheduleExactAlarm` and `Permission.manageExternalStorage`).
+
+## 12.0.9
+
+* Makes the status returned when requesting the READ_MEDIA_VISUAL_USER_SELECTED permission more accurate.
+
+## 12.0.8
+
+* Adds support for limited photo and video permission on Android. 
+
 ## 12.0.7
 
 * Removes additional Android v1 embedding class reference.
@@ -5,7 +30,6 @@
 ## 12.0.6
 
 * Removes deprecated support for Android V1 embedding as support will be removed from Flutter (see [flutter/flutter#144726](https://github.com/flutter/flutter/pull/144726)).
-
 
 ## 12.0.5
 

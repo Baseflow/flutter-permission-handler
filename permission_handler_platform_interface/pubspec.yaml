@@ -3,7 +3,7 @@ description: A common platform interface for the permission_handler plugin.
 homepage: https://github.com/baseflow/flutter-permission-handler/tree/master/permission_handler_platform_interface
 # NOTE: We strongly prefer non-breaking changes, even at the expense of a
 # less-clean API. See https://flutter.dev/go/platform-interface-breaking-changes
-version: 4.2.1
+version: 4.2.3
 
 dependencies:
   flutter:

@@ -1,5 +1,7 @@
-import 'dart:html' as html;
 import 'dart:async';
+import 'dart:js_interop';
+
+import 'package:web/web.dart' as web;
 
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
@@ -8,21 +10,21 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 class WebDelegate {
   /// Constructs a WebDelegate.
   WebDelegate(
-    html.MediaDevices? devices,
-    html.Geolocation? geolocation,
-    html.Permissions? permissions,
+    web.MediaDevices? devices,
+    web.Geolocation? geolocation,
+    web.Permissions? permissions,
   )   : _devices = devices,
         _geolocation = geolocation,
         _htmlPermissions = permissions;
 
   /// The html media devices object used to request camera and microphone permissions.
-  final html.MediaDevices? _devices;
+  final web.MediaDevices? _devices;
 
   /// The html geolocation object used to request location permission.
-  final html.Geolocation? _geolocation;
+  final web.Geolocation? _geolocation;
 
   /// The html permissions object used to check permission status.
-  final html.Permissions? _htmlPermissions;
+  final web.Permissions? _htmlPermissions;
 
   /// The permission name to request access to the camera.
   static const _microphonePermissionName = 'microphone';
@@ -58,8 +60,11 @@ class WebDelegate {
     }
   }
 
-  Future<PermissionStatus> _permissionStatusState(String webPermissionName, html.Permissions? permissions) async {
-    final webPermissionStatus = await permissions?.query({'name': webPermissionName});
+  Future<PermissionStatus> _permissionStatusState(
+      String webPermissionName, web.Permissions? permissions) async {
+    final webPermissionStatus = await permissions
+        ?.query(_PermissionDescriptor(name: webPermissionName))
+        .toDart;
     return _toPermissionStatus(webPermissionStatus?.state);
   }
 
@@ -69,7 +74,9 @@ class WebDelegate {
     }
 
     try {
-      html.MediaStream mediaStream = await _devices!.getUserMedia({'audio': true});
+      web.MediaStream? mediaStream = await _devices
+          .getUserMedia(web.MediaStreamConstraints(audio: true.toJS))
+          .toDart;
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
@@ -78,13 +85,13 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream.active ?? false) {
-        final audioTracks = mediaStream.getAudioTracks();
+      if (mediaStream.active) {
+        final audioTracks = mediaStream.getAudioTracks().toDart;
         if (audioTracks.isNotEmpty) {
           audioTracks[0].stop();
         }
       }
-    } on html.DomException {
+    } on web.DOMException {
       return false;
     }
 
@@ -97,7 +104,9 @@ class WebDelegate {
     }
 
     try {
-      html.MediaStream mediaStream = await _devices!.getUserMedia({'video': true});
+      web.MediaStream? mediaStream = await _devices
+          .getUserMedia(web.MediaStreamConstraints(video: true.toJS))
+          .toDart;
 
       // In browsers, calling [getUserMedia] will start the recording
       // automatically right after. This is undesired behavior as
@@ -106,13 +115,13 @@ class WebDelegate {
       // The manual stop action is then needed here for to stop the automatic
       // recording.
 
-      if (mediaStream.active ?? false) {
-        final videoTracks = mediaStream.getVideoTracks();
+      if (mediaStream.active) {
+        final videoTracks = mediaStream.getVideoTracks().toDart;
         if (videoTracks.isNotEmpty) {
           videoTracks[0].stop();
         }
       }
-    } on html.DomException {
+    } on web.DOMException {
       return false;
     }
 
@@ -120,24 +129,37 @@ class WebDelegate {
   }
 
   Future<bool> _requestNotificationPermission() async {
-    return html.Notification.requestPermission().then((permission) => permission == "granted");
+    return web.Notification.requestPermission()
+        .toDart
+        .then((permission) => (permission == "granted".toJS));
   }
 
   Future<bool> _requestLocationPermission() async {
+    Completer<bool> completer = Completer<bool>();
     try {
-      return await _geolocation?.getCurrentPosition().then((value) => true) ?? false;
-    } on html.PositionError {
-      return false;
+      _geolocation?.getCurrentPosition(
+        (JSAny _) {
+          completer.complete(true);
+        }.toJS,
+        (JSAny _) {
+          completer.complete(false);
+        }.toJS,
+      );
+    } catch (_) {
+      completer.complete(false);
     }
+    return completer.future;
   }
 
-  Future<PermissionStatus> _requestSingularPermission(Permission permission) async {
+  Future<PermissionStatus> _requestSingularPermission(
+      Permission permission) async {
     bool permissionGranted = switch (permission) {
       Permission.microphone => await _requestMicrophonePermission(),
       Permission.camera => await _requestCameraPermission(),
       Permission.notification => await _requestNotificationPermission(),
       Permission.location => await _requestLocationPermission(),
-      _ => throw UnsupportedError('The ${permission.toString()} permission is currently not supported on web.')
+      _ => throw UnsupportedError(
+          'The ${permission.toString()} permission is currently not supported on web.')
     };
 
     if (!permissionGranted) {
@@ -150,12 +172,14 @@ class WebDelegate {
   /// they have not already been granted before.
   ///
   /// Returns a [Map] containing the status per requested [Permission].
-  Future<Map<Permission, PermissionStatus>> requestPermissions(List<Permission> permissions) async {
+  Future<Map<Permission, PermissionStatus>> requestPermissions(
+      List<Permission> permissions) async {
     final Map<Permission, PermissionStatus> permissionStatusMap = {};
 
     for (final permission in permissions) {
       try {
-        permissionStatusMap[permission] = await _requestSingularPermission(permission);
+        permissionStatusMap[permission] =
+            await _requestSingularPermission(permission);
       } on UnimplementedError {
         rethrow;
       }
@@ -203,4 +227,12 @@ class WebDelegate {
       rethrow;
     }
   }
+}
+
+// copied from https://github.com/dart-lang/web/commit/7604578eb538c471d438608673c037121d95dba5#diff-6f4c7956b6e25b547b16fc561e54d5e7d520d2c79a59ace4438c60913cc2b1a2L35-L40
+extension type _PermissionDescriptor._(JSObject _) implements JSObject {
+  external factory _PermissionDescriptor({required String name});
+
+  external set name(String value);
+  external String get name;
 }
