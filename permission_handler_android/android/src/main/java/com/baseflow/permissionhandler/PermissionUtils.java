@@ -95,6 +95,8 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_AUDIO;
             case Manifest.permission.SCHEDULE_EXACT_ALARM:
                 return PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
+            case Manifest.permission.USE_FULL_SCREEN_INTENT:
+                return PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
         }
@@ -353,6 +355,11 @@ public class PermissionUtils {
                 // The SCHEDULE_EXACT_ALARM permission is introduced in Android S, before Android 31 it should alway return Granted
                 if (hasPermissionInManifest(context, permissionNames, Manifest.permission.SCHEDULE_EXACT_ALARM))
                     permissionNames.add(Manifest.permission.SCHEDULE_EXACT_ALARM);
+                break;
+            case PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT:
+                // The USE_FULL_SCREEN_INTENT permission is introduced in Android UPSIDE_DOWN_CAKE, before Android 34 it should alway return Granted
+                if (hasPermissionInManifest(context, permissionNames, Manifest.permission.USE_FULL_SCREEN_INTENT))
+                    permissionNames.add(Manifest.permission.USE_FULL_SCREEN_INTENT);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:
