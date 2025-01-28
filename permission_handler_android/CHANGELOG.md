@@ -1,3 +1,7 @@
+## 12.0.14
+
+* Adds support for USE_FULL_SCREEN_INTENT permission check on Android 14+
+
 ## 12.0.13
 
 * Updates the Android min SDK to 19 (from 16).
@@ -21,7 +25,7 @@
 
 ## 12.0.8
 
-* Adds support for limited photo and video permission on Android. 
+* Adds support for limited photo and video permission on Android.
 
 ## 12.0.7
 
