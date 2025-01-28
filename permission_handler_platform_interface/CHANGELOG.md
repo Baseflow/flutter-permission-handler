@@ -1,3 +1,7 @@
+## 4.2.4
+
+* Adds support for USE_FULL_SCREEN_INTENT permission check on Android 14+
+
 ## 4.2.3
 
 * Fixes class name references in the API documentation.
