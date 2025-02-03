@@ -1,6 +1,9 @@
+// ignore_for_file: no_logic_in_create_state
+
 import 'dart:io';
 
 import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -19,10 +22,13 @@ final MaterialColor themeMaterialColor =
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
+  /// A Flutter application demonstrating the functionality of this plugin
+  const PermissionHandlerWidget({Key? key}) : super(key: key);
+
   /// Create a page containing the functionality of this plugin
   static ExamplePage createPage() {
     return ExamplePage(
-        Icons.location_on, (context) => PermissionHandlerWidget());
+        Icons.location_on, (context) => const PermissionHandlerWidget());
   }
 
   @override
@@ -76,7 +82,7 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
 /// Permission widget containing information about the passed [Permission]
 class PermissionWidget extends StatefulWidget {
   /// Constructs a [PermissionWidget] for the supplied [Permission]
-  const PermissionWidget(this._permission);
+  const PermissionWidget(this._permission, {Key? key}) : super(key: key);
 
   final Permission _permission;
 
@@ -154,9 +160,11 @@ class _PermissionState extends State<PermissionWidget> {
     final status = await permission.request();
 
     setState(() {
-      print(status);
-      _permissionStatus = status;
-      print(_permissionStatus);
+      if (kDebugMode) {
+        print(status);
+        _permissionStatus = status;
+        print(_permissionStatus);
+      }
     });
   }
 }
