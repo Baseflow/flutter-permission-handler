@@ -123,7 +123,7 @@ class _PermissionState extends State<PermissionWidget> {
               ),
               onPressed: () {
                 checkServiceStatus(
-                    context, _permission as PermissionWithService);
+                    context, _permission);
               })
           : null,
       onTap: () {
