@@ -13,6 +13,7 @@ GeneratedPluginRegistrant.h
 GeneratedPluginRegistrant.m
 
 .generated/
+permission_handler_apple/.build
 
 *.pbxuser
 *.mode1v3
