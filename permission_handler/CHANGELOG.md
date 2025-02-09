@@ -1,3 +1,7 @@
+## 11.4.1
+
+* Add `getLocationAccuracy` and `requestTemporaryFullAccuracy` methods. Implementation is done only for iOS.
+
 ## 11.3.1
 
 * Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.
