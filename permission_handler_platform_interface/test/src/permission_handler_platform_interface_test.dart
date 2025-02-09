@@ -99,12 +99,12 @@ void main() {
 
     test(
         // ignore: lines_longer_than_80_chars
-        'Default implementation of requestPreciseLocation should throw unimplemented error',
+        'Default implementation of requestTemporaryFullAccuracy should throw unimplemented error',
         () {
       final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
 
       expect(() {
-        permissionHandlerPlatform.requestPreciseLocation();
+        permissionHandlerPlatform.requestTemporaryFullAccuracy('any');
       }, throwsUnimplementedError);
     });
   });

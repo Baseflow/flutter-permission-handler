@@ -180,3 +180,9 @@ typedef NS_ENUM(int, ServiceStatus) {
     ServiceStatusEnabled,
     ServiceStatusNotApplicable,
 };
+
+typedef NS_ENUM(int, LocationAccuracy) {
+    LocationAccuracyReduced = 0,
+    LocationAccuracyPrecise = 1,
+    LocationAccuracyUnknown = 2
+};

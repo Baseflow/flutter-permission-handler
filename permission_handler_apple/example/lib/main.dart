@@ -164,8 +164,8 @@ class _PermissionState extends State<PermissionWidget> {
       action: SnackBarAction(
         label: 'Request',
         onPressed: () async {
-          final locationAccuracyStatus =
-              await _permissionHandler.requestPreciseLocation();
+          final locationAccuracyStatus = await _permissionHandler
+              .requestTemporaryFullAccuracy('YourPurposeKey');
           _showLocationAccuracySnackBar(context, locationAccuracyStatus);
         },
       ),

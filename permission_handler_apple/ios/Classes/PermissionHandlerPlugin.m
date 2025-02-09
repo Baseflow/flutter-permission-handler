@@ -1,8 +1,9 @@
 #import "PermissionHandlerPlugin.h"
-
+#import "LocationAccuracyHandler.h"
 
 @implementation PermissionHandlerPlugin {
     PermissionManager *_Nonnull _permissionManager;
+    LocationAccuracyHandler *_Nonnull _locationAccuracyHandler;
     _Nullable FlutterResult _methodResult;
 }
 
@@ -12,6 +13,7 @@
         _permissionManager = permissionManager;
     }
     
+    _locationAccuracyHandler = [[LocationAccuracyHandler alloc] init];
     return self;
 }
 
@@ -58,11 +60,12 @@
     } else if ([@"openAppSettings" isEqualToString:call.method]) {
         [PermissionManager openAppSettings:result];
     } else if ([@"getLocationAccuracy" isEqualToString:call.method]) {
-        // TODO: Implement getLocationAccuracy to return the actual location accuracy status
-        result(@0);
-    } else if ([@"requestPreciseLocation" isEqualToString:call.method]) {
-        // TODO: Implement requestPreciseLocation to request precise location access
-        result(@0);
+        LocationAccuracy locationAccuracy = [self->_locationAccuracyHandler getLocationAccuracy];
+        
+        result([Codec encodeLocationAccuracy:locationAccuracy]);
+    } else if ([@"requestTemporaryFullAccuracy" isEqualToString:call.method]) {
+        NSString* purposeKey = (NSString *)call.arguments[@"purposeKey"];
+        [self->_locationAccuracyHandler requestTemporaryFullAccuracyWithResult:result purposeKey:purposeKey];
     } else {
         result(FlutterMethodNotImplemented);
     }

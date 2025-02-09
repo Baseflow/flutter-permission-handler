@@ -113,13 +113,18 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   }
 
   @override
-  Future<LocationAccuracyStatus> requestPreciseLocation() async {
+  Future<LocationAccuracyStatus> requestTemporaryFullAccuracy(
+      String purposeKey) async {
     if (defaultTargetPlatform != TargetPlatform.iOS) {
       return LocationAccuracyStatus.unknown;
     }
 
-    final locationAccuracyStatus =
-        await _methodChannel.invokeMethod('requestPreciseLocation');
+    final locationAccuracyStatus = await _methodChannel.invokeMethod(
+      'requestTemporaryFullAccuracy',
+      <String, dynamic>{
+        'purposeKey': purposeKey,
+      },
+    );
 
     return decodeLocationAccuracyStatus(locationAccuracyStatus);
   }

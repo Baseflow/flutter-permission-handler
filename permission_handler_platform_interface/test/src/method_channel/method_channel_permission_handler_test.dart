@@ -211,11 +211,11 @@ void main() {
             MethodChannelPermissionHandler().getLocationAccuracy());
   });
 
-  group('requestPreciseLocation:', () {
+  group('requestTemporaryFullAccuracy:', () {
     _testLocationAccuracyMethod(
-        methodName: 'requestPreciseLocation',
-        methodUnderTest: () =>
-            MethodChannelPermissionHandler().requestPreciseLocation());
+        methodName: 'requestTemporaryFullAccuracy',
+        methodUnderTest: () => MethodChannelPermissionHandler()
+            .requestTemporaryFullAccuracy('test'));
   });
 }
 

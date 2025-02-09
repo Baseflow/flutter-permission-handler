@@ -34,9 +34,7 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 }
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    PermissionStatus status = [LocationPermissionStrategy permissionStatus:permission];
-    return status;
-    // return self.accuracyStatus;
+    return [LocationPermissionStrategy permissionStatus:permission];
 }
     
 
@@ -203,27 +201,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
                                determinePermissionStatus:permission authorizationStatus:authorizationStatus];
     
     return status;
-}
-
-- (PermissionStatus) accuracyStatus {
-#if TARGET_OS_OSX
-  return PermissionStatusGranted;
-#else
-  if (@available(iOS 14, macOS 10.16, *)) {
-      switch (_locationManager.accuracyAuthorization) {
-      case CLAccuracyAuthorizationFullAccuracy:
-        return PermissionStatusGranted;
-      case CLAccuracyAuthorizationReducedAccuracy:
-        return PermissionStatusDenied;
-      default:
-        // Reduced location accuracy is the default on iOS 14+ and macOS 11+.
-        return PermissionStatusDenied;
-    }
-  } else {
-    // Approximate location is not available, return precise location.
-    return PermissionStatusGranted;
-  }
-#endif
 }
 
 
