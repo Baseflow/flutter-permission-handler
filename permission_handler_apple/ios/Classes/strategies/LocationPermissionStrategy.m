@@ -11,8 +11,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 
 @interface LocationPermissionStrategy ()
 - (void) receiveActivityNotification:(NSNotification *)notification;
-- (void)requestLocationPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler;
-- (void)requestTemporaryFullAccuracy:(NSString * _Nullable)purposeKey completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler;
 @end
 
 @implementation LocationPermissionStrategy {
@@ -36,7 +34,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
     return [LocationPermissionStrategy permissionStatus:permission];
 }
-    
 
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
     dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -49,11 +46,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
-        // [self requestTemporaryFullAccuracy:@"YourPurposeKey" completionHandler: completionHandler errorHandler:errorHandler];
-    [self requestLocationPermission:permission completionHandler:completionHandler errorHandler:errorHandler];
-}
-
-- (void)requestLocationPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse && permission == PermissionGroupLocationAlways) {
         BOOL alreadyRequested = [[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]; // check if already requested the permantent permission
@@ -113,29 +105,6 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
             return;
         }
     }
-}
-
-- (void)requestTemporaryFullAccuracy:(NSString * _Nullable)purposeKey completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
-  if ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSLocationTemporaryUsageDescriptionDictionary"] == nil) {
-      return errorHandler(@"MISSING_USAGE_DESCRIPTION",@"The temporary accuracy dictionary key is not set in the infop.list");
-  }
-    
-  #if TARGET_OS_OSX
-    return completionHandler(PermissionStatusGranted)
-  #else
-    if (@available(iOS 14.0, macOS 10.16, *)) {
-      [_locationManager requestTemporaryFullAccuracyAuthorizationWithPurposeKey:purposeKey
-                                                                         completion:^(NSError *_Nullable error) {
-        if ([self->_locationManager accuracyAuthorization] == CLAccuracyAuthorizationFullAccuracy) {
-          return completionHandler(PermissionStatusGranted);
-        } else {
-            return completionHandler(PermissionStatusDenied);
-        }
-      }];
-    } else {
-      return completionHandler(PermissionStatusGranted);
-    }
-  #endif
 }
 
 - (void) receiveActivityNotification:(NSNotification *) notification {

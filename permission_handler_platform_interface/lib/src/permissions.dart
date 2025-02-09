@@ -411,7 +411,7 @@ class Permission {
     'calendarWriteOnly',
     'calendarFullAccess',
     'assistant',
-    'backgroundRefresh'
+    'backgroundRefresh',
   ];
 
   @override
