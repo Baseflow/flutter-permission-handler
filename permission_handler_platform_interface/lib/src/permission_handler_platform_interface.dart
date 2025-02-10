@@ -93,7 +93,18 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
     throw UnimplementedError('getLocationAccuracy() has not been implemented.');
   }
 
-  /// Request precise location access
+  /// Requests temporary precise location when the user only gave permission
+  /// for approximate location (iOS 14+ only)
+  ///
+  /// When using this method, the value of the required property `purposeKey`
+  /// should match the <key> value given in the
+  /// `NSLocationTemporaryUsageDescription` dictionary in the
+  /// Info.plist.
+  ///
+  /// Throws a [PermissionDefinitionsNotFoundException] when the necessary key
+  /// in the Info.plist is not added
+  /// Returns [LocationAccuracyStatus.precise] when using iOS 13 or below or
+  /// using other platforms.
   Future<LocationAccuracyStatus> requestTemporaryFullAccuracy(
       String purposeKey) {
     throw UnimplementedError(
