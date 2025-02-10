@@ -1,3 +1,7 @@
+## 4.3.3
+
+* Add `getLocationAccuracy` and `requestTemporaryFullAccuracy` methods and `LocationAccuracyStatus` enum.
+
 ## 4.2.3
 
 * Fixes class name references in the API documentation.

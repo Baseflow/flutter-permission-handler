@@ -1,3 +1,7 @@
+## 9.5.5
+
+* Implement `getLocationAccuracy` and `requestTemporaryFullAccuracy` methods.
+
 ## 9.4.5
 
 * Fixes issue #1002, Xcode warning of the unresponsive of main thread when checking isLocationEnabled.
