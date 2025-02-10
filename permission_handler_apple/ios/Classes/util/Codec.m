@@ -26,4 +26,8 @@
     return [[NSNumber alloc] initWithInt:serviceStatus];
 }
 
++ (NSNumber *_Nullable)encodeLocationAccuracy:(enum LocationAccuracy)locationAccuracy {
+    return [[NSNumber alloc] initWithInt:locationAccuracy];
+}
+
 @end

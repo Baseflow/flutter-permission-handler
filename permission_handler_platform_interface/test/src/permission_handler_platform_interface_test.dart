@@ -85,6 +85,28 @@ void main() {
             Permission.accessMediaLocation);
       }, throwsUnimplementedError);
     });
+
+    test(
+        // ignore: lines_longer_than_80_chars
+        'Default implementation of getLocationAccuracy should throw unimplemented error',
+        () {
+      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+
+      expect(() {
+        permissionHandlerPlatform.getLocationAccuracy();
+      }, throwsUnimplementedError);
+    });
+
+    test(
+        // ignore: lines_longer_than_80_chars
+        'Default implementation of requestTemporaryFullAccuracy should throw unimplemented error',
+        () {
+      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+
+      expect(() {
+        permissionHandlerPlatform.requestTemporaryFullAccuracy('any');
+      }, throwsUnimplementedError);
+    });
   });
 }
 

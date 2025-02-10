@@ -47,7 +47,7 @@ post_install do |installer|
 
         ## dart: [PermissionGroup.calendarWriteOnly, PermissionGroup.calendar (until iOS 16)]
         'PERMISSION_EVENTS=1',
-        
+
         ## dart: [PermissionGroup.calendarFullAccess, PermissionGroup.calendar (from iOS 17)]
        'PERMISSION_EVENTS_FULL_ACCESS=1',
 

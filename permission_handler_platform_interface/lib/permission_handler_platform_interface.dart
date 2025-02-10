@@ -9,3 +9,4 @@ part 'src/permission_handler_platform_interface.dart';
 part 'src/permission_status.dart';
 part 'src/permissions.dart';
 part 'src/service_status.dart';
+part 'src/location_accuracy_status.dart';

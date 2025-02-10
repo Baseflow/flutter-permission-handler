@@ -14,4 +14,6 @@
 + (NSNumber *_Nullable)encodePermissionStatus:(enum PermissionStatus)permissionStatus;
 
 + (NSNumber *_Nullable)encodeServiceStatus:(enum ServiceStatus)serviceStatus;
+
++ (NSNumber *_Nullable)encodeLocationAccuracy:(enum LocationAccuracy)locationAccuracy;
 @end
