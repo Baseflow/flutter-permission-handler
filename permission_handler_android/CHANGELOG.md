@@ -1,3 +1,7 @@
+## 12.0.14
+
+* Updates the Android compileSDK and targetSDK from 34 to 35
+
 ## 12.0.13
 
 * Updates the Android min SDK to 19 (from 16).
