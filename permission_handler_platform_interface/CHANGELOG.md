@@ -1,3 +1,6 @@
+## 4.2.4
+* Fixes an issue where the request for notification permission returns `permanentlyDenied` when the iOS app is moved to the background while the permission dialog is open.
+
 ## 4.2.3
 
 * Fixes class name references in the API documentation.

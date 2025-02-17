@@ -22,11 +22,11 @@
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler  errorHandler:(PermissionErrorHandler)errorHandler {
   PermissionStatus status = [self checkPermissionStatus:permission];
   if (@available(iOS 12.0, *)) {
-    if (status != PermissionStatusDenied && status != PermissionStatusProvisional) {
+    if (status != PermissionStatusDenied && status != PermissionStatusProvisional && status != PermissionStatusUndetermined) {
       completionHandler(status);
       return;
     }
-  } else if (status != PermissionStatusDenied) {
+  } else if (status != PermissionStatusDenied && status != PermissionStatusUndetermined) {
     completionHandler(status);
     return;
   }
@@ -38,12 +38,18 @@
       authorizationOptions += UNAuthorizationOptionAlert;
       authorizationOptions += UNAuthorizationOptionBadge;
       [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
-        if (error != nil || !granted) {
-          completionHandler(PermissionStatusPermanentlyDenied);
-          return;
-        }
-
         dispatch_async(dispatch_get_main_queue(), ^{
+            if (error == nil && !granted) {
+              UIApplicationState state = [UIApplication sharedApplication].applicationState;
+              if (state != UIApplicationStateActive) {
+                completionHandler(PermissionStatusUndetermined);
+                return;
+              }
+            }
+            if (error != nil || !granted) {
+              completionHandler(PermissionStatusPermanentlyDenied);
+              return;
+            }
             [[UIApplication sharedApplication] registerForRemoteNotifications];
             completionHandler(PermissionStatusGranted);
         });
@@ -73,7 +79,7 @@
       } else if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
         permissionStatus = PermissionStatusPermanentlyDenied;
       } else if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
-        permissionStatus = PermissionStatusDenied;
+        permissionStatus = PermissionStatusUndetermined;
       }
       dispatch_semaphore_signal(sem);
     }];
