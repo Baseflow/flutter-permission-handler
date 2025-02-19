@@ -1,3 +1,7 @@
+## 12.0.14
+
+* fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
+
 ## 12.0.13
 
 * Updates the Android min SDK to 19 (from 16).
