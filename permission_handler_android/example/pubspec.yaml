@@ -2,12 +2,13 @@ name: permission_handler_android_example
 description: Demonstrates how to use the permission_handler_android plugin.
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ^3.7.0
 
 dependencies:
   baseflow_plugin_template: ^2.1.2
   flutter:
     sdk: flutter
+  permission_handler_platform_interface: ^4.2.0
 
 dev_dependencies:
   flutter_test:
