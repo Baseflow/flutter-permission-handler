@@ -22,7 +22,11 @@ jobs:
     name: App facing package
 
     # The type of runner that the job will run on
-    runs-on: macos-latest
+    #
+    # TODO(mvanbeusekom): Manually set to macOS 15 to support Xcode 16 and iOS 18 SDKs.
+    # Currently `macos-latest` is based on macOS 14 and doesn't support iOS 18 SDK. This
+    # should be moved back to `macos-latest` when GitHub Actions images are updated.
+    runs-on: macos-15 
 
     env:
       source-directory: ./permission_handler
@@ -32,13 +36,6 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
-      # Override current Xcode version with version 15.0.1.
-      #
-      # TODO(mvanbeusekom): Remove when the macos-latest image supports version 15.0.1
-      # out of the box (see https://github.com/actions/runner-images/blob/main/README.md).
-      - name: Select Xcode version
-        run: sudo xcode-select -s '/Applications/Xcode_15.0.1.app/Contents/Developer'
 
       # Make sure JAVA version 17 is installed on build agent.
       - uses: actions/setup-java@v3
