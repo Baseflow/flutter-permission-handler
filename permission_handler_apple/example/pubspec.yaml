@@ -2,7 +2,7 @@ name: permission_handler_apple_example
 description: Demonstrates how to use the permission_handler_apple plugin.
 
 environment:
-  sdk: ">=2.15.0 <3.0.0"
+  sdk: ^3.7.0
 
 dependencies:
   baseflow_plugin_template: ^2.1.1
