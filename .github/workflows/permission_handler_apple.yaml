@@ -22,11 +22,7 @@ jobs:
     name: Apple platform package
 
     # The type of runner that the job will run on
-    #
-    # TODO(mvanbeusekom): Manually set to macOS 13 to support Xcode 15 and iOS 17 SDKs.
-    # Currently `macos-latest` is based on macOS 12 and doesn't support iOS 17 SDK. This
-    # should be moved back to `macos-latest` when GitHub Actions images are updated.
-    runs-on: macos-13
+    runs-on: macos-latest
 
     env:
       source-directory: ./permission_handler_apple
