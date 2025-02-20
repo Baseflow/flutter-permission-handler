@@ -1,3 +1,8 @@
+## 11.4.0
+
+* Updates dependencies to latest versions.
+* Migrates away from deprecated imperative Flutter gradle settings.
+
 ## 11.3.1
 
 * Documents the use of the `PERMISSION_LOCAITON_WHENINUSE` macro on iOS.

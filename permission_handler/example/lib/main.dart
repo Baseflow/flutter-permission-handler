@@ -34,7 +34,7 @@ class PermissionHandlerWidget extends StatefulWidget {
   }
 
   @override
-  _PermissionHandlerWidgetState createState() =>
+  State<PermissionHandlerWidget> createState() =>
       _PermissionHandlerWidgetState();
 }
 
@@ -92,7 +92,7 @@ class PermissionWidget extends StatefulWidget {
   final Permission permission;
 
   @override
-  _PermissionState createState() => _PermissionState();
+  State<PermissionWidget> createState() => _PermissionState();
 }
 
 class _PermissionState extends State<PermissionWidget> {
