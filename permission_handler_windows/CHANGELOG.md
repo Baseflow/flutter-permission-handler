@@ -1,3 +1,6 @@
+## 0.2.2
+* Fixed crashing issue on early windows 10 machines (https://github.com/Baseflow/flutter-permission-handler/issues/1388)
+
 ## 0.2.1
 
 * Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS and macOS).
