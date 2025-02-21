@@ -1,5 +1,8 @@
-## 9.4.6
+## 9.4.7
 * Adds `PermissionStatus.undetermined` to handle notification permission when the iOS app is moved to the background while the permission dialog is open, previously is returning `PermissionStatus.permanentlyDenied`.
+
+## 9.4.6
+* Adds the ability to handle `CNAuthorizationStatusLimited` introduced in ios18
 
 ## 9.4.5
 

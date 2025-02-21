@@ -6,15 +6,15 @@ name: permission_handler_apple
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-    - 'permission_handler_apple/**'
-    - '.github/workflows/permission_handler_apple.yaml'
+      - "permission_handler_apple/**"
+      - ".github/workflows/permission_handler_apple.yaml"
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-    - 'permission_handler_apple/**'
-    - '.github/workflows/permission_handler_apple.yaml'
+      - "permission_handler_apple/**"
+      - ".github/workflows/permission_handler_apple.yaml"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -23,31 +23,24 @@ jobs:
 
     # The type of runner that the job will run on
     #
-    # TODO(mvanbeusekom): Manually set to macOS 13 to support Xcode 15 and iOS 17 SDKs.
-    # Currently `macos-latest` is based on macOS 12 and doesn't support iOS 17 SDK. This
+    # TODO(mvanbeusekom): Manually set to macOS 15 to support Xcode 16 and iOS 18 SDKs.
+    # Currently `macos-latest` is based on macOS 14 and doesn't support iOS 18 SDK. This
     # should be moved back to `macos-latest` when GitHub Actions images are updated.
-    runs-on: macos-13
+    runs-on: macos-15
 
     env:
       source-directory: ./permission_handler_apple
-      example-directory: ./permission_handler_apple/example 
+      example-directory: ./permission_handler_apple/example
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      # Override current Xcode version with version 15.0.1.
-      #
-      # TODO(mvanbeusekom): Remove when the macos-latest image supports version 15.0.1
-      # out of the box (see https://github.com/actions/runner-images/blob/main/README.md).
-      - name: Select Xcode version
-        run: sudo xcode-select -s '/Applications/Xcode_15.0.1.app/Contents/Developer'
-      
       # Make sure the stable version of Flutter is available
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
 
       # Download all Flutter packages
       - name: Download dependencies
@@ -68,4 +61,3 @@ jobs:
       - name: Run iOS build
         run: flutter build ios --no-codesign --release
         working-directory: ${{env.example-directory}}
-        
