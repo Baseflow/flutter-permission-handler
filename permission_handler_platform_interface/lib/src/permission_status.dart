@@ -1,4 +1,4 @@
-part of permission_handler_platform_interface;
+part of '../permission_handler_platform_interface.dart';
 
 /// Defines the state of a [Permission].
 enum PermissionStatus {
@@ -60,8 +60,6 @@ extension PermissionStatusValue on PermissionStatus {
         return 4;
       case PermissionStatus.provisional:
         return 5;
-      default:
-        throw UnimplementedError();
     }
   }
 

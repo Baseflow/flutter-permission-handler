@@ -1,4 +1,4 @@
-part of permission_handler_platform_interface;
+part of '../permission_handler_platform_interface.dart';
 
 /// Defines the different states a service can be in.
 enum ServiceStatus {
@@ -24,8 +24,6 @@ extension ServiceStatusValue on ServiceStatus {
         return 1;
       case ServiceStatus.notApplicable:
         return 2;
-      default:
-        throw UnimplementedError();
     }
   }
 

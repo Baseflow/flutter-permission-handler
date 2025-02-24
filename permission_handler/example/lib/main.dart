@@ -5,28 +5,36 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
-  runApp(BaseflowPluginExample(
+  runApp(
+    BaseflowPluginExample(
       pluginName: 'Permission Handler',
       githubURL: 'https://github.com/Baseflow/flutter-permission-handler',
       pubDevURL: 'https://pub.dev/packages/permission_handler',
-      pages: [PermissionHandlerWidget.createPage()]));
+      pages: [PermissionHandlerWidget.createPage()],
+    ),
+  );
 }
 
 ///Defines the main theme color
 final MaterialColor themeMaterialColor =
     BaseflowPluginExample.createMaterialColor(
-        const Color.fromRGBO(48, 49, 60, 1));
+      const Color.fromRGBO(48, 49, 60, 1),
+    );
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
+  const PermissionHandlerWidget._();
+
   /// Create a page containing the functionality of this plugin
   static ExamplePage createPage() {
     return ExamplePage(
-        Icons.location_on, (context) => PermissionHandlerWidget());
+      Icons.location_on,
+      (context) => const PermissionHandlerWidget._(),
+    );
   }
 
   @override
-  _PermissionHandlerWidgetState createState() =>
+  State<PermissionHandlerWidget> createState() =>
       _PermissionHandlerWidgetState();
 }
 
@@ -35,40 +43,42 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: ListView(
-          children: Permission.values
-              .where((permission) {
-                if (Platform.isIOS) {
-                  return permission != Permission.unknown &&
-                      permission != Permission.phone &&
-                      permission != Permission.sms &&
-                      permission != Permission.ignoreBatteryOptimizations &&
-                      permission != Permission.accessMediaLocation &&
-                      permission != Permission.activityRecognition &&
-                      permission != Permission.manageExternalStorage &&
-                      permission != Permission.systemAlertWindow &&
-                      permission != Permission.requestInstallPackages &&
-                      permission != Permission.accessNotificationPolicy &&
-                      permission != Permission.bluetoothScan &&
-                      permission != Permission.bluetoothAdvertise &&
-                      permission != Permission.bluetoothConnect &&
-                      permission != Permission.nearbyWifiDevices &&
-                      permission != Permission.videos &&
-                      permission != Permission.audio &&
-                      permission != Permission.scheduleExactAlarm &&
-                      permission != Permission.sensorsAlways;
-                } else {
-                  return permission != Permission.unknown &&
-                      permission != Permission.mediaLibrary &&
-                      permission != Permission.photosAddOnly &&
-                      permission != Permission.reminders &&
-                      permission != Permission.bluetooth &&
-                      permission != Permission.appTrackingTransparency &&
-                      permission != Permission.criticalAlerts &&
-                      permission != Permission.assistant;
-                }
-              })
-              .map((permission) => PermissionWidget(permission))
-              .toList()),
+        children:
+            Permission.values
+                .where((permission) {
+                  if (Platform.isIOS) {
+                    return permission != Permission.unknown &&
+                        permission != Permission.phone &&
+                        permission != Permission.sms &&
+                        permission != Permission.ignoreBatteryOptimizations &&
+                        permission != Permission.accessMediaLocation &&
+                        permission != Permission.activityRecognition &&
+                        permission != Permission.manageExternalStorage &&
+                        permission != Permission.systemAlertWindow &&
+                        permission != Permission.requestInstallPackages &&
+                        permission != Permission.accessNotificationPolicy &&
+                        permission != Permission.bluetoothScan &&
+                        permission != Permission.bluetoothAdvertise &&
+                        permission != Permission.bluetoothConnect &&
+                        permission != Permission.nearbyWifiDevices &&
+                        permission != Permission.videos &&
+                        permission != Permission.audio &&
+                        permission != Permission.scheduleExactAlarm &&
+                        permission != Permission.sensorsAlways;
+                  } else {
+                    return permission != Permission.unknown &&
+                        permission != Permission.mediaLibrary &&
+                        permission != Permission.photosAddOnly &&
+                        permission != Permission.reminders &&
+                        permission != Permission.bluetooth &&
+                        permission != Permission.appTrackingTransparency &&
+                        permission != Permission.criticalAlerts &&
+                        permission != Permission.assistant;
+                  }
+                })
+                .map((permission) => PermissionWidget(permission))
+                .toList(),
+      ),
     );
   }
 }
@@ -76,18 +86,18 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
 /// Permission widget containing information about the passed [Permission]
 class PermissionWidget extends StatefulWidget {
   /// Constructs a [PermissionWidget] for the supplied [Permission]
-  const PermissionWidget(this._permission);
+  const PermissionWidget(this.permission, {super.key});
 
-  final Permission _permission;
+  /// The [Permission] for which this widget is rendered.
+  final Permission permission;
 
   @override
-  _PermissionState createState() => _PermissionState(_permission);
+  State<PermissionWidget> createState() => _PermissionState();
 }
 
 class _PermissionState extends State<PermissionWidget> {
-  _PermissionState(this._permission);
+  _PermissionState();
 
-  final Permission _permission;
   PermissionStatus _permissionStatus = PermissionStatus.denied;
 
   @override
@@ -98,7 +108,7 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   void _listenForPermissionStatus() async {
-    final status = await _permission.status;
+    final status = await widget.permission.status;
     setState(() => _permissionStatus = status);
   }
 
@@ -119,44 +129,45 @@ class _PermissionState extends State<PermissionWidget> {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(
-        _permission.toString(),
+        widget.permission.toString(),
         style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
         _permissionStatus.toString(),
         style: TextStyle(color: getPermissionColor()),
       ),
-      trailing: (_permission is PermissionWithService)
-          ? IconButton(
-              icon: const Icon(
-                Icons.info,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                checkServiceStatus(
-                    context, _permission as PermissionWithService);
-              })
-          : null,
+      trailing:
+          (widget.permission is PermissionWithService)
+              ? IconButton(
+                icon: const Icon(Icons.info, color: Colors.white),
+                onPressed: () {
+                  checkServiceStatus(
+                    context,
+                    widget.permission as PermissionWithService,
+                  );
+                },
+              )
+              : null,
       onTap: () {
-        requestPermission(_permission);
+        requestPermission(widget.permission);
       },
     );
   }
 
   void checkServiceStatus(
-      BuildContext context, PermissionWithService permission) async {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text((await permission.serviceStatus).toString()),
-    ));
+    BuildContext context,
+    PermissionWithService permission,
+  ) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text((await permission.serviceStatus).toString())),
+    );
   }
 
   Future<void> requestPermission(Permission permission) async {
     final status = await permission.request();
 
     setState(() {
-      print(status);
       _permissionStatus = status;
-      print(_permissionStatus);
     });
   }
 }
