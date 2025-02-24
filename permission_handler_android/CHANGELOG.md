@@ -1,7 +1,12 @@
+## 12.1.1
+
+* fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
+
 ## 12.1.0
 
 - Updates the package to correctly support Flutter 3.29.
 - Migrates away from deprecated imperative Gradle plugins.
+
 
 ## 12.0.13
 
