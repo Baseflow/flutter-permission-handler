@@ -1,3 +1,7 @@
+## 9.4.7
+
+* Increases minimum iOS version to 9.0 in podspec to match minimum Flutter version.
+
 ## 9.4.6
 
 * Adds the ability to handle `CNAuthorizationStatusLimited` introduced in ios18

@@ -16,7 +16,7 @@ Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Andro
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
 
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
   s.static_framework = true
   s.resource_bundles = {'permission_handler_apple_privacy' => ['Resources/PrivacyInfo.xcprivacy']}
 end
