@@ -33,7 +33,7 @@
 }
 
 + (PermissionStatus)permissionStatus {
-    if (@available(iOS 9.0, *)) {
+    if (@available(iOS 18.0, *)) {
         CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
 
         switch (status) {
@@ -45,8 +45,24 @@
                 return PermissionStatusPermanentlyDenied;
             case CNAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
+            case CNAuthorizationStatusLimited:
+                return PermissionStatusLimited;
         }
+    } else if (@available(iOS 9.0, *)) {
+        CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
 
+        switch (status) {
+            case CNAuthorizationStatusNotDetermined:
+                return PermissionStatusDenied;
+            case CNAuthorizationStatusRestricted:
+                return PermissionStatusRestricted;
+            case CNAuthorizationStatusDenied:
+                return PermissionStatusPermanentlyDenied;
+            case CNAuthorizationStatusAuthorized:
+                return PermissionStatusGranted;
+            default:
+                return PermissionStatusGranted;
+        }
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -73,7 +89,8 @@
 
     [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError *__nullable error) {
         if (granted) {
-            completionHandler(PermissionStatusGranted);
+            const PermissionStatus updatedStatus = [self permissionStatus];
+            completionHandler(updatedStatus);
         } else {
             completionHandler(PermissionStatusPermanentlyDenied);
         }
