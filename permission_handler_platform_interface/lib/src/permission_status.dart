@@ -41,6 +41,9 @@ enum PermissionStatus {
   ///
   /// *Only supported on iOS (iOS12+).*
   provisional,
+
+  /// The user does not perform any actions to the requested feature.
+  undetermined,
 }
 
 /// Conversion extension methods for the [PermissionStatus] type.
@@ -60,6 +63,8 @@ extension PermissionStatusValue on PermissionStatus {
         return 4;
       case PermissionStatus.provisional:
         return 5;
+      case PermissionStatus.undetermined:
+        return 6;
     }
   }
 
@@ -72,6 +77,7 @@ extension PermissionStatusValue on PermissionStatus {
       PermissionStatus.limited,
       PermissionStatus.permanentlyDenied,
       PermissionStatus.provisional,
+      PermissionStatus.undetermined,
     ][value];
   }
 }
@@ -117,6 +123,9 @@ extension PermissionStatusGetters on PermissionStatus {
   ///
   /// *Only supported on iOS (iOS12+).*
   bool get isProvisional => this == PermissionStatus.provisional;
+
+  /// If the user has not perform any action to the requested feature.
+  bool get isUndetermined => this == PermissionStatus.undetermined;
 }
 
 /// Utility getter extensions for the `Future<PermissionStatus>` type.
@@ -160,4 +169,7 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   ///
   /// *Only supported on iOS (iOS12+).*
   Future<bool> get isProvisional async => (await this).isProvisional;
+
+  /// If the user has not perform any action to the requested feature.
+  Future<bool> get isUndetermined async => (await this).isUndetermined;
 }
