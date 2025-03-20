@@ -1,3 +1,8 @@
+
+## 13.0.1
+
+* fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
+
 ## 13.0.0
 
 - **BREAKING CHANGES:** When updating to version 13.0.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `35`.
@@ -5,10 +10,12 @@
 - Updates Android `com.android.tools.build:gradle:8.0.0` to `com.android.tools.build:gradle:8.0.2`
 - Updates Android `sourceCompatibility = JavaVersion.VERSION_1_8` to `sourceCompatibility = JavaVersion.VERSION_17`
 
+
 ## 12.1.0
 
 - Updates the package to correctly support Flutter 3.29.
 - Migrates away from deprecated imperative Gradle plugins.
+
 
 ## 12.0.13
 

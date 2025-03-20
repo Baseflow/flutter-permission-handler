@@ -174,6 +174,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         }
 
         if (permissions.length == 0 && grantResults.length == 0) {
+            pendingRequestCount = 0;
             Log.w(PermissionConstants.LOG_TAG, "onRequestPermissionsResult is called without results. This is probably caused by interfering request codes. If you see this error, please file an issue in flutter-permission-handler, including a list of plugins used by this application: https://github.com/Baseflow/flutter-permission-handler/issues");
             return false;
         }
