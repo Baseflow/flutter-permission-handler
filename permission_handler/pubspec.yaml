@@ -16,6 +16,8 @@ flutter:
         default_package: permission_handler_android
       ios:
         default_package: permission_handler_apple
+      macos:
+        default_package: permission_handler_apple
       web:
         default_package: permission_handler_html
       windows:
