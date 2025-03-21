@@ -1,4 +1,4 @@
-name: No Response
+name: 'No Response'
 
 # Both `issue_comment` and `scheduled` event types are required for this Action
 # to work properly.
@@ -15,24 +15,39 @@ permissions:
   issues: write
 
 jobs:
-  noResponse:
+  stale:
     runs-on: ubuntu-latest
-    if: ${{ github.repository == 'baseflow/flutter-permission-handler' }}
     steps:
-      - uses: godofredoc/no-response@0ce2dc0e63e1c7d2b87752ceed091f6d32c9df09
+      # At Baseflow, we mark issues with the `status: needs more info` label when more information is
+      # required to be able to solve an issue. When nobody (either original poster or other community 
+      # members) respond to the issue within 14 days the issue will be closed.
+      #
+      # To automate this process we utilize the [stale](https://github.com/actions/stale) GitHub action.
+      # However the [stale](https://github.com/actions/stale) action requires an issue to be marked specifically
+      # as "stale" before it will consider an issue to be closed. Therefore we utilize the following 
+      # configuration:
+      # 1. Set the `stale-issue-label` parameter to `status: needs more info`. This will inform the stale action that all 
+      # issues marked with this particular label to be stale (note that Baseflow manually adds this label after initial triaging).
+      # 2. Set the `days-before-stale` parameter to `-1`. This will prevent the [stale](https://github.com/actions/stale) action 
+      # from automatically marking issues as being "stale". As mentioned in step 1, at Baseflow we want to manually 
+      # triage the issue and mark it to require more information.
+      # 3. Set the `close-issue-label` parameter to `status: closed (missing info)` to easily allow us to track issues closed due 
+      # to a lack of information.
+      # issue is closed. This will make sure the label is automatically removed when the issue is re-opened (most likely
+      # this happend because someone added more information).
+      # 4. Set the `days-before-close` parameter to `14` to indicate after how many days, since marking the issue with
+      # the `status: needs more info` label, the issue should be closed automatically.
+      # 5. Set the `close-issue-message` parameter with a text that will be placed as a comment to the respective issue that
+      # is closed to explain why the issue was closed.
+      - uses: actions/stale@v8
         with:
-          token: ${{ github.token }}
-          # Comment to post when closing an Issue for lack of response. Set to `false` to disable
-          closeComment: >
-            Without additional information, we are unfortunately not sure how to
-            resolve this issue. We are therefore reluctantly going to close this
-            bug for now.
-            If you find this problem please file a new issue with the same description,
-            what happens, logs and the output of 'flutter doctor -v'. All system setups
-            can be slightly different so it's always better to open new issues and reference
-            the related ones.
+          stale-issue-label: 'status: needs more info'
+          days-before-stale: -1
+          close-issue-label: 'status: closed (missing info)'
+          close-issue-message: >
+            Without additional information, we are unfortunately not able to resolve this issue. 
+            Therefore, we reluctantly closed this issue for now. 
+            If you run into this issue later, feel free to file a new issue with a reference to this issue. 
+            Add a description of detailed steps to reproduce, expected and current behaviour, logs and the output of 'flutter doctor -v'. 
             Thanks for your contribution.
-          # Number of days of inactivity before an issue is closed for lack of response.
-          daysUntilClose: 14
-          # Label requiring a response.
-          responseRequiredLabel: "status: needs more info"
+          days-before-close: 14

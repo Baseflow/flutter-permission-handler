@@ -1,6 +1,6 @@
 name: permission_handler_windows
 description: Permission plugin for Flutter. This plugin provides the Windows API to request and check permissions.
-version: 0.1.2
+version: 0.2.1
 homepage: https://github.com/baseflow/flutter-permission-handler
 
 flutter:
@@ -13,7 +13,7 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
-  permission_handler_platform_interface: ^3.7.0
+  permission_handler_platform_interface: ^4.1.0
 
 dev_dependencies:
   flutter_test:
@@ -21,5 +21,5 @@ dev_dependencies:
   plugin_platform_interface: ^2.0.0
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.12.0 <4.0.0"
   flutter: ">=2.0.0"

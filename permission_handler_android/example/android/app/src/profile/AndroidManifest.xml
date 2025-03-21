@@ -46,6 +46,7 @@
 
     <!-- Permissions options for the `sensors` group -->
     <uses-permission android:name="android.permission.BODY_SENSORS" />
+    <uses-permission android:name="android.permission.BODY_SENSORS_BACKGROUND" />
 
     <!-- Permissions options for the `access notification policy` group -->
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>

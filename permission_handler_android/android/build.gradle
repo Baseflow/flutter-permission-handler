@@ -1,6 +1,5 @@
 group 'com.baseflow.permissionhandler'
 version '1.0'
-def args = ["-Xlint:deprecation","-Xlint:unchecked","-Werror"]
 
 buildscript {
     repositories {
@@ -9,7 +8,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
+        classpath 'com.android.tools.build:gradle:8.0.2'
     }
 }
 
@@ -20,21 +19,21 @@ rootProject.allprojects {
     }
 }
 
-project.getTasks().withType(JavaCompile){
-    options.compilerArgs.addAll(args)
-}
-
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 33
+    // Conditional for compatibility with AGP <4.2.
+    if (project.android.hasProperty("namespace")) {
+      namespace 'com.baseflow.permissionhandler'
+    }
+    compileSdkVersion 35
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
     }
 }

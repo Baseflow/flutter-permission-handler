@@ -3,8 +3,11 @@ import 'package:permission_handler_platform_interface/permission_handler_platfor
 import 'package:permission_handler_platform_interface/src/method_channel/method_channel_permission_handler.dart';
 import 'method_channel_mock.dart';
 
-List<Permission> get mockPermissions => List.of(
-    <Permission>{Permission.calendar, Permission.camera, Permission.contacts});
+List<Permission> get mockPermissions => List.of(<Permission>{
+      Permission.contacts,
+      Permission.camera,
+      Permission.calendarWriteOnly,
+    });
 
 Map<Permission, PermissionStatus> get mockPermissionMap => {};
 
@@ -21,7 +24,7 @@ void main() {
       );
 
       final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.calendar);
+          .checkPermissionStatus(Permission.contacts);
 
       expect(permissionStatus, PermissionStatus.denied);
     });
@@ -35,7 +38,7 @@ void main() {
       );
 
       final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.calendar);
+          .checkPermissionStatus(Permission.contacts);
 
       expect(permissionStatus, PermissionStatus.denied);
     });
@@ -51,7 +54,7 @@ void main() {
       );
 
       final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.calendar);
+          .checkPermissionStatus(Permission.contacts);
 
       expect(permissionStatus, PermissionStatus.restricted);
     });
@@ -67,7 +70,7 @@ void main() {
       );
 
       final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.calendar);
+          .checkPermissionStatus(Permission.contacts);
 
       expect(permissionStatus, PermissionStatus.limited);
     });
@@ -83,7 +86,7 @@ void main() {
       );
 
       final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.calendar);
+          .checkPermissionStatus(Permission.contacts);
 
       expect(permissionStatus, PermissionStatus.permanentlyDenied);
     });
@@ -101,7 +104,7 @@ void main() {
       );
 
       final serviceStatus = await MethodChannelPermissionHandler()
-          .checkServiceStatus(Permission.calendar);
+          .checkServiceStatus(Permission.contacts);
 
       expect(serviceStatus, ServiceStatus.disabled);
     });
@@ -115,7 +118,7 @@ void main() {
       );
 
       final serviceStatus = await MethodChannelPermissionHandler()
-          .checkServiceStatus(Permission.calendar);
+          .checkServiceStatus(Permission.contacts);
 
       expect(serviceStatus, ServiceStatus.enabled);
     });
@@ -131,7 +134,7 @@ void main() {
       );
 
       final serviceStatus = await MethodChannelPermissionHandler()
-          .checkServiceStatus(Permission.calendar);
+          .checkServiceStatus(Permission.contacts);
 
       expect(serviceStatus, ServiceStatus.notApplicable);
     });

@@ -1,0 +1,30 @@
+name: permission_handler_html_example
+description: Demonstrates how to use the permission_handler_html plugin.
+
+environment:
+  sdk: ">=3.0.5 <4.0.0"
+
+dependencies:
+  permission_handler_platform_interface: ^4.2.0
+  baseflow_plugin_template: ^2.1.2
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+
+  permission_handler_html:
+    # When depending on this package from a real application you should use:
+    #   permission_handler_web: ^x.y.z
+    # See https://dart.dev/tools/pub/dependencies#version-constraints
+    # The example app is bundled with the plugin so we use a path dependency on
+    # the parent directory to use the current plugin's version.
+    path: ../
+
+  url_launcher: ^6.0.12
+
+flutter:
+  uses-material-design: true

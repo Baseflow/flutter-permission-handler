@@ -3,16 +3,18 @@
 name: permission_handler_android
 
 # Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
+# events but only for the main branch
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'permission_handler_android/**'
+    - '.github/workflows/permission_handler_android.yaml'
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'permission_handler_android/**'
+    - '.github/workflows/permission_handler_android.yaml'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -30,7 +32,13 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+
+      # Make sure JAVA version 17 is installed on build agent.
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+           
       # Make sure the stable version of Flutter is available
       - uses: subosito/flutter-action@v2
         with:
@@ -41,9 +49,9 @@ jobs:
         run: flutter pub get
         working-directory: ${{env.source-directory}}
 
-      # Run Flutter Format to ensure formatting is valid
-      - name: Run Flutter Format
-        run: flutter format --set-exit-if-changed .
+      # Run Dart Format to ensure formatting is valid
+      - name: Run Dart Format
+        run: dart format --set-exit-if-changed .
         working-directory: ${{env.source-directory}}
 
       # Run Flutter Analyzer

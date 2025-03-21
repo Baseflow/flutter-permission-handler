@@ -12,11 +12,11 @@
     return [SpeechPermissionStrategy permissionStatus];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    return ServiceStatusNotApplicable;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler(ServiceStatusNotApplicable);
 }
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
     PermissionStatus status = [self checkPermissionStatus:permission];
     
     if (status != PermissionStatusDenied) {

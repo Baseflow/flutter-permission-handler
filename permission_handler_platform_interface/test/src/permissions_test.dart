@@ -2,14 +2,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 void main() {
-  test('Permission has the right amount of possible PermissionGroup values',
-      () {
+  test('Permission has the right amount of possible Permission values', () {
     const values = Permission.values;
 
-    expect(values.length, 35);
+    expect(values.length, 40);
   });
 
-  test('check if byValue returns corresponding PermissionGroup value', () {
+  test('check if byValue returns corresponding Permission value', () {
     const values = Permission.values;
 
     for (var i = 0; i < values.length; i++) {
@@ -22,6 +21,14 @@ void main() {
         PermissionWithService.private(0);
     var permissionName = permissionWithService.toString();
     expect(permissionName, 'Permission.calendar');
+  });
+
+  test('check if toString works on all Permission values', () {
+    const values = Permission.values;
+
+    for (var i = 0; i < values.length; i++) {
+      expect(values[i].toString(), isNotNull);
+    }
   });
 
   test(

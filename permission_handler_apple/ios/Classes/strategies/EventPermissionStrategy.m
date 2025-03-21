@@ -5,82 +5,139 @@
 
 #import "EventPermissionStrategy.h"
 
-#if PERMISSION_EVENTS | PERMISSION_REMINDERS
+#if PERMISSION_EVENTS | PERMISSION_EVENTS_FULL_ACCESS | PERMISSION_REMINDERS
 
 @implementation EventPermissionStrategy
 
 - (PermissionStatus)checkPermissionStatus:(PermissionGroup)permission {
-    if (permission == PermissionGroupCalendar) {
-        #if PERMISSION_EVENTS
-        return [EventPermissionStrategy permissionStatus:EKEntityTypeEvent];
-        #endif
-    } else if (permission == PermissionGroupReminders) {
-        #if PERMISSION_REMINDERS
-        return [EventPermissionStrategy permissionStatus:EKEntityTypeReminder];
-        #endif
-    }
-    
-    return PermissionStatusDenied;
+    return [EventPermissionStrategy permissionStatus:permission];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-    return ServiceStatusNotApplicable;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler(ServiceStatusNotApplicable);
 }
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
     PermissionStatus permissionStatus = [self checkPermissionStatus:permission];
     
     if (permissionStatus != PermissionStatusDenied) {
         completionHandler(permissionStatus);
         return;
     }
-    
-    EKEntityType entityType;
-    
-    if (permission == PermissionGroupCalendar) {
-        #if PERMISSION_EVENTS
-        entityType = EKEntityTypeEvent;
-        #else
+
+    if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess) {
+        if (@available(iOS 17.0, *)) {
+            #if !PERMISSION_EVENTS_FULL_ACCESS
+            completionHandler(PermissionStatusDenied);
+            return;
+            #endif
+        } else {
+            #if !PERMISSION_EVENTS
+            completionHandler(PermissionStatusDenied);
+            return;
+            #endif
+        }
+    } else if (permission == PermissionGroupCalendarWriteOnly) {
+        #if !PERMISSION_EVENTS && !PERMISSION_EVENTS_FULL_ACCESS
         completionHandler(PermissionStatusDenied);
         return;
         #endif
     } else if (permission == PermissionGroupReminders) {
-        #if PERMISSION_REMINDERS
-        entityType = EKEntityTypeReminder;
-        #else
+        #if !PERMISSION_REMINDERS
         completionHandler(PermissionStatusDenied);
         return;
         #endif
-    } else {
-        completionHandler(PermissionStatusPermanentlyDenied);
-        return;
     }
-    
+
     EKEventStore *eventStore = [[EKEventStore alloc] init];
-    [eventStore requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
-        if (granted) {
-            completionHandler(PermissionStatusGranted);
-        } else {
-            completionHandler(PermissionStatusPermanentlyDenied);
+
+    if (@available(iOS 17.0, *)) {
+        if (permission == PermissionGroupCalendar || permission == PermissionGroupCalendarFullAccess) {
+            [eventStore requestFullAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
+                if (granted) {
+                    completionHandler(PermissionStatusGranted);
+                } else {
+                    completionHandler(PermissionStatusPermanentlyDenied);
+                }
+            }];
+        } else if (permission == PermissionGroupCalendarWriteOnly) {
+            [eventStore requestWriteOnlyAccessToEventsWithCompletion:^(BOOL granted, NSError *error) {
+                if (granted) {
+                    completionHandler(PermissionStatusGranted);
+                } else {
+                    completionHandler(PermissionStatusPermanentlyDenied);
+                }
+            }];
+        } else if (permission == PermissionGroupReminders) {
+            [eventStore requestFullAccessToRemindersWithCompletion:^(BOOL granted, NSError *error) {
+                if (granted) {
+                    completionHandler(PermissionStatusGranted);
+                } else {
+                    completionHandler(PermissionStatusPermanentlyDenied);
+                }
+            }];
         }
-    }];
+    } else {
+        EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
+
+        [eventStore requestAccessToEntityType:entityType completion:^(BOOL granted, NSError *error) {
+            if (granted) {
+                completionHandler(PermissionStatusGranted);
+            } else {
+                completionHandler(PermissionStatusPermanentlyDenied);
+            }
+        }];
+    }
+
 }
 
-+ (PermissionStatus)permissionStatus:(EKEntityType)entityType {
++ (PermissionStatus)permissionStatus:(PermissionGroup)permission {
+    EKEntityType entityType = [EventPermissionStrategy getEntityType:permission];
     EKAuthorizationStatus status = [EKEventStore authorizationStatusForEntityType:entityType];
-    
-    switch (status) {
-        case EKAuthorizationStatusNotDetermined:
-            return PermissionStatusDenied;
-        case EKAuthorizationStatusRestricted:
-            return PermissionStatusRestricted;
-        case EKAuthorizationStatusDenied:
-            return PermissionStatusPermanentlyDenied;
-        case EKAuthorizationStatusAuthorized:
-            return PermissionStatusGranted;
+
+    if (@available(iOS 17.0, *)) {
+        switch (status) {
+            case EKAuthorizationStatusNotDetermined:
+                return PermissionStatusDenied;
+            case EKAuthorizationStatusRestricted:
+                return PermissionStatusRestricted;
+            case EKAuthorizationStatusDenied:
+                return PermissionStatusPermanentlyDenied;
+            case EKAuthorizationStatusFullAccess:
+                return PermissionStatusGranted;
+            case EKAuthorizationStatusWriteOnly:
+                if (permission == PermissionGroupCalendarWriteOnly) {
+                    return PermissionStatusGranted;
+                }
+                return PermissionStatusDenied;
+        }
+    } else {
+        switch (status) {
+            case EKAuthorizationStatusNotDetermined:
+                return PermissionStatusDenied;
+            case EKAuthorizationStatusRestricted:
+                return PermissionStatusRestricted;
+            case EKAuthorizationStatusDenied:
+                return PermissionStatusPermanentlyDenied;
+            case EKAuthorizationStatusAuthorized:
+                return PermissionStatusGranted;
+            case EKAuthorizationStatusWriteOnly:
+                //not available on iOS 16 and below 
+                break;
+        }
     }
     
+
+    
     return PermissionStatusDenied;
+}
+
++ (EKEntityType)getEntityType:(PermissionGroup)permission {
+    if (permission == PermissionGroupReminders) {
+        return EKEntityTypeReminder;
+    }
+
+    return EKEntityTypeEvent;
 }
 
 @end

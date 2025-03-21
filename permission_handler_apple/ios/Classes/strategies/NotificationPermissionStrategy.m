@@ -15,13 +15,18 @@
   return [NotificationPermissionStrategy permissionStatus];
 }
 
-- (ServiceStatus)checkServiceStatus:(PermissionGroup)permission {
-  return ServiceStatusNotApplicable;
+- (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
+    completionHandler(ServiceStatusNotApplicable);
 }
 
-- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler {
+- (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler  errorHandler:(PermissionErrorHandler)errorHandler {
   PermissionStatus status = [self checkPermissionStatus:permission];
-  if (status != PermissionStatusDenied) {
+  if (@available(iOS 12.0, *)) {
+    if (status != PermissionStatusDenied && status != PermissionStatusProvisional) {
+      completionHandler(status);
+      return;
+    }
+  } else if (status != PermissionStatusDenied) {
     completionHandler(status);
     return;
   }
@@ -63,7 +68,9 @@
   if (@available(iOS 10 , *)) {
     dispatch_semaphore_t sem = dispatch_semaphore_create(0);
     [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull settings) {
-      if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
+      if (@available(iOS 12 , *) && settings.authorizationStatus == UNAuthorizationStatusProvisional) {
+        permissionStatus = PermissionStatusProvisional;
+      } else if (settings.authorizationStatus == UNAuthorizationStatusDenied) {
         permissionStatus = PermissionStatusPermanentlyDenied;
       } else if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
         permissionStatus = PermissionStatusDenied;

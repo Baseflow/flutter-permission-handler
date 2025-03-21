@@ -1,0 +1,66 @@
+name: Submit a feature request
+description: We value your input! If you have any ideas or suggestions for new features, we encourage you to share them here.
+title: "[Feature request]: "
+labels: ["needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for submitting a feature request! To help us better understand your request, kindly take a moment to provide the following information. Your input is greatly appreciated.
+
+        - Description of the feature request.
+        - Use case or problem it solves.
+        - Any specific requirements or considerations.
+        - Any additional information or context.
+
+        Thank you for your cooperation!
+  - type: checkboxes
+    attributes:
+      label: Is there already an issue requesting this feature?
+      description: Please search to see if an issue already exists for this feature request.
+      options:
+        - label: I have searched the [existing issues](https://github.com/baseflow/flutter-permission-handler/issues).
+          required: true
+  - type: checkboxes
+    attributes:
+      label: Please select affected platform(s)
+      options:
+      - label: Android
+      - label: iOS
+      - label: Windows
+  - type: textarea
+    attributes:
+      label: Use case
+      description: |
+        We appreciate your feature request!
+        In order to better understand your needs, please provide details regarding the problem you're encountering that prompted your desire for a new feature.
+
+        Is your feature request driven by a specific problem?
+        Kindly provide a clear and concise description of the issue at hand.
+
+        Additionally, please share any alternative solutions you have considered.
+        Have you explored existing packages on pub.dev that might already address this problem?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Proposal
+      description: |
+        Please provide a brief and precise description of the functionality that you are proposing.
+
+        Please attach something showing what you are imagining:
+         * code samples
+         * images
+         * videos
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Specific requirements or considerations
+      description: |
+        Please provide any specific requirements or considerations that you have for this feature request.
+  - type: textarea
+    attributes:
+      label: Additional information or context
+      description: |
+        Please provide any additional information or context that you have for this feature request. Also links pointing to existing (native) APIs or articles are extremely helpful.

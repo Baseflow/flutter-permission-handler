@@ -26,12 +26,20 @@
 }
 
 + (void)checkServiceStatus:(enum PermissionGroup)permission result:(FlutterResult)result {
-    id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
-    ServiceStatus status = [permissionStrategy checkServiceStatus:permission];
-    result([Codec encodeServiceStatus:status]);
+    __block id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
+    
+    [permissionStrategy checkServiceStatus:permission completionHandler:^(ServiceStatus serviceStatus) {
+        result([Codec encodeServiceStatus:serviceStatus]);
+        
+        // Make sure `result` is called before cleaning up the reference
+        // otherwise the `result` block is also dereferenced on iOS 12 and
+        // below (this is most likely a bug in Objective-C which is solved in the
+        // later versions of the runtime).
+        permissionStrategy = nil;
+    }];
 }
 
-- (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion {
+- (void)requestPermissions:(NSArray *)permissions completion:(PermissionRequestCompletion)completion errorHandler:(PermissionErrorHandler)errorHandler {
     NSMutableDictionary *permissionStatusResult = [[NSMutableDictionary alloc] init];
 
     if (permissions.count == 0) {
@@ -49,21 +57,23 @@
         __block id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
         [_strategyInstances addObject:permissionStrategy];
         
-        
         [permissionStrategy requestPermission:permission completionHandler:^(PermissionStatus permissionStatus) {
             permissionStatusResult[@(permission)] = @(permissionStatus);
             [requestQueue removeObject:@(permission)];
-            
+                
             [self->_strategyInstances removeObject:permissionStrategy];
-            
+                
             if (requestQueue.count == 0) {
                 completion(permissionStatusResult);
             }
-          
+                
             // Make sure `completion` is called before cleaning up the reference
             // otherwise the `completion` block is also dereferenced on iOS 12 and
             // below (this is most likely a bug in Objective-C which is solved in
             // later versions of the runtime).
+            permissionStrategy = nil;
+        } errorHandler: ^(NSString* errorCode, NSString* errorDesciption) {
+            errorHandler(errorCode, errorDesciption);
             permissionStrategy = nil;
         }];
     }
@@ -90,6 +100,8 @@
 + (id)createPermissionStrategy:(PermissionGroup)permission {
     switch (permission) {
         case PermissionGroupCalendar:
+        case PermissionGroupCalendarWriteOnly:
+        case PermissionGroupCalendarFullAccess:
             return [EventPermissionStrategy new];
         case PermissionGroupCamera:
             return [AudioVideoPermissionStrategy new];
@@ -98,7 +110,7 @@
         case PermissionGroupLocation:
         case PermissionGroupLocationAlways:
         case PermissionGroupLocationWhenInUse:
-            #if PERMISSION_LOCATION
+            #if PERMISSION_LOCATION || PERMISSION_LOCATION_WHENINUSE || PERMISSION_LOCATION_ALWAYS
             return [[LocationPermissionStrategy alloc] initWithLocationManager];
             #else
             return [LocationPermissionStrategy new];
@@ -137,6 +149,10 @@
             return [AppTrackingTransparencyPermissionStrategy new];
         case PermissionGroupCriticalAlerts:
             return [CriticalAlertsPermissionStrategy new];
+        case PermissionGroupAssistant:
+            return [AssistantPermissionStrategy new];
+        case PermissionGroupBackgroundRefresh:
+            return [BackgroundRefreshStrategy new];
         default:
             return [UnknownPermissionStrategy new];
     }

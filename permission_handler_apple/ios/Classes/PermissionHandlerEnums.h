@@ -5,15 +5,15 @@
 //  Created by Razvan Lung on 15/02/2019.
 //
 
-// ios: PermissionGroupCalendar
-// Info.plist: NSCalendarsUsageDescription
+// ios: [PermissionGroupCalendar, PermissionGroupCalendarWriteOnly]
+// Info.plist: [NSCalendarsUsageDescription, NSCalendarWriteOnlyAccessUsageDescription]
 // dart: PermissionGroup.calendar
 #ifndef PERMISSION_EVENTS
     #define PERMISSION_EVENTS 0
 #endif
 
 // ios: PermissionGroupReminders
-// Info.plist: NSRemindersUsageDescription
+// Info.plist: NSRemindersFullAccessUsageDescription
 // dart: PermissionGroup.reminders
 #ifndef PERMISSION_REMINDERS
     #define PERMISSION_REMINDERS 0
@@ -55,7 +55,7 @@
 #endif
 
 // ios: PermissionGroupPhotosAddOnly
-// Info.plist: NSPhotoLibraryUsageDescription
+// Info.plist: NSPhotoLibraryAddUsageDescription
 // dart: PermissionGroup.photosAddOnly
 #ifndef PERMISSION_PHOTOS_ADD_ONLY
     #define PERMISSION_PHOTOS_ADD_ONLY 0
@@ -102,12 +102,25 @@
     #define PERMISSION_APP_TRACKING_TRANSPARENCY 0
 #endif
 
-
 // ios: PermissionGroupCriticalAlerts
 // Info.plist: UNAuthorizationOptionCriticalAlert
 // dart: PermissionGroup.criticalAlerts
 #ifndef PERMISSION_CRITICAL_ALERTS
     #define PERMISSION_CRITICAL_ALERTS 0
+#endif
+
+// ios: PermissionGroupAssistant
+// Info.plist: [NSSiriUsageDescription]
+// dart: PermissionGroup.assistant
+#ifndef PERMISSION_ASSISTANT
+    #define PERMISSION_ASSISTANT 0
+#endif
+
+// ios: PermissionGroupCalendarFullAccess
+// Info.plist: [NSCalendarsFullAccessUsageDescription]
+// dart: PermissionGroup.calendarFullAccess
+#ifndef PERMISSION_EVENTS_FULL_ACCESS
+    #define PERMISSION_EVENTS_FULL_ACCESS 0
 #endif
 
 typedef NS_ENUM(int, PermissionGroup) {
@@ -145,7 +158,12 @@ typedef NS_ENUM(int, PermissionGroup) {
     PermissionGroupNearbyWifiDevices,
     PermissiongroupVideos,
     PermissionGroupAudio,
-    PermissionGroupScheduleExactAlarm
+    PermissionGroupScheduleExactAlarm,
+    PermissionGroupSensorsAlways,
+    PermissionGroupCalendarWriteOnly,
+    PermissionGroupCalendarFullAccess,
+    PermissionGroupAssistant,
+    PermissionGroupBackgroundRefresh
 };
 
 typedef NS_ENUM(int, PermissionStatus) {
@@ -153,7 +171,8 @@ typedef NS_ENUM(int, PermissionStatus) {
     PermissionStatusGranted = 1,
     PermissionStatusRestricted = 2,
     PermissionStatusLimited = 3,
-    PermissionStatusPermanentlyDenied = 4
+    PermissionStatusPermanentlyDenied = 4,
+    PermissionStatusProvisional = 5,
 };
 
 typedef NS_ENUM(int, ServiceStatus) {
