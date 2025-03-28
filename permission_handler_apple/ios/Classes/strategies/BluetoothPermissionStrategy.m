@@ -65,7 +65,7 @@
     _serviceStatusHandler(serviceStatus);
 
     #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    ServiceStatus serviceStatus = [centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
+    serviceStatus = [centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
     _serviceStatusHandler(serviceStatus);
 }
 
