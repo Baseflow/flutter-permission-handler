@@ -199,6 +199,19 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
         case kCLAuthorizationStatusAuthorizedAlways:
             return PermissionStatusGranted;
     }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+    switch (authorizationStatus) {
+        case kCLAuthorizationStatusAuthorized:
+            return PermissionStatusGranted;
+        default:
+            return PermissionStatusDenied;
+    }
+
+#pragma clang diagnostic pop
+
 }
 
 @end
