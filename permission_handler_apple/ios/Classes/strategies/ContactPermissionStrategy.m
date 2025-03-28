@@ -25,11 +25,7 @@
         return;
     }
 
-    if (@available(iOS 9.0, *)) {
-        [ContactPermissionStrategy requestPermissionsFromContactStore:completionHandler];
-    } else {
-        [ContactPermissionStrategy requestPermissionsFromAddressBook:completionHandler];
-    }
+    [ContactPermissionStrategy requestPermissionsFromContactStore:completionHandler];
 }
 
 + (PermissionStatus)permissionStatus {
@@ -48,7 +44,7 @@
             case CNAuthorizationStatusLimited:
                 return PermissionStatusLimited;
         }
-    } else if (@available(iOS 9.0, *)) {
+    } else {
         CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
 
         switch (status) {
@@ -62,22 +58,6 @@
                 return PermissionStatusGranted;
             default:
                 return PermissionStatusGranted;
-        }
-    } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();
-
-        switch (status) {
-            case kABAuthorizationStatusNotDetermined:
-                return PermissionStatusDenied;
-            case kABAuthorizationStatusRestricted:
-                return PermissionStatusRestricted;
-            case kABAuthorizationStatusDenied:
-                return PermissionStatusPermanentlyDenied;
-            case kABAuthorizationStatusAuthorized:
-                return PermissionStatusGranted;
-#pragma clang diagnostic pop
         }
     }
 
