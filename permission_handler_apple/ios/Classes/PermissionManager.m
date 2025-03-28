@@ -81,10 +81,10 @@
 
 + (void)openAppSettings:(FlutterResult)result {
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]
-                                        options:[[NSDictionary alloc] init]
-                                completionHandler:^(BOOL success) {
-                                    result([[NSNumber alloc] initWithBool:success]);
-                                }];
+                                       options:[[NSDictionary alloc] init]
+                             completionHandler:^(BOOL success) {
+                                 result([[NSNumber alloc] initWithBool:success]);
+                             }];
 }
 
 + (id)createPermissionStrategy:(PermissionGroup)permission {
