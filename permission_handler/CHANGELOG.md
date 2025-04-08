@@ -1,3 +1,7 @@
+## 12.0.0
+
+* **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 13.0.0. Updated Android `compileSdkVersion` to `35` .
+
 ## 11.4.0
 
 * Updates dependencies to latest versions.
