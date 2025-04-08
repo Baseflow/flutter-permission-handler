@@ -1,6 +1,7 @@
 ## 4.3.1
 
 - Changes `Permission.sensor` into an instance of `PermissionWithService` instead of `Permission` in order to determine iOS native's `CMMotionActivityManager isActivityAvailable`.
+- Removed Codecov from CI workflow
 
 ## 4.3.0
 
