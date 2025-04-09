@@ -1,4 +1,4 @@
-## NEXT
+## 12.0.0+1
 
 * Updated README documentation from `compileSdkVersion 33` to `compileSdkVersion 35`
 
