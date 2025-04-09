@@ -17,8 +17,6 @@
         ? ServiceStatusEnabled
         : ServiceStatusDisabled
     );
-    
-    completionHandler(ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
