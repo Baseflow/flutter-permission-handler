@@ -1,3 +1,7 @@
+## NEXT
+
+* Updated README documentation from `compileSdkVersion 33` to `compileSdkVersion 35`
+
 ## 12.0.0
 
 * **BREAKING CHANGE:** Updates `permission_handler_android` dependency to version 13.0.0. Updated Android `compileSdkVersion` to `35` .
