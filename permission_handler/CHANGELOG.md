@@ -1,6 +1,7 @@
 ## 12.0.0+1
 
 * Updated README documentation from `compileSdkVersion 33` to `compileSdkVersion 35`
+* Updates example project `IPHONEOS_DEPLOYMENT_TARGET = 11.0` to `12.0`
 
 ## 12.0.0
 
