@@ -63,10 +63,6 @@
 - (void)handleCheckServiceStatusCallback:(CBCentralManager *)centralManager {
     ServiceStatus serviceStatus = [centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
     _serviceStatusHandler(serviceStatus);
-
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    serviceStatus = [centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
-    _serviceStatusHandler(serviceStatus);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
