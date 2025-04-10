@@ -1,3 +1,7 @@
+## 4.3.1
+
+- Fixes an issue where the request for notification permission returns `permanentlyDenied` when the iOS app is moved to the background while the permission dialog is open.
+
 ## 4.3.0
 
 - Updates project dependencies.
