@@ -127,7 +127,7 @@ You must list the permission you want to use in your application:
           ## dart: PermissionGroup.criticalAlerts
           'PERMISSION_CRITICAL_ALERTS=1',
 
-          ## dart: PermissionGroup.criticalAlerts
+          ## dart: PermissionGroup.assistant
           'PERMISSION_ASSISTANT=1',
         ]
 
