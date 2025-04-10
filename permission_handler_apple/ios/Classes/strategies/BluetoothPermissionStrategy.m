@@ -61,12 +61,7 @@
 }
 
 - (void)handleCheckServiceStatusCallback:(CBCentralManager *)centralManager {
-    if (@available(iOS 10, *)) {
-        ServiceStatus serviceStatus = [centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
-        _serviceStatusHandler(serviceStatus);
-    }
-    #pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    ServiceStatus serviceStatus = [centralManager state] == CBCentralManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
+    ServiceStatus serviceStatus = [centralManager state] == CBManagerStatePoweredOn ? ServiceStatusEnabled : ServiceStatusDisabled;
     _serviceStatusHandler(serviceStatus);
 }
 
