@@ -37,7 +37,7 @@ android.enableJetifier=true
 
 ```gradle
 android {
-  compileSdkVersion 33
+  compileSdkVersion 35
   ...
 }
 ```
