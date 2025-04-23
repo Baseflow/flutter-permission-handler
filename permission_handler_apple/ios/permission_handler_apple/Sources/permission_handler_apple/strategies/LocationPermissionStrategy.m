@@ -174,37 +174,20 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 
 
 + (PermissionStatus)determinePermissionStatus:(PermissionGroup)permission authorizationStatus:(CLAuthorizationStatus)authorizationStatus {
-    if (@available(iOS 8.0, *)) {
-        if (permission == PermissionGroupLocationAlways) {
-            switch (authorizationStatus) {
-                case kCLAuthorizationStatusNotDetermined:
-                    return PermissionStatusDenied;
-                case kCLAuthorizationStatusRestricted:
-                    return PermissionStatusRestricted;
-                case kCLAuthorizationStatusAuthorizedWhenInUse:
-                case kCLAuthorizationStatusDenied:
-                    return PermissionStatusPermanentlyDenied;
-                case kCLAuthorizationStatusAuthorizedAlways:
-                    return PermissionStatusGranted;
-            }
-        }
-        
+    if (permission == PermissionGroupLocationAlways) {
         switch (authorizationStatus) {
             case kCLAuthorizationStatusNotDetermined:
                 return PermissionStatusDenied;
             case kCLAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
+            case kCLAuthorizationStatusAuthorizedWhenInUse:
             case kCLAuthorizationStatusDenied:
                 return PermissionStatusPermanentlyDenied;
-            case kCLAuthorizationStatusAuthorizedWhenInUse:
             case kCLAuthorizationStatusAuthorizedAlways:
                 return PermissionStatusGranted;
         }
     }
     
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-
     switch (authorizationStatus) {
         case kCLAuthorizationStatusNotDetermined:
             return PermissionStatusDenied;
@@ -212,6 +195,15 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
             return PermissionStatusRestricted;
         case kCLAuthorizationStatusDenied:
             return PermissionStatusPermanentlyDenied;
+        case kCLAuthorizationStatusAuthorizedWhenInUse:
+        case kCLAuthorizationStatusAuthorizedAlways:
+            return PermissionStatusGranted;
+    }
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+
+    switch (authorizationStatus) {
         case kCLAuthorizationStatusAuthorized:
             return PermissionStatusGranted;
         default:

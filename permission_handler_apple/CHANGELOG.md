@@ -1,3 +1,12 @@
+## 9.4.7
+
+* Increases minimum supported Flutter version to 3.3.0, and removes code only
+  required for iOS versions prior to iOS 11.
+
+## 9.4.6
+
+* Adds the ability to handle `CNAuthorizationStatusLimited` introduced in ios18
+
 ## 9.4.5
 
 * Fixes issue #1002, Xcode warning of the unresponsive of main thread when checking isLocationEnabled.
