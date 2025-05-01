@@ -65,7 +65,6 @@ class PermissionHandlerWindowsPlugin : public Plugin {
   winrt::fire_and_forget IsBluetoothServiceEnabled(std::unique_ptr<MethodResult<>> result);
 
   winrt::Windows::Devices::Geolocation::Geolocator geolocator;
-  winrt::Windows::Devices::Geolocation::Geolocator::PositionChanged_revoker m_positionChangedRevoker;
 };
 
 // static
@@ -86,12 +85,7 @@ void PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
   registrar->AddPlugin(std::move(plugin));
 }
 
-PermissionHandlerWindowsPlugin::PermissionHandlerWindowsPlugin(){
-  m_positionChangedRevoker = geolocator.PositionChanged(winrt::auto_revoke,
-    [this](Geolocator const& geolocator, PositionChangedEventArgs e)
-    {
-    });
-}
+PermissionHandlerWindowsPlugin::PermissionHandlerWindowsPlugin() = default;
 
 PermissionHandlerWindowsPlugin::~PermissionHandlerWindowsPlugin() = default;
 
