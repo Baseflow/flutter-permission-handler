@@ -1,3 +1,15 @@
+## 0.1.3+5
+
+- Updates the way how `window.navigator.mediaDevices` is accessed to keep supporting WASM.
+
+## 0.1.3+4
+
+- Fixes a bug causing the application to crash when running on HTTP protocol (not HTTPS or localhost) and the `window.navigator.mediaDevices` property is `null`.
+
+## 0.1.3+3
+
+- Safari < 16 compatibility: Don't crash on missing `window.navigator.permissions` property
+
 ## 0.1.3+2
 
 - `web: 1.0.0` compatibility: `PermissionDescriptor` was removed in web package.

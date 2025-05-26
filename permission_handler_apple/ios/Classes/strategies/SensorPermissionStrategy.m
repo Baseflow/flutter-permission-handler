@@ -13,14 +13,10 @@
 }
 
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
-    if (@available(iOS 11.0, *)) {
-        completionHandler([CMMotionActivityManager isActivityAvailable]
-          ? ServiceStatusEnabled
-          : ServiceStatusDisabled
-        );
-    }
-    
-    completionHandler(ServiceStatusDisabled);
+    completionHandler([CMMotionActivityManager isActivityAvailable]
+        ? ServiceStatusEnabled
+        : ServiceStatusDisabled
+    );
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
@@ -31,46 +27,38 @@
         return;
     }
     
-    if (@available(iOS 11.0, *)) {
-        CMMotionActivityManager *motionManager = [[CMMotionActivityManager alloc] init];
-        
-        NSDate *today = [NSDate new];
-        [motionManager queryActivityStartingFromDate:today toDate:today toQueue:[NSOperationQueue mainQueue] withHandler:^(NSArray<CMMotionActivity *> *__nullable activities, NSError *__nullable error) {
-            PermissionStatus status = [SensorPermissionStrategy permissionStatus];
-            completionHandler(status);
-        }];
-    } else {
-        completionHandler(PermissionStatusDenied);
-    }
+    CMMotionActivityManager *motionManager = [[CMMotionActivityManager alloc] init];
     
+    NSDate *today = [NSDate new];
+    [motionManager queryActivityStartingFromDate:today toDate:today toQueue:[NSOperationQueue mainQueue] withHandler:^(NSArray<CMMotionActivity *> *__nullable activities, NSError *__nullable error) {
+        PermissionStatus status = [SensorPermissionStrategy permissionStatus];
+        completionHandler(status);
+    }];
+
 }
 
 + (PermissionStatus)permissionStatus {
-    if (@available(iOS 11.0, *)) {
-        CMAuthorizationStatus status = [CMMotionActivityManager authorizationStatus];
-        PermissionStatus permissionStatus;
-        
-        switch (status) {
-            case CMAuthorizationStatusNotDetermined:
-                permissionStatus = PermissionStatusDenied;
-                break;
-            case CMAuthorizationStatusRestricted:
-                permissionStatus = PermissionStatusRestricted;
-                break;
-            case CMAuthorizationStatusDenied:
-                permissionStatus = PermissionStatusPermanentlyDenied;
-                break;
-            case CMAuthorizationStatusAuthorized:
-                permissionStatus = PermissionStatusGranted;
-                break;
-            default:
-                permissionStatus = PermissionStatusGranted;
-        }
-        
-        return permissionStatus;
+    CMAuthorizationStatus status = [CMMotionActivityManager authorizationStatus];
+    PermissionStatus permissionStatus;
+    
+    switch (status) {
+        case CMAuthorizationStatusNotDetermined:
+            permissionStatus = PermissionStatusDenied;
+            break;
+        case CMAuthorizationStatusRestricted:
+            permissionStatus = PermissionStatusRestricted;
+            break;
+        case CMAuthorizationStatusDenied:
+            permissionStatus = PermissionStatusPermanentlyDenied;
+            break;
+        case CMAuthorizationStatusAuthorized:
+            permissionStatus = PermissionStatusGranted;
+            break;
+        default:
+            permissionStatus = PermissionStatusGranted;
     }
     
-    return PermissionStatusDenied;
+    return permissionStatus;
 }
 
 @end

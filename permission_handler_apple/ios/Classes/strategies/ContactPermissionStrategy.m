@@ -25,15 +25,11 @@
         return;
     }
 
-    if (@available(iOS 9.0, *)) {
-        [ContactPermissionStrategy requestPermissionsFromContactStore:completionHandler];
-    } else {
-        [ContactPermissionStrategy requestPermissionsFromAddressBook:completionHandler];
-    }
+    [ContactPermissionStrategy requestPermissionsFromContactStore:completionHandler];
 }
 
 + (PermissionStatus)permissionStatus {
-    if (@available(iOS 9.0, *)) {
+    if (@available(iOS 18.0, *)) {
         CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
 
         switch (status) {
@@ -45,23 +41,23 @@
                 return PermissionStatusPermanentlyDenied;
             case CNAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
+            case CNAuthorizationStatusLimited:
+                return PermissionStatusLimited;
         }
-
     } else {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();
+        CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];
 
         switch (status) {
-            case kABAuthorizationStatusNotDetermined:
+            case CNAuthorizationStatusNotDetermined:
                 return PermissionStatusDenied;
-            case kABAuthorizationStatusRestricted:
+            case CNAuthorizationStatusRestricted:
                 return PermissionStatusRestricted;
-            case kABAuthorizationStatusDenied:
+            case CNAuthorizationStatusDenied:
                 return PermissionStatusPermanentlyDenied;
-            case kABAuthorizationStatusAuthorized:
+            case CNAuthorizationStatusAuthorized:
                 return PermissionStatusGranted;
-#pragma clang diagnostic pop
+            default:
+                return PermissionStatusGranted;
         }
     }
 
@@ -73,7 +69,8 @@
 
     [contactStore requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError *__nullable error) {
         if (granted) {
-            completionHandler(PermissionStatusGranted);
+            const PermissionStatus updatedStatus = [self permissionStatus];
+            completionHandler(updatedStatus);
         } else {
             completionHandler(PermissionStatusPermanentlyDenied);
         }

@@ -2,17 +2,12 @@ name: permission_handler_example
 description: Demonstrates how to use the permission_handler plugin.
 
 environment:
-  sdk: ">=2.15.0 <4.0.0"
+  sdk: ^3.7.0
 
 dependencies:
   baseflow_plugin_template: ^2.1.1
   flutter:
     sdk: flutter
-
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   permission_handler:
     # When depending on this package from a real application you should use:
     #   permission_handler: ^x.y.z
@@ -21,7 +16,10 @@ dev_dependencies:
     # the parent directory to use the current plugin's version.
     path: ../
 
-  url_launcher: ^6.1.11
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  url_launcher: ^6.3.1
 
 flutter:
   uses-material-design: true

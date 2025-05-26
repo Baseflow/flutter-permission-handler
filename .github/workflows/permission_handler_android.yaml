@@ -33,6 +33,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
+      # Make sure JAVA version 17 is installed on build agent.
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+           
       # Make sure the stable version of Flutter is available
       - uses: subosito/flutter-action@v2
         with:
