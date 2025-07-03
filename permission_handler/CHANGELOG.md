@@ -1,3 +1,7 @@
+## 12.0.2
+
+- Fixes issue where permission callbacks would fire for incorrect permissions by isolating callbacks per permission instance.
+
 ## 12.0.1
 
 - Updates the correspondence between permission groups and the key values of Info.plist in the README.md.
