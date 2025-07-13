@@ -102,6 +102,10 @@
     <key>NSUserTrackingUsageDescription</key>
     <string>appTrackingTransparency</string>
 
+    <!-- Permission options for the `criticalAlerts` -->
+    <key>UNAuthorizationOptionCriticalAlert</key>
+    <string>Authorization Option Critical Alert</string>
+
     <!-- Permission options for the `assistant` group -->
     <key>NSSiriUsageDescription</key>
     <string>The example app would like access to Siri Kit to demonstrate requesting authorization.</string>
