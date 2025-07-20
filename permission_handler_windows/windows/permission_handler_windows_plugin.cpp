@@ -1,4 +1,4 @@
-#include "include/permission_handler_windows/permission_handler_windows_plugin.h"
+#include "include/permission_handler_windows/permission_handler_plugin.h"
 
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
