@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, depend_on_referenced_packages
+
 import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
@@ -21,18 +23,16 @@ final MaterialColor themeMaterialColor =
 
 /// A Flutter application demonstrating the functionality of this plugin
 class PermissionHandlerWidget extends StatefulWidget {
-  const PermissionHandlerWidget._();
+  const PermissionHandlerWidget({Key? key}) : super(key: key);
 
   /// Create a page containing the functionality of this plugin
   static ExamplePage createPage() {
     return ExamplePage(
-      Icons.location_on,
-      (context) => const PermissionHandlerWidget._(),
-    );
+        Icons.location_on, (context) => const PermissionHandlerWidget());
   }
 
   @override
-  _PermissionHandlerWidgetState createState() =>
+  State<PermissionHandlerWidget> createState() =>
       _PermissionHandlerWidgetState();
 }
 

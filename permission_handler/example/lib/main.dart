@@ -43,42 +43,40 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: ListView(
-        children:
-            Permission.values
-                .where((permission) {
-                  if (Platform.isIOS) {
-                    return permission != Permission.unknown &&
-                        permission != Permission.phone &&
-                        permission != Permission.sms &&
-                        permission != Permission.ignoreBatteryOptimizations &&
-                        permission != Permission.accessMediaLocation &&
-                        permission != Permission.activityRecognition &&
-                        permission != Permission.manageExternalStorage &&
-                        permission != Permission.systemAlertWindow &&
-                        permission != Permission.requestInstallPackages &&
-                        permission != Permission.accessNotificationPolicy &&
-                        permission != Permission.bluetoothScan &&
-                        permission != Permission.bluetoothAdvertise &&
-                        permission != Permission.bluetoothConnect &&
-                        permission != Permission.nearbyWifiDevices &&
-                        permission != Permission.videos &&
-                        permission != Permission.audio &&
-                        permission != Permission.scheduleExactAlarm &&
-                        permission != Permission.sensorsAlways;
-                  } else {
-                    return permission != Permission.unknown &&
-                        permission != Permission.mediaLibrary &&
-                        permission != Permission.photosAddOnly &&
-                        permission != Permission.reminders &&
-                        permission != Permission.bluetooth &&
-                        permission != Permission.appTrackingTransparency &&
-                        permission != Permission.criticalAlerts &&
-                        permission != Permission.assistant;
-                  }
-                })
-                .map((permission) => PermissionWidget(permission))
-                .toList(),
-      ),
+          children: Permission.values
+              .where((permission) {
+                if (Platform.isIOS || Platform.isMacOS) {
+                  return permission != Permission.unknown &&
+                      permission != Permission.phone &&
+                      permission != Permission.sms &&
+                      permission != Permission.ignoreBatteryOptimizations &&
+                      permission != Permission.accessMediaLocation &&
+                      permission != Permission.activityRecognition &&
+                      permission != Permission.manageExternalStorage &&
+                      permission != Permission.systemAlertWindow &&
+                      permission != Permission.requestInstallPackages &&
+                      permission != Permission.accessNotificationPolicy &&
+                      permission != Permission.bluetoothScan &&
+                      permission != Permission.bluetoothAdvertise &&
+                      permission != Permission.bluetoothConnect &&
+                      permission != Permission.nearbyWifiDevices &&
+                      permission != Permission.videos &&
+                      permission != Permission.audio &&
+                      permission != Permission.scheduleExactAlarm &&
+                      permission != Permission.sensorsAlways;
+                } else {
+                  return permission != Permission.unknown &&
+                      permission != Permission.mediaLibrary &&
+                      permission != Permission.photosAddOnly &&
+                      permission != Permission.reminders &&
+                      permission != Permission.bluetooth &&
+                      permission != Permission.appTrackingTransparency &&
+                      permission != Permission.criticalAlerts &&
+                      permission != Permission.assistant;
+                }
+              })
+              .map((permission) => PermissionWidget(permission))
+              .toList()),
     );
   }
 }
