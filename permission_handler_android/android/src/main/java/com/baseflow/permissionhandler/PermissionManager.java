@@ -144,6 +144,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             } else {
                 status = PermissionConstants.PERMISSION_STATUS_GRANTED;
             }
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_USE_FULL_SCREEN_INTENT) {
+            permission = PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                status = notificationManager.canUseFullScreenIntent()
+                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+            } else {
+                status = PermissionConstants.PERMISSION_STATUS_GRANTED;
+            }
         } else {
             return false;
         }
