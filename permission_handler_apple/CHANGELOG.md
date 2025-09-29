@@ -1,3 +1,7 @@
+## 9.4.8
+
+* Rewrite copyleft code from stackoverflow to fix compliance issue.
+
 ## 9.4.7
 
 * Increases minimum supported Flutter version to 3.3.0, and removes code only
