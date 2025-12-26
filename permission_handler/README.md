@@ -136,14 +136,7 @@ You must list the permission you want to use in your application:
   end
   ```
 
-2. Remove the `#` character in front of the permission you want to use. For example, if you need access to the calendar make sure the code looks like this:
-
-   ```ruby
-           ## dart: PermissionGroup.calendar
-           'PERMISSION_EVENTS=1',
-   ```
-
-3. Delete the corresponding permission description in `Info.plist`
+2. Delete the corresponding permission description in `Info.plist`
    e.g. when you don't need camera permission, just delete 'NSCameraUsageDescription'
    The following lists the relationship between `Permission` and `The key of Info.plist`:
 
@@ -170,7 +163,7 @@ You must list the permission you want to use in your application:
 | PermissionGroup.assistant                                                                   | NSSiriUsageDescription                                                                                         | PermissionGroupAssistant               |
 
 
-4. Clean & Rebuild
+3. Clean & Rebuild
 
 </details>
 
