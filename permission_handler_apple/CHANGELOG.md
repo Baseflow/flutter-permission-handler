@@ -1,4 +1,4 @@
-## Unreleased
+## 9.4.8
 
 * Fixed iOS permission request state not being reset when app enters background, causing subsequent requests to fail with `ERROR_ALREADY_REQUESTING_PERMISSIONS`.
 
