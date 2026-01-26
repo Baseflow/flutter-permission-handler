@@ -170,7 +170,20 @@ class Permission {
   /// Permission for accessing ignore battery optimizations (Android only).
   static const ignoreBatteryOptimizations = Permission._(16);
 
-  /// Permission for pushing notifications.
+  /// Permission for requesting notification permissions.
+  ///
+  /// **iOS**: Requests both general and CarPlay notification permissions on iOS 10.0+.
+  /// Status checking includes CarPlay settings when available, with graceful fallback
+  /// for older devices.
+  ///
+  /// **Android/Other platforms**: Standard notification permission behavior.
+  ///
+  /// Example:
+  /// ```dart
+  /// // Automatically includes CarPlay on supported iOS devices
+  /// final status = await Permission.notification.status;
+  /// final result = await Permission.notification.request();
+  /// ```
   static const notification = Permission._(17);
 
   /// Permission for accessing the device's media library.
