@@ -36,6 +36,7 @@
     authorizationOptions += UNAuthorizationOptionSound;
     authorizationOptions += UNAuthorizationOptionAlert;
     authorizationOptions += UNAuthorizationOptionBadge;
+    authorizationOptions += UNAuthorizationOptionCarPlay;
     [center requestAuthorizationWithOptions:(authorizationOptions) completionHandler:^(BOOL granted, NSError * _Nullable error) {
       if (error != nil || !granted) {
         completionHandler(PermissionStatusPermanentlyDenied);
@@ -60,6 +61,18 @@
       permissionStatus = PermissionStatusPermanentlyDenied;
     } else if (settings.authorizationStatus == UNAuthorizationStatusNotDetermined) {
       permissionStatus = PermissionStatusDenied;
+    } else if (settings.authorizationStatus == UNAuthorizationStatusAuthorized) {
+      if (@available(iOS 10.0, *)) {
+        if (settings.carPlaySetting == UNNotificationSettingEnabled) {
+          permissionStatus = PermissionStatusGranted;
+        } else if (settings.carPlaySetting == UNNotificationSettingDisabled) {
+          permissionStatus = PermissionStatusGranted;
+        } else {
+          permissionStatus = PermissionStatusGranted;
+        }
+      } else {
+        permissionStatus = PermissionStatusGranted;
+      }
     }
     dispatch_semaphore_signal(sem);
   }];

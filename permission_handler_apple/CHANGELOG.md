@@ -1,3 +1,7 @@
+## [9.4.8]
+
+* Enhanced notification permission checking to include CarPlay notification settings on iOS 10.0+ devices.
+
 ## 9.4.7
 
 * Increases minimum supported Flutter version to 3.3.0, and removes code only
