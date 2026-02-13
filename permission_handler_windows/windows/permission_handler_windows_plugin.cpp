@@ -139,7 +139,10 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
       requestResults.insert({EncodableValue(permissions[i]), EncodableValue((int)permissionStatus)});
     }
 
-    result->Success(requestResults);
+    // FIX: Explicitly wrap the map in EncodableValue for clang-cl compatibility.
+    // This is also valid for MSVC.
+    result->Success(EncodableValue(requestResults));
+
   } else if (methodName.compare("shouldShowRequestPermissionRationale") == 0
           || methodName.compare("openAppSettings")) {
     result->Success(EncodableValue(false));

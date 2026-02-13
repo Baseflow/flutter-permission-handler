@@ -1,3 +1,7 @@
+## 12.0.2
+
+- Updated windows permission handler to be compatible with clang-cl
+
 ## 12.0.1
 
 - Updates the correspondence between permission groups and the key values of Info.plist in the README.md.
