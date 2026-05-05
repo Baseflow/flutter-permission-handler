@@ -22,10 +22,14 @@ let permissionDefines: [CSetting] = [
     .define("PERMISSION_SPEECH_RECOGNIZER", to: environmentVariables["PERMISSION_SPEECH_RECOGNIZER"] ?? "0"),
     // dart: PermissionGroup.photos
     .define("PERMISSION_PHOTOS", to: environmentVariables["PERMISSION_PHOTOS"] ?? "0"),
+    // dart: PermissionGroup.photosAddOnly
+    .define("PERMISSION_PHOTOS_ADD_ONLY", to: environmentVariables["PERMISSION_PHOTOS_ADD_ONLY"] ?? "0"),
     // dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
     .define("PERMISSION_LOCATION", to: environmentVariables["PERMISSION_LOCATION"] ?? "0"),
     // dart: PermissionGroup.locationWhenInUse (only when locationAlways is NOT needed)
     .define("PERMISSION_LOCATION_WHENINUSE", to: environmentVariables["PERMISSION_LOCATION_WHENINUSE"] ?? "0"),
+    // dart: PermissionGroup.locationAlways
+    .define("PERMISSION_LOCATION_ALWAYS", to: environmentVariables["PERMISSION_LOCATION_ALWAYS"] ?? "0"),
     // dart: PermissionGroup.notification
     .define("PERMISSION_NOTIFICATIONS", to: environmentVariables["PERMISSION_NOTIFICATIONS"] ?? "0"),
     // dart: PermissionGroup.mediaLibrary

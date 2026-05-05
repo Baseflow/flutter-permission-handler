@@ -213,11 +213,17 @@ export PERMISSION_SPEECH_RECOGNIZER=1
 ## dart: PermissionGroup.photos
 export PERMISSION_PHOTOS=1
 
+## dart: PermissionGroup.photosAddOnly
+export PERMISSION_PHOTOS_ADD_ONLY=1
+
 ## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
 export PERMISSION_LOCATION=1
 
 ## dart: PermissionGroup.locationWhenInUse (only when locationAlways is NOT needed)
 # export PERMISSION_LOCATION_WHENINUSE=1
+
+## dart: PermissionGroup.locationAlways
+# export PERMISSION_LOCATION_ALWAYS=1
 
 ## dart: PermissionGroup.notification
 export PERMISSION_NOTIFICATIONS=1
