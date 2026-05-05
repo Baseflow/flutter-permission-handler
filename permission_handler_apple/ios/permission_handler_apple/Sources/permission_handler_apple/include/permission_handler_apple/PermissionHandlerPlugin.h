@@ -1,5 +1,6 @@
 #import <Flutter/Flutter.h>
-#import "PermissionManager.h"
+
+@class PermissionManager;
 
 @interface PermissionHandlerPlugin : NSObject<FlutterPlugin>
 - (instancetype)initWithPermissionManager:(PermissionManager *)permissionManager;
