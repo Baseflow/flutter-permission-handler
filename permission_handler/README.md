@@ -174,6 +174,77 @@ You must list the permission you want to use in your application:
 
 </details>
 
+<details>
+<summary>Swift Package Manager (SPM)</summary>
+
+> Requires Flutter 3.24.0 or higher and Xcode 15.0 or higher.
+
+With SPM, permissions are enabled via environment variables set in an Xcode pre-action script.
+
+1. Open your project in Xcode: **Product > Scheme > Edit Scheme...**
+2. Select **Build > Pre-actions**, click **+** → **New Run Script Action**
+3. Set **Provide build settings from** to your app target
+4. Paste the script below, keeping only the permissions your app needs:
+
+```bash
+# Keep only the permissions your app uses.
+
+## dart: PermissionGroup.calendar (< iOS 17)
+export PERMISSION_EVENTS=1
+
+## dart: PermissionGroup.calendarFullAccess (iOS 17+)
+export PERMISSION_EVENTS_FULL_ACCESS=1
+
+## dart: PermissionGroup.reminders
+export PERMISSION_REMINDERS=1
+
+## dart: PermissionGroup.contacts
+export PERMISSION_CONTACTS=1
+
+## dart: PermissionGroup.camera
+export PERMISSION_CAMERA=1
+
+## dart: PermissionGroup.microphone
+export PERMISSION_MICROPHONE=1
+
+## dart: PermissionGroup.speech
+export PERMISSION_SPEECH_RECOGNIZER=1
+
+## dart: PermissionGroup.photos
+export PERMISSION_PHOTOS=1
+
+## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
+export PERMISSION_LOCATION=1
+
+## dart: PermissionGroup.locationWhenInUse (only when locationAlways is NOT needed)
+# export PERMISSION_LOCATION_WHENINUSE=1
+
+## dart: PermissionGroup.notification
+export PERMISSION_NOTIFICATIONS=1
+
+## dart: PermissionGroup.mediaLibrary
+export PERMISSION_MEDIA_LIBRARY=1
+
+## dart: PermissionGroup.sensors
+export PERMISSION_SENSORS=1
+
+## dart: PermissionGroup.bluetooth
+export PERMISSION_BLUETOOTH=1
+
+## dart: PermissionGroup.appTrackingTransparency
+export PERMISSION_APP_TRACKING_TRANSPARENCY=1
+
+## dart: PermissionGroup.criticalAlerts
+export PERMISSION_CRITICAL_ALERTS=1
+
+## dart: PermissionGroup.assistant
+export PERMISSION_ASSISTANT=1
+```
+
+5. Clean & Rebuild
+
+</details>
+
 ## How to use
 
 There are a number of [`Permission`](https://pub.dev/documentation/permission_handler_platform_interface/latest/permission_handler_platform_interface/Permission-class.html#constants)s.
