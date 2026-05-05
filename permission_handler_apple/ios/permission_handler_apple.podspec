@@ -12,12 +12,12 @@ Permission plugin for Flutter. This plugin provides a cross-platform (iOS, Andro
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Baseflow' => 'hello@baseflow.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Sources/permission_handler_apple/**/*.{h,m}'
-  s.public_header_files = 'Sources/permission_handler_apple/include/**/*.h'
+  s.source_files = 'permission_handler_apple/Sources/permission_handler_apple/**/*.{h,m}'
+  s.public_header_files = 'permission_handler_apple/Sources/permission_handler_apple/include/**/*.h'
   s.dependency 'Flutter'
 
   s.ios.deployment_target = '12.0'
   s.static_framework = true
-  s.resource_bundles = {'permission_handler_apple_privacy' => ['Sources/permission_handler_apple/PrivacyInfo.xcprivacy']}
+  s.resource_bundles = {'permission_handler_apple_privacy' => ['permission_handler_apple/Sources/permission_handler_apple/PrivacyInfo.xcprivacy']}
 end
 
