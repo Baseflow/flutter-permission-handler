@@ -179,75 +179,43 @@ You must list the permission you want to use in your application:
 
 > Requires Flutter 3.24.0 or higher and Xcode 15.0 or higher.
 
-With SPM, permissions are enabled via environment variables set in an Xcode pre-action script.
+With SPM, `Package.swift` automatically detects which permissions to enable by reading your app's `Info.plist`. A permission is compiled in when its corresponding usage description key is present:
 
-1. Open your project in Xcode: **Product > Scheme > Edit Scheme...**
-2. Select **Build > Pre-actions**, click **+** → **New Run Script Action**
-3. Set **Provide build settings from** to your app target
-4. Paste the script below, keeping only the permissions your app needs:
+| Permission group | Info.plist key |
+|---|---|
+| `PermissionGroup.calendar` (< iOS 17) | `NSCalendarsUsageDescription` |
+| `PermissionGroup.calendarFullAccess` (iOS 17+) | `NSCalendarsFullAccessUsageDescription` |
+| `PermissionGroup.reminders` | `NSRemindersUsageDescription` |
+| `PermissionGroup.contacts` | `NSContactsUsageDescription` |
+| `PermissionGroup.camera` | `NSCameraUsageDescription` |
+| `PermissionGroup.microphone` | `NSMicrophoneUsageDescription` |
+| `PermissionGroup.speech` | `NSSpeechRecognitionUsageDescription` |
+| `PermissionGroup.photos` | `NSPhotoLibraryUsageDescription` |
+| `PermissionGroup.photosAddOnly` | `NSPhotoLibraryAddUsageDescription` |
+| `PermissionGroup.location` / `locationWhenInUse` | `NSLocationWhenInUseUsageDescription` |
+| `PermissionGroup.locationAlways` | `NSLocationAlwaysAndWhenInUseUsageDescription` |
+| `PermissionGroup.mediaLibrary` | `NSAppleMusicUsageDescription` |
+| `PermissionGroup.sensors` | `NSMotionUsageDescription` |
+| `PermissionGroup.bluetooth` | `NSBluetoothAlwaysUsageDescription` |
+| `PermissionGroup.appTrackingTransparency` | `NSUserTrackingUsageDescription` |
+| `PermissionGroup.assistant` | `NSSiriUsageDescription` |
+
+Because you must already add these keys to `Info.plist` for any permission to work, no additional configuration file is needed.
+
+**`PermissionGroup.notification` and `PermissionGroup.criticalAlerts`** have no required `Info.plist` key. Enable them via environment variable instead (set once per Mac session, before opening Xcode):
 
 ```bash
-# Keep only the permissions your app uses.
-
-## dart: PermissionGroup.calendar (< iOS 17)
-export PERMISSION_EVENTS=1
-
-## dart: PermissionGroup.calendarFullAccess (iOS 17+)
-export PERMISSION_EVENTS_FULL_ACCESS=1
-
-## dart: PermissionGroup.reminders
-export PERMISSION_REMINDERS=1
-
-## dart: PermissionGroup.contacts
-export PERMISSION_CONTACTS=1
-
-## dart: PermissionGroup.camera
-export PERMISSION_CAMERA=1
-
-## dart: PermissionGroup.microphone
-export PERMISSION_MICROPHONE=1
-
-## dart: PermissionGroup.speech
-export PERMISSION_SPEECH_RECOGNIZER=1
-
-## dart: PermissionGroup.photos
-export PERMISSION_PHOTOS=1
-
-## dart: PermissionGroup.photosAddOnly
-export PERMISSION_PHOTOS_ADD_ONLY=1
-
-## dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
-export PERMISSION_LOCATION=1
-
-## dart: PermissionGroup.locationWhenInUse (only when locationAlways is NOT needed)
-# export PERMISSION_LOCATION_WHENINUSE=1
-
-## dart: PermissionGroup.locationAlways
-# export PERMISSION_LOCATION_ALWAYS=1
-
-## dart: PermissionGroup.notification
-export PERMISSION_NOTIFICATIONS=1
-
-## dart: PermissionGroup.mediaLibrary
-export PERMISSION_MEDIA_LIBRARY=1
-
-## dart: PermissionGroup.sensors
-export PERMISSION_SENSORS=1
-
-## dart: PermissionGroup.bluetooth
-export PERMISSION_BLUETOOTH=1
-
-## dart: PermissionGroup.appTrackingTransparency
-export PERMISSION_APP_TRACKING_TRANSPARENCY=1
-
-## dart: PermissionGroup.criticalAlerts
-export PERMISSION_CRITICAL_ALERTS=1
-
-## dart: PermissionGroup.assistant
-export PERMISSION_ASSISTANT=1
+launchctl setenv PERMISSION_NOTIFICATIONS 1
+launchctl setenv PERMISSION_CRITICAL_ALERTS 1   # optional
 ```
 
-5. Clean & Rebuild
+**After adding or removing a key**, clear Xcode's package cache once so `Package.swift` is re-evaluated:
+
+```bash
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
+
+Then run `flutter build ios` or rebuild in Xcode as usual.
 
 </details>
 
