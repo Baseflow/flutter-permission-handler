@@ -1,0 +1,35 @@
+# Podfile for example/ios to ensure CocoaPods knows the iOS platform and targets.
+# This minimal Podfile sets the platform to iOS 13.0 and defines only the Runner target
+# (no RunnerTests target) so CocoaPods won't try to integrate a missing test target.
+
+platform :ios, '13.0'
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+# Helper to get flutter root if needed by CI. Fall back to `which flutter` if the
+# generated file isn't present.
+def flutter_root
+  generated = File.join(__dir__, '..', '.flutter-plugins-dependencies')
+  if File.exist?(generated)
+    match = File.read(generated).match(/FLUTTER_ROOT=(.*)/)
+    return match[1] if match
+  end
+  `which flutter`.chomp
+end
+
+target 'Runner' do
+  # If your project needs frameworks, uncomment the following line.
+  # use_frameworks!
+
+  # Pods for Runner
+  # Keep this minimal: do not reference any test target such as `RunnerTests`.
+
+  # If CI needs Flutter-managed pods, the Flutter tool will regenerate a suitable
+  # Podfile when running `flutter build ios` / `flutter pub get`.
+end
+

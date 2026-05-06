@@ -1,3 +1,9 @@
+## 9.4.8
+
+* Removed CocoaPods support by deleting the `Podfile` and removing related build phases and configuration files from the Xcode project
+* Migrated to Swift Package Manager (SPM) for plugin dependencies using `FlutterGeneratedPluginSwiftPackage`
+* Updated the minimum iOS deployment target from 12.0 to 13.0
+
 ## 9.4.7
 
 * Increases minimum supported Flutter version to 3.3.0, and removes code only
