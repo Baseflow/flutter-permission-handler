@@ -1,3 +1,8 @@
+## 9.4.8
+
+* Added support to SPM for the permission_handler_apple plugin itself
+* Updated the minimum iOS deployment target from 12.0 to 13.0
+
 ## 9.4.7
 
 * Increases minimum supported Flutter version to 3.3.0, and removes code only

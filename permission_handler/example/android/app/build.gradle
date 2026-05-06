@@ -25,7 +25,7 @@ android {
     if (project.android.hasProperty("namespace")) {
       namespace 'com.baseflow.permissionhandlerexample'
     }
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

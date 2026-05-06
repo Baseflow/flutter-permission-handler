@@ -19,35 +19,48 @@ While the permissions are being requested during runtime, you'll still need to t
 **Upgrade pre-1.12 Android projects**
   
 Since version 4.4.0 this plugin is implemented using the Flutter 1.12 Android plugin APIs. Unfortunately, this means App developers also need to migrate their Apps to support the new Android infrastructure. You can do so by following the [Upgrading pre 1.12 Android projects](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects) migration guide. Failing to do so might result in unexpected behavior. The most common known error is the permission_handler not returning after calling the `.request()` method on permission.
-
+ 
 **AndroidX**
-
+ 
 As of version 3.1.0, the <kbd>permission_handler</kbd> plugin switched to the AndroidX version of the Android Support Libraries. This means you need to make sure your Android project is also upgraded to support AndroidX. Detailed instructions can be found [here](https://flutter.dev/docs/development/packages-and-plugins/androidx-compatibility).
-
+ 
 The TL;DR version is:
-
+ 
 1. Add the following to your "gradle.properties" file:
-
+ 
 ```properties
 android.useAndroidX=true
 android.enableJetifier=true
 ```
-
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 33:
-
+ 
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to at least `36`: newer AndroidX artifacts (for example androidx.browser:browser:1.9.0 and androidx.core:core-ktx:1.17.0) require compiling against API 36 or later. Example:
+ 
 ```gradle
 android {
-  compileSdkVersion 35
+  compileSdkVersion 36
   ...
 }
 ```
-
-3. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found [here](https://developer.android.com/jetpack/androidx/migrate)).
-
+ 
+3. If you see warnings from the Android Gradle Plugin about unsupported compileSdk versions, upgrade your Android Gradle Plugin (AGP) to a version that supports API 36 or later. We recommend using AGP 8.9.1 or newer and a compatible Gradle distribution (e.g. Gradle 8.11.1+).
+ 
+4. Make sure you replace all the `android.` dependencies to their AndroidX counterparts (a full list can be found [here](https://developer.android.com/jetpack/androidx/migrate)).
+ 
 Add permissions to your `AndroidManifest.xml` file.
 There are `debug`, `main`, and `profile` versions which are chosen depending on how you start your app.
 In general, it's sufficient to add permission only to the `main` version.
 [Here](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/android/app/src/main/AndroidManifest.xml)'s an example `AndroidManifest.xml` with a complete list of all possible permissions.
+
+
+**Troubleshooting build memory issues**
+
+If you encounter Java heap space errors while building with newer AGP/Gradle, increase the Gradle JVM memory in `android/gradle.properties` for the app/project:
+
+```properties
+org.gradle.jvmargs=-Xmx4G
+android.useAndroidX=true
+android.enableJetifier=true
+```
 
 </details>
 
