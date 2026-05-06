@@ -30,6 +30,18 @@ target 'Runner' do
     use_modular_headers!
 
   # Pods for Runner
+  # Explicitly include the permission_handler_apple plugin pod from the
+  # Flutter-generated symlink. This ensures CocoaPods installs the plugin
+  # headers/modules in CI/local environments where the Flutter tool doesn't
+  # inject pods prior to `pod install` being run separately.
+  begin
+    pod 'permission_handler_apple', :path => File.join(__dir__, '.symlinks', 'plugins', 'permission_handler_apple', 'ios'), :modular_headers => true
+  rescue => e
+    # If the symlink/plugin isn't available (for example when building upstream
+    # or when the plugin isn't included), fall back silently so the Podfile
+    # remains compatible.
+    puts "Warning: could not add local permission_handler_apple pod: #{e}"
+  end
   # Keep this minimal: do not reference any test target such as `RunnerTests`.
 
   # If CI needs Flutter-managed pods, the Flutter tool will regenerate a suitable
