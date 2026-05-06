@@ -1,4 +1,11 @@
 
+## 13.0.2
+
+* chore: Update Android build configuration in example projects to fix CI warnings and support newer AndroidX artifacts
+  - Bumped `compileSdkVersion` in examples to `36` to satisfy androidx.browser:browser:1.9.0 and androidx.core:core-ktx:1.17.0 requirements.
+  - Upgraded Android Gradle Plugin to `8.9.1` and aligned Gradle wrapper to a compatible distribution (e.g. Gradle `8.11.1`).
+  - Increased Gradle JVM heap in example `gradle.properties` to `-Xmx4G` to avoid `Java heap space` errors during dependency transforms.
+
 ## 13.0.1
 
 * fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
