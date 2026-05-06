@@ -1,7 +1,6 @@
 ## 9.4.8
 
 * Added support to SPM for the permission_handler_apple plugin itself
-* Migrated to Swift Package Manager (SPM) for plugin dependencies using `FlutterGeneratedPluginSwiftPackage`
 * Updated the minimum iOS deployment target from 12.0 to 13.0
 
 ## 9.4.7
