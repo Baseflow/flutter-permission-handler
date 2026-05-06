@@ -25,6 +25,9 @@ end
 target 'Runner' do
   # If your project needs frameworks, uncomment the following line.
   # use_frameworks!
+    # Use modular headers to ensure Objective-C module imports from plugin pods
+    # are available to the generated registrant in CI environments.
+    use_modular_headers!
 
   # Pods for Runner
   # Keep this minimal: do not reference any test target such as `RunnerTests`.
