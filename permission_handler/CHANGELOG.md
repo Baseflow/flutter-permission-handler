@@ -1,3 +1,7 @@
+## 12.0.2
+
+- Fixes the Windows build with Visual Studio 18.6.1 or newer by removing a deprecated compiler option.
+
 ## 12.0.1
 
 - Updates the correspondence between permission groups and the key values of Info.plist in the README.md.
