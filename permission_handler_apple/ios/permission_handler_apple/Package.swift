@@ -47,10 +47,11 @@ let permissionDefines: [CSetting] = [
     .define("PERMISSION_EVENTS",
             to: enabled("PERMISSION_EVENTS",
                         plistKeys: "NSCalendarsUsageDescription")),
-    // dart: PermissionGroup.calendarFullAccess (iOS 17+)
+    // dart: PermissionGroup.calendarFullAccess (iOS 17+) / PermissionGroup.calendarWriteOnly (iOS 17+)
     .define("PERMISSION_EVENTS_FULL_ACCESS",
             to: enabled("PERMISSION_EVENTS_FULL_ACCESS",
-                        plistKeys: "NSCalendarsFullAccessUsageDescription")),
+                        plistKeys: "NSCalendarsFullAccessUsageDescription",
+                                   "NSCalendarsWriteOnlyAccessUsageDescription")),
     // dart: PermissionGroup.reminders
     .define("PERMISSION_REMINDERS",
             to: enabled("PERMISSION_REMINDERS",
@@ -71,10 +72,13 @@ let permissionDefines: [CSetting] = [
     .define("PERMISSION_SPEECH_RECOGNIZER",
             to: enabled("PERMISSION_SPEECH_RECOGNIZER",
                         plistKeys: "NSSpeechRecognitionUsageDescription")),
-    // dart: PermissionGroup.photos
+    // dart: PermissionGroup.photos / PermissionGroup.photosAddOnly
+    // NSPhotoLibraryAddUsageDescription alone also enables PhotoPermissionStrategy because the
+    // native code compiles photosAddOnly support under PERMISSION_PHOTOS.
     .define("PERMISSION_PHOTOS",
             to: enabled("PERMISSION_PHOTOS",
-                        plistKeys: "NSPhotoLibraryUsageDescription")),
+                        plistKeys: "NSPhotoLibraryUsageDescription",
+                                   "NSPhotoLibraryAddUsageDescription")),
     // dart: PermissionGroup.photosAddOnly
     .define("PERMISSION_PHOTOS_ADD_ONLY",
             to: enabled("PERMISSION_PHOTOS_ADD_ONLY",

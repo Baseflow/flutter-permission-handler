@@ -34,6 +34,10 @@
 	<string>Calendar full access</string>
 	<key>NSCalendarsUsageDescription</key>
 	<string>Calendars</string>
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>Calendar write only</string>
+	<key>NSCameraUsageDescription</key>
+	<string>camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>contacts</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
