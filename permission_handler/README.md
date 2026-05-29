@@ -357,7 +357,7 @@ Starting with Android 10, apps are required to first obtain permission to read t
 
 ### onRequestPermissionsResult is called without results. What can I do?
 
-It is probably caused by a difference between completeSdkVersion and targetSdkVersion. It can be depending on the flutter version that you use. `targetSdkVersion = flutter.targetSdkVersion` in the app/build.gradle indicates that the targetSdkVersion is flutter version dependant. For more information: [issue 1222](https://github.com/Baseflow/flutter-permission-handler/issues/1222)
+It is probably caused by a difference between compileSdkVersion and targetSdkVersion. It can be depending on the flutter version that you use. `targetSdkVersion = flutter.targetSdkVersion` in the app/build.gradle indicates that the targetSdkVersion is flutter version dependant. For more information: [issue 1222](https://github.com/Baseflow/flutter-permission-handler/issues/1222)
 
 ### Checking or requesting a permission terminates the application on iOS. What can I do?
 
