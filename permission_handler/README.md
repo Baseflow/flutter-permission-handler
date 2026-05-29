@@ -184,6 +184,7 @@ With SPM, `Package.swift` automatically detects which permissions to enable by r
 | Permission group | Info.plist key |
 |---|---|
 | `PermissionGroup.calendar` (< iOS 17) | `NSCalendarsUsageDescription` |
+| `PermissionGroup.calendarWriteOnly` (iOS 17+) | `NSCalendarsWriteOnlyAccessUsageDescription` |
 | `PermissionGroup.calendarFullAccess` (iOS 17+) | `NSCalendarsFullAccessUsageDescription` |
 | `PermissionGroup.reminders` | `NSRemindersUsageDescription` |
 | `PermissionGroup.contacts` | `NSContactsUsageDescription` |
