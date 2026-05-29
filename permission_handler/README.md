@@ -203,11 +203,16 @@ With SPM, `Package.swift` automatically detects which permissions to enable by r
 
 Because you must already add these keys to `Info.plist` for any permission to work, no additional configuration file is needed.
 
-**`PermissionGroup.notification` and `PermissionGroup.criticalAlerts`** have no required `Info.plist` key and are **enabled by default**. To explicitly disable one, set its environment variable to `0` (once per Mac session, before opening Xcode):
+**`PermissionGroup.notification`** has no required `Info.plist` key and is **enabled by default**. To disable it, set the environment variable to `0` (once per Mac session, before opening Xcode):
 
 ```bash
 launchctl setenv PERMISSION_NOTIFICATIONS 0
-launchctl setenv PERMISSION_CRITICAL_ALERTS 0
+```
+
+**`PermissionGroup.criticalAlerts`** requires a special Apple entitlement and is **disabled by default**. Enable it explicitly:
+
+```bash
+launchctl setenv PERMISSION_CRITICAL_ALERTS 1
 ```
 
 **After adding or removing a key**, clear Xcode's package cache once so `Package.swift` is re-evaluated:

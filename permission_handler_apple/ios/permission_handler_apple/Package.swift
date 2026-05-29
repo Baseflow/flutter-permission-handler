@@ -119,9 +119,10 @@ let permissionDefines: [CSetting] = [
     .define("PERMISSION_APP_TRACKING_TRANSPARENCY",
             to: enabled("PERMISSION_APP_TRACKING_TRANSPARENCY",
                         plistKeys: "NSUserTrackingUsageDescription")),
-    // dart: PermissionGroup.criticalAlerts (no required Info.plist key — enabled by default)
+    // dart: PermissionGroup.criticalAlerts (no required Info.plist key — requires Apple entitlement,
+    // opt-in via env var: launchctl setenv PERMISSION_CRITICAL_ALERTS 1)
     .define("PERMISSION_CRITICAL_ALERTS",
-            to: enabled("PERMISSION_CRITICAL_ALERTS", defaultValue: "1")),
+            to: enabled("PERMISSION_CRITICAL_ALERTS")),
     // dart: PermissionGroup.assistant
     .define("PERMISSION_ASSISTANT",
             to: enabled("PERMISSION_ASSISTANT",
