@@ -58,9 +58,7 @@
 	<string>photos</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>reminders</string>
-	<key>NSSiriUsageDescription</key>
-	<string>The example app would like access to Siri Kit to demonstrate requesting authorization.</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
+<key>NSSpeechRecognitionUsageDescription</key>
 	<string>speech</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>appTrackingTransparency</string>
