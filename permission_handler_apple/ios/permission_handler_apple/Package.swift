@@ -1,0 +1,156 @@
+// swift-tools-version: 5.9
+
+import PackageDescription
+import Foundation
+
+// ---------------------------------------------------------------------------
+// Permission configuration
+//
+// Permissions are resolved in priority order:
+//   1. Environment variable (e.g. `launchctl setenv PERMISSION_CAMERA 1`
+//      or `launchctl setenv PERMISSION_NOTIFICATIONS 0` to explicitly disable)
+//   2. Matching key present in the app's Info.plist
+//   3. Default: enabled for permissions with no required plist key
+//              (PERMISSION_NOTIFICATIONS, PERMISSION_CRITICAL_ALERTS),
+//              disabled for all others.
+//
+// After changing Info.plist or env vars, clear DerivedData once so Xcode
+// re-evaluates this manifest:
+//   rm -rf ~/Library/Developer/Xcode/DerivedData
+// ---------------------------------------------------------------------------
+
+let env = ProcessInfo.processInfo.environment
+
+/// Walk up from Package.swift looking for Runner/Info.plist.
+/// Works when the package is resolved via Flutter's .symlinks/ directory.
+func findInfoPlist() -> [String: Any] {
+    var dir = URL(fileURLWithPath: #file).deletingLastPathComponent()
+    for _ in 0..<8 {
+        let candidate = dir.appendingPathComponent("Runner/Info.plist")
+        if let plist = NSDictionary(contentsOf: candidate) as? [String: Any] {
+            return plist
+        }
+        dir = dir.deletingLastPathComponent()
+    }
+    return [:]
+}
+
+let infoPlist = findInfoPlist()
+
+/// Return "1" if the env var is set (non-zero), "0" if explicitly set to "0",
+/// else "1" if any Info.plist key is present, else `defaultValue`.
+func enabled(_ envKey: String, plistKeys: String..., defaultValue: String = "0") -> String {
+    if let val = env[envKey] { return val == "0" ? "0" : "1" }
+    for key in plistKeys where infoPlist[key] != nil { return "1" }
+    return defaultValue
+}
+
+let permissionDefines: [CSetting] = [
+    // dart: PermissionGroup.calendar (< iOS 17)
+    .define("PERMISSION_EVENTS",
+            to: enabled("PERMISSION_EVENTS",
+                        plistKeys: "NSCalendarsUsageDescription")),
+    // dart: PermissionGroup.calendarFullAccess (iOS 17+) / PermissionGroup.calendarWriteOnly (iOS 17+)
+    .define("PERMISSION_EVENTS_FULL_ACCESS",
+            to: enabled("PERMISSION_EVENTS_FULL_ACCESS",
+                        plistKeys: "NSCalendarsFullAccessUsageDescription",
+                                   "NSCalendarsWriteOnlyAccessUsageDescription")),
+    // dart: PermissionGroup.reminders
+    .define("PERMISSION_REMINDERS",
+            to: enabled("PERMISSION_REMINDERS",
+                        plistKeys: "NSRemindersUsageDescription")),
+    // dart: PermissionGroup.contacts
+    .define("PERMISSION_CONTACTS",
+            to: enabled("PERMISSION_CONTACTS",
+                        plistKeys: "NSContactsUsageDescription")),
+    // dart: PermissionGroup.camera
+    .define("PERMISSION_CAMERA",
+            to: enabled("PERMISSION_CAMERA",
+                        plistKeys: "NSCameraUsageDescription")),
+    // dart: PermissionGroup.microphone
+    .define("PERMISSION_MICROPHONE",
+            to: enabled("PERMISSION_MICROPHONE",
+                        plistKeys: "NSMicrophoneUsageDescription")),
+    // dart: PermissionGroup.speech
+    .define("PERMISSION_SPEECH_RECOGNIZER",
+            to: enabled("PERMISSION_SPEECH_RECOGNIZER",
+                        plistKeys: "NSSpeechRecognitionUsageDescription")),
+    // dart: PermissionGroup.photos / PermissionGroup.photosAddOnly
+    // NSPhotoLibraryAddUsageDescription alone also enables PhotoPermissionStrategy because the
+    // native code compiles photosAddOnly support under PERMISSION_PHOTOS.
+    .define("PERMISSION_PHOTOS",
+            to: enabled("PERMISSION_PHOTOS",
+                        plistKeys: "NSPhotoLibraryUsageDescription",
+                                   "NSPhotoLibraryAddUsageDescription")),
+    // dart: PermissionGroup.photosAddOnly
+    .define("PERMISSION_PHOTOS_ADD_ONLY",
+            to: enabled("PERMISSION_PHOTOS_ADD_ONLY",
+                        plistKeys: "NSPhotoLibraryAddUsageDescription")),
+    // dart: PermissionGroup.location / locationAlways / locationWhenInUse
+    .define("PERMISSION_LOCATION",
+            to: enabled("PERMISSION_LOCATION",
+                        plistKeys: "NSLocationWhenInUseUsageDescription",
+                                   "NSLocationAlwaysAndWhenInUseUsageDescription")),
+    // dart: PermissionGroup.locationWhenInUse (only when locationAlways is NOT needed)
+    .define("PERMISSION_LOCATION_WHENINUSE",
+            to: enabled("PERMISSION_LOCATION_WHENINUSE",
+                        plistKeys: "NSLocationWhenInUseUsageDescription")),
+    // dart: PermissionGroup.locationAlways
+    .define("PERMISSION_LOCATION_ALWAYS",
+            to: enabled("PERMISSION_LOCATION_ALWAYS",
+                        plistKeys: "NSLocationAlwaysAndWhenInUseUsageDescription")),
+    // dart: PermissionGroup.notification (no required Info.plist key — enabled by default)
+    .define("PERMISSION_NOTIFICATIONS",
+            to: enabled("PERMISSION_NOTIFICATIONS", defaultValue: "1")),
+    // dart: PermissionGroup.mediaLibrary
+    .define("PERMISSION_MEDIA_LIBRARY",
+            to: enabled("PERMISSION_MEDIA_LIBRARY",
+                        plistKeys: "NSAppleMusicUsageDescription")),
+    // dart: PermissionGroup.sensors
+    .define("PERMISSION_SENSORS",
+            to: enabled("PERMISSION_SENSORS",
+                        plistKeys: "NSMotionUsageDescription")),
+    // dart: PermissionGroup.bluetooth
+    .define("PERMISSION_BLUETOOTH",
+            to: enabled("PERMISSION_BLUETOOTH",
+                        plistKeys: "NSBluetoothAlwaysUsageDescription",
+                                   "NSBluetoothPeripheralUsageDescription")),
+    // dart: PermissionGroup.appTrackingTransparency
+    .define("PERMISSION_APP_TRACKING_TRANSPARENCY",
+            to: enabled("PERMISSION_APP_TRACKING_TRANSPARENCY",
+                        plistKeys: "NSUserTrackingUsageDescription")),
+    // dart: PermissionGroup.criticalAlerts (no required Info.plist key — requires Apple entitlement,
+    // opt-in via env var: launchctl setenv PERMISSION_CRITICAL_ALERTS 1)
+    .define("PERMISSION_CRITICAL_ALERTS",
+            to: enabled("PERMISSION_CRITICAL_ALERTS")),
+    // dart: PermissionGroup.assistant
+    .define("PERMISSION_ASSISTANT",
+            to: enabled("PERMISSION_ASSISTANT",
+                        plistKeys: "NSSiriUsageDescription")),
+]
+
+let package = Package(
+    name: "permission_handler_apple",
+    platforms: [
+        .iOS("12.0"),
+    ],
+    products: [
+        .library(name: "permission-handler-apple", targets: ["permission_handler_apple"]),
+    ],
+    targets: [
+        .target(
+            name: "permission_handler_apple",
+            path: "Sources/permission_handler_apple",
+            resources: [
+                .process("PrivacyInfo.xcprivacy"),
+            ],
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("."),
+                .headerSearchPath("strategies"),
+                .headerSearchPath("util"),
+                .headerSearchPath("include/permission_handler_apple"),
+            ] + permissionDefines
+        ),
+    ]
+)

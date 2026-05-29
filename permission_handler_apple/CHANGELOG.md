@@ -1,3 +1,13 @@
+## 9.4.8
+
+* Adds Swift Package Manager (SPM) support for Flutter 3.24+. Permissions are
+  enabled automatically based on usage description keys present in `Info.plist`
+  — no additional configuration required beyond clearing DerivedData once after
+  changes: `rm -rf ~/Library/Developer/Xcode/DerivedData`.
+* Moves ObjC sources to SPM-compatible layout (`Sources/permission_handler_apple/`).
+  CocoaPods continues to work unchanged.
+* Bumps minimum iOS deployment target to 12.0.
+
 ## 9.4.7
 
 * Increases minimum supported Flutter version to 3.3.0, and removes code only
