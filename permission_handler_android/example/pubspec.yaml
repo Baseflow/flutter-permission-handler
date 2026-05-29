@@ -5,7 +5,6 @@ environment:
   sdk: ^3.7.0
 
 dependencies:
-  baseflow_plugin_template: ^2.1.2
   flutter:
     sdk: flutter
   permission_handler_platform_interface: ^4.2.0
@@ -22,11 +21,5 @@ dev_dependencies:
     # the parent directory to use the current plugin's version.
     path: ../
 
-  url_launcher: ^6.0.12
-
 flutter:
   uses-material-design: true
-
-  assets:
-    - res/images/baseflow_logo_def_light-02.png
-    - res/images/poweredByBaseflowLogoLight@3x.png

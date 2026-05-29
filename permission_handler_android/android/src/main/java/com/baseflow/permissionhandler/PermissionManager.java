@@ -117,9 +117,15 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             }
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                status = activity.getPackageManager().canRequestPackageInstalls()
-                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+                try {
+                    status = activity.getPackageManager().canRequestPackageInstalls()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                } catch (SecurityException e) {
+                    // App has not declared REQUEST_INSTALL_PACKAGES in manifest.
+                    Log.d(PermissionConstants.LOG_TAG, "Cannot call canRequestPackageInstalls: " + e.getMessage());
+                    status = PermissionConstants.PERMISSION_STATUS_DENIED;
+                }
                 permission = PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES;
             } else {
                 return false;
@@ -532,10 +538,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     permissionStatuses.add(status);
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        int status = context.getPackageManager().canRequestPackageInstalls()
-                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                            : PermissionConstants.PERMISSION_STATUS_DENIED;
-                        permissionStatuses.add(status);
+                        try {
+                            int status = context.getPackageManager().canRequestPackageInstalls()
+                                ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                                : PermissionConstants.PERMISSION_STATUS_DENIED;
+                            permissionStatuses.add(status);
+                        } catch (SecurityException e) {
+                            // App has not declared REQUEST_INSTALL_PACKAGES in manifest.
+                            Log.d(PermissionConstants.LOG_TAG, "Cannot call canRequestPackageInstalls: " + e.getMessage());
+                            permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
+                        }
                     }
                 } else if (permission == PermissionConstants.PERMISSION_GROUP_ACCESS_NOTIFICATION_POLICY) {
                     NotificationManager notificationManager = (NotificationManager) context.getSystemService(Application.NOTIFICATION_SERVICE);
