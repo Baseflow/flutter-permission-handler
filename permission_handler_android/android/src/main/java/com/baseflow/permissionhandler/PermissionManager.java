@@ -144,6 +144,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             } else {
                 status = PermissionConstants.PERMISSION_STATUS_GRANTED;
             }
+        } else if (requestCode == PermissionConstants.PERMISSION_CODE_USE_FULL_SCREEN_INTENT) {
+            permission = PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                status = notificationManager.canUseFullScreenIntent()
+                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+            } else {
+                status = PermissionConstants.PERMISSION_STATUS_GRANTED;
+            }
         } else {
             return false;
         }
@@ -267,6 +277,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 requestResults.put(
                     permission,
                     determinePermissionStatus(permission));
+            } else if (permission == PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                    NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                    int status = notificationManager.canUseFullScreenIntent()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                    requestResults.put(permission, status);
+                } else {
+                    requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_GRANTED);
+                }
             } else if (!requestResults.containsKey(permission)) {
                 requestResults.put(
                     permission,
@@ -422,6 +442,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 } else {
                     requestResults.put(permission, PermissionConstants.PERMISSION_STATUS_DENIED);
                 }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && permission == PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT) {
+                launchSpecialPermission(
+                    Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
+                    PermissionConstants.PERMISSION_CODE_USE_FULL_SCREEN_INTENT);
             } else {
                 permissionsToRequest.addAll(names);
                 pendingRequestCount += names.size();
@@ -566,7 +590,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     }else {
                         permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
                     }
-                }else {
+                } else if (permission == PermissionConstants.PERMISSION_GROUP_USE_FULL_SCREEN_INTENT) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                        int status = notificationManager.canUseFullScreenIntent()
+                            ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                            : PermissionConstants.PERMISSION_STATUS_DENIED;
+                        permissionStatuses.add(status);
+                    } else {
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
+                    }
+                } else {
                     final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
                     if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
                         permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));

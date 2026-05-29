@@ -1,3 +1,7 @@
+## 4.3.1
+
+- Adds support for USE_FULL_SCREEN_INTENT permission check on Android 14+
+
 ## 4.3.0
 
 - Updates project dependencies.
