@@ -1,3 +1,7 @@
+## 12.0.2
+
+- Updates the documentation to include instructions on Swift Package Manager (SPM) support.
+
 ## 12.0.1
 
 - Updates the correspondence between permission groups and the key values of Info.plist in the README.md.
