@@ -247,20 +247,25 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
+                    if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) ||
+                            requestResults.get(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) != PermissionConstants.PERMISSION_STATUS_GRANTED) {
                         requestResults.put(
                             PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS,
                             permissionStatus);
                     }
                 }
 
-                if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE)) {
+                if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) ||
+                        requestResults.get(PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) != PermissionConstants.PERMISSION_STATUS_GRANTED) {
                     requestResults.put(
                         PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE,
                         permissionStatus);
                 }
 
-                requestResults.put(permission, permissionStatus);
+                if (!requestResults.containsKey(permission) ||
+                        requestResults.get(permission) != PermissionConstants.PERMISSION_STATUS_GRANTED) {
+                    requestResults.put(permission, permissionStatus);
+                }
             // [grantResults] can only contain PermissionConstants.PERMISSION_STATUS_GRANTED or PermissionConstants.PERMISSION_STATUS_DENIED status.
             // But these permissions can have status PermissionConstants.PERMISSION_STATUS_LIMITED, so we need to recheck status
             } else if (permission == PermissionConstants.PERMISSION_GROUP_PHOTOS || permission == PermissionConstants.PERMISSION_GROUP_VIDEOS) {
@@ -500,6 +505,19 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
                 ? PermissionConstants.PERMISSION_STATUS_GRANTED
                 : PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+
+        if (context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M) {
+            if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION ||
+                permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS ||
+                permission == PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
+                boolean isCoarseGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                boolean isFineGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+                if (isCoarseGranted || isFineGranted) {
+                    return PermissionConstants.PERMISSION_STATUS_GRANTED;
+                }
+            }
         }
 
         final boolean requiresExplicitPermission = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
