@@ -200,22 +200,34 @@ With SPM, `Package.swift` automatically detects which permissions to enable by r
 | `PermissionGroup.bluetooth` | `NSBluetoothAlwaysUsageDescription` |
 | `PermissionGroup.appTrackingTransparency` | `NSUserTrackingUsageDescription` |
 | `PermissionGroup.assistant` | `NSSiriUsageDescription` |
+| `PermissionGroup.notification` | *(enabled by default — see below)* |
+| `PermissionGroup.criticalAlerts` | *(disabled by default — see below)* |
 
 Because you must already add these keys to `Info.plist` for any permission to work, no additional configuration file is needed.
 
-**`PermissionGroup.notification`** has no required `Info.plist` key and is **enabled by default**. To disable it, set the environment variable to `0` (once per Mac session, before opening Xcode):
+#### Special cases: permissions without an Info.plist key
+
+**`PermissionGroup.notification`** has no required `Info.plist` key and is **enabled by default**. To opt out, disable it via environment variable before building:
 
 ```bash
+# When building from terminal (flutter run / flutter build)
+export PERMISSION_NOTIFICATIONS=0
+
+# When building from Xcode GUI (set once per Mac session, then restart Xcode)
 launchctl setenv PERMISSION_NOTIFICATIONS 0
 ```
 
-**`PermissionGroup.criticalAlerts`** requires a special Apple entitlement and is **disabled by default**. Enable it explicitly:
+**`PermissionGroup.criticalAlerts`** requires a [special entitlement](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications) granted by Apple and is **disabled by default** to avoid compiling unused code into apps that don't need it. Enable it explicitly:
 
 ```bash
+# When building from terminal
+export PERMISSION_CRITICAL_ALERTS=1
+
+# When building from Xcode GUI
 launchctl setenv PERMISSION_CRITICAL_ALERTS 1
 ```
 
-**After adding or removing a key**, clear Xcode's package cache once so `Package.swift` is re-evaluated:
+**After changing any env var or Info.plist key**, clear Xcode's package cache once so `Package.swift` is re-evaluated:
 
 ```bash
 rm -rf ~/Library/Developer/Xcode/DerivedData
