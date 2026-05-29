@@ -42,6 +42,7 @@ include_directories(BEFORE SYSTEM ${CMAKE_BINARY_DIR}/include)
 
 add_library(${PLUGIN_NAME} SHARED
   "include/permission_handler_windows/permission_handler_windows_plugin.h"
+  "include/permission_handler_windows/permission_handler_plugin.h"
   "permission_handler_windows_plugin.cpp"
 )
 apply_standard_settings(${PLUGIN_NAME})

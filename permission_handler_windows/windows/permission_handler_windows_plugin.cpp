@@ -1,4 +1,4 @@
-#include "include/permission_handler_windows/permission_handler_windows_plugin.h"
+#include "include/permission_handler_windows/permission_handler_plugin.h"
 
 #include <flutter/method_channel.h>
 #include <flutter/plugin_registrar_windows.h>
@@ -32,11 +32,11 @@ using namespace winrt::Windows::Devices::Bluetooth;
 using namespace winrt::Windows::Devices::Radios;
 
 template<typename T>
-T GetArgument(const std::string arg, const EncodableValue* args, T fallback) {
+T GetArgument(const std::string arg, const flutter::EncodableValue* args, T fallback) {
   T result {fallback};
-  const auto* arguments = std::get_if<EncodableMap>(args);
+  const auto* arguments = std::get_if<flutter::EncodableMap>(args);
   if (arguments) {
-    auto result_it = arguments->find(EncodableValue(arg));
+    auto result_it = arguments->find(flutter::EncodableValue(arg));
     if (result_it != arguments->end()) {
       result = std::get<T>(result_it->second);
     }
@@ -44,9 +44,9 @@ T GetArgument(const std::string arg, const EncodableValue* args, T fallback) {
   return result;
 }
 
-class PermissionHandlerWindowsPlugin : public Plugin {
+class PermissionHandlerWindowsPlugin {
  public:
-  static void RegisterWithRegistrar(PluginRegistrar* registrar);
+  static void RegisterWithRegistrar(flutter::PluginRegistrar* registrar);
 
   PermissionHandlerWindowsPlugin();
 
@@ -57,12 +57,12 @@ class PermissionHandlerWindowsPlugin : public Plugin {
   PermissionHandlerWindowsPlugin& operator=(const PermissionHandlerWindowsPlugin&) = delete;
 
   // Called when a method is called on the plugin channel.
-  void HandleMethodCall(const MethodCall<>&,
-                        std::unique_ptr<MethodResult<>>);
+  void HandleMethodCall(const flutter::MethodCall<>&,
+                        std::unique_ptr<flutter::MethodResult<>>);
 
  private:
-  void IsLocationServiceEnabled(std::unique_ptr<MethodResult<>> result);
-  winrt::fire_and_forget IsBluetoothServiceEnabled(std::unique_ptr<MethodResult<>> result);
+  void IsLocationServiceEnabled(std::unique_ptr<flutter::MethodResult<>> result);
+  winrt::fire_and_forget IsBluetoothServiceEnabled(std::unique_ptr<flutter::MethodResult<>> result);
 
   winrt::Windows::Devices::Geolocation::Geolocator geolocator;
   winrt::Windows::Devices::Geolocation::Geolocator::PositionChanged_revoker m_positionChangedRevoker;
@@ -70,11 +70,11 @@ class PermissionHandlerWindowsPlugin : public Plugin {
 
 // static
 void PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
-    PluginRegistrar* registrar) {
+    flutter::PluginRegistrar* registrar) {
 
-  auto channel = std::make_unique<MethodChannel<>>(
+  auto channel = std::make_unique<flutter::MethodChannel<>>(
     registrar->messenger(), "flutter.baseflow.com/permissions/methods",
-    &StandardMethodCodec::GetInstance());
+    &flutter::StandardMethodCodec::GetInstance());
 
   std::unique_ptr<PermissionHandlerWindowsPlugin> plugin = std::make_unique<PermissionHandlerWindowsPlugin>();
 
@@ -83,7 +83,7 @@ void PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
       plugin_pointer->HandleMethodCall(call, std::move(result));
     });
 
-  registrar->AddPlugin(std::move(plugin));
+  // Plugin instance is managed by the channel
 }
 
 PermissionHandlerWindowsPlugin::PermissionHandlerWindowsPlugin(){
@@ -96,8 +96,8 @@ PermissionHandlerWindowsPlugin::PermissionHandlerWindowsPlugin(){
 PermissionHandlerWindowsPlugin::~PermissionHandlerWindowsPlugin() = default;
 
 void PermissionHandlerWindowsPlugin::HandleMethodCall(
-    const MethodCall<>& method_call,
-    std::unique_ptr<MethodResult<>> result) {
+    const flutter::MethodCall<>& method_call,
+    std::unique_ptr<flutter::MethodResult<>> result) {
   
   auto methodName = method_call.method_name();
   if (methodName.compare("checkServiceStatus") == 0) {
@@ -114,56 +114,56 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
     }
 
     if (permission == PermissionConstants::PermissionGroup::IGNORE_BATTERY_OPTIMIZATIONS) {
-        result->Success(EncodableValue((int)PermissionConstants::ServiceStatus::ENABLED));
+        result->Success(flutter::EncodableValue((int)PermissionConstants::ServiceStatus::ENABLED));
         return;
     }
 
-    result->Success(EncodableValue((int)PermissionConstants::ServiceStatus::NOT_APPLICABLE));
+    result->Success(flutter::EncodableValue((int)PermissionConstants::ServiceStatus::NOT_APPLICABLE));
     
   } else if (methodName.compare("checkPermissionStatus") == 0) {
-    result->Success(EncodableValue((int)PermissionConstants::PermissionStatus::GRANTED));
+    result->Success(flutter::EncodableValue((int)PermissionConstants::PermissionStatus::GRANTED));
   } else if (methodName.compare("requestPermissions") == 0) {
-    auto permissionsEncoded = std::get<EncodableList>(*method_call.arguments());
+    auto permissionsEncoded = std::get<flutter::EncodableList>(*method_call.arguments());
     std::vector<int> permissions;
     permissions.reserve( permissionsEncoded.size() );
     std::transform( permissionsEncoded.begin(), permissionsEncoded.end(),
                     std::back_inserter( permissions ),
-                    [](const EncodableValue& encoded) {
+                    [](const flutter::EncodableValue& encoded) {
                       return std::get<int>(encoded);
                     });
     
-    EncodableMap requestResults;
+    flutter::EncodableMap requestResults;
 
     for (int i=0;i<permissions.size();i++) {
       auto permissionStatus = PermissionConstants::PermissionStatus::GRANTED;
-      requestResults.insert({EncodableValue(permissions[i]), EncodableValue((int)permissionStatus)});
+      requestResults.insert({flutter::EncodableValue(permissions[i]), flutter::EncodableValue((int)permissionStatus)});
     }
 
     result->Success(requestResults);
   } else if (methodName.compare("shouldShowRequestPermissionRationale") == 0
           || methodName.compare("openAppSettings")) {
-    result->Success(EncodableValue(false));
+    result->Success(flutter::EncodableValue(false));
   } else {
     result->NotImplemented();
   }
 }
 
-void PermissionHandlerWindowsPlugin::IsLocationServiceEnabled(std::unique_ptr<MethodResult<>> result) {
-  result->Success(EncodableValue((int)(geolocator.LocationStatus() != PositionStatus::NotAvailable
+void PermissionHandlerWindowsPlugin::IsLocationServiceEnabled(std::unique_ptr<flutter::MethodResult<>> result) {
+  result->Success(flutter::EncodableValue((int)(geolocator.LocationStatus() != PositionStatus::NotAvailable
         ? PermissionConstants::ServiceStatus::ENABLED
         : PermissionConstants::ServiceStatus::DISABLED)));
 }
 
-winrt::fire_and_forget PermissionHandlerWindowsPlugin::IsBluetoothServiceEnabled(std::unique_ptr<MethodResult<>> result) {
+winrt::fire_and_forget PermissionHandlerWindowsPlugin::IsBluetoothServiceEnabled(std::unique_ptr<flutter::MethodResult<>> result) {
   auto btAdapter = co_await BluetoothAdapter::GetDefaultAsync();
 
   if (btAdapter == nullptr) {
-    result->Success(EncodableValue((int)PermissionConstants::ServiceStatus::DISABLED));
+    result->Success(flutter::EncodableValue((int)PermissionConstants::ServiceStatus::DISABLED));
     co_return;
   }
   
   if (!btAdapter.IsCentralRoleSupported()) {
-    result->Success(EncodableValue((int)PermissionConstants::ServiceStatus::DISABLED));
+    result->Success(flutter::EncodableValue((int)PermissionConstants::ServiceStatus::DISABLED));
     co_return;
   }
   
@@ -173,21 +173,22 @@ winrt::fire_and_forget PermissionHandlerWindowsPlugin::IsBluetoothServiceEnabled
     auto radio = radios.GetAt(i);
     if(radio.Kind() == RadioKind::Bluetooth) {
       co_await radio.SetStateAsync(RadioState::On);
-      result->Success(EncodableValue((int)(radio.State() == RadioState::On
+      result->Success(flutter::EncodableValue((int)(radio.State() == RadioState::On
             ? PermissionConstants::ServiceStatus::ENABLED
             : PermissionConstants::ServiceStatus::DISABLED)));
       co_return;
     }
   }
 
-  result->Success(EncodableValue((int)PermissionConstants::ServiceStatus::DISABLED));
+  result->Success(flutter::EncodableValue((int)PermissionConstants::ServiceStatus::DISABLED));
 }
 
 }  // namespace
 
 void PermissionHandlerWindowsPluginRegisterWithRegistrar(
     FlutterDesktopPluginRegistrarRef registrar) {
-  PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
-      PluginRegistrarManager::GetInstance()
-          ->GetRegistrar<PluginRegistrarWindows>(registrar));
+  auto plugin_registrar = 
+      flutter::PluginRegistrarManager::GetInstance()
+          ->GetRegistrar<flutter::PluginRegistrarWindows>(registrar);
+  PermissionHandlerWindowsPlugin::RegisterWithRegistrar(plugin_registrar);
 }

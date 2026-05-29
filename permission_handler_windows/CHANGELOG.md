@@ -1,3 +1,7 @@
+## 0.2.2
+
+- fix missing header files issues
+
 ## 0.2.1
 
 * Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS and macOS).
