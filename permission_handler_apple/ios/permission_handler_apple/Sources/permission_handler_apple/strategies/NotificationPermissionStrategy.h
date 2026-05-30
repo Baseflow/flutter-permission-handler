@@ -10,6 +10,7 @@
 
 #if PERMISSION_NOTIFICATIONS
 
+#import <UIKit/UIKit.h>
 #import <UserNotifications/UserNotifications.h>
 
 @interface NotificationPermissionStrategy : NSObject <PermissionStrategy>

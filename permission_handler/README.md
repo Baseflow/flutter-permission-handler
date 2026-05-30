@@ -52,7 +52,70 @@ In general, it's sufficient to add permission only to the `main` version.
 </details>
 
 <details>
-<summary>iOS (click to expand)</summary>
+<summary>iOS - Swift Package Manager (click to expand)</summary>
+
+> Requires Flutter 3.24.0 or higher and Xcode 15.0 or higher.
+
+With SPM, `Package.swift` automatically detects which permissions to enable by reading your app's `Info.plist`. A permission is compiled in when its corresponding usage description key is present:
+
+| Permission group | Info.plist key |
+|---|---|
+| `PermissionGroup.calendar` (< iOS 17) | `NSCalendarsUsageDescription` |
+| `PermissionGroup.calendarWriteOnly` (iOS 17+) | `NSCalendarsWriteOnlyAccessUsageDescription` |
+| `PermissionGroup.calendarFullAccess` (iOS 17+) | `NSCalendarsFullAccessUsageDescription` |
+| `PermissionGroup.reminders` | `NSRemindersUsageDescription` |
+| `PermissionGroup.contacts` | `NSContactsUsageDescription` |
+| `PermissionGroup.camera` | `NSCameraUsageDescription` |
+| `PermissionGroup.microphone` | `NSMicrophoneUsageDescription` |
+| `PermissionGroup.speech` | `NSSpeechRecognitionUsageDescription` |
+| `PermissionGroup.photos` | `NSPhotoLibraryUsageDescription` |
+| `PermissionGroup.photosAddOnly` | `NSPhotoLibraryAddUsageDescription` |
+| `PermissionGroup.location` / `locationWhenInUse` | `NSLocationWhenInUseUsageDescription` |
+| `PermissionGroup.locationAlways` | `NSLocationAlwaysAndWhenInUseUsageDescription` |
+| `PermissionGroup.mediaLibrary` | `NSAppleMusicUsageDescription` |
+| `PermissionGroup.sensors` | `NSMotionUsageDescription` |
+| `PermissionGroup.bluetooth` | `NSBluetoothAlwaysUsageDescription` |
+| `PermissionGroup.appTrackingTransparency` | `NSUserTrackingUsageDescription` |
+| `PermissionGroup.assistant` | `NSSiriUsageDescription` |
+| `PermissionGroup.notification` | *(enabled by default — see below)* |
+| `PermissionGroup.criticalAlerts` | *(disabled by default — see below)* |
+
+Because you must already add these keys to `Info.plist` for any permission to work, no additional configuration file is needed.
+
+#### Special cases: permissions without an Info.plist key
+
+**`PermissionGroup.notification`** has no required `Info.plist` key and is **enabled by default**. To opt out, disable it via environment variable before building:
+
+```bash
+# When building from terminal (flutter run / flutter build)
+export PERMISSION_NOTIFICATIONS=0
+
+# When building from Xcode GUI (set once per Mac session, then restart Xcode)
+launchctl setenv PERMISSION_NOTIFICATIONS 0
+```
+
+**`PermissionGroup.criticalAlerts`** requires a [special entitlement](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications) granted by Apple and is **disabled by default** to avoid compiling unused code into apps that don't need it. Enable it explicitly:
+
+```bash
+# When building from terminal
+export PERMISSION_CRITICAL_ALERTS=1
+
+# When building from Xcode GUI
+launchctl setenv PERMISSION_CRITICAL_ALERTS 1
+```
+
+**After changing any env var or Info.plist key**, clear Xcode's package cache once so `Package.swift` is re-evaluated:
+
+```bash
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
+
+Then run `flutter build ios` or rebuild in Xcode as usual.
+
+</details>
+
+<details>
+<summary>iOS - CocoaPods (click to expand)</summary>
 
 Add permission to your `Info.plist` file.
 [Here](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/ios/Runner/Info.plist)'s an example `Info.plist` with a complete list of all possible permissions.
@@ -127,7 +190,7 @@ You must list the permission you want to use in your application:
           ## dart: PermissionGroup.criticalAlerts
           'PERMISSION_CRITICAL_ALERTS=1',
 
-          ## dart: PermissionGroup.criticalAlerts
+          ## dart: PermissionGroup.assistant
           'PERMISSION_ASSISTANT=1',
         ]
 
@@ -147,23 +210,28 @@ You must list the permission you want to use in your application:
    e.g. when you don't need camera permission, just delete 'NSCameraUsageDescription'
    The following lists the relationship between `Permission` and `The key of Info.plist`:
 
-| Permission                                                                                  | Info.plist                                                                                                    | Macro                                |
-|---------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| PermissionGroup.calendar (< iOS 17)                                                         | NSCalendarsUsageDescription                                                                                   | PERMISSION_EVENTS                    |
-| PermissionGroup.calendarWriteOnly (iOS 17+)                                                 | NSCalendarsWriteOnlyAccessUsageDescription                                                                    | PERMISSION_EVENTS                    |
-| PermissionGroup.calendarFullAccess  (iOS 17+)                                               | NSCalendarsFullAccessUsageDescription                                                                         | PERMISSION_EVENTS_FULL_ACCESS        |
-| PermissionGroup.reminders                                                                   | NSRemindersUsageDescription                                                                                   | PERMISSION_REMINDERS                 |
-| PermissionGroup.contacts                                                                    | NSContactsUsageDescription                                                                                    | PERMISSION_CONTACTS                  |
-| PermissionGroup.camera                                                                      | NSCameraUsageDescription                                                                                      | PERMISSION_CAMERA                    |
-| PermissionGroup.microphone                                                                  | NSMicrophoneUsageDescription                                                                                  | PERMISSION_MICROPHONE                |
-| PermissionGroup.speech                                                                      | NSSpeechRecognitionUsageDescription                                                                           | PERMISSION_SPEECH_RECOGNIZER         |
-| PermissionGroup.photos                                                                      | NSPhotoLibraryUsageDescription                                                                                | PERMISSION_PHOTOS                    |
-| PermissionGroup.photosAddOnly                                                               | NSPhotoLibraryAddUsageDescription                                                                             | PERMISSION_PHOTOS_ADD_ONLY           |
-| PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse | NSLocationUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationWhenInUseUsageDescription | PERMISSION_LOCATION                  |
-| PermissionGroup.locationWhenInUse                                                           | NSLocationWhenInUseUsageDescription                                                                           | PERMISSION_LOCATION_WHENINUSE        |
-| PermissionGroup.notification                                                                | PermissionGroupNotification                                                                                   | PERMISSION_NOTIFICATIONS             |
-| PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMedia                                                                |
-PERMISSION_MEDIA_LIBRARY             |
+| Permission                                                                                  | Info.plist                                                                                                     | Macro                                  |
+|---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------|
+| PermissionGroup.calendar (< iOS 17)                                                         | NSCalendarsUsageDescription                                                                                    | PERMISSION_EVENTS                      |
+| PermissionGroup.calendarWriteOnly (iOS 17+)                                                 | NSCalendarsWriteOnlyAccessUsageDescription                                                                     | PERMISSION_EVENTS                      |
+| PermissionGroup.calendarFullAccess  (iOS 17+)                                               | NSCalendarsFullAccessUsageDescription                                                                          | PERMISSION_EVENTS_FULL_ACCESS          |
+| PermissionGroup.reminders                                                                   | NSRemindersUsageDescription                                                                                    | PERMISSION_REMINDERS                   |
+| PermissionGroup.contacts                                                                    | NSContactsUsageDescription                                                                                     | PERMISSION_CONTACTS                    |
+| PermissionGroup.camera                                                                      | NSCameraUsageDescription                                                                                       | PERMISSION_CAMERA                      |
+| PermissionGroup.microphone                                                                  | NSMicrophoneUsageDescription                                                                                   | PERMISSION_MICROPHONE                  |
+| PermissionGroup.speech                                                                      | NSSpeechRecognitionUsageDescription                                                                            | PERMISSION_SPEECH_RECOGNIZER           |
+| PermissionGroup.photos                                                                      | NSPhotoLibraryUsageDescription                                                                                 | PERMISSION_PHOTOS                      |
+| PermissionGroup.photosAddOnly                                                               | NSPhotoLibraryAddUsageDescription                                                                              | PERMISSION_PHOTOS_ADD_ONLY             |
+| PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse | NSLocationUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationWhenInUseUsageDescription  | PERMISSION_LOCATION                    |
+| PermissionGroup.locationWhenInUse                                                           | NSLocationWhenInUseUsageDescription                                                                            | PERMISSION_LOCATION_WHENINUSE          |
+| PermissionGroup.notification                                                                | PermissionGroupNotification                                                                                    | PERMISSION_NOTIFICATIONS               |
+| PermissionGroup.mediaLibrary                                                                | NSAppleMusicUsageDescription, kTCCServiceMedia                                                                 | PERMISSION_MEDIA_LIBRARY               |
+| PermissionGroup.sensors                                                                     | NSMotionUsageDescription                                                                                       | PermissionGroupSensors                 |
+| PermissionGroup.bluetooth                                                                   | NSBluetoothAlwaysUsageDescription, NSBluetoothPeripheralUsageDescription                                       | PermissionGroupBluetooth               |
+| PermissionGroup.appTrackingTransparency                                                     | NSUserTrackingUsageDescription                                                                                 | PermissionGroupAppTrackingTransparency |
+| PermissionGroup.criticalAlerts                                                              | UNAuthorizationOptionCriticalAlert                                                                             | PermissionGroupCriticalAlerts          |
+| PermissionGroup.assistant                                                                   | NSSiriUsageDescription                                                                                         | PermissionGroupAssistant               |
+
 
 4. Clean & Rebuild
 
