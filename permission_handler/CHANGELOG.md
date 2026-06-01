@@ -1,3 +1,8 @@
+## 12.0.3
+
+- Rewrites the "iOS - CocaoPods" section in the README.md to match version 8.0.0 of the permission_handler.
+- Fixes several smaller typo's in the README.md.
+
 ## 12.0.2
 
 - Updates the documentation to include instructions on Swift Package Manager (SPM) support.
