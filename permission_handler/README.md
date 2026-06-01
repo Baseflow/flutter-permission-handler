@@ -120,13 +120,14 @@ Then run `flutter build ios` or rebuild in Xcode as usual.
 Add permission to your `Info.plist` file.
 [Here](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/ios/Runner/Info.plist)'s an example `Info.plist` with a complete list of all possible permissions.
 
-> IMPORTANT: ~~You will have to include all permission options when you want to submit your App.~~ This is because the `permission_handler` plugin touches all different SDKs and because the static code analyzer (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).
+> IMPORTANT: ~~You will have to include all permission options when you want to submit your App. This is because the `permission_handler` plugin touches all different SDKs and because the static code analyzer (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).~~
+ This has been fixed since version 8.0.0, now permission_handler by default excludes all permissions and developers only have to enable those that the app really needs.
 
 The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h) to control whether a permission is enabled.
 
 You must list the permission you want to use in your application:
 
-1. Add the following to your `Podfile` file:
+1. Add the following to your `Podfile`'s `post_install` block:
 
   ```ruby
   post_install do |installer|
@@ -136,7 +137,8 @@ You must list the permission you want to use in your application:
       target.build_configurations.each do |config|
         # You can remove unused permissions here
         # for more information: https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
-        # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
+        # When you don't need a permission, just change its value to 0
+        # e.g. 'PERMISSION_CAMERA=0' instead of 'PERMISSION_CAMERA=1'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
           '$(inherited)',
 
@@ -199,16 +201,18 @@ You must list the permission you want to use in your application:
   end
   ```
 
-2. Remove the `#` character in front of the permission you want to use. For example, if you need access to the calendar make sure the code looks like this:
+2. For the permissions you *want* to use, keep them as is. For example, if you need access to the calendar make sure the code looks like this:
 
    ```ruby
            ## dart: PermissionGroup.calendar
            'PERMISSION_EVENTS=1',
    ```
+3. When you **DON'T** need a permission, change its value to `0` e.g. `'PERMISSION_CAMERA=0'` instead of `'PERMISSION_CAMERA=1'`
 
-3. Delete the corresponding permission description in `Info.plist`
-   e.g. when you don't need camera permission, just delete 'NSCameraUsageDescription'
-   The following lists the relationship between `Permission` and `The key of Info.plist`:
+3. And delete the corresponding permission description in `Info.plist`
+   e.g. when you don't need camera permission, just delete `'NSCameraUsageDescription'`
+
+The following lists the relationship between `Permission` and `The key of Info.plist`:
 
 | Permission                                                                                  | Info.plist                                                                                                     | Macro                                  |
 |---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|----------------------------------------|
