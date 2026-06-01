@@ -1,3 +1,7 @@
+## 9.4.9
+
+* Rewrites copyleft code from stackoverflow to fix compliance issue.
+
 ## 9.4.8
 
 * Adds Swift Package Manager (SPM) support for Flutter 3.24+. Permissions are
