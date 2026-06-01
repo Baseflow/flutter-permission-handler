@@ -17,8 +17,9 @@
 }
 
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler {
-  // https://stackoverflow.com/a/5095058
-  if (![[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"tel://"]]) {
+  UIApplication *app = [UIApplication sharedApplication];
+  NSURL *telURL = [NSURL URLWithString:@"tel://"];
+  if (![app canOpenURL:telURL]) {
       completionHandler(ServiceStatusNotApplicable);
   }
   completionHandler([self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled);
@@ -52,15 +53,14 @@
 }
 
 -(bool)canPlacePhoneCallWithCarrier:(CTCarrier *)carrier {
-  // https://stackoverflow.com/a/11595365
-  NSString *mnc = [carrier mobileNetworkCode];
-  if (([mnc length] == 0) || ([mnc isEqualToString:@"65535"])) {
-    // Device cannot place a call at this time.  SIM might be removed.
+  NSString *networkCode = [carrier mobileNetworkCode];
+  if (networkCode.length == 0 || [networkCode isEqualToString:@"65535"]) {
+    // Device is unable to initiate a call at this time. SIM might be missing.
     return NO;
-  } else {
-    // Device can place a phone call
-    return YES;
   }
+
+  // Mobile Network Code is valid and device can initiate a call
+  return YES;
 }
 
 @end

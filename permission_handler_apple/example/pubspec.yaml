@@ -21,7 +21,7 @@ dev_dependencies:
     # the parent directory to use the current plugin's version.
     path: ../
 
-  url_launcher: ^6.0.12
+  url_launcher: ^6.3.2
 
 flutter:
   uses-material-design: true
