@@ -1,3 +1,8 @@
+## 9.4.10
+
+* Fixed Info.plist lookup in Package.swift to auto-apply permissions.
+* You may see build log "Plugin permission_handler_apple has a Package.swift for ios but is missing a dependency on FlutterFramework". FlutterFramework hasn't been added intentionally because it requires to bump flutter constraint to >=3.41.0.
+
 ## 9.4.9
 
 * Rewrites copyleft code from stackoverflow to fix compliance issue.

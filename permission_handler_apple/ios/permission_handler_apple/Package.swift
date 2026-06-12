@@ -21,17 +21,49 @@ import Foundation
 
 let env = ProcessInfo.processInfo.environment
 
-/// Walk up from Package.swift looking for Runner/Info.plist.
-/// Works when the package is resolved via Flutter's .symlinks/ directory.
+func loadInfoPlist(at url: URL) -> [String: Any]? {
+    NSDictionary(contentsOf: url) as? [String: Any]
+}
+
+/// Find the host app's Runner/Info.plist.
+///
+/// Flutter can resolve this package through a local plugin path, a generated
+/// SPM package, or an Xcode package cache. Look for a Flutter app root by
+/// walking up from the package and current working directory, using pubspec.yaml
+/// next to ios/Runner/Info.plist as the app-root anchor.
 func findInfoPlist() -> [String: Any] {
-    var dir = URL(fileURLWithPath: #file).deletingLastPathComponent()
-    for _ in 0..<8 {
-        let candidate = dir.appendingPathComponent("Runner/Info.plist")
-        if let plist = NSDictionary(contentsOf: candidate) as? [String: Any] {
-            return plist
+    let fileManager = FileManager.default
+    
+    let packageDir = URL(fileURLWithPath: #file).deletingLastPathComponent()
+    let currentDir = URL(fileURLWithPath: fileManager.currentDirectoryPath)
+    
+    var visited = Set<String>()
+    
+    for root in [packageDir, currentDir] {
+        var dir = root
+
+        for _ in 0..<10 {
+            let key = dir.resolvingSymlinksInPath().path
+            guard visited.insert(key).inserted else {
+                break
+            }
+            
+            let pubspecURL = dir.appendingPathComponent("pubspec.yaml")
+            let plistURL = dir.appendingPathComponent("ios/Runner/Info.plist")
+
+            if fileManager.fileExists(atPath: pubspecURL.path),
+               let plist = loadInfoPlist(at: plistURL) {
+                return plist
+            }
+
+            let parent = dir.deletingLastPathComponent()
+            if parent.path == dir.path {
+                break
+            }
+            dir = parent
         }
-        dir = dir.deletingLastPathComponent()
     }
+
     return [:]
 }
 
@@ -137,9 +169,11 @@ let package = Package(
     products: [
         .library(name: "permission-handler-apple", targets: ["permission_handler_apple"]),
     ],
+    dependencies: [],
     targets: [
         .target(
             name: "permission_handler_apple",
+            dependencies: [],
             path: "Sources/permission_handler_apple",
             resources: [
                 .process("PrivacyInfo.xcprivacy"),
