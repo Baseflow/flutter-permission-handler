@@ -1,7 +1,10 @@
+## 13.0.2
+
+- Adds support for USE_FULL_SCREEN_INTENT permission check on Android 14+
 
 ## 13.0.1
 
-* fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
+- fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
 
 ## 13.0.0
 

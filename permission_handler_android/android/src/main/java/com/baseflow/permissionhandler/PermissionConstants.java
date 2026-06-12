@@ -16,6 +16,7 @@ final class PermissionConstants {
     static final int PERMISSION_CODE_REQUEST_INSTALL_PACKAGES = 212;
     static final int PERMISSION_CODE_ACCESS_NOTIFICATION_POLICY = 213;
     static final int PERMISSION_CODE_SCHEDULE_EXACT_ALARM = 214;
+    static final int PERMISSION_CODE_USE_FULL_SCREEN_INTENT = 215;
 
 
     // PERMISSION_GROUP
@@ -62,6 +63,7 @@ final class PermissionConstants {
     static final int PERMISSION_GROUP_CALENDAR_FULL_ACCESS = 37;
     static final int PERMISSION_GROUP_ASSISTANT = 38;
     static final int PERMISSION_GROUP_BACKGROUND_REFRESH = 39;
+    static final int PERMISSION_GROUP_USE_FULL_SCREEN_INTENT = 40;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -101,6 +103,8 @@ final class PermissionConstants {
             PERMISSION_GROUP_CALENDAR_WRITE_ONLY,
             PERMISSION_GROUP_CALENDAR_FULL_ACCESS,
             PERMISSION_GROUP_ASSISTANT,
+            PERMISSION_GROUP_BACKGROUND_REFRESH,
+            PERMISSION_GROUP_USE_FULL_SCREEN_INTENT,
     })
     @interface PermissionGroup {
     }
