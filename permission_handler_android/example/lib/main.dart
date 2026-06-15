@@ -1,5 +1,6 @@
 import 'package:baseflow_plugin_template/baseflow_plugin_template.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:permission_handler_platform_interface/permission_handler_platform_interface.dart';
 
 void main() {
@@ -76,9 +77,14 @@ class PermissionWidget extends StatefulWidget {
 class _PermissionState extends State<PermissionWidget> {
   _PermissionState();
 
+  static const MethodChannel _granularityChannel = MethodChannel(
+    'location_granularity',
+  );
   final PermissionHandlerPlatform _permissionHandler =
       PermissionHandlerPlatform.instance;
   PermissionStatus _permissionStatus = PermissionStatus.denied;
+  bool? _isFineGranted;
+  bool? _isCoarseGranted;
 
   @override
   void initState() {
@@ -91,7 +97,45 @@ class _PermissionState extends State<PermissionWidget> {
     final status = await _permissionHandler.checkPermissionStatus(
       widget._permission,
     );
+    if (!mounted) return;
     setState(() => _permissionStatus = status);
+    await _updateGranularity();
+  }
+
+  Future<void> _updateGranularity() async {
+    if (widget._permission != Permission.location) {
+      if (_isFineGranted != null || _isCoarseGranted != null) {
+        setState(() {
+          _isFineGranted = null;
+          _isCoarseGranted = null;
+        });
+      }
+      return;
+    }
+
+    try {
+      final result = await _granularityChannel.invokeMapMethod<String, bool>(
+        'status',
+      );
+      if (!mounted) return;
+      setState(() {
+        _isFineGranted = result?['fine'];
+        _isCoarseGranted = result?['coarse'];
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isFineGranted = null;
+        _isCoarseGranted = null;
+      });
+    }
+  }
+
+  String granularityLabel() {
+    if (widget._permission != Permission.location) return '';
+    if (_isFineGranted == true) return 'Precise';
+    if (_isCoarseGranted == true) return 'Approximate';
+    return '';
   }
 
   Color getPermissionColor() {
@@ -109,27 +153,54 @@ class _PermissionState extends State<PermissionWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final extraGranularity = granularityLabel();
+    final subtitleText =
+        extraGranularity.isNotEmpty
+            ? '${_permissionStatus.toString()} · $extraGranularity'
+            : _permissionStatus.toString();
+
+    final trailingActions = <Widget>[];
+    if (widget._permission is PermissionWithService) {
+      trailingActions.add(
+        IconButton(
+          icon: const Icon(Icons.info, color: Colors.white),
+          onPressed: () {
+            checkServiceStatus(
+              context,
+              widget._permission as PermissionWithService,
+            );
+          },
+        ),
+      );
+    }
+
+    final isApproximateOnly =
+        widget._permission == Permission.location &&
+        _isFineGranted != true &&
+        _isCoarseGranted == true;
+    if (isApproximateOnly) {
+      trailingActions.add(
+        IconButton(
+          icon: const Icon(Icons.my_location, color: Colors.white),
+          tooltip: 'Request precise',
+          onPressed: () => requestPermission(widget._permission),
+        ),
+      );
+    }
+
     return ListTile(
       title: Text(
         widget._permission.toString(),
         style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
-        _permissionStatus.toString(),
+        subtitleText,
         style: TextStyle(color: getPermissionColor()),
       ),
       trailing:
-          (widget._permission is PermissionWithService)
-              ? IconButton(
-                icon: const Icon(Icons.info, color: Colors.white),
-                onPressed: () {
-                  checkServiceStatus(
-                    context,
-                    widget._permission as PermissionWithService,
-                  );
-                },
-              )
-              : null,
+          trailingActions.isEmpty
+              ? null
+              : Row(mainAxisSize: MainAxisSize.min, children: trailingActions),
       onTap: () {
         requestPermission(widget._permission);
       },
@@ -152,8 +223,10 @@ class _PermissionState extends State<PermissionWidget> {
   Future<void> requestPermission(Permission permission) async {
     final status = await _permissionHandler.requestPermissions([permission]);
 
+    if (!mounted) return;
     setState(() {
       _permissionStatus = status[permission] ?? PermissionStatus.denied;
     });
+    await _updateGranularity();
   }
 }

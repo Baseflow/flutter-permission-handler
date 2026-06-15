@@ -244,7 +244,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 }
             } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
                 @PermissionConstants.PermissionStatus int permissionStatus =
-                    PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+                    determinePermissionStatus(PermissionConstants.PERMISSION_GROUP_LOCATION);
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
@@ -502,6 +502,10 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                 : PermissionConstants.PERMISSION_STATUS_DENIED;
         }
 
+        if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION || permission == PermissionConstants.PERMISSION_GROUP_LOCATION_WHEN_IN_USE) {
+            return determineWhenInUseLocationStatus(names);
+        }
+
         final boolean requiresExplicitPermission = context.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.M;
 
         if (requiresExplicitPermission) {
@@ -634,6 +638,34 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         }
 
         successCallback.onSuccess(ActivityCompat.shouldShowRequestPermissionRationale(activity, names.get(0)));
+    }
+
+    @PermissionConstants.PermissionStatus
+    private int determineWhenInUseLocationStatus(@NonNull List<String> names) {
+        final boolean coarseInManifest = names.contains(Manifest.permission.ACCESS_COARSE_LOCATION);
+        final boolean fineInManifest = names.contains(Manifest.permission.ACCESS_FINE_LOCATION);
+
+        final boolean coarseGranted = coarseInManifest
+            && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+        final boolean fineGranted = fineInManifest
+            && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED;
+
+        if (coarseGranted || fineGranted) {
+            return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        }
+
+        if (fineInManifest) {
+            return PermissionUtils.determineDeniedVariant(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (coarseInManifest) {
+            return PermissionUtils.determineDeniedVariant(activity, Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+            ? PermissionConstants.PERMISSION_STATUS_GRANTED
+            : PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     @PermissionConstants.PermissionStatus
