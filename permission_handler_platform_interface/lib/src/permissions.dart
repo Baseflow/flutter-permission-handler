@@ -132,7 +132,7 @@ class Permission {
   ///
   /// Android: Body Sensors
   /// iOS: CoreMotion
-  static const sensors = Permission._(12);
+  static const sensors = PermissionWithService._(12);
 
   /// Permission for sending and reading SMS messages (Android only).
   static const sms = Permission._(13);
