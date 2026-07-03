@@ -1,3 +1,7 @@
+## 0.2.2
+
+* Lazily creates the Windows `Geolocator` only when checking location service status.
+
 ## 0.2.1
 
 * Updates the dependency on `permission_handler_platform_interface` to version 4.1.0 (SiriKit support is only available for iOS and macOS).
