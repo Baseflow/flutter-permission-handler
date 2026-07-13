@@ -1,3 +1,17 @@
+## 9.5.0
+
+* **Breaking change:** Migrates iOS to a Pigeon **ProxyApi** architecture with `sharedDarwinSource: true`.
+  Permission logic now lives in Dart (`lib/next/`); the Swift plugin (`darwin/`) only registers
+  `ProxyApiRegistrar` bridges to Apple frameworks.
+* Adds `PermissionHandlerApple` as `dartPluginClass` extending `PermissionHandlerPlatform`.
+* Exposes native Apple framework proxy APIs via `lib/next/exports/apple_permissions.dart` for
+  advanced consumers.
+* Adds `tool/pigeon_regenerate.sh` to regenerate Pigeon artifacts from `pigeon/apple_permissions.dart`.
+* Bumps minimum iOS deployment target to **14.0** for the `darwin/` implementation (required for
+  `PHAccessLevel`, `ATTrackingManager`, and related APIs).
+* Legacy `ios/` Obj-C + MethodChannel sources remain in the repository for reference but are no
+  longer compiled when using `sharedDarwinSource`.
+
 ## 9.4.10
 
 * Fixed Info.plist lookup in Package.swift to auto-apply permissions.
