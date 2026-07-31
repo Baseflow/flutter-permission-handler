@@ -1,3 +1,12 @@
+## 13.0.1
+
+- version bump
+
+## 13.0.0
+
+- **BREAKING CHANGE:** , android compilesdk now set to version `compileSdkVersion 37`
+- Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
+
 ## 12.0.3
 
 - Rewrites the "iOS - CocaoPods" section in the README.md to match version 8.0.0 of the permission_handler.

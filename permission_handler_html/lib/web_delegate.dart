@@ -61,7 +61,9 @@ class WebDelegate {
   }
 
   Future<PermissionStatus> _permissionStatusState(
-      String webPermissionName, web.Permissions? permissions) async {
+    String webPermissionName,
+    web.Permissions? permissions,
+  ) async {
     final webPermissionStatus = await permissions
         ?.query(_PermissionDescriptor(name: webPermissionName))
         .toDart;
@@ -91,8 +93,10 @@ class WebDelegate {
           audioTracks[0].stop();
         }
       }
-    } on web.DOMException {
-      return false;
+    } catch (e) {
+      if (e.isA<web.DOMException>()) {
+        return false;
+      }
     }
 
     return true;
@@ -121,17 +125,19 @@ class WebDelegate {
           videoTracks[0].stop();
         }
       }
-    } on web.DOMException {
-      return false;
+    } catch (e) {
+      if (e.isA<web.DOMException>()) {
+        return false;
+      }
     }
 
     return true;
   }
 
   Future<bool> _requestNotificationPermission() async {
-    return web.Notification.requestPermission()
-        .toDart
-        .then((permission) => (permission == "granted".toJS));
+    return web.Notification.requestPermission().toDart.then(
+          (permission) => (permission == "granted".toJS),
+        );
   }
 
   Future<bool> _requestLocationPermission() async {
@@ -152,14 +158,16 @@ class WebDelegate {
   }
 
   Future<PermissionStatus> _requestSingularPermission(
-      Permission permission) async {
+    Permission permission,
+  ) async {
     bool permissionGranted = switch (permission) {
       Permission.microphone => await _requestMicrophonePermission(),
       Permission.camera => await _requestCameraPermission(),
       Permission.notification => await _requestNotificationPermission(),
       Permission.location => await _requestLocationPermission(),
       _ => throw UnsupportedError(
-          'The ${permission.toString()} permission is currently not supported on web.')
+          'The ${permission.toString()} permission is currently not supported on web.',
+        ),
     };
 
     if (!permissionGranted) {
@@ -173,13 +181,15 @@ class WebDelegate {
   ///
   /// Returns a [Map] containing the status per requested [Permission].
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) async {
+    List<Permission> permissions,
+  ) async {
     final Map<Permission, PermissionStatus> permissionStatusMap = {};
 
     for (final permission in permissions) {
       try {
-        permissionStatusMap[permission] =
-            await _requestSingularPermission(permission);
+        permissionStatusMap[permission] = await _requestSingularPermission(
+          permission,
+        );
       } on UnimplementedError {
         rethrow;
       }

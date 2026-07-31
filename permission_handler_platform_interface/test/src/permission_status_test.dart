@@ -32,19 +32,32 @@ void main() {
     });
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'statusByValue should return right index int that corresponds with the right PermissionStatus',
-        () {
-      expect(PermissionStatusValue.statusByValue(0), PermissionStatus.denied);
-      expect(PermissionStatusValue.statusByValue(1), PermissionStatus.granted);
-      expect(
-          PermissionStatusValue.statusByValue(2), PermissionStatus.restricted);
-      expect(PermissionStatusValue.statusByValue(3), PermissionStatus.limited);
-      expect(PermissionStatusValue.statusByValue(4),
-          PermissionStatus.permanentlyDenied);
-      expect(
-          PermissionStatusValue.statusByValue(5), PermissionStatus.provisional);
-    });
+      // ignore: lines_longer_than_80_chars
+      'statusByValue should return right index int that corresponds with the right PermissionStatus',
+      () {
+        expect(PermissionStatusValue.statusByValue(0), PermissionStatus.denied);
+        expect(
+          PermissionStatusValue.statusByValue(1),
+          PermissionStatus.granted,
+        );
+        expect(
+          PermissionStatusValue.statusByValue(2),
+          PermissionStatus.restricted,
+        );
+        expect(
+          PermissionStatusValue.statusByValue(3),
+          PermissionStatus.limited,
+        );
+        expect(
+          PermissionStatusValue.statusByValue(4),
+          PermissionStatus.permanentlyDenied,
+        );
+        expect(
+          PermissionStatusValue.statusByValue(5),
+          PermissionStatus.provisional,
+        );
+      },
+    );
   });
 
   group('PermissionStatusGetters', () {
@@ -76,11 +89,15 @@ void main() {
       expect(await mockFuture(PermissionStatus.restricted).isRestricted, true);
       expect(await mockFuture(PermissionStatus.limited).isLimited, true);
       expect(
-          await mockFuture(PermissionStatus.permanentlyDenied)
-              .isPermanentlyDenied,
-          true);
+        await mockFuture(
+          PermissionStatus.permanentlyDenied,
+        ).isPermanentlyDenied,
+        true,
+      );
       expect(
-          await mockFuture(PermissionStatus.provisional).isProvisional, true);
+        await mockFuture(PermissionStatus.provisional).isProvisional,
+        true,
+      );
     });
 
     test('Getters should return false if statement is not met', () async {
@@ -89,7 +106,9 @@ void main() {
       expect(await mockFuture(PermissionStatus.restricted).isDenied, false);
       expect(await mockFuture(PermissionStatus.limited).isDenied, false);
       expect(
-          await mockFuture(PermissionStatus.permanentlyDenied).isDenied, false);
+        await mockFuture(PermissionStatus.permanentlyDenied).isDenied,
+        false,
+      );
       expect(await mockFuture(PermissionStatus.provisional).isDenied, false);
     });
   });

@@ -1,3 +1,7 @@
+## 0.1.4+0
+
+* Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
+
 ## 0.1.3+5
 
 - Updates the way how `window.navigator.mediaDevices` is accessed to keep supporting WASM.

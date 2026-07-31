@@ -32,11 +32,11 @@ class PermissionHandlerWidget extends StatefulWidget {
   }
 
   @override
-  _PermissionHandlerWidgetState createState() =>
-      _PermissionHandlerWidgetState();
+  PermissionHandlerWidgetState createState() => PermissionHandlerWidgetState();
 }
 
-class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
+/// The state of the [PermissionHandlerWidget] that listens for permission status changes.
+class PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   @override
   Widget build(BuildContext context) {
     return Center(

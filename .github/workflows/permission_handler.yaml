@@ -26,7 +26,7 @@ jobs:
     # TODO(mvanbeusekom): Manually set to macOS 15 to support Xcode 16 and iOS 18 SDKs.
     # Currently `macos-latest` is based on macOS 14 and doesn't support iOS 18 SDK. This
     # should be moved back to `macos-latest` when GitHub Actions images are updated.
-    runs-on: macos-15 
+    runs-on: macos-15
 
     env:
       source-directory: ./permission_handler
@@ -42,7 +42,6 @@ jobs:
         with:
           distribution: "temurin" # See 'Supported distributions' for available options
           java-version: "17"
-
       # Make sure the stable version of Flutter is available
       - uses: subosito/flutter-action@v2
         with:
@@ -62,18 +61,7 @@ jobs:
       - name: Run Flutter Analyzer
         run: flutter analyze
         working-directory: ${{env.source-directory}}
-
-      # Build Android version of the example App
-      - name: Run Android build
-        run: flutter build apk --release
-        working-directory: ${{env.example-directory}}
-
-      # Build iOS version of the example App
-      - name: Run iOS build
-        run: flutter build ios --release --no-codesign
-        working-directory: ${{env.example-directory}}
-
-      # Run all unit-tests with code coverage
+        # Run all unit-tests with code coverage
       - name: Run unit tests
         run: flutter test --coverage
         working-directory: ${{env.source-directory}}
@@ -85,3 +73,13 @@ jobs:
           file: ${{env.source-directory}}/coverage/lcov.info # optional
           flags: unittests # optional
           name: permission_handler # optional
+
+      # Build Android version of the example App
+      - name: Run Android build
+        run: flutter build apk --release
+        working-directory: ${{env.example-directory}}
+
+      # Build iOS version of the example App
+      - name: Run iOS build
+        run: flutter build ios --release --no-codesign
+        working-directory: ${{env.example-directory}}

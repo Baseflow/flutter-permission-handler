@@ -1,7 +1,20 @@
+## 14.0.1
+
+- Version bump
+
+## 14.0.0
+
+- **BREAKING CHANGES:** When updating to version 14.0.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `37`.
+- Updates Android `compileSdkVersion: 35` to `37`
+- Bump compileSDK version to 37
+
+## 13.0.2
+
+- Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
 
 ## 13.0.1
 
-* fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
+- fix: Resolve `PermissionRequestInProgressException` when app is relaunched with non-standard launchMode.
 
 ## 13.0.0
 

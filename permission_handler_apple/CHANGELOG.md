@@ -6,6 +6,7 @@
 ## 9.4.9
 
 * Rewrites copyleft code from stackoverflow to fix compliance issue.
+* Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
 
 ## 9.4.8
 
