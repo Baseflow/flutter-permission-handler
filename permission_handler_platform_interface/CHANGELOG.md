@@ -1,10 +1,6 @@
-## 4.3.2
+## 4.4.0
 
-* Fix support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
-
-## 4.3.1
-
-* Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
+- Adds support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
 
 ## 4.3.0
 
