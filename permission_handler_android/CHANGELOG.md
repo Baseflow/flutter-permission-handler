@@ -1,7 +1,3 @@
-## 14.0.1
-
-- Version bump
-
 ## 14.0.0
 
 - **BREAKING CHANGES:** When updating to version 14.0.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `37`.
