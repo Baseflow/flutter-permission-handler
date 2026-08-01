@@ -1,6 +1,10 @@
+## 0.1.4+1
+
+* Replaces runtime-unsafe .isA<web.DOMException>() calls with Dart is web.DOMException checks to fix web release build failures. 
+
 ## 0.1.4+0
 
-* Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
+* Adds support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
 
 ## 0.1.3+5
 
