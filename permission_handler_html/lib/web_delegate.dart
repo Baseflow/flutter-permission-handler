@@ -94,7 +94,7 @@ class WebDelegate {
         }
       }
     } catch (e) {
-      if (e.isA<web.DOMException>()) {
+      if (e is web.DOMException) {
         return false;
       }
     }
@@ -126,7 +126,7 @@ class WebDelegate {
         }
       }
     } catch (e) {
-      if (e.isA<web.DOMException>()) {
+      if (e is web.DOMException) {
         return false;
       }
     }
