@@ -286,24 +286,170 @@ func infoPlistsFromEnvironment() -> [URL]? {
         .map { URL(fileURLWithPath: String($0).trimmingCharacters(in: .whitespaces)) }
 }
 
-/// Collect the usage description keys of every Info.plist belonging to the
-/// host app.
+/// Every Info.plist that appears to belong to `appRoot`: what the build
+/// settings name, falling back to a scan of `ios/` when they name nothing that
+/// exists.
+func discoverInfoPlists(appRoot: URL) -> [URL] {
+    let fromSettings = existingFiles(infoPlistsFromBuildSettings(appRoot: appRoot))
+    return fromSettings.isEmpty ? infoPlistsFromScan(appRoot: appRoot) : fromSettings
+}
+
+// MARK: - Per-flavor configuration
+
+/// A `permission_handler.json` next to the app's pubspec.yaml.
 ///
-/// The keys are *merged* across build configurations and flavors. The manifest
-/// is evaluated once per package resolution and cannot know which configuration
-/// is building, so per-flavor macros are not expressible here. Merging errs
-/// towards enabling a permission: an app whose `Info-dev.plist` declares camera
-/// access compiles the camera code into its release binary too. Use the
-/// per-permission `PERMISSION_*` environment variables where that matters.
+/// ```json
+/// {
+///   "strict": true,
+///   "flavors": {
+///     "dev":  { "infoPlist": "ios/Runner/Info-dev.plist",
+///               "configurations": ["Debug-dev", "Release-dev"] },
+///     "prod": { "infoPlist": "ios/Runner/Info-prod.plist",
+///               "configurations": ["Debug-prod", "Release-prod"] }
+///   }
+/// }
+/// ```
+///
+/// A flavor names the single Info.plist that defines it. Listing usage
+/// description keys directly was considered and rejected: it would duplicate the
+/// permission vocabulary across this manifest, the `select` command and the
+/// verification build phase, and a drift between those copies fails silently.
+///
+/// `configurations` is deliberately not read here. A manifest is given no build
+/// settings, so it cannot know which configuration is building and could not act
+/// on the mapping; only `tool/verify_flavor_selection.sh`, which runs as a build
+/// phase where CONFIGURATION exists, consumes that key.
+struct FlavorConfig {
+    let strict: Bool
+    let infoPlists: [String: String]  // flavor -> path, relative to the app root
+    let url: URL
+}
+
+func loadFlavorConfig(appRoot: URL?) -> FlavorConfig? {
+    let configURL: URL
+    if let explicit = env["PERMISSION_HANDLER_CONFIG"], !explicit.isEmpty {
+        configURL = URL(fileURLWithPath: explicit)
+    } else if let appRoot {
+        configURL = appRoot.appendingPathComponent("permission_handler.json")
+    } else {
+        return nil
+    }
+
+    guard fileManager.fileExists(atPath: configURL.path) else { return nil }
+
+    guard let data = try? Data(contentsOf: configURL),
+          let root = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
+        diagnostic("error", "\(configURL.path) is not valid JSON. Ignoring it.")
+        return nil
+    }
+
+    guard let flavors = root["flavors"] as? [String: Any], !flavors.isEmpty else {
+        diagnostic("error", "\(configURL.path) declares no \"flavors\". Ignoring it.")
+        return nil
+    }
+
+    var infoPlists: [String: String] = [:]
+    for (flavor, raw) in flavors {
+        guard let entry = raw as? [String: Any] else { continue }
+        guard let plist = entry["infoPlist"] as? String, !plist.isEmpty else {
+            diagnostic("error", """
+                Flavor "\(flavor)" in \(configURL.path) has no "infoPlist" string, so it cannot \
+                be selected.
+                """)
+            continue
+        }
+        infoPlists[flavor] = plist
+    }
+
+    guard !infoPlists.isEmpty else {
+        diagnostic("error", "\(configURL.path) declares no usable flavors. Ignoring it.")
+        return nil
+    }
+
+    return FlavorConfig(
+        strict: root["strict"] as? Bool ?? true,
+        infoPlists: infoPlists,
+        url: configURL
+    )
+}
+
+/// The flavor this build should compile permissions for.
+///
+/// Xcode exposes no build settings to manifest evaluation, so `CONFIGURATION`
+/// cannot be read here and the selection has to be made out of band — by
+/// `dart run permission_handler_apple:select <flavor>`, which records it and
+/// clears the caches that would otherwise keep serving the previous answer.
+func resolveFlavor(appRoot: URL?) -> String? {
+    if let fromEnv = env["PERMISSION_HANDLER_FLAVOR"], !fromEnv.isEmpty { return fromEnv }
+    guard let appRoot else { return nil }
+    let selection = appRoot.appendingPathComponent("ios/Flutter/permission_handler.selected")
+    guard let raw = try? String(contentsOf: selection, encoding: .utf8) else { return nil }
+    let flavor = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+    return flavor.isEmpty ? nil : flavor
+}
+
+/// Collect the usage description keys that apply to this build.
+///
+/// With a `permission_handler.json` the active flavor selects exactly one
+/// Info.plist and nothing is merged, so a permission declared only by `dev`
+/// never reaches a `prod` binary. Without one the keys of every discovered
+/// Info.plist are merged, which errs towards enabling a permission.
 func findInfoPlist() -> [String: Any] {
     var candidates: [URL]
+    let appRoot = findAppRoot()
 
     if let explicit = infoPlistsFromEnvironment() {
         candidates = explicit
-    } else if let appRoot = findAppRoot() {
+    } else if let config = loadFlavorConfig(appRoot: appRoot) {
+        let configRoot = appRoot ?? config.url.deletingLastPathComponent()
+
+        guard let flavor = resolveFlavor(appRoot: configRoot) else {
+            guard !config.strict else {
+                diagnostic("error", """
+                    \(config.url.lastPathComponent) declares the flavors [\(known(config))] with \
+                    "strict": true, but the active flavor could not be determined, so every iOS \
+                    permission has been compiled out. Run \
+                    `dart run permission_handler_apple:select <flavor>` before building, or set \
+                    PERMISSION_HANDLER_FLAVOR.
+                    """)
+                return [:]
+            }
+            diagnostic("warning", """
+                \(config.url.lastPathComponent) declares the flavors [\(known(config))] but the \
+                active flavor could not be determined. Falling back to merging every Info.plist \
+                found, which enables the union of all flavors' permissions. Set "strict": true to \
+                turn this into an error instead.
+                """)
+            return mergeInfoPlists(discoverInfoPlists(appRoot: configRoot), warnOnDivergence: true)
+        }
+
+        guard let relative = config.infoPlists[flavor] else {
+            diagnostic("error", """
+                Flavor "\(flavor)" is not declared in \(config.url.lastPathComponent) \
+                (known flavors: \(known(config))). Every iOS permission has been compiled out.
+                """)
+            return [:]
+        }
+
+        let plist = configRoot.appendingPathComponent(relative)
+        guard fileManager.fileExists(atPath: plist.path) else {
+            // Falling back to discovery here would hand this flavor the union of
+            // every other flavor's permissions, which is the leak the config
+            // exists to prevent. Compile nothing in and say why.
+            diagnostic("error", """
+                Flavor "\(flavor)" points at \(relative), which does not exist \
+                (\(plist.path)). Every iOS permission has been compiled out. Fix the "infoPlist" \
+                path in \(config.url.lastPathComponent).
+                """)
+            return [:]
+        }
+
+        if verbose { diagnostic("note", "active flavor: \(flavor) (\(relative))") }
+        // One flavor, one plist: never merge, so nothing can leak between flavors.
+        return mergeInfoPlists([plist], warnOnDivergence: false)
+    } else if let appRoot {
         if verbose { diagnostic("note", "app root: \(appRoot.path)") }
-        let fromSettings = existingFiles(infoPlistsFromBuildSettings(appRoot: appRoot))
-        candidates = fromSettings.isEmpty ? infoPlistsFromScan(appRoot: appRoot) : fromSettings
+        candidates = discoverInfoPlists(appRoot: appRoot)
     } else {
         diagnostic("warning", """
             Could not locate the host app, so every iOS permission has been compiled out and \
@@ -317,14 +463,27 @@ func findInfoPlist() -> [String: Any] {
         return [:]
     }
 
+    return mergeInfoPlists(candidates, warnOnDivergence: true)
+}
+
+func known(_ config: FlavorConfig) -> String {
+    config.infoPlists.keys.sorted().joined(separator: ", ")
+}
+
+/// Read every candidate plist and union their keys.
+///
+/// Only key *presence* matters to `enabled()`, so the first value for a key
+/// wins. `warnOnDivergence` is off when a flavor picked a single plist, where
+/// there is nothing to diverge.
+func mergeInfoPlists(_ candidates: [URL], warnOnDivergence: Bool) -> [String: Any] {
     var seen = Set<String>()
-    candidates = candidates.filter { seen.insert($0.standardizedFileURL.path).inserted }
+    let unique = candidates.filter { seen.insert($0.standardizedFileURL.path).inserted }
 
     var merged: [String: Any] = [:]
     var loaded: [URL] = []
     var keysPerPlist: [Set<String>] = []
 
-    for url in candidates {
+    for url in unique {
         guard let plist = loadInfoPlist(at: url) else { continue }
         loaded.append(url)
         keysPerPlist.append(Set(plist.keys.filter { $0.hasSuffix("UsageDescription") }))
@@ -334,9 +493,9 @@ func findInfoPlist() -> [String: Any] {
     if loaded.isEmpty {
         diagnostic("warning", """
             No readable Info.plist was found for the host app, so every iOS permission has been \
-            compiled out and permission checks will report `denied`. Set \
-            PERMISSION_HANDLER_INFO_PLIST to the path of your Info.plist, then run \
-            `rm -rf ~/Library/Developer/Xcode/DerivedData`.
+            compiled out and permission checks will report `denied`. Looked at: \
+            \(unique.map(\.path).joined(separator: ", ")). Set PERMISSION_HANDLER_INFO_PLIST to \
+            the path of your Info.plist, then run `rm -rf ~/Library/Developer/Xcode/DerivedData`.
             """)
         return [:]
     }
@@ -348,15 +507,16 @@ func findInfoPlist() -> [String: Any] {
     // Merging across configurations enables the union of their permissions. Say
     // so when they actually disagree, because the extra permissions end up in
     // the release binary and can trigger App Store rejection (ITMS-90683).
-    if let first = keysPerPlist.first, keysPerPlist.contains(where: { $0 != first }) {
+    if warnOnDivergence, let first = keysPerPlist.first,
+       keysPerPlist.contains(where: { $0 != first }) {
         let divergent = keysPerPlist.reduce(into: Set<String>()) { $0.formUnion($1) }
             .subtracting(keysPerPlist.reduce(into: keysPerPlist[0]) { $0.formIntersection($1) })
         diagnostic("warning", """
             The discovered Info.plist files declare different usage descriptions \
             (\(divergent.sorted().joined(separator: ", "))). Every permission found in any of \
             them is enabled for all build configurations, because a Swift package manifest \
-            cannot vary its settings per configuration. Set PERMISSION_HANDLER_INFO_PLIST or the \
-            per-permission PERMISSION_* variables to control this explicitly.
+            cannot vary its settings per configuration. Declare a permission_handler.json with \
+            one flavor per configuration to compile each of them separately.
             """)
     }
 

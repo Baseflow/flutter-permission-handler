@@ -1,3 +1,22 @@
+## 9.6.0
+
+* Adds opt-in per-flavor permissions for Swift Package Manager builds. An app can declare a
+  `permission_handler.json` next to its `pubspec.yaml` mapping each flavor to the `Info.plist` that
+  defines it, and only the selected flavor's permissions are compiled in — a permission declared by
+  `dev` can no longer reach a `prod` binary. Without this file the previous behaviour is unchanged.
+  This is a Swift Package Manager feature: CocoaPods builds set the `PERMISSION_*` macros from the
+  `Podfile` and are unaffected, including by the build phase below.
+* Adds `dart run permission_handler_apple:select <flavor>`, which records the active flavor and
+  clears the caches that would otherwise keep serving the previously resolved permissions. Xcode
+  does not re-evaluate a package manifest when an environment variable or the selection changes, so
+  this step is required when switching flavors.
+* Adds `tool/verify_flavor_selection.sh`, a build phase for the app target that fails the build when
+  the selected flavor does not match the configuration being built. A package manifest is evaluated
+  once and cannot detect that its own result went stale, so this is what catches a forgotten
+  `select`. It is a no-op without a `permission_handler.json` and on CocoaPods builds.
+* Adds the `PERMISSION_HANDLER_FLAVOR` and `PERMISSION_HANDLER_CONFIG` environment variables to set
+  the active flavor and the configuration file location explicitly.
+
 ## 9.5.1
 
 * Fixes the Swift Package Manager permission auto-detection, which failed to find the host app's
