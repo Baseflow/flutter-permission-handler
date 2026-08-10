@@ -63,7 +63,9 @@ flavors:
 
 Each flavor names the one `Info.plist` that defines it, and nothing is merged: a flavor can never
 inherit another flavor's permissions. `configurations` lists the Xcode build configurations that
-belong to the flavor, which is how the build phase below knows what to expect.
+belong to the flavor, which is how the build phase below knows what to expect. Each configuration
+must belong to exactly one flavor — `select` rejects a config where two flavors claim the same one,
+since the build would have no way to tell which permissions it should ship.
 
 Select a flavor before building:
 

@@ -342,17 +342,26 @@ struct FlavorConfig {
     let url: URL                      // the user-facing permission_handler.yaml
 }
 
-/// The user-facing config file, when this app has one.
-func locateConfigYaml(appRoot: URL?) -> URL? {
+/// The user-facing config file and the directory its relative paths resolve
+/// against, when this app has one.
+///
+/// PERMISSION_HANDLER_CONFIG names the config *and* the root: the file sits
+/// next to the app's pubspec.yaml by definition, so its directory is the app.
+/// Deriving the root from `appRoot` instead would let the config come from one
+/// app while its generated translation and Info.plists come from another.
+func locateConfigYaml(appRoot: URL?) -> (yaml: URL, root: URL)? {
     let configURL: URL
+    let root: URL
     if let explicit = env["PERMISSION_HANDLER_CONFIG"], !explicit.isEmpty {
-        configURL = URL(fileURLWithPath: explicit)
+        configURL = URL(fileURLWithPath: explicit).standardizedFileURL
+        root = configURL.deletingLastPathComponent()
     } else if let appRoot {
         configURL = appRoot.appendingPathComponent("permission_handler.yaml")
+        root = appRoot
     } else {
         return nil
     }
-    return fileManager.fileExists(atPath: configURL.path) ? configURL : nil
+    return fileManager.fileExists(atPath: configURL.path) ? (configURL, root) : nil
 }
 
 func modificationDate(of url: URL) -> Date? {
@@ -380,9 +389,22 @@ func loadFlavorConfig(yaml: URL, configRoot: URL) -> FlavorConfig? {
         return nil
     }
 
-    if let yamlDate = modificationDate(of: yaml),
-       let resolvedDate = modificationDate(of: resolved),
-       yamlDate > resolvedDate {
+    // Both files exist, so unreadable timestamps mean something is wrong with
+    // the filesystem rather than with the config. Refuse either way: skipping
+    // the check would let a stale translation through silently, which is the
+    // one outcome this guard exists to prevent.
+    guard let yamlDate = modificationDate(of: yaml),
+          let resolvedDate = modificationDate(of: resolved) else {
+        diagnostic("error", """
+            The modification time of \(yaml.lastPathComponent) or \
+            \(resolved.lastPathComponent) could not be read, so it is not possible to tell \
+            whether the generated translation is current. Every iOS permission has been \
+            compiled out. \(rerun)
+            """)
+        return nil
+    }
+
+    if yamlDate > resolvedDate {
         diagnostic("error", """
             \(yaml.lastPathComponent) was modified after its generated translation \
             (\(resolved.lastPathComponent)), so every iOS permission has been compiled out \
@@ -450,8 +472,9 @@ func findInfoPlist() -> [String: Any] {
 
     if let explicit = infoPlistsFromEnvironment() {
         candidates = explicit
-    } else if let configYaml = locateConfigYaml(appRoot: appRoot) {
-        let configRoot = appRoot ?? configYaml.deletingLastPathComponent()
+    } else if let located = locateConfigYaml(appRoot: appRoot) {
+        let configYaml = located.yaml
+        let configRoot = located.root
 
         guard let config = loadFlavorConfig(yaml: configYaml, configRoot: configRoot) else {
             // Diagnostics already emitted; a present-but-unusable config

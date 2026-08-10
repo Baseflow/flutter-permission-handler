@@ -20,6 +20,10 @@
   `select`. It is a no-op without a `permission_handler.yaml` and on CocoaPods builds.
 * Adds the `PERMISSION_HANDLER_FLAVOR` and `PERMISSION_HANDLER_CONFIG` environment variables to set
   the active flavor and the configuration file location explicitly.
+* `select` validates the configuration up front and refuses anything ambiguous: a build
+  configuration claimed by more than one flavor, a `configurations` that is not a list, a
+  non-string flavor name, or a `strict` that is not a boolean. Being the only reader of the YAML,
+  it is the only place where these can be reported at all.
 
 ## 9.5.1
 

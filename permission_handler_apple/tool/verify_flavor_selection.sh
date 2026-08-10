@@ -42,8 +42,15 @@ if [ ! -f "${RESOLVED}" ]; then
 fi
 
 # `find -newer` instead of `[ -nt ]`: -nt is a bash extension and this script
-# declares /bin/sh.
-if [ -n "$(find "${CONFIG}" -newer "${RESOLVED}" 2>/dev/null)" ]; then
+# declares /bin/sh. Errors are not swallowed — a comparison that could not run
+# is reported rather than read as "not stale", which would let a stale
+# translation build silently.
+if ! STALE=$(find "${CONFIG}" -newer "${RESOLVED}" 2>&1); then
+  echo "error: [permission_handler_apple] could not compare ${CONFIG} against its generated translation: ${STALE}"
+  exit 1
+fi
+
+if [ -n "${STALE}" ]; then
   echo "error: [permission_handler_apple] ${CONFIG} was modified after its generated translation, so this build would use a stale permission configuration. Run: dart run permission_handler_apple:select <flavor>"
   exit 1
 fi

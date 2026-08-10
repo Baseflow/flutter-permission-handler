@@ -71,7 +71,8 @@ void main(List<String> args) {
   if (flags.containsKey('list')) {
     stdout.writeln('Flavors declared in ${configFile.path}:');
     for (final entry in config.flavors.entries) {
-      final exists = File('${appRoot.path}/${entry.value.infoPlist}').existsSync();
+      final exists =
+          File('${appRoot.path}/${entry.value.infoPlist}').existsSync();
       stdout.writeln('  ${entry.key.padRight(12)} ${entry.value.infoPlist}'
           '${exists ? '' : '   (missing!)'}');
     }
@@ -91,7 +92,8 @@ void main(List<String> args) {
 
   final plist = File('${appRoot.path}/${entry.infoPlist}');
   if (!plist.existsSync()) {
-    _fail('Flavor "$flavor" points at ${entry.infoPlist}, which does not exist.');
+    _fail(
+        'Flavor "$flavor" points at ${entry.infoPlist}, which does not exist.');
   }
 
   _writeResolved(appRoot, config);
@@ -107,7 +109,8 @@ void main(List<String> args) {
   stdout.writeln('Permissions that will be compiled in:');
   final descriptions = _usageDescriptions(plist);
   if (descriptions.isEmpty) {
-    stdout.writeln('  (none — ${entry.infoPlist} declares no usage descriptions)');
+    stdout.writeln(
+        '  (none — ${entry.infoPlist} declares no usage descriptions)');
   } else {
     for (final key in descriptions) {
       stdout.writeln('  $key');
@@ -167,23 +170,65 @@ _Config _readConfig(File configFile) {
     _fail('${configFile.path} declares no "flavors".\n\n$_exampleConfig');
   }
 
+  // This command is the only thing that reads the YAML, so it is the only place
+  // that can reject a malformed config. Everything downstream sees the
+  // generated JSON and has no way to tell a deliberate value from a typo, so
+  // validation that is skipped here is validation that never happens.
   final result = <String, _Flavor>{};
+  final claimedBy = <String, String>{}; // build configuration -> flavor
+
   for (final entry in flavors.entries) {
-    final name = entry.key.toString();
+    final key = entry.key;
+    if (key is! String) {
+      _fail('Flavor name ${jsonEncode(key)} in ${configFile.path} is not a '
+          'string. Quote it if you meant a literal name: "$key".');
+    }
+    final name = key;
+
     final value = entry.value;
     if (value is! YamlMap || value['info-plist'] is! String) {
       _fail('Flavor "$name" in ${configFile.path} has no "info-plist" string.');
     }
+
+    // A scalar here used to become an empty list, which silently disables the
+    // build phase's mismatch check for every configuration of this flavor.
     final configurations = value['configurations'];
-    result[name] = _Flavor(
-      value['info-plist'] as String,
-      configurations is YamlList
-          ? configurations.map((c) => c.toString()).toList()
-          : const [],
-    );
+    if (configurations != null && configurations is! YamlList) {
+      _fail('Flavor "$name" in ${configFile.path} has a "configurations" that '
+          'is not a list. Write it as:\n'
+          '    configurations:\n'
+          '      - Debug-$name\n'
+          '      - Release-$name');
+    }
+
+    final names =
+        (configurations as YamlList?)?.map((c) => c.toString()).toList() ??
+            const <String>[];
+
+    // Two flavors claiming one configuration makes the build phase pick
+    // whichever comes first and demand that flavor, which would talk the user
+    // into shipping the other flavor's permissions.
+    for (final configuration in names) {
+      final owner = claimedBy[configuration];
+      if (owner != null) {
+        _fail('Build configuration "$configuration" in ${configFile.path} is '
+            'claimed by both "$owner" and "$name". Each configuration must '
+            'belong to exactly one flavor, otherwise the build cannot tell '
+            'which permissions it should ship.');
+      }
+      claimedBy[configuration] = name;
+    }
+
+    result[name] = _Flavor(value['info-plist'] as String, names);
   }
 
-  return _Config(decoded['strict'] is bool ? decoded['strict'] as bool : true, result);
+  final strict = decoded['strict'];
+  if (strict != null && strict is! bool) {
+    _fail('"strict" in ${configFile.path} must be true or false, not '
+        '${jsonEncode(strict.toString())}.');
+  }
+
+  return _Config(strict as bool? ?? true, result);
 }
 
 /// Write the generated JSON translation the manifest and build phase read.
