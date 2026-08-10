@@ -141,6 +141,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
 			buildPhases = (
+				PH0FLAV0R0VERIFY0PHASE01 /* Verify permission_handler flavor */,
 				5CF31A8C72B66ABB365E813D /* [CP] Check Pods Manifest.lock */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
@@ -212,6 +213,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		PH0FLAV0R0VERIFY0PHASE01 /* Verify permission_handler flavor */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Verify permission_handler flavor";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Resolve the plugin, wherever this project gets it from.\nPLUGIN=\"$SRCROOT/Flutter/ephemeral/Packages/.packages/permission_handler_apple/../..\"\n[ -d \"$PLUGIN/tool\" ] || PLUGIN=\"$SRCROOT/.symlinks/plugins/permission_handler_apple\"\n[ -f \"$PLUGIN/tool/verify_flavor_selection.sh\" ] || exit 0\n/bin/sh \"$PLUGIN/tool/verify_flavor_selection.sh\"\n";
+		};
 		3B06AD1E1E4923F5004D2608 /* Thin Binary */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;

@@ -1,3 +1,30 @@
+## 9.6.0
+
+* Adds opt-in per-flavor permissions for Swift Package Manager builds. An app can declare a
+  `permission_handler.yaml` next to its `pubspec.yaml` mapping each flavor to the `Info.plist` that
+  defines it, and only the selected flavor's permissions are compiled in — a permission declared by
+  `dev` can no longer reach a `prod` binary. Without this file the previous behaviour is unchanged.
+  This is a Swift Package Manager feature: CocoaPods builds set the `PERMISSION_*` macros from the
+  `Podfile` and are unaffected, including by the build phase below.
+* Adds `dart run permission_handler_apple:select <flavor>`, which records the active flavor and
+  clears the caches that would otherwise keep serving the previously resolved permissions. Xcode
+  does not re-evaluate a package manifest when an environment variable or the selection changes, so
+  this step is required when switching flavors. `select` is also the only YAML reader: a Swift
+  package manifest cannot parse YAML, so the command translates the config into a generated
+  `ios/Flutter/permission_handler.resolved.json` (gitignore it) that the manifest and the build
+  phase read with their native JSON parsers. A translation older than the YAML fails the build
+  instead of shipping stale permissions.
+* Adds `tool/verify_flavor_selection.sh`, a build phase for the app target that fails the build when
+  the selected flavor does not match the configuration being built. A package manifest is evaluated
+  once and cannot detect that its own result went stale, so this is what catches a forgotten
+  `select`. It is a no-op without a `permission_handler.yaml` and on CocoaPods builds.
+* Adds the `PERMISSION_HANDLER_FLAVOR` and `PERMISSION_HANDLER_CONFIG` environment variables to set
+  the active flavor and the configuration file location explicitly.
+* `select` validates the configuration up front and refuses anything ambiguous: a build
+  configuration claimed by more than one flavor, a `configurations` that is not a list, a
+  non-string flavor name, or a `strict` that is not a boolean. Being the only reader of the YAML,
+  it is the only place where these can be reported at all.
+
 ## 9.5.1
 
 * Fixes the Swift Package Manager permission auto-detection, which failed to find the host app's

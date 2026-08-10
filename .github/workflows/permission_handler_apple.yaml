@@ -57,62 +57,108 @@ jobs:
         run: flutter analyze
         working-directory: ${{env.source-directory}}
 
-      # Build iOS version of the example App
+      # Build iOS version of the example App.
+      #
+      # The example resolves this plugin as a Swift package (the Podfile only
+      # covers its remaining CocoaPods dependencies), so the "Verify
+      # permission_handler flavor" build phase is active and `strict: true`
+      # demands a selection before a Release build can run. `select` also
+      # generates ios/Flutter/permission_handler.resolved.json from
+      # permission_handler.yaml — neither it nor the selection file is
+      # committed, so every CI run has to make its own.
       - name: Run iOS build
-        run: flutter build ios --no-codesign --release
         working-directory: ${{env.example-directory}}
+        run: |
+          set -euo pipefail
+          dart run permission_handler_apple:select release
+          flutter build ios --no-codesign --release
 
-      # Guard the Swift Package Manager permission auto-detection.
+      # Guard the Swift Package Manager permission resolution.
       #
       # Package.swift turns the usage description keys of the host app's
-      # Info.plist into PERMISSION_* macros. When that discovery breaks every
-      # macro silently falls back to 0 and all permissions are compiled out, so
-      # assert on the resolved manifest rather than on the build succeeding.
+      # Info.plist into PERMISSION_* macros. When that breaks, every macro
+      # silently falls back to 0 and all permissions are compiled out, so assert
+      # on the resolved manifest rather than on the build succeeding.
       #
-      # The example's Debug configuration deliberately uses a separate
-      # `Info-Debug.plist` — the build-configuration-specific layout reported in
-      # issue #1548 — which is identical to `Info.plist` except that it declares
-      # no NSContactsUsageDescription. PERMISSION_CONTACTS can therefore only
-      # resolve to 1 if *both* plists were discovered and merged, which is what
-      # makes these assertions test the discovery rather than the example's
-      # default plist.
-      - name: Verify SPM permission detection
+      # The example declares two flavors over two Info.plist files that differ by
+      # exactly one key: `debug` (Info-Debug.plist, the build-configuration
+      # specific layout reported in issue #1548) has no contacts entry,
+      # `release` (Info.plist) does. That single difference is what proves both
+      # that a flavor cannot inherit another flavor's permissions and, on the
+      # legacy path, that both plists were discovered and merged.
+      - name: Verify SPM permission resolution
         working-directory: ${{env.example-directory}}
         run: |
           set -euo pipefail
           flutter config --enable-swift-package-manager
           flutter build ios --config-only --debug --no-codesign
 
-          rm -rf ~/Library/Caches/org.swift.swiftpm/manifests
-          PERMISSION_HANDLER_VERBOSE=1 swift package --manifest-cache none \
-            --package-path ios/Flutter/ephemeral/Packages/.packages/permission_handler_apple \
-            dump-package > "${RUNNER_TEMP}/manifest.json" 2> "${RUNNER_TEMP}/manifest.log"
-          cat "${RUNNER_TEMP}/manifest.log"
-
-          fail() { # <message>
-            echo "::error::$1"
-            grep -o 'PERMISSION_[A-Z_]*=[01]' "${RUNNER_TEMP}/manifest.json" | sort -u
-            exit 1
+          # Resolve the manifest under a given environment, capturing the macros
+          # (stdout) and the PERMISSION_HANDLER_VERBOSE diagnostics (stderr).
+          resolve() { # <name> <VAR=value>...
+            local name="$1"; shift
+            rm -rf ~/Library/Caches/org.swift.swiftpm/manifests
+            env PERMISSION_HANDLER_VERBOSE=1 "$@" swift package --manifest-cache none \
+              --package-path ios/Flutter/ephemeral/Packages/.packages/permission_handler_apple \
+              dump-package > "${RUNNER_TEMP}/${name}.json" 2> "${RUNNER_TEMP}/${name}.log"
+            echo "--- ${name} ---"
+            cat "${RUNNER_TEMP}/${name}.log"
           }
 
-          # Both the default and the Debug-only plist must be picked up.
-          grep -qF 'Runner/Info.plist' "${RUNNER_TEMP}/manifest.log" \
-            || fail 'ios/Runner/Info.plist was not discovered'
-          grep -qF 'Runner/Info-Debug.plist' "${RUNNER_TEMP}/manifest.log" \
-            || fail 'ios/Runner/Info-Debug.plist was not discovered — INFOPLIST_FILE parsing is broken'
+          expect() { # <name> <macro=value>...
+            local name="$1"; shift
+            for macro in "$@"; do
+              grep -qF "${macro}" "${RUNNER_TEMP}/${name}.json" || {
+                echo "::error::[${name}] expected ${macro} in the resolved manifest"
+                grep -o 'PERMISSION_[A-Z_]*=[01]' "${RUNNER_TEMP}/${name}.json" | sort -u
+                exit 1
+              }
+            done
+          }
 
-          # Reached only when two plists were loaded and their keys differ, so
-          # this is the assertion that proves the merge across configurations.
-          grep -qF 'NSContactsUsageDescription' "${RUNNER_TEMP}/manifest.log" \
-            || fail 'the divergence warning did not name NSContactsUsageDescription — the plists were not merged'
+          expect_log() { # <name> <fixed string> <message>
+            grep -qF "$2" "${RUNNER_TEMP}/$1.log" || { echo "::error::[$1] $3"; exit 1; }
+          }
 
-          # Present in Info.plist only; the rest are in both.
-          for macro in PERMISSION_CONTACTS \
-                       PERMISSION_CAMERA PERMISSION_MICROPHONE \
-                       PERMISSION_PHOTOS PERMISSION_LOCATION; do
-            grep -qF "${macro}=1" "${RUNNER_TEMP}/manifest.json" \
-              || fail "${macro} resolved to 0 — Info.plist discovery is broken"
-          done
+          # Without a permission_handler.yaml the pre-flavor behaviour has to be
+          # unchanged: discover every Info.plist and merge them. PERMISSION_CONTACTS
+          # can only be 1 if both plists were found, which is what makes this
+          # assert on the discovery rather than on the example's default plist.
+          resolve legacy PERMISSION_HANDLER_CONFIG=/nonexistent/permission_handler.yaml
+          expect_log legacy 'Runner/Info.plist' \
+            'ios/Runner/Info.plist was not discovered'
+          expect_log legacy 'Runner/Info-Debug.plist' \
+            'ios/Runner/Info-Debug.plist was not discovered — INFOPLIST_FILE parsing is broken'
+          expect_log legacy 'NSContactsUsageDescription' \
+            'the divergence warning did not fire — the plists were not merged'
+          expect legacy PERMISSION_CONTACTS=1 PERMISSION_CAMERA=1 PERMISSION_MICROPHONE=1 \
+            PERMISSION_PHOTOS=1 PERMISSION_LOCATION=1
+
+          # The debug flavor must not see the release flavor's contacts entry.
+          resolve debug PERMISSION_HANDLER_FLAVOR=debug
+          expect debug PERMISSION_CONTACTS=0 PERMISSION_CAMERA=1 PERMISSION_MICROPHONE=1
+
+          # ...and the release flavor must see it.
+          resolve release PERMISSION_HANDLER_FLAVOR=release
+          expect release PERMISSION_CONTACTS=1 PERMISSION_CAMERA=1 PERMISSION_MICROPHONE=1
+
+          # With `strict: true` an unresolved flavor compiles nothing in,
+          # rather than falling back to the union of every flavor. The earlier
+          # build step recorded a selection, so drop it first — otherwise the
+          # manifest resolves that flavor and this asserts nothing. The
+          # generated resolved.json stays; only the selection is missing.
+          rm -f ios/Flutter/permission_handler.selected
+          resolve strict
+          expect strict PERMISSION_CONTACTS=0 PERMISSION_CAMERA=0 PERMISSION_MICROPHONE=0
+
+          # Editing permission_handler.yaml without re-running `select` must not
+          # build with the stale translation: everything compiles out and the
+          # manifest says to re-run select.
+          touch permission_handler.yaml
+          resolve stale PERMISSION_HANDLER_FLAVOR=release
+          expect stale PERMISSION_CONTACTS=0 PERMISSION_CAMERA=0 PERMISSION_MICROPHONE=0
+          expect_log stale 'modified after its generated translation' \
+            'the staleness guard did not fire'
 
       # An app target whose INFOPLIST_FILE is built from a variable this manifest
       # does not expand, next to an extension carrying Xcode's stock
@@ -140,5 +186,24 @@ jobs:
 
           grep -qF 'PERMISSION_CAMERA=1' "${RUNNER_TEMP}/fallback.json" || {
             echo "::error::the scan fallback did not run — an unresolvable INFOPLIST_FILE suppressed it"
+            exit 1
+          }
+
+      # The build phase that catches a stale selection is the only check that
+      # runs on every build, so make sure it actually fails.
+      - name: Verify flavor mismatch fails the build
+        working-directory: ${{env.example-directory}}
+        run: |
+          set -euo pipefail
+          dart run permission_handler_apple:select release
+          if xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner \
+               -configuration Debug -sdk iphonesimulator \
+               -derivedDataPath "${RUNNER_TEMP}/dd" build > "${RUNNER_TEMP}/mismatch.log" 2>&1; then
+            echo "::error::a Debug build with the release flavor selected should have failed"
+            exit 1
+          fi
+          grep -q 'needs the "debug" permission flavor' "${RUNNER_TEMP}/mismatch.log" || {
+            echo "::error::build failed, but not with the flavor mismatch error"
+            tail -40 "${RUNNER_TEMP}/mismatch.log"
             exit 1
           }
