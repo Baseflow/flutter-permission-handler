@@ -9,12 +9,23 @@
 // running. The flavor therefore has to be chosen before the build, which is what
 // this command does: it records the choice and clears the caches that would
 // otherwise keep serving the previous flavor's macros.
+//
+// The configuration lives in permission_handler.yaml, but a Swift package
+// manifest cannot parse YAML — Foundation has no YAML support and a manifest
+// cannot import libraries for its own evaluation. This command is therefore the
+// only YAML reader: it translates the config into a generated
+// permission_handler.resolved.json that the manifest and the verification build
+// phase consume with their native JSON parsers. The generated file is an
+// internal artifact — gitignore it, never edit it.
 
 import 'dart:convert';
 import 'dart:io';
 
-const _configName = 'permission_handler.json';
+import 'package:yaml/yaml.dart';
+
+const _configName = 'permission_handler.yaml';
 const _selectionPath = 'ios/Flutter/permission_handler.selected';
+const _resolvedPath = 'ios/Flutter/permission_handler.resolved.json';
 
 /// Caches that keep a previously evaluated manifest alive.
 ///
@@ -55,13 +66,13 @@ void main(List<String> args) {
         'Create one to describe your flavors:\n$_exampleConfig');
   }
 
-  final flavors = _readFlavors(configFile);
+  final config = _readConfig(configFile);
 
   if (flags.containsKey('list')) {
     stdout.writeln('Flavors declared in ${configFile.path}:');
-    for (final entry in flavors.entries) {
-      final exists = File('${appRoot.path}/${entry.value}').existsSync();
-      stdout.writeln('  ${entry.key.padRight(12)} ${entry.value}'
+    for (final entry in config.flavors.entries) {
+      final exists = File('${appRoot.path}/${entry.value.infoPlist}').existsSync();
+      stdout.writeln('  ${entry.key.padRight(12)} ${entry.value.infoPlist}'
           '${exists ? '' : '   (missing!)'}');
     }
     return;
@@ -72,16 +83,18 @@ void main(List<String> args) {
   }
   final flavor = positional.single;
 
-  final relativePlist = flavors[flavor];
-  if (relativePlist == null) {
+  final entry = config.flavors[flavor];
+  if (entry == null) {
     _fail('Flavor "$flavor" is not declared in ${configFile.path}.\n'
-        'Known flavors: ${flavors.keys.join(', ')}');
+        'Known flavors: ${config.flavors.keys.join(', ')}');
   }
 
-  final plist = File('${appRoot.path}/$relativePlist');
+  final plist = File('${appRoot.path}/${entry.infoPlist}');
   if (!plist.existsSync()) {
-    _fail('Flavor "$flavor" points at $relativePlist, which does not exist.');
+    _fail('Flavor "$flavor" points at ${entry.infoPlist}, which does not exist.');
   }
+
+  _writeResolved(appRoot, config);
 
   final selection = File('${appRoot.path}/$_selectionPath');
   selection.parent.createSync(recursive: true);
@@ -89,12 +102,12 @@ void main(List<String> args) {
 
   final cleared = _clearCaches(appRoot, flags['derived-data']);
 
-  stdout.writeln('Selected flavor "$flavor" ($relativePlist).');
+  stdout.writeln('Selected flavor "$flavor" (${entry.infoPlist}).');
   stdout.writeln('');
   stdout.writeln('Permissions that will be compiled in:');
   final descriptions = _usageDescriptions(plist);
   if (descriptions.isEmpty) {
-    stdout.writeln('  (none — $relativePlist declares no usage descriptions)');
+    stdout.writeln('  (none — ${entry.infoPlist} declares no usage descriptions)');
   } else {
     for (final key in descriptions) {
       stdout.writeln('  $key');
@@ -105,6 +118,20 @@ void main(List<String> args) {
       ? 'No package caches needed clearing.'
       : 'Cleared ${cleared.length} cache location(s) so the manifest is '
           're-evaluated on the next build.');
+}
+
+class _Flavor {
+  const _Flavor(this.infoPlist, this.configurations);
+
+  final String infoPlist;
+  final List<String> configurations;
+}
+
+class _Config {
+  const _Config(this.strict, this.flavors);
+
+  final bool strict;
+  final Map<String, _Flavor> flavors;
 }
 
 /// Walk up looking for a Flutter app: a pubspec.yaml next to an Xcode project.
@@ -124,32 +151,63 @@ Directory _findAppRoot(String? override) {
       'from ${override ?? Directory.current.path}. Pass --app=<path>.');
 }
 
-/// flavor -> Info.plist path, relative to the app root.
-Map<String, String> _readFlavors(File configFile) {
+_Config _readConfig(File configFile) {
   final Object? decoded;
   try {
-    decoded = jsonDecode(configFile.readAsStringSync());
-  } on FormatException catch (e) {
-    _fail('${configFile.path} is not valid JSON: ${e.message}');
+    decoded = loadYaml(configFile.readAsStringSync());
+  } on YamlException catch (e) {
+    _fail('${configFile.path} is not valid YAML: ${e.message}');
   }
 
-  if (decoded is! Map<String, dynamic>) {
-    _fail('${configFile.path} must contain a JSON object.');
+  if (decoded is! YamlMap) {
+    _fail('${configFile.path} must contain a YAML mapping.\n\n$_exampleConfig');
   }
   final flavors = decoded['flavors'];
-  if (flavors is! Map<String, dynamic> || flavors.isEmpty) {
+  if (flavors is! YamlMap || flavors.isEmpty) {
     _fail('${configFile.path} declares no "flavors".\n\n$_exampleConfig');
   }
 
-  final result = <String, String>{};
-  flavors.forEach((name, value) {
-    if (value is Map<String, dynamic> && value['infoPlist'] is String) {
-      result[name] = value['infoPlist'] as String;
-    } else {
-      _fail('Flavor "$name" in ${configFile.path} has no "infoPlist" string.');
+  final result = <String, _Flavor>{};
+  for (final entry in flavors.entries) {
+    final name = entry.key.toString();
+    final value = entry.value;
+    if (value is! YamlMap || value['info-plist'] is! String) {
+      _fail('Flavor "$name" in ${configFile.path} has no "info-plist" string.');
     }
-  });
-  return result;
+    final configurations = value['configurations'];
+    result[name] = _Flavor(
+      value['info-plist'] as String,
+      configurations is YamlList
+          ? configurations.map((c) => c.toString()).toList()
+          : const [],
+    );
+  }
+
+  return _Config(decoded['strict'] is bool ? decoded['strict'] as bool : true, result);
+}
+
+/// Write the generated JSON translation the manifest and build phase read.
+///
+/// The camelCase `infoPlist` key is deliberate: it matches what Package.swift
+/// and verify_flavor_selection.sh already parse, and this file is not
+/// user-facing.
+void _writeResolved(Directory appRoot, _Config config) {
+  final resolved = File('${appRoot.path}/$_resolvedPath');
+  resolved.parent.createSync(recursive: true);
+  resolved.writeAsStringSync(
+    const JsonEncoder.withIndent('  ').convert({
+      'note': 'Generated by permission_handler_apple:select from '
+          '$_configName. Do not edit or commit.',
+      'strict': config.strict,
+      'flavors': {
+        for (final entry in config.flavors.entries)
+          entry.key: {
+            'infoPlist': entry.value.infoPlist,
+            'configurations': entry.value.configurations,
+          },
+      },
+    }),
+  );
 }
 
 List<String> _usageDescriptions(File plist) {
@@ -227,13 +285,16 @@ Usage: dart run permission_handler_apple:select <flavor>
 ''';
 
 const _exampleConfig = '''
-{
-  "strict": true,
-  "flavors": {
-    "dev":  { "infoPlist": "ios/Runner/Info-dev.plist",
-              "configurations": ["Debug-dev", "Release-dev"] },
-    "prod": { "infoPlist": "ios/Runner/Info-prod.plist",
-              "configurations": ["Debug-prod", "Release-prod"] }
-  }
-}
+strict: true
+flavors:
+  dev:
+    info-plist: ios/Runner/Info-dev.plist
+    configurations:
+      - Debug-dev
+      - Release-dev
+  prod:
+    info-plist: ios/Runner/Info-prod.plist
+    configurations:
+      - Debug-prod
+      - Release-prod
 ''';

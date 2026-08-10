@@ -61,10 +61,11 @@ jobs:
       #
       # The example resolves this plugin as a Swift package (the Podfile only
       # covers its remaining CocoaPods dependencies), so the "Verify
-      # permission_handler flavor" build phase is active and "strict": true
-      # demands a selection before a Release build can run. The selection file
-      # is deliberately not committed — it records a local choice — so every CI
-      # run has to make its own.
+      # permission_handler flavor" build phase is active and `strict: true`
+      # demands a selection before a Release build can run. `select` also
+      # generates ios/Flutter/permission_handler.resolved.json from
+      # permission_handler.yaml — neither it nor the selection file is
+      # committed, so every CI run has to make its own.
       - name: Run iOS build
         working-directory: ${{env.example-directory}}
         run: |
@@ -119,11 +120,11 @@ jobs:
             grep -qF "$2" "${RUNNER_TEMP}/$1.log" || { echo "::error::[$1] $3"; exit 1; }
           }
 
-          # Without a permission_handler.json the pre-flavor behaviour has to be
+          # Without a permission_handler.yaml the pre-flavor behaviour has to be
           # unchanged: discover every Info.plist and merge them. PERMISSION_CONTACTS
           # can only be 1 if both plists were found, which is what makes this
           # assert on the discovery rather than on the example's default plist.
-          resolve legacy PERMISSION_HANDLER_CONFIG=/nonexistent/permission_handler.json
+          resolve legacy PERMISSION_HANDLER_CONFIG=/nonexistent/permission_handler.yaml
           expect_log legacy 'Runner/Info.plist' \
             'ios/Runner/Info.plist was not discovered'
           expect_log legacy 'Runner/Info-Debug.plist' \
@@ -141,13 +142,23 @@ jobs:
           resolve release PERMISSION_HANDLER_FLAVOR=release
           expect release PERMISSION_CONTACTS=1 PERMISSION_CAMERA=1 PERMISSION_MICROPHONE=1
 
-          # With "strict": true an unresolved flavor compiles nothing in,
+          # With `strict: true` an unresolved flavor compiles nothing in,
           # rather than falling back to the union of every flavor. The earlier
           # build step recorded a selection, so drop it first — otherwise the
-          # manifest resolves that flavor and this asserts nothing.
+          # manifest resolves that flavor and this asserts nothing. The
+          # generated resolved.json stays; only the selection is missing.
           rm -f ios/Flutter/permission_handler.selected
           resolve strict
           expect strict PERMISSION_CONTACTS=0 PERMISSION_CAMERA=0 PERMISSION_MICROPHONE=0
+
+          # Editing permission_handler.yaml without re-running `select` must not
+          # build with the stale translation: everything compiles out and the
+          # manifest says to re-run select.
+          touch permission_handler.yaml
+          resolve stale PERMISSION_HANDLER_FLAVOR=release
+          expect stale PERMISSION_CONTACTS=0 PERMISSION_CAMERA=0 PERMISSION_MICROPHONE=0
+          expect_log stale 'modified after its generated translation' \
+            'the staleness guard did not fire'
 
       # An app target whose INFOPLIST_FILE is built from a variable this manifest
       # does not expand, next to an extension carrying Xcode's stock

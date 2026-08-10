@@ -37,23 +37,28 @@ rm -rf ~/Library/Developer/Xcode/DerivedData
 ### Per-flavor permissions
 
 > Swift Package Manager only. Under CocoaPods the macros come from your `Podfile`, where you can
-> already set them per configuration; `permission_handler.json` is ignored and the build phase
+> already set them per configuration; `permission_handler.yaml` is ignored and the build phase
 > below is a no-op.
 
 If your flavors need different permissions — a `dev` build that scans QR codes, a `prod` build that
 does not — merging is wrong: it compiles the camera code into `prod` too, which is what
-`ITMS-90683` rejects. Declare a `permission_handler.json` next to your `pubspec.yaml`:
+`ITMS-90683` rejects. Declare a `permission_handler.yaml` next to your `pubspec.yaml`:
 
-```json
-{
-  "strict": true,
-  "flavors": {
-    "dev":  { "infoPlist": "ios/Runner/Info-dev.plist",
-              "configurations": ["Debug-dev", "Profile-dev", "Release-dev"] },
-    "prod": { "infoPlist": "ios/Runner/Info-prod.plist",
-              "configurations": ["Debug-prod", "Profile-prod", "Release-prod"] }
-  }
-}
+```yaml
+strict: true
+flavors:
+  dev:
+    info-plist: ios/Runner/Info-dev.plist
+    configurations:
+      - Debug-dev
+      - Profile-dev
+      - Release-dev
+  prod:
+    info-plist: ios/Runner/Info-prod.plist
+    configurations:
+      - Debug-prod
+      - Profile-prod
+      - Release-prod
 ```
 
 Each flavor names the one `Info.plist` that defines it, and nothing is merged: a flavor can never
@@ -72,7 +77,14 @@ given none of Xcode's build settings — it cannot tell which configuration is r
 will not re-evaluate it just because an environment variable changed. `select` records the choice
 *and* clears the caches that would otherwise keep serving the previous flavor's permissions.
 
-With `"strict": true` (the default) a build whose flavor cannot be determined compiles no
+`select` is also the only YAML reader in the pipeline. A Swift package manifest cannot parse YAML —
+Foundation has no support for it and a manifest cannot import libraries — so `select` translates
+your config into a generated `ios/Flutter/permission_handler.resolved.json` that the manifest and
+the build phase read with their native JSON parsers. Never edit that file; if you change
+`permission_handler.yaml`, re-run `select`. Building with a translation older than the YAML fails
+rather than using stale permissions.
+
+With `strict: true` (the default) a build whose flavor cannot be determined compiles no
 permissions at all, rather than falling back to the union of every flavor.
 
 #### Fail the build on a stale selection
@@ -98,7 +110,12 @@ but "dev" is selected, so this build would ship dev's permissions.
 Run: dart run permission_handler_apple:select prod
 ```
 
-Add `ios/Flutter/permission_handler.selected` to your `.gitignore`; it records a local choice.
+Add these to your `.gitignore` — one records a local choice, the other is generated:
+
+```
+ios/Flutter/permission_handler.selected
+ios/Flutter/permission_handler.resolved.json
+```
 
 ### Environment variables
 
@@ -110,7 +127,7 @@ than exporting them, then restart Xcode.
 | `PERMISSION_<NAME>` | Forces a single permission on (`1`) or off (`0`), overriding everything else. For example `launchctl setenv PERMISSION_CAMERA 0`. |
 | `PERMISSION_HANDLER_INFO_PLIST` | A `:`-separated list of `Info.plist` paths. When set, replaces automatic discovery entirely. |
 | `PERMISSION_HANDLER_FLAVOR` | The active flavor, overriding the one recorded by `select`. Changing it still needs the caches cleared. |
-| `PERMISSION_HANDLER_CONFIG` | Path to `permission_handler.json`, for builds that cannot locate the app automatically. |
+| `PERMISSION_HANDLER_CONFIG` | Path to `permission_handler.yaml`, for builds that cannot locate the app automatically. |
 | `PERMISSION_HANDLER_VERBOSE` | Set to `1` to log the detected app root, the `Info.plist` files used, and the resolved macros. |
 
 ### Builds started from Xcode.app

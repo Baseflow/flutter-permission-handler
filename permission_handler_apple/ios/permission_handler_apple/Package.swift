@@ -19,6 +19,10 @@ import Foundation
 //                                  replaces automatic discovery entirely. This
 //                                  is the only mechanism that works for builds
 //                                  started from Xcode.app (see findAppRoot()).
+//   PERMISSION_HANDLER_FLAVOR      The active flavor, overriding the one
+//                                  recorded by the `select` command.
+//   PERMISSION_HANDLER_CONFIG      Path to permission_handler.yaml, for builds
+//                                  that cannot locate the app automatically.
 //   PERMISSION_HANDLER_VERBOSE     Set to 1 to log what was discovered and
 //                                  which permissions ended up enabled.
 //
@@ -296,24 +300,37 @@ func discoverInfoPlists(appRoot: URL) -> [URL] {
 
 // MARK: - Per-flavor configuration
 
-/// A `permission_handler.json` next to the app's pubspec.yaml.
+/// The user declares flavors in a `permission_handler.yaml` next to the app's
+/// pubspec.yaml:
 ///
-/// ```json
-/// {
-///   "strict": true,
-///   "flavors": {
-///     "dev":  { "infoPlist": "ios/Runner/Info-dev.plist",
-///               "configurations": ["Debug-dev", "Release-dev"] },
-///     "prod": { "infoPlist": "ios/Runner/Info-prod.plist",
-///               "configurations": ["Debug-prod", "Release-prod"] }
-///   }
-/// }
+/// ```yaml
+/// strict: true
+/// flavors:
+///   dev:
+///     info-plist: ios/Runner/Info-dev.plist
+///     configurations:
+///       - Debug-dev
+///       - Release-dev
+///   prod:
+///     info-plist: ios/Runner/Info-prod.plist
+///     configurations:
+///       - Debug-prod
+///       - Release-prod
 /// ```
+///
+/// This manifest never parses that file. Foundation has no YAML support and a
+/// package manifest cannot import a library for its own evaluation, so
+/// `dart run permission_handler_apple:select` — the one place with a real YAML
+/// parser — translates it into a generated
+/// `ios/Flutter/permission_handler.resolved.json`, which is what is read here
+/// with JSONSerialization. The YAML file's existence and modification time are
+/// the only things consulted directly, to catch a translation that is missing
+/// or stale.
 ///
 /// A flavor names the single Info.plist that defines it. Listing usage
 /// description keys directly was considered and rejected: it would duplicate the
-/// permission vocabulary across this manifest, the `select` command and the
-/// verification build phase, and a drift between those copies fails silently.
+/// permission vocabulary across the config, this manifest and the verification
+/// build phase, and a drift between those copies fails silently.
 ///
 /// `configurations` is deliberately not read here. A manifest is given no build
 /// settings, so it cannot know which configuration is building and could not act
@@ -322,54 +339,87 @@ func discoverInfoPlists(appRoot: URL) -> [URL] {
 struct FlavorConfig {
     let strict: Bool
     let infoPlists: [String: String]  // flavor -> path, relative to the app root
-    let url: URL
+    let url: URL                      // the user-facing permission_handler.yaml
 }
 
-func loadFlavorConfig(appRoot: URL?) -> FlavorConfig? {
+/// The user-facing config file, when this app has one.
+func locateConfigYaml(appRoot: URL?) -> URL? {
     let configURL: URL
     if let explicit = env["PERMISSION_HANDLER_CONFIG"], !explicit.isEmpty {
         configURL = URL(fileURLWithPath: explicit)
     } else if let appRoot {
-        configURL = appRoot.appendingPathComponent("permission_handler.json")
+        configURL = appRoot.appendingPathComponent("permission_handler.yaml")
     } else {
         return nil
     }
+    return fileManager.fileExists(atPath: configURL.path) ? configURL : nil
+}
 
-    guard fileManager.fileExists(atPath: configURL.path) else { return nil }
+func modificationDate(of url: URL) -> Date? {
+    (try? fileManager.attributesOfItem(atPath: url.path))?[.modificationDate] as? Date
+}
 
-    guard let data = try? Data(contentsOf: configURL),
-          let root = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else {
-        diagnostic("error", "\(configURL.path) is not valid JSON. Ignoring it.")
+/// Load the generated translation of `yaml`, refusing anything missing, stale
+/// or malformed.
+///
+/// Every failure returns nil after a diagnostic, and the caller compiles no
+/// permissions in. Falling back to merged discovery instead would hand the
+/// build the union of every flavor's permissions — the exact leak a config
+/// file exists to prevent — so a broken translation must never be "ignored".
+func loadFlavorConfig(yaml: URL, configRoot: URL) -> FlavorConfig? {
+    let resolved = configRoot.appendingPathComponent("ios/Flutter/permission_handler.resolved.json")
+    let rerun = """
+        Run `dart run permission_handler_apple:select <flavor>` to regenerate it, then build again.
+        """
+
+    guard fileManager.fileExists(atPath: resolved.path) else {
+        diagnostic("error", """
+            \(yaml.lastPathComponent) is present but its generated translation \
+            (\(resolved.path)) is not, so every iOS permission has been compiled out. \(rerun)
+            """)
         return nil
     }
 
-    guard let flavors = root["flavors"] as? [String: Any], !flavors.isEmpty else {
-        diagnostic("error", "\(configURL.path) declares no \"flavors\". Ignoring it.")
+    if let yamlDate = modificationDate(of: yaml),
+       let resolvedDate = modificationDate(of: resolved),
+       yamlDate > resolvedDate {
+        diagnostic("error", """
+            \(yaml.lastPathComponent) was modified after its generated translation \
+            (\(resolved.lastPathComponent)), so every iOS permission has been compiled out \
+            rather than building with a stale configuration. \(rerun)
+            """)
+        return nil
+    }
+
+    guard let data = try? Data(contentsOf: resolved),
+          let root = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any],
+          let flavors = root["flavors"] as? [String: Any], !flavors.isEmpty else {
+        diagnostic("error", """
+            \(resolved.path) is not a valid generated configuration, so every iOS permission \
+            has been compiled out. \(rerun)
+            """)
         return nil
     }
 
     var infoPlists: [String: String] = [:]
     for (flavor, raw) in flavors {
-        guard let entry = raw as? [String: Any] else { continue }
-        guard let plist = entry["infoPlist"] as? String, !plist.isEmpty else {
-            diagnostic("error", """
-                Flavor "\(flavor)" in \(configURL.path) has no "infoPlist" string, so it cannot \
-                be selected.
-                """)
-            continue
-        }
+        guard let entry = raw as? [String: Any],
+              let plist = entry["infoPlist"] as? String, !plist.isEmpty else { continue }
         infoPlists[flavor] = plist
     }
 
     guard !infoPlists.isEmpty else {
-        diagnostic("error", "\(configURL.path) declares no usable flavors. Ignoring it.")
+        diagnostic("error", """
+            \(resolved.path) declares no usable flavors, so every iOS permission has been \
+            compiled out. \(rerun)
+            """)
         return nil
     }
 
     return FlavorConfig(
         strict: root["strict"] as? Bool ?? true,
         infoPlists: infoPlists,
-        url: configURL
+        url: yaml
     )
 }
 
@@ -390,7 +440,7 @@ func resolveFlavor(appRoot: URL?) -> String? {
 
 /// Collect the usage description keys that apply to this build.
 ///
-/// With a `permission_handler.json` the active flavor selects exactly one
+/// With a `permission_handler.yaml` the active flavor selects exactly one
 /// Info.plist and nothing is merged, so a permission declared only by `dev`
 /// never reaches a `prod` binary. Without one the keys of every discovered
 /// Info.plist are merged, which errs towards enabling a permission.
@@ -400,8 +450,14 @@ func findInfoPlist() -> [String: Any] {
 
     if let explicit = infoPlistsFromEnvironment() {
         candidates = explicit
-    } else if let config = loadFlavorConfig(appRoot: appRoot) {
-        let configRoot = appRoot ?? config.url.deletingLastPathComponent()
+    } else if let configYaml = locateConfigYaml(appRoot: appRoot) {
+        let configRoot = appRoot ?? configYaml.deletingLastPathComponent()
+
+        guard let config = loadFlavorConfig(yaml: configYaml, configRoot: configRoot) else {
+            // Diagnostics already emitted; a present-but-unusable config
+            // compiles nothing in rather than falling back to the merge.
+            return [:]
+        }
 
         guard let flavor = resolveFlavor(appRoot: configRoot) else {
             guard !config.strict else {
@@ -438,8 +494,9 @@ func findInfoPlist() -> [String: Any] {
             // exists to prevent. Compile nothing in and say why.
             diagnostic("error", """
                 Flavor "\(flavor)" points at \(relative), which does not exist \
-                (\(plist.path)). Every iOS permission has been compiled out. Fix the "infoPlist" \
-                path in \(config.url.lastPathComponent).
+                (\(plist.path)). Every iOS permission has been compiled out. Fix the "info-plist" \
+                path in \(config.url.lastPathComponent) and re-run \
+                `dart run permission_handler_apple:select \(flavor)`.
                 """)
             return [:]
         }

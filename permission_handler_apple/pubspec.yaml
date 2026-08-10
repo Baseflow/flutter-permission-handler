@@ -20,6 +20,9 @@ dependencies:
   flutter:
     sdk: flutter
   permission_handler_platform_interface: ^4.4.0
+  # Used only by `bin/select.dart` to read permission_handler.yaml; pure Dart,
+  # tree-shaken out of app binaries.
+  yaml: ^3.1.0
 
 dev_dependencies:
   flutter_lints: ^5.0.0
