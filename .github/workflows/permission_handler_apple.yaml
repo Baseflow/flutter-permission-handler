@@ -61,3 +61,84 @@ jobs:
       - name: Run iOS build
         run: flutter build ios --no-codesign --release
         working-directory: ${{env.example-directory}}
+
+      # Guard the Swift Package Manager permission auto-detection.
+      #
+      # Package.swift turns the usage description keys of the host app's
+      # Info.plist into PERMISSION_* macros. When that discovery breaks every
+      # macro silently falls back to 0 and all permissions are compiled out, so
+      # assert on the resolved manifest rather than on the build succeeding.
+      #
+      # The example's Debug configuration deliberately uses a separate
+      # `Info-Debug.plist` — the build-configuration-specific layout reported in
+      # issue #1548 — which is identical to `Info.plist` except that it declares
+      # no NSContactsUsageDescription. PERMISSION_CONTACTS can therefore only
+      # resolve to 1 if *both* plists were discovered and merged, which is what
+      # makes these assertions test the discovery rather than the example's
+      # default plist.
+      - name: Verify SPM permission detection
+        working-directory: ${{env.example-directory}}
+        run: |
+          set -euo pipefail
+          flutter config --enable-swift-package-manager
+          flutter build ios --config-only --debug --no-codesign
+
+          rm -rf ~/Library/Caches/org.swift.swiftpm/manifests
+          PERMISSION_HANDLER_VERBOSE=1 swift package --manifest-cache none \
+            --package-path ios/Flutter/ephemeral/Packages/.packages/permission_handler_apple \
+            dump-package > "${RUNNER_TEMP}/manifest.json" 2> "${RUNNER_TEMP}/manifest.log"
+          cat "${RUNNER_TEMP}/manifest.log"
+
+          fail() { # <message>
+            echo "::error::$1"
+            grep -o 'PERMISSION_[A-Z_]*=[01]' "${RUNNER_TEMP}/manifest.json" | sort -u
+            exit 1
+          }
+
+          # Both the default and the Debug-only plist must be picked up.
+          grep -qF 'Runner/Info.plist' "${RUNNER_TEMP}/manifest.log" \
+            || fail 'ios/Runner/Info.plist was not discovered'
+          grep -qF 'Runner/Info-Debug.plist' "${RUNNER_TEMP}/manifest.log" \
+            || fail 'ios/Runner/Info-Debug.plist was not discovered — INFOPLIST_FILE parsing is broken'
+
+          # Reached only when two plists were loaded and their keys differ, so
+          # this is the assertion that proves the merge across configurations.
+          grep -qF 'NSContactsUsageDescription' "${RUNNER_TEMP}/manifest.log" \
+            || fail 'the divergence warning did not name NSContactsUsageDescription — the plists were not merged'
+
+          # Present in Info.plist only; the rest are in both.
+          for macro in PERMISSION_CONTACTS \
+                       PERMISSION_CAMERA PERMISSION_MICROPHONE \
+                       PERMISSION_PHOTOS PERMISSION_LOCATION; do
+            grep -qF "${macro}=1" "${RUNNER_TEMP}/manifest.json" \
+              || fail "${macro} resolved to 0 — Info.plist discovery is broken"
+          done
+
+      # An app target whose INFOPLIST_FILE is built from a variable this manifest
+      # does not expand, next to an extension carrying Xcode's stock
+      # `GENERATE_INFOPLIST_FILE = YES`. Neither yields a usable path, so the
+      # scan of `ios/` has to take over; a settings hit that resolves to nothing
+      # must not suppress it. Built here rather than committed, because it is a
+      # project layout the example cannot also be.
+      - name: Verify SPM detection falls back to scanning
+        run: |
+          set -euo pipefail
+          app="${RUNNER_TEMP}/fallback-app"
+          rm -rf "${app}"
+          mkdir -p "${app}/ios/Extension.xcodeproj" "${app}/ios/Runner"
+          touch "${app}/pubspec.yaml"
+          cp "${{env.example-directory}}/ios/Runner/Info.plist" "${app}/ios/Runner/Info.plist"
+          printf 'GENERATE_INFOPLIST_FILE = YES;\nINFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";\n' \
+            > "${app}/ios/Extension.xcodeproj/project.pbxproj"
+
+          cd "${app}"
+          rm -rf ~/Library/Caches/org.swift.swiftpm/manifests
+          PERMISSION_HANDLER_VERBOSE=1 swift package --manifest-cache none \
+            --package-path "${GITHUB_WORKSPACE}/permission_handler_apple/ios/permission_handler_apple" \
+            dump-package > "${RUNNER_TEMP}/fallback.json" 2> "${RUNNER_TEMP}/fallback.log"
+          cat "${RUNNER_TEMP}/fallback.log"
+
+          grep -qF 'PERMISSION_CAMERA=1' "${RUNNER_TEMP}/fallback.json" || {
+            echo "::error::the scan fallback did not run — an unresolvable INFOPLIST_FILE suppressed it"
+            exit 1
+          }

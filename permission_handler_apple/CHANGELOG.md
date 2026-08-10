@@ -1,3 +1,21 @@
+## 9.5.1
+
+* Fixes the Swift Package Manager permission auto-detection, which failed to find the host app's
+  `Info.plist` and silently compiled out every permission. Apps hit this in two ways: the manifest
+  only ever looked at `ios/Runner/Info.plist`, so build-configuration or flavor specific plists such
+  as `Info-Debug.plist` were never seen ([#1548](https://github.com/Baseflow/flutter-permission-handler/issues/1548)),
+  and the app-root lookup could walk past the app entirely. `Info.plist` locations are now resolved
+  from `INFOPLIST_FILE` in the Xcode project and any `.xcconfig` files, with a scan of `ios/` as a
+  fallback, and the usage description keys found across them are merged.
+* Adds the `PERMISSION_HANDLER_INFO_PLIST` environment variable, which points the manifest at one or
+  more `Info.plist` files and replaces automatic discovery. This is required for builds started from
+  Xcode.app, which run with `/` as their working directory and cannot be detected automatically.
+* Adds the `PERMISSION_HANDLER_VERBOSE` environment variable, which logs the app root, the
+  `Info.plist` files used, and the resolved `PERMISSION_*` macros.
+* Emits a warning when no `Info.plist` can be located, instead of silently disabling every
+  permission. Note that Xcode discards Swift package manifest output, so this warning is only
+  visible through the `swift package` command line.
+
 ## 9.5.0
 
 * Adds support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`.
