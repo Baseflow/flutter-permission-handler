@@ -1,3 +1,7 @@
+## 13.0.1
+
+- Updates documentation on how to configure the permission handler on macOS / iOS.
+
 ## 13.0.0
 
 - **BREAKING CHANGE:** , android compilesdk now set to version `compileSdkVersion 37`
