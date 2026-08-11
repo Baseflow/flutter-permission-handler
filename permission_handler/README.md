@@ -61,26 +61,28 @@ With SPM, `Package.swift` automatically detects which permissions to enable by r
 | Permission group | Info.plist key |
 |---|---|
 | `PermissionGroup.calendar` (< iOS 17) | `NSCalendarsUsageDescription` |
-| `PermissionGroup.calendarWriteOnly` (iOS 17+) | `NSCalendarsWriteOnlyAccessUsageDescription` |
-| `PermissionGroup.calendarFullAccess` (iOS 17+) | `NSCalendarsFullAccessUsageDescription` |
+| `PermissionGroup.calendarWriteOnly` / `calendarFullAccess` (iOS 17+) | `NSCalendarsFullAccessUsageDescription` or `NSCalendarsWriteOnlyAccessUsageDescription` |
 | `PermissionGroup.reminders` | `NSRemindersUsageDescription` |
 | `PermissionGroup.contacts` | `NSContactsUsageDescription` |
 | `PermissionGroup.camera` | `NSCameraUsageDescription` |
 | `PermissionGroup.microphone` | `NSMicrophoneUsageDescription` |
 | `PermissionGroup.speech` | `NSSpeechRecognitionUsageDescription` |
-| `PermissionGroup.photos` | `NSPhotoLibraryUsageDescription` |
+| `PermissionGroup.photos` | `NSPhotoLibraryUsageDescription` or `NSPhotoLibraryAddUsageDescription` |
 | `PermissionGroup.photosAddOnly` | `NSPhotoLibraryAddUsageDescription` |
-| `PermissionGroup.location` / `locationWhenInUse` | `NSLocationWhenInUseUsageDescription` |
+| `PermissionGroup.location` | `NSLocationWhenInUseUsageDescription` or `NSLocationAlwaysAndWhenInUseUsageDescription` |
+| `PermissionGroup.locationWhenInUse` | `NSLocationWhenInUseUsageDescription` |
 | `PermissionGroup.locationAlways` | `NSLocationAlwaysAndWhenInUseUsageDescription` |
 | `PermissionGroup.mediaLibrary` | `NSAppleMusicUsageDescription` |
 | `PermissionGroup.sensors` | `NSMotionUsageDescription` |
-| `PermissionGroup.bluetooth` | `NSBluetoothAlwaysUsageDescription` |
+| `PermissionGroup.bluetooth` | `NSBluetoothAlwaysUsageDescription` or `NSBluetoothPeripheralUsageDescription` |
 | `PermissionGroup.appTrackingTransparency` | `NSUserTrackingUsageDescription` |
 | `PermissionGroup.assistant` | `NSSiriUsageDescription` |
 | `PermissionGroup.notification` | *(enabled by default — see below)* |
 | `PermissionGroup.criticalAlerts` | *(disabled by default — see below)* |
 
-Because you must already add these keys to `Info.plist` for any permission to work, no additional configuration file is needed.
+Because you must already add these keys to `Info.plist` for any permission to work, a single-flavor app needs no additional configuration.
+
+`Info.plist` files are located through the `INFOPLIST_FILE` setting of your Xcode project and `.xcconfig` files, so build-configuration specific plists (`Info-Debug.plist`, `Runner/Info-$(CONFIGURATION).plist`, …) are picked up as well. When an app has several of them, the keys are **merged**: a permission declared in any one of them is compiled into every build configuration.
 
 #### Special cases: permissions without an Info.plist key
 
@@ -111,6 +113,54 @@ rm -rf ~/Library/Developer/Xcode/DerivedData
 ```
 
 Then run `flutter build ios` or rebuild in Xcode as usual.
+
+#### Apps with flavors
+
+Merging is wrong when your flavors need *different* permissions: a permission declared only in `Info-dev.plist` is compiled into your production binary too, which is grounds for App Store rejection (`ITMS-90683`). Declare a `permission_handler.yaml` next to your `pubspec.yaml` to give each flavor its own `Info.plist`, and select the flavor before building:
+
+```yaml
+strict: true
+flavors:
+  dev:
+    info-plist: ios/Runner/Info-dev.plist
+    configurations: [Debug-dev, Profile-dev, Release-dev]
+  prod:
+    info-plist: ios/Runner/Info-prod.plist
+    configurations: [Debug-prod, Profile-prod, Release-prod]
+```
+
+```bash
+dart run permission_handler_apple:select prod
+flutter run --flavor prod
+```
+
+Only the selected flavor's `Info.plist` is read and nothing is merged, so a flavor can never inherit another flavor's permissions. See [Per-flavor permissions](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/README.md#per-flavor-permissions) for the build phase that catches a stale selection.
+
+#### Builds started from Xcode.app
+
+Automatic detection finds your app through the build's working directory, which points at the Flutter project for `flutter run`, `flutter build ios` and `xcodebuild`. Builds started from Xcode.app run with `/` as their working directory and cannot be detected, so point the manifest at your `Info.plist` explicitly:
+
+```bash
+launchctl setenv PERMISSION_HANDLER_INFO_PLIST /absolute/path/to/ios/Runner/Info.plist
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
+
+#### Troubleshooting
+
+If no `Info.plist` is found, **every permission is compiled out and all permission checks report `denied`**. Xcode discards Swift package manifest output, so the warning about this only reaches you from the command line:
+
+```bash
+cd your_app
+PERMISSION_HANDLER_VERBOSE=1 swift package --manifest-cache none \
+  --package-path ios/Flutter/ephemeral/Packages/.packages/permission_handler_apple \
+  dump-package > /dev/null
+```
+
+That prints the `Info.plist` files that were used, the active flavor if you declared one, and the value every `PERMISSION_*` macro resolved to.
+
+#### More detail
+
+The [`permission_handler_apple` README](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/README.md#swift-package-manager) documents this in full, including every `PERMISSION_HANDLER_*` environment variable and the per-flavor workflow.
 
 </details>
 

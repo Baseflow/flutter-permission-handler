@@ -63,14 +63,39 @@ flavors:
 
 Each flavor names the one `Info.plist` that defines it, and nothing is merged: a flavor can never
 inherit another flavor's permissions. `configurations` lists the Xcode build configurations that
-belong to the flavor, which is how the build phase below knows what to expect. Each configuration
-must belong to exactly one flavor — `select` rejects a config where two flavors claim the same one,
-since the build would have no way to tell which permissions it should ship.
+belong to the flavor, which is how the build phase below knows what to expect.
+
+`select` validates the file before doing anything else, since it is the only thing that reads the
+YAML — a mistake it doesn't catch here has to fail silently later instead:
+
+- Each build configuration must belong to exactly one flavor. Two flavors listing the same one
+  leaves the build phase unable to tell which permissions it should ship.
+- `configurations` must be a list, even for a single value — `configurations: Debug` (without the
+  `-`) is rejected rather than silently treated as "no configurations", which would otherwise
+  disable the build phase's verification for that flavor without any warning.
+- Flavor names must be strings. A bare `123:` is read as a YAML integer key and rejected — quote
+  it (`"123":`) if you actually want that literal name.
+- `strict`, if present, must be `true` or `false`.
 
 Select a flavor before building:
 
 ```bash
-dart run permission_handler_apple:select prod   # --list shows what is declared
+dart run permission_handler_apple:select prod
+```
+
+```
+Usage: dart run permission_handler_apple:select <flavor>
+
+  --list                  Show the flavors declared in permission_handler.yaml.
+  --app=<path>            App directory (defaults to the current directory).
+  --derived-data=<path>   Custom DerivedData location, matching xcodebuild's
+                          -derivedDataPath.
+```
+
+`--app` and `--derived-data` matter mainly in CI, where the command may not run from inside the app
+directory and DerivedData may live somewhere other than `~/Library/Developer/Xcode/DerivedData`.
+
+```bash
 flutter run --flavor prod
 ```
 
@@ -84,10 +109,15 @@ Foundation has no support for it and a manifest cannot import libraries — so `
 your config into a generated `ios/Flutter/permission_handler.resolved.json` that the manifest and
 the build phase read with their native JSON parsers. Never edit that file; if you change
 `permission_handler.yaml`, re-run `select`. Building with a translation older than the YAML fails
-rather than using stale permissions.
+rather than using stale permissions. The file is plain JSON, so it also doubles as a quick way to
+see exactly what `select` resolved, without waiting for a build.
 
-With `strict: true` (the default) a build whose flavor cannot be determined compiles no
-permissions at all, rather than falling back to the union of every flavor.
+With `strict: true` (the default) a build whose flavor cannot be determined compiles no permissions
+at all, rather than falling back to the union of every flavor. Set `strict: false` to opt into that
+fallback instead: the manifest merges every `Info.plist` it can discover, with a warning, the same
+as an app with no `permission_handler.yaml` at all. Treat it as a landing pad while adopting
+flavors gradually, not a long-term setting — it is the exact leak per-flavor configuration exists
+to close.
 
 #### Fail the build on a stale selection
 
@@ -130,7 +160,7 @@ than exporting them, then restart Xcode.
 | `PERMISSION_HANDLER_INFO_PLIST` | A `:`-separated list of `Info.plist` paths. When set, replaces automatic discovery entirely. |
 | `PERMISSION_HANDLER_FLAVOR` | The active flavor, overriding the one recorded by `select`. Changing it still needs the caches cleared. |
 | `PERMISSION_HANDLER_CONFIG` | Path to `permission_handler.yaml`, for builds that cannot locate the app automatically. |
-| `PERMISSION_HANDLER_VERBOSE` | Set to `1` to log the detected app root, the `Info.plist` files used, and the resolved macros. |
+| `PERMISSION_HANDLER_VERBOSE` | Set to `1` to log the `Info.plist` files used, the app root or active flavor, and the resolved macros. |
 
 ### Builds started from Xcode.app
 
@@ -155,8 +185,9 @@ PERMISSION_HANDLER_VERBOSE=1 swift package --manifest-cache none \
   dump-package > /dev/null
 ```
 
-That prints the app root, the `Info.plist` files used and the resolved macros, and is the quickest
-way to check what your app will actually be built with.
+That prints the `Info.plist` files that were used, the app root or the active flavor depending on
+whether you declared one, and the value every `PERMISSION_*` macro resolved to — the quickest way
+to check what your app will actually be built with.
 
 ## Issues
 
