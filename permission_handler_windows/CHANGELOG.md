@@ -1,3 +1,8 @@
+## 0.2.3
+
+* Fixes compilation with `clang-cl` (LLVM) by explicitly wrapping the request results map in a `flutter::EncodableValue` before passing it to `result->Success()`.
+* Removes an unused `this` capture from the `Geolocator.PositionChanged` lambda, which triggered `-Wunused-lambda-capture`.
+
 ## 0.2.2
 
 * Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
