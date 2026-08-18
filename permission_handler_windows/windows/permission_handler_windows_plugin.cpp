@@ -88,7 +88,7 @@ void PermissionHandlerWindowsPlugin::RegisterWithRegistrar(
 
 PermissionHandlerWindowsPlugin::PermissionHandlerWindowsPlugin(){
   m_positionChangedRevoker = geolocator.PositionChanged(winrt::auto_revoke,
-    [](Geolocator const& geolocator, PositionChangedEventArgs e)
+    [](Geolocator const&, PositionChangedEventArgs)
     {
     });
 }
@@ -134,7 +134,7 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
     
     EncodableMap requestResults;
 
-    for (int i=0;i<permissions.size();i++) {
+    for (size_t i=0;i<permissions.size();i++) {
       auto permissionStatus = PermissionConstants::PermissionStatus::GRANTED;
       requestResults.insert({EncodableValue(permissions[i]), EncodableValue((int)permissionStatus)});
     }

@@ -1,7 +1,8 @@
 ## 0.2.3
 
 * Fixes compilation with `clang-cl` (LLVM) by explicitly wrapping the request results map in a `flutter::EncodableValue` before passing it to `result->Success()`.
-* Removes an unused `this` capture from the `Geolocator.PositionChanged` lambda, which triggered `-Wunused-lambda-capture`.
+* Removes the unused `this` capture and the unused parameter names from the `Geolocator.PositionChanged` lambda, which triggered `-Wunused-lambda-capture` and `-Wunused-parameter`.
+* Iterates the requested permissions with a `size_t` index, fixing the signed/unsigned comparison warning that `/W4 /WX` builds turn into an error.
 
 ## 0.2.2
 
