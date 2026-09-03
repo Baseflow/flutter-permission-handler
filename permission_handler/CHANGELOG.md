@@ -1,3 +1,8 @@
+## 13.0.2
+
+- Updates the README to detect a permanent denial on Android from the result of `request()`, as `status` cannot detect it.
+- Updates `permission_handler_android` to version 14.1.0, which fixes `status` reporting `permanentlyDenied` after the user selected "Ask every time" in the Android app settings.
+
 ## 13.0.1
 
 - Updates documentation on how to configure the permission handler on macOS / iOS.

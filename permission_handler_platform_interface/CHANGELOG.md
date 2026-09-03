@@ -1,3 +1,7 @@
+## 4.4.1
+
+- Documents that on Android `PermissionStatus.permanentlyDenied` is only returned as the result of a request, never by a status check.
+
 ## 4.4.0
 
 - Adds support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`

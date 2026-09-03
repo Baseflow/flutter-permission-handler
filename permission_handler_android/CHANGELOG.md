@@ -1,3 +1,10 @@
+## 14.1.0
+
+- Fixes `Permission.status` reporting `permanentlyDenied` after the user reset a permanently denied permission to "Ask every time" in the Android app settings (Android 11+). See [#1206](https://github.com/Baseflow/flutter-permission-handler/issues/1206).
+- **Behavior change:** on Android, `Permission.status` no longer resolves to `permanentlyDenied`. Android does not expose the difference between a permission that was never requested, one reset to "Ask every time" and one that is permanently denied. Only the result of `Permission.request()` can be `permanentlyDenied`; requesting a permanently denied permission resolves immediately without showing a dialog.
+- A second denial is now detected from the change of `shouldShowRequestPermissionRationale` across the request, so it is reported as `permanentlyDenied` even when the first denial happened in the app settings.
+- Dismissing the very first request dialog is reported as `denied` again instead of `permanentlyDenied`.
+
 ## 14.0.0
 
 - **BREAKING CHANGES:** When updating to version 14.0.0 make sure to also set the `compileSdkVersion` in the `app/build.gradle` file to `37`.

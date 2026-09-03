@@ -12,7 +12,6 @@ import android.os.Environment;
 import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -678,12 +677,14 @@ public class PermissionUtils {
     }
 
     /**
-     * Returns a {@link PermissionConstants} for a given permission.
+     * Converts the result of a runtime permission request into a
+     * {@link PermissionConstants.PermissionStatus}.
      * <p>
-     * When {@link PackageManager#PERMISSION_DENIED} is received, we do not know if the permission was
-     * denied permanently. The OS does not tell us whether the user dismissed the dialog or pressed
-     * 'deny'. Therefore, we need a more sophisticated (read: hacky) approach to determine whether the
-     * permission status is {@link PermissionConstants#PERMISSION_STATUS_DENIED} or
+     * When {@link PackageManager#PERMISSION_DENIED} is received, the OS does not tell us whether the
+     * user denied the request, dismissed the dialog, or whether the dialog was never shown because
+     * the permission is permanently denied. Therefore, we need a more sophisticated (read: hacky)
+     * approach to determine whether the permission status is
+     * {@link PermissionConstants#PERMISSION_STATUS_DENIED} or
      * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
      * <p>
      * The OS behavior has been researched experimentally and is displayed in the following diagrams:
@@ -700,37 +701,63 @@ public class PermissionUtils {
      *   │        │
      * ┌─▼────────┴┐        ┌────────────────────────────────┐
      * │Denied once├────────►Denied twice(permanently denied)│
-     * └──▲┌───────┘ Denied └────────────────────────────────┘
-     *    └┘
-     * Dismissed
+     * └──▲┌───────┘ Denied └──┬─────────────────────────────┘
+     *    └┘                   │ 'Ask every time' in the app settings (Android 11+)
+     * Dismissed               ▼
+     *                      ┌──────────────┐
+     *                      │Ask every time│ (looks exactly like 'Not asked' to the app)
+     *                      └──────────────┘
      * <p>
      * Scenario table listing output of
      * {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)}:
-     * ┌────────────┬────────────────┬─────────┬───────────────────────────────────┬─────────────────────────┐
-     * │ Scenario # │ Previous state │ Action  │ New state                         │ 'Show rationale' output │
-     * ├────────────┼────────────────┼─────────┼───────────────────────────────────┼─────────────────────────┤
-     * │ 1.         │ Not asked      │ Dismiss │ Not asked                         │ false                   │
-     * │ 2.         │ Not asked      │ Deny    │ Denied once                       │ true                    │
-     * │ 3.         │ Denied once    │ Dismiss │ Denied once                       │ true                    │
-     * │ 4.         │ Denied once    │ Deny    │ Denied twice (permanently denied) │ false                   │
-     * └────────────┴────────────────┴─────────┴───────────────────────────────────┴─────────────────────────┘
+     * ┌────────────┬─────────────────────────────┬────────────────────────────┬───────────────────────────────────┬─────────────────────────┐
+     * │ Scenario # │ Previous state              │ Action                     │ New state                         │ 'Show rationale' output │
+     * ├────────────┼─────────────────────────────┼────────────────────────────┼───────────────────────────────────┼─────────────────────────┤
+     * │ 1.         │ Not asked                   │ Dismiss                    │ Not asked                         │ false                   │
+     * │ 2.         │ Not asked                   │ Deny                       │ Denied once                       │ true                    │
+     * │ 3.         │ Denied once                 │ Dismiss                    │ Denied once                       │ true                    │
+     * │ 4.         │ Denied once                 │ Deny                       │ Denied twice (permanently denied) │ false                   │
+     * │ 5.         │ Denied twice                │ Request (no dialog shown)  │ Denied twice                      │ false                   │
+     * │ 6.         │ Granted / Ask every time    │ 'Don't allow' in settings  │ Denied once                       │ true                    │
+     * │ 7.         │ Any                         │ 'Ask every time' in        │ Ask every time                    │ false                   │
+     * │            │                             │ settings (Android 11+)     │                                   │                         │
+     * │ 8.         │ Ask every time              │ Dismiss                    │ Ask every time                    │ false                   │
+     * │ 9.         │ Ask every time              │ Deny                       │ Denied once                       │ true                    │
+     * └────────────┴─────────────────────────────┴────────────────────────────┴───────────────────────────────────┴─────────────────────────┘
      * <p>
-     * To distinguish between scenarios, we can use
-     * {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)}. If it returns
-     * true, we can safely return {@link PermissionConstants#PERMISSION_STATUS_DENIED}. To distinguish
-     * between scenarios 1 and 4, however, we need an extra mechanism. We opt to store a boolean
-     * stating whether permission has been requested before. Using a combination of checking for
-     * showing the permission rationale and the boolean, we can distinguish all scenarios and return
-     * the appropriate permission status.
+     * Selecting 'Ask every time' makes the OS revoke the permission as a one-time permission, which
+     * clears the {@code FLAG_PERMISSION_USER_SET} flag. As 'show rationale' is exactly that flag
+     * (as long as the permission is not user fixed), scenarios 1, 4, 5, 7 and 8 all produce
+     * {@code false} and no public API exposes the difference between them.
      * <p>
-     * Changing permissions via the app info screen, so outside of the application, changes the
-     * permission state to 'Granted' if the permission is allowed, or 'Denied once' if denied. This
-     * behavior should not require any additional logic.
+     * A denied request result is therefore resolved from three signals:
+     * <ul>
+     * <li>'Show rationale' after the request is {@code true} (scenarios 2, 3 and 9): the user can
+     * be asked again, resolve to 'denied'.</li>
+     * <li>'Show rationale' was {@code true} before the request and is {@code false} after it
+     * (scenario 4): the user denied for the second time, resolve to 'permanently denied'.</li>
+     * <li>'Show rationale' was {@code false} before and after the request and the permission was
+     * denied before (stored in {@link SharedPreferences}, see
+     * {@link #wasPermissionDeniedBefore(Context, String)}): the OS resolved the request without
+     * showing a dialog (scenario 5), resolve to 'permanently denied'. A dismissed dialog after the
+     * user selected 'Ask every time' (scenario 8) is indistinguishable and resolves the same way;
+     * the next request will show the dialog again.</li>
+     * <li>Otherwise the user dismissed the very first request (scenario 1), resolve to 'denied'.</li>
+     * </ul>
+     * <p>
+     * Note that a permission status check without a request can never resolve to 'permanently
+     * denied' on Android for the same reason, see
+     * {@link PermissionManager#checkPermissionStatus(int, PermissionManager.CheckPermissionsSuccessCallback)}.
      *
-     * @param activity       the activity for context
-     * @param permissionName the name of the permission
-     * @param grantResult    the result of the permission intent. Either
-     *                       {@link PackageManager#PERMISSION_DENIED} or {@link PackageManager#PERMISSION_GRANTED}.
+     * @param activity                         the activity for context
+     * @param permissionName                   the name of the permission
+     * @param grantResult                      the result of the permission request. Either
+     *                                         {@link PackageManager#PERMISSION_DENIED} or
+     *                                         {@link PackageManager#PERMISSION_GRANTED}.
+     * @param shouldShowRationaleBeforeRequest the output of
+     *                                         {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)}
+     *                                         captured right before the request was made, or
+     *                                         {@code null} when unknown.
      * @return {@link PermissionConstants#PERMISSION_STATUS_GRANTED},
      * {@link PermissionConstants#PERMISSION_STATUS_DENIED}, or
      * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
@@ -739,13 +766,44 @@ public class PermissionUtils {
     static int toPermissionStatus(
         final @Nullable Activity activity,
         final String permissionName,
-        int grantResult
+        final int grantResult,
+        final @Nullable Boolean shouldShowRationaleBeforeRequest
     ) {
-        if (grantResult == PackageManager.PERMISSION_DENIED) {
-            return determineDeniedVariant(activity, permissionName);
+        if (grantResult != PackageManager.PERMISSION_DENIED) {
+            if (activity != null) {
+                clearPermissionDenied(activity, permissionName);
+            }
+            return PermissionConstants.PERMISSION_STATUS_GRANTED;
         }
 
-        return PermissionConstants.PERMISSION_STATUS_GRANTED;
+        if (activity == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+
+        final boolean shouldShowRationaleAfterRequest =
+            ActivityCompat.shouldShowRequestPermissionRationale(activity, permissionName);
+
+        if (shouldShowRationaleAfterRequest) {
+            // Scenarios 2, 3 and 9: the OS will show the dialog again on the next request.
+            setPermissionDenied(activity, permissionName);
+            return PermissionConstants.PERMISSION_STATUS_DENIED;
+        }
+
+        if (Boolean.TRUE.equals(shouldShowRationaleBeforeRequest)) {
+            // Scenario 4: the user denied for the second time (or ticked 'Don't ask again' on
+            // Android 10 and below).
+            setPermissionDenied(activity, permissionName);
+            return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
+        }
+
+        if (wasPermissionDeniedBefore(activity, permissionName)) {
+            // Scenario 5 (and 8): the OS did not show a dialog because the permission is
+            // permanently denied.
+            return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
+        }
+
+        // Scenario 1: the user dismissed the very first request without making a choice.
+        return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     @NonNull
@@ -786,60 +844,6 @@ public class PermissionUtils {
         return strictestStatus(statuses);
     }
 
-    /**
-     * Determines whether a permission was either 'denied' or 'permanently denied'.
-     * <p>
-     * To distinguish between these two variants, the method needs access to an {@link Activity}.
-     * If the provided activity is null, the result will always be resolved to 'denied'.
-     *
-     * @param activity       the activity needed to resolve the permission status.
-     * @param permissionName the name of the permission.
-     * @return either {@link PermissionConstants#PERMISSION_STATUS_DENIED} or
-     * {@link PermissionConstants#PERMISSION_STATUS_NEVER_ASK_AGAIN}.
-     */
-    @PermissionConstants.PermissionStatus
-    static int determineDeniedVariant(
-        final @Nullable Activity activity,
-        final String permissionName
-    ) {
-        if (activity == null) {
-            return PermissionConstants.PERMISSION_STATUS_DENIED;
-        }
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return PermissionConstants.PERMISSION_STATUS_DENIED;
-        }
-
-        final boolean wasDeniedBefore =
-            PermissionUtils.wasPermissionDeniedBefore(activity, permissionName);
-        final boolean shouldShowRational =
-            !PermissionUtils.isNeverAskAgainSelected(activity, permissionName);
-
-        //noinspection SimplifiableConditionalExpression
-        final boolean isDenied = wasDeniedBefore
-            ? !shouldShowRational
-            : shouldShowRational;
-
-        if (!wasDeniedBefore && isDenied) {
-            setPermissionDenied(activity, permissionName);
-        }
-
-        if (wasDeniedBefore && isDenied) {
-            return PermissionConstants.PERMISSION_STATUS_NEVER_ASK_AGAIN;
-        }
-
-        return PermissionConstants.PERMISSION_STATUS_DENIED;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    static boolean isNeverAskAgainSelected(
-        @NonNull final Activity activity,
-        final String name
-    ) {
-        final boolean shouldShowRequestPermissionRationale =
-            ActivityCompat.shouldShowRequestPermissionRationale(activity, name);
-        return !shouldShowRequestPermissionRationale;
-    }
 
     private static String determineBluetoothPermission(
         Context context,
@@ -951,6 +955,37 @@ public class PermissionUtils {
                 SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY,
                 true
             )
+            .apply();
+    }
+
+    /**
+     * Removes the {@link SharedPreferences} flag that marks the provided permission as denied
+     * before, if present.
+     * <p>
+     * Called whenever the permission is observed to be granted, so that a later denial is tracked
+     * from a clean slate. Without this, a permission that was denied once, granted in the app
+     * settings and then reset to 'Ask every time' would resolve to 'permanently denied' when the
+     * user dismisses the next request dialog.
+     *
+     * @param context        context needed for accessing shared preferences.
+     * @param permissionName the name of the permission
+     */
+    static void clearPermissionDenied(
+        final Context context,
+        final String permissionName
+    ) {
+        final SharedPreferences sharedPreferences =
+            context.getSharedPreferences(permissionName, Context.MODE_PRIVATE);
+        if (
+            !sharedPreferences.contains(
+                SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY
+            )
+        ) {
+            return;
+        }
+        sharedPreferences
+            .edit()
+            .remove(SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY)
             .apply();
     }
 }

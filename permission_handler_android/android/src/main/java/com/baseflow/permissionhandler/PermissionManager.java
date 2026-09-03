@@ -59,6 +59,16 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
      * {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)}.
      */
     private Map<Integer, Integer> requestResults;
+    /**
+     * The output of {@link ActivityCompat#shouldShowRequestPermissionRationale(Activity, String)}
+     * for every runtime permission requested through
+     * {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)},
+     * captured right before the request was made.
+     * <p>
+     * {@link PermissionUtils#toPermissionStatus(Activity, String, int, Boolean)} compares it with
+     * the value after the request to detect a permission that just became permanently denied.
+     */
+    private Map<String, Boolean> shouldShowRationaleBeforeRequest;
 
     public PermissionManager(@NonNull Context context) {
         this.context = context;
@@ -187,7 +197,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (calendarWriteIndex >= 0) {
             final int writeGrantResult = grantResults[calendarWriteIndex];
             final @PermissionConstants.PermissionStatus int writeStatus =
-                PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.WRITE_CALENDAR, writeGrantResult);
+                toRequestedPermissionStatus(Manifest.permission.WRITE_CALENDAR, writeGrantResult);
             requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_WRITE_ONLY, writeStatus);
 
             // WRITE + READ -> FULL ACCESS.
@@ -195,7 +205,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             if (calendarReadIndex >= 0) {
                 final int readGrantResult = grantResults[calendarReadIndex];
                 final @PermissionConstants.PermissionStatus int readStatus =
-                    PermissionUtils.toPermissionStatus(this.activity, Manifest.permission.READ_CALENDAR, readGrantResult);
+                    toRequestedPermissionStatus(Manifest.permission.READ_CALENDAR, readGrantResult);
                 final @PermissionConstants.PermissionStatus int fullAccessStatus = strictestStatus(writeStatus, readStatus);
                 requestResults.put(PermissionConstants.PERMISSION_GROUP_CALENDAR_FULL_ACCESS, fullAccessStatus);
                 // Support deprecated CALENDAR permission.
@@ -221,30 +231,30 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
             if (permission == PermissionConstants.PERMISSION_GROUP_PHONE) {
                 @Nullable @PermissionConstants.PermissionStatus Integer previousResult = requestResults.get(PermissionConstants.PERMISSION_GROUP_PHONE);
-                @PermissionConstants.PermissionStatus int newResult = PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+                @PermissionConstants.PermissionStatus int newResult = toRequestedPermissionStatus(permissionName, result);
                 @Nullable @PermissionConstants.PermissionStatus Integer strictestStatus = strictestStatus(previousResult, newResult);
                 requestResults.put(PermissionConstants.PERMISSION_GROUP_PHONE, strictestStatus);
             } else if (permission == PermissionConstants.PERMISSION_GROUP_MICROPHONE) {
                 if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_MICROPHONE)) {
                     requestResults.put(
                         PermissionConstants.PERMISSION_GROUP_MICROPHONE,
-                        PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
+                        toRequestedPermissionStatus(permissionName, result));
                 }
                 if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_SPEECH)) {
                     requestResults.put(
                         PermissionConstants.PERMISSION_GROUP_SPEECH,
-                        PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
+                        toRequestedPermissionStatus(permissionName, result));
                 }
             } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS) {
                 @PermissionConstants.PermissionStatus int permissionStatus =
-                    PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+                    toRequestedPermissionStatus(permissionName, result);
 
                 if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
                     requestResults.put(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS, permissionStatus);
                 }
             } else if (permission == PermissionConstants.PERMISSION_GROUP_LOCATION) {
                 @PermissionConstants.PermissionStatus int permissionStatus =
-                    PermissionUtils.toPermissionStatus(this.activity, permissionName, result);
+                    toRequestedPermissionStatus(permissionName, result);
 
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                     if (!requestResults.containsKey(PermissionConstants.PERMISSION_GROUP_LOCATION_ALWAYS)) {
@@ -264,13 +274,17 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             // [grantResults] can only contain PermissionConstants.PERMISSION_STATUS_GRANTED or PermissionConstants.PERMISSION_STATUS_DENIED status.
             // But these permissions can have status PermissionConstants.PERMISSION_STATUS_LIMITED, so we need to recheck status
             } else if (permission == PermissionConstants.PERMISSION_GROUP_PHOTOS || permission == PermissionConstants.PERMISSION_GROUP_VIDEOS) {
-                requestResults.put(
-                    permission,
-                    determinePermissionStatus(permission));
+                // A status check cannot tell 'denied' from 'permanently denied', so only reuse it
+                // for the 'granted' and 'limited' statuses and resolve a denial from the request.
+                @PermissionConstants.PermissionStatus int permissionStatus = determinePermissionStatus(permission);
+                if (permissionStatus == PermissionConstants.PERMISSION_STATUS_DENIED) {
+                    permissionStatus = toRequestedPermissionStatus(permissionName, result);
+                }
+                requestResults.put(permission, permissionStatus);
             } else if (!requestResults.containsKey(permission)) {
                 requestResults.put(
                     permission,
-                    PermissionUtils.toPermissionStatus(this.activity, permissionName, result));
+                    toRequestedPermissionStatus(permissionName, result));
             }
         }
 
@@ -286,10 +300,14 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
     /**
      * Determines the permission status of the provided permission.
      * <p>
-     * To distinguish between a status of 'denied' and a status of 'permanently denied', the plugin
-     * needs access to an activity. If `this.activity` is null, for example when running the
-     * application in the background, the resolved status will be 'denied' for both 'denied' and
-     * 'permanently denied'.
+     * On Android a status check can never resolve to 'permanently denied': the OS reports a
+     * permanently denied runtime permission exactly like one that was never requested, or one that
+     * the user reset to 'Ask every time' in the app settings (Android 11+). A denied runtime
+     * permission is therefore always reported as 'denied'. Only
+     * {@link this#requestPermissions(List, RequestPermissionsSuccessCallback, ErrorCallback)} can
+     * resolve to 'permanently denied', see
+     * {@link PermissionUtils#toPermissionStatus(Activity, String, int, Boolean)}. Requesting a
+     * permanently denied permission is cheap as the OS resolves it immediately without a dialog.
      *
      * @param permission      the permission for which to determine the status.
      * @param successCallback the callback to which the resolved status must be supplied.
@@ -350,6 +368,7 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         this.successCallback = successCallback;
         this.requestResults = new HashMap<>();
+        this.shouldShowRationaleBeforeRequest = new HashMap<>();
         this.pendingRequestCount = 0; // sanity check
 
         ArrayList<String> permissionsToRequest = new ArrayList<>();
@@ -431,6 +450,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         // Request runtime permissions.
         if (permissionsToRequest.size() > 0) {
             final String[] requestPermissions = permissionsToRequest.toArray(new String[0]);
+            // Capture whether the rationale should be shown before requesting. See
+            // PermissionUtils.toPermissionStatus for how this is used to resolve the request result.
+            for (String permissionName : requestPermissions) {
+                shouldShowRationaleBeforeRequest.put(
+                    permissionName,
+                    ActivityCompat.shouldShowRequestPermissionRationale(activity, permissionName));
+            }
             ActivityCompat.requestPermissions(
                 activity,
                 requestPermissions,
@@ -441,6 +467,26 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
         if (this.successCallback != null && pendingRequestCount == 0) {
             this.successCallback.onSuccess(requestResults);
         }
+    }
+
+    /**
+     * Resolves the status of a runtime permission from the result of a permission request.
+     *
+     * @param permissionName the name of the requested permission.
+     * @param grantResult    the grant result reported by the OS for this permission.
+     * @return the resolved permission status, see
+     * {@link PermissionUtils#toPermissionStatus(Activity, String, int, Boolean)}.
+     */
+    @PermissionConstants.PermissionStatus
+    private int toRequestedPermissionStatus(final String permissionName, final int grantResult) {
+        final Boolean shouldShowRationaleBefore = shouldShowRationaleBeforeRequest == null
+            ? null
+            : shouldShowRationaleBeforeRequest.get(permissionName);
+        return PermissionUtils.toPermissionStatus(
+            activity,
+            permissionName,
+            grantResult,
+            shouldShowRationaleBefore);
     }
 
     @PermissionConstants.PermissionStatus
@@ -562,14 +608,19 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
                     if (permissionStatusLimited == PackageManager.PERMISSION_GRANTED && permissionStatus == PackageManager.PERMISSION_DENIED) {
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_LIMITED);
                     } else if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        PermissionUtils.clearPermissionDenied(context, name);
                         permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_GRANTED);
-                    }else {
-                        permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
+                    } else {
+                        // See checkPermissionStatus: a status check cannot detect 'permanently denied'.
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
-                }else {
+                } else {
                     final int permissionStatus = ContextCompat.checkSelfPermission(context, name);
-                    if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
-                        permissionStatuses.add(PermissionUtils.determineDeniedVariant(activity, name));
+                    if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                        PermissionUtils.clearPermissionDenied(context, name);
+                    } else {
+                        // See checkPermissionStatus: a status check cannot detect 'permanently denied'.
+                        permissionStatuses.add(PermissionConstants.PERMISSION_STATUS_DENIED);
                     }
                 }
             }
@@ -649,9 +700,11 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
 
         final int status = context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS);
         if (status == PackageManager.PERMISSION_GRANTED) {
+            PermissionUtils.clearPermissionDenied(context, Manifest.permission.POST_NOTIFICATIONS);
             return PermissionConstants.PERMISSION_STATUS_GRANTED;
         }
-        return PermissionUtils.determineDeniedVariant(activity, Manifest.permission.POST_NOTIFICATIONS);
+        // See checkPermissionStatus: a status check cannot detect 'permanently denied'.
+        return PermissionConstants.PERMISSION_STATUS_DENIED;
     }
 
     @PermissionConstants.PermissionStatus
