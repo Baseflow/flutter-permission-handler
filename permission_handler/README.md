@@ -257,10 +257,19 @@ You must list the permission you want to use in your application:
            ## dart: PermissionGroup.calendar
            'PERMISSION_EVENTS=1',
    ```
-3. When you **DON'T** need a permission, change its value to `0` e.g. `'PERMISSION_CAMERA=0'` instead of `'PERMISSION_CAMERA=1'`
 
-3. And delete the corresponding permission description in `Info.plist`
-   e.g. when you don't need camera permission, just delete `'NSCameraUsageDescription'`
+   Also keep that permission's usage description in `Info.plist` (for calendar: `NSCalendarsUsageDescription`). The example plist above is a complete list so you can copy the keys you actually use.
+
+3. When you **don't** need a permission, set its macro to `0` **and** delete that same permission's usage description from `Info.plist`. The key to delete is the one for the permission you just disabled, not the calendar example in step 2.
+
+   For example, if you don't need calendar access:
+
+   ```ruby
+           ## dart: PermissionGroup.calendar
+           'PERMISSION_EVENTS=0',
+   ```
+
+   Then delete `NSCalendarsUsageDescription` from `Info.plist`.
 
 The following lists the relationship between `Permission` and `The key of Info.plist`:
 
