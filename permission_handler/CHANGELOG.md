@@ -1,3 +1,9 @@
+## 13.0.2
+
+- Updates the README to detect a permanent denial on Android from the result of `request()`, as `status` cannot detect it.
+- Updates `permission_handler_android` to version 14.1.0, which fixes `status` reporting `permanentlyDenied` after the user selected "Ask every time" in the Android app settings (see issue [#1206](https://github.com/Baseflow/flutter-permission-handler/issues/1206)).
+- Adds the [Android "permanently denied" guide](https://github.com/Baseflow/flutter-permission-handler/blob/main/ANDROID_PERMANENTLY_DENIED_FIX_GUIDE.md), explaining the changed Android behavior, the request-driven pattern to use and how to audit an existing app for code that relies on the old behavior.
+
 ## 13.0.1
 
 - Updates documentation on how to configure the permission handler on macOS / iOS.

@@ -299,7 +299,9 @@ You can get a `Permission`'s `status`, which is either `granted`, `denied`, `res
 ```dart
 var status = await Permission.camera.status;
 if (status.isDenied) {
-  // We haven't asked for permission yet or the permission has been denied before, but not permanently.
+  // We haven't asked for permission yet or the permission has been denied before.
+  // On Android this also covers a permanently denied permission: the OS does not
+  // expose the difference without requesting, so call `request()` to find out.
 }
 
 // You can also directly ask permission about its status.
@@ -361,13 +363,18 @@ if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
 You can also open the app settings:
 
 ```dart
-if (await Permission.speech.isPermanentlyDenied) {
+if (await Permission.speech.request().isPermanentlyDenied) {
   // The user opted to never again see the permission request dialog for this
   // app. The only way to change the permission's status now is to let the
-  // user manually enables it in the system settings.
+  // user manually enable it in the system settings.
   openAppSettings();
 }
 ```
+
+On Android, only the result of `request()` can be `permanentlyDenied`; `status` reports `denied` instead.
+Android does not expose whether a permission is permanently denied: a permission that was never requested, one that the user reset to "Ask every time" in the app settings and a permanently denied one all look the same to the app.
+Requesting a permanently denied permission is cheap, the OS resolves it immediately without showing a dialog.
+The [Android "permanently denied" guide](https://github.com/Baseflow/flutter-permission-handler/blob/main/ANDROID_PERMANENTLY_DENIED_FIX_GUIDE.md) covers this in full: what each status means on Android, the request-driven pattern to use instead, and how to audit an existing app for code that relies on the old behavior.
 
 On Android, you can show a rationale for using permission:
 
@@ -396,6 +403,10 @@ Accepting this permission by clicking on the 'Allow While Using App' gives the u
 This will then bring up another permission popup asking you to `Keep Only While Using` or to `Change To Always Allow`.
 
 ## FAQ
+
+### `Permission.status` never returns `permanentlyDenied` on Android. What can I do?
+
+That is intentional as of `permission_handler_android` 14.1.0. Android does not expose whether a permission is permanently denied, so a status check reports `denied` for every denied runtime permission. Call `request()` and branch on its result: it returns `permanentlyDenied` without showing a dialog when the permission really is permanently denied. See the [Android "permanently denied" guide](https://github.com/Baseflow/flutter-permission-handler/blob/main/ANDROID_PERMANENTLY_DENIED_FIX_GUIDE.md) for the full behavior table, the pattern to use and an audit checklist for existing apps.
 
 ### Requesting "storage" permissions always returns "denied" on Android 13+. What can I do?
 
