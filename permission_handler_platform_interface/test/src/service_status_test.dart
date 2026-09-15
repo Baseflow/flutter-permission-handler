@@ -26,13 +26,17 @@ void main() {
     });
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'statusByValue should return right index int that corresponds with the right PermissionStatus',
-        () {
-      expect(ServiceStatusValue.statusByValue(0), ServiceStatus.disabled);
-      expect(ServiceStatusValue.statusByValue(1), ServiceStatus.enabled);
-      expect(ServiceStatusValue.statusByValue(2), ServiceStatus.notApplicable);
-    });
+      // ignore: lines_longer_than_80_chars
+      'statusByValue should return right index int that corresponds with the right PermissionStatus',
+      () {
+        expect(ServiceStatusValue.statusByValue(0), ServiceStatus.disabled);
+        expect(ServiceStatusValue.statusByValue(1), ServiceStatus.enabled);
+        expect(
+          ServiceStatusValue.statusByValue(2),
+          ServiceStatus.notApplicable,
+        );
+      },
+    );
   });
 
   group('ServiceStatusGetters', () {

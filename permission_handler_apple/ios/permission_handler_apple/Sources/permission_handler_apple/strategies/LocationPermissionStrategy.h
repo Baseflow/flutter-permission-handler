@@ -8,6 +8,7 @@
 
 #if PERMISSION_LOCATION || PERMISSION_LOCATION_WHENINUSE || PERMISSION_LOCATION_ALWAYS
 
+#import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
 @interface LocationPermissionStrategy : NSObject <PermissionStrategy, CLLocationManagerDelegate>

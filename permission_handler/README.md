@@ -33,7 +33,7 @@ android.useAndroidX=true
 android.enableJetifier=true
 ```
 
-2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 33:
+2. Make sure you set the `compileSdkVersion` in your "android/app/build.gradle" file to 35:
 
 ```gradle
 android {
@@ -52,18 +52,132 @@ In general, it's sufficient to add permission only to the `main` version.
 </details>
 
 <details>
-<summary>iOS (click to expand)</summary>
+<summary>iOS - Swift Package Manager (click to expand)</summary>
+
+> Requires Flutter 3.24.0 or higher and Xcode 15.0 or higher.
+
+With SPM, `Package.swift` automatically detects which permissions to enable by reading your app's `Info.plist`. A permission is compiled in when its corresponding usage description key is present:
+
+| Permission group | Info.plist key |
+|---|---|
+| `PermissionGroup.calendar` (< iOS 17) | `NSCalendarsUsageDescription` |
+| `PermissionGroup.calendarWriteOnly` / `calendarFullAccess` (iOS 17+) | `NSCalendarsFullAccessUsageDescription` or `NSCalendarsWriteOnlyAccessUsageDescription` |
+| `PermissionGroup.reminders` | `NSRemindersUsageDescription` |
+| `PermissionGroup.contacts` | `NSContactsUsageDescription` |
+| `PermissionGroup.camera` | `NSCameraUsageDescription` |
+| `PermissionGroup.microphone` | `NSMicrophoneUsageDescription` |
+| `PermissionGroup.speech` | `NSSpeechRecognitionUsageDescription` |
+| `PermissionGroup.photos` | `NSPhotoLibraryUsageDescription` or `NSPhotoLibraryAddUsageDescription` |
+| `PermissionGroup.photosAddOnly` | `NSPhotoLibraryAddUsageDescription` |
+| `PermissionGroup.location` | `NSLocationWhenInUseUsageDescription` or `NSLocationAlwaysAndWhenInUseUsageDescription` |
+| `PermissionGroup.locationWhenInUse` | `NSLocationWhenInUseUsageDescription` |
+| `PermissionGroup.locationAlways` | `NSLocationAlwaysAndWhenInUseUsageDescription` |
+| `PermissionGroup.mediaLibrary` | `NSAppleMusicUsageDescription` |
+| `PermissionGroup.sensors` | `NSMotionUsageDescription` |
+| `PermissionGroup.bluetooth` | `NSBluetoothAlwaysUsageDescription` or `NSBluetoothPeripheralUsageDescription` |
+| `PermissionGroup.appTrackingTransparency` | `NSUserTrackingUsageDescription` |
+| `PermissionGroup.assistant` | `NSSiriUsageDescription` |
+| `PermissionGroup.notification` | *(enabled by default — see below)* |
+| `PermissionGroup.criticalAlerts` | *(disabled by default — see below)* |
+
+Because you must already add these keys to `Info.plist` for any permission to work, a single-flavor app needs no additional configuration.
+
+`Info.plist` files are located through the `INFOPLIST_FILE` setting of your Xcode project and `.xcconfig` files, so build-configuration specific plists (`Info-Debug.plist`, `Runner/Info-$(CONFIGURATION).plist`, …) are picked up as well. When an app has several of them, the keys are **merged**: a permission declared in any one of them is compiled into every build configuration.
+
+#### Special cases: permissions without an Info.plist key
+
+**`PermissionGroup.notification`** has no required `Info.plist` key and is **enabled by default**. To opt out, disable it via environment variable before building:
+
+```bash
+# When building from terminal (flutter run / flutter build)
+export PERMISSION_NOTIFICATIONS=0
+
+# When building from Xcode GUI (set once per Mac session, then restart Xcode)
+launchctl setenv PERMISSION_NOTIFICATIONS 0
+```
+
+**`PermissionGroup.criticalAlerts`** requires a [special entitlement](https://developer.apple.com/documentation/usernotifications/asking-permission-to-use-notifications) granted by Apple and is **disabled by default** to avoid compiling unused code into apps that don't need it. Enable it explicitly:
+
+```bash
+# When building from terminal
+export PERMISSION_CRITICAL_ALERTS=1
+
+# When building from Xcode GUI
+launchctl setenv PERMISSION_CRITICAL_ALERTS 1
+```
+
+**After changing any env var or Info.plist key**, clear Xcode's package cache once so `Package.swift` is re-evaluated:
+
+```bash
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
+
+Then run `flutter build ios` or rebuild in Xcode as usual.
+
+#### Apps with flavors
+
+Merging is wrong when your flavors need *different* permissions: a permission declared only in `Info-dev.plist` is compiled into your production binary too, which is grounds for App Store rejection (`ITMS-90683`). Declare a `permission_handler.yaml` next to your `pubspec.yaml` to give each flavor its own `Info.plist`, and select the flavor before building:
+
+```yaml
+strict: true
+flavors:
+  dev:
+    info-plist: ios/Runner/Info-dev.plist
+    configurations: [Debug-dev, Profile-dev, Release-dev]
+  prod:
+    info-plist: ios/Runner/Info-prod.plist
+    configurations: [Debug-prod, Profile-prod, Release-prod]
+```
+
+```bash
+dart run permission_handler_apple:select prod
+flutter run --flavor prod
+```
+
+Only the selected flavor's `Info.plist` is read and nothing is merged, so a flavor can never inherit another flavor's permissions. See [Per-flavor permissions](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/README.md#per-flavor-permissions) for the build phase that catches a stale selection.
+
+#### Builds started from Xcode.app
+
+Automatic detection finds your app through the build's working directory, which points at the Flutter project for `flutter run`, `flutter build ios` and `xcodebuild`. Builds started from Xcode.app run with `/` as their working directory and cannot be detected, so point the manifest at your `Info.plist` explicitly:
+
+```bash
+launchctl setenv PERMISSION_HANDLER_INFO_PLIST /absolute/path/to/ios/Runner/Info.plist
+rm -rf ~/Library/Developer/Xcode/DerivedData
+```
+
+#### Troubleshooting
+
+If no `Info.plist` is found, **every permission is compiled out and all permission checks report `denied`**. Xcode discards Swift package manifest output, so the warning about this only reaches you from the command line:
+
+```bash
+cd your_app
+PERMISSION_HANDLER_VERBOSE=1 swift package --manifest-cache none \
+  --package-path ios/Flutter/ephemeral/Packages/.packages/permission_handler_apple \
+  dump-package > /dev/null
+```
+
+That prints the `Info.plist` files that were used, the active flavor if you declared one, and the value every `PERMISSION_*` macro resolved to.
+
+#### More detail
+
+The [`permission_handler_apple` README](https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/README.md#swift-package-manager) documents this in full, including every `PERMISSION_HANDLER_*` environment variable and the per-flavor workflow.
+
+</details>
+
+<details>
+<summary>iOS - CocoaPods (click to expand)</summary>
 
 Add permission to your `Info.plist` file.
 [Here](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler/example/ios/Runner/Info.plist)'s an example `Info.plist` with a complete list of all possible permissions.
 
-> IMPORTANT: ~~You will have to include all permission options when you want to submit your App.~~ This is because the `permission_handler` plugin touches all different SDKs and because the static code analyzer (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).
+> IMPORTANT: ~~You will have to include all permission options when you want to submit your App. This is because the `permission_handler` plugin touches all different SDKs and because the static code analyzer (run by Apple upon App submission) detects this and will assert if it cannot find a matching permission option in the `Info.plist`. More information about this can be found [here](https://github.com/Baseflow/flutter-permission-handler/issues/26).~~
+ This has been fixed since version 8.0.0, now permission_handler by default excludes all permissions and developers only have to enable those that the app really needs.
 
 The <kbd>permission_handler</kbd> plugin use [macros](https://github.com/Baseflow/flutter-permission-handler/blob/master/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h) to control whether a permission is enabled.
 
 You must list the permission you want to use in your application:
 
-1. Add the following to your `Podfile` file:
+1. Add the following to your `Podfile`'s `post_install` block:
 
   ```ruby
   post_install do |installer|
@@ -73,7 +187,8 @@ You must list the permission you want to use in your application:
       target.build_configurations.each do |config|
         # You can remove unused permissions here
         # for more information: https://github.com/Baseflow/flutter-permission-handler/blob/main/permission_handler_apple/ios/Classes/PermissionHandlerEnums.h
-        # e.g. when you don't need camera permission, just add 'PERMISSION_CAMERA=0'
+        # When you don't need a permission, just change its value to 0
+        # e.g. 'PERMISSION_CAMERA=0' instead of 'PERMISSION_CAMERA=1'
         config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
           '$(inherited)',
 
@@ -136,16 +251,27 @@ You must list the permission you want to use in your application:
   end
   ```
 
-2. Remove the `#` character in front of the permission you want to use. For example, if you need access to the calendar make sure the code looks like this:
+2. For the permissions you *want* to use, keep them as is. For example, if you need access to the calendar make sure the code looks like this:
 
    ```ruby
            ## dart: PermissionGroup.calendar
            'PERMISSION_EVENTS=1',
    ```
 
-3. Delete the corresponding permission description in `Info.plist`
-   e.g. when you don't need camera permission, just delete 'NSCameraUsageDescription'
-   The following lists the relationship between `Permission` and `The key of Info.plist`:
+   Also keep that permission's usage description in `Info.plist` (for calendar: `NSCalendarsUsageDescription`). The example plist above is a complete list so you can copy the keys you actually use.
+
+3. When you **don't** need a permission, set its macro to `0` **and** delete that same permission's usage description from `Info.plist`. The key to delete is the one for the permission you just disabled, not the calendar example in step 2.
+
+   For example, if you don't need calendar access:
+
+   ```ruby
+           ## dart: PermissionGroup.calendar
+           'PERMISSION_EVENTS=0',
+   ```
+
+   Then delete `NSCalendarsUsageDescription` from `Info.plist`.
+
+The following lists the relationship between `Permission` and `The key of Info.plist`:
 
 | Permission                                                                                  | Info.plist                                                                                                    | Macro                                |
 |---------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|--------------------------------------|
@@ -182,7 +308,9 @@ You can get a `Permission`'s `status`, which is either `granted`, `denied`, `res
 ```dart
 var status = await Permission.camera.status;
 if (status.isDenied) {
-  // We haven't asked for permission yet or the permission has been denied before, but not permanently.
+  // We haven't asked for permission yet or the permission has been denied before.
+  // On Android this also covers a permanently denied permission: the OS does not
+  // expose the difference without requesting, so call `request()` to find out.
 }
 
 // You can also directly ask permission about its status.
@@ -244,13 +372,18 @@ if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
 You can also open the app settings:
 
 ```dart
-if (await Permission.speech.isPermanentlyDenied) {
+if (await Permission.speech.request().isPermanentlyDenied) {
   // The user opted to never again see the permission request dialog for this
   // app. The only way to change the permission's status now is to let the
-  // user manually enables it in the system settings.
+  // user manually enable it in the system settings.
   openAppSettings();
 }
 ```
+
+On Android, only the result of `request()` can be `permanentlyDenied`; `status` reports `denied` instead.
+Android does not expose whether a permission is permanently denied: a permission that was never requested, one that the user reset to "Ask every time" in the app settings and a permanently denied one all look the same to the app.
+Requesting a permanently denied permission is cheap, the OS resolves it immediately without showing a dialog.
+The [Android "permanently denied" guide](https://github.com/Baseflow/flutter-permission-handler/blob/main/ANDROID_PERMANENTLY_DENIED_FIX_GUIDE.md) covers this in full: what each status means on Android, the request-driven pattern to use instead, and how to audit an existing app for code that relies on the old behavior.
 
 On Android, you can show a rationale for using permission:
 
@@ -280,6 +413,10 @@ This will then bring up another permission popup asking you to `Keep Only While 
 
 ## FAQ
 
+### `Permission.status` never returns `permanentlyDenied` on Android. What can I do?
+
+That is intentional as of `permission_handler_android` 14.1.0. Android does not expose whether a permission is permanently denied, so a status check reports `denied` for every denied runtime permission. Call `request()` and branch on its result: it returns `permanentlyDenied` without showing a dialog when the permission really is permanently denied. See the [Android "permanently denied" guide](https://github.com/Baseflow/flutter-permission-handler/blob/main/ANDROID_PERMANENTLY_DENIED_FIX_GUIDE.md) for the full behavior table, the pattern to use and an audit checklist for existing apps.
+
 ### Requesting "storage" permissions always returns "denied" on Android 13+. What can I do?
 
 On Android, the `Permission.storage` permission is linked to the Android `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions. Starting from Android 10 (API 29) the `READ_EXTERNAL_STORAGE` and `WRITE_EXTERNAL_STORAGE` permissions have been marked deprecated and have been fully removed/disabled since Android 13 (API 33).
@@ -294,7 +431,7 @@ Starting with Android 10, apps are required to first obtain permission to read t
 
 ### onRequestPermissionsResult is called without results. What can I do?
 
-It is probably caused by a difference between completeSdkVersion and targetSdkVersion. It can be depending on the flutter version that you use. `targetSdkVersion = flutter.targetSdkVersion` in the app/build.gradle indicates that the targetSdkVersion is flutter version dependant. For more information: [issue 1222](https://github.com/Baseflow/flutter-permission-handler/issues/1222)
+It is probably caused by a difference between compileSdkVersion and targetSdkVersion. It can be depending on the flutter version that you use. `targetSdkVersion = flutter.targetSdkVersion` in the app/build.gradle indicates that the targetSdkVersion is flutter version dependant. For more information: [issue 1222](https://github.com/Baseflow/flutter-permission-handler/issues/1222)
 
 ### Checking or requesting a permission terminates the application on iOS. What can I do?
 

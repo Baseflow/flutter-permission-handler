@@ -9,8 +9,10 @@ void main() {
 
   group('$PermissionHandlerPlatform', () {
     test('$MethodChannelPermissionHandler is the default instance', () {
-      expect(PermissionHandlerPlatform.instance,
-          isA<MethodChannelPermissionHandler>());
+      expect(
+        PermissionHandlerPlatform.instance,
+        isA<MethodChannelPermissionHandler>(),
+      );
     });
 
     test('Cannot be implemented with `implements`', () {
@@ -30,61 +32,71 @@ void main() {
     });
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'Default implementation of checkPermissionStatus should throw unimplemented error',
-        () {
-      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+      // ignore: lines_longer_than_80_chars
+      'Default implementation of checkPermissionStatus should throw unimplemented error',
+      () {
+        final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
 
-      expect(() {
-        permissionHandlerPlatform
-            .checkPermissionStatus(Permission.accessMediaLocation);
-      }, throwsUnimplementedError);
-    });
-
-    test(
-        // ignore: lines_longer_than_80_chars
-        'Default implementation of checkServiceStatus should throw unimplemented error',
-        () {
-      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
-
-      expect(() {
-        permissionHandlerPlatform
-            .checkServiceStatus(Permission.accessMediaLocation);
-      }, throwsUnimplementedError);
-    });
+        expect(() {
+          permissionHandlerPlatform.checkPermissionStatus(
+            Permission.accessMediaLocation,
+          );
+        }, throwsUnimplementedError);
+      },
+    );
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'Default implementation of openAppSettings should throw unimplemented error',
-        () {
-      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+      // ignore: lines_longer_than_80_chars
+      'Default implementation of checkServiceStatus should throw unimplemented error',
+      () {
+        final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
 
-      expect(
-          permissionHandlerPlatform.openAppSettings, throwsUnimplementedError);
-    });
-
-    test(
-        // ignore: lines_longer_than_80_chars
-        'Default implementation of requestPermissions should throw unimplemented error',
-        () {
-      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
-      var permission = <Permission>[Permission.accessMediaLocation];
-
-      expect(() {
-        permissionHandlerPlatform.requestPermissions(permission);
-      }, throwsUnimplementedError);
-    });
+        expect(() {
+          permissionHandlerPlatform.checkServiceStatus(
+            Permission.accessMediaLocation,
+          );
+        }, throwsUnimplementedError);
+      },
+    );
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'Default implementation of shouldShowRequestPermissionRationale should throw unimplemented error',
-        () {
-      final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
-      expect(() {
-        permissionHandlerPlatform.shouldShowRequestPermissionRationale(
-            Permission.accessMediaLocation);
-      }, throwsUnimplementedError);
-    });
+      // ignore: lines_longer_than_80_chars
+      'Default implementation of openAppSettings should throw unimplemented error',
+      () {
+        final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+
+        expect(
+          permissionHandlerPlatform.openAppSettings,
+          throwsUnimplementedError,
+        );
+      },
+    );
+
+    test(
+      // ignore: lines_longer_than_80_chars
+      'Default implementation of requestPermissions should throw unimplemented error',
+      () {
+        final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+        var permission = <Permission>[Permission.accessMediaLocation];
+
+        expect(() {
+          permissionHandlerPlatform.requestPermissions(permission);
+        }, throwsUnimplementedError);
+      },
+    );
+
+    test(
+      // ignore: lines_longer_than_80_chars
+      'Default implementation of shouldShowRequestPermissionRationale should throw unimplemented error',
+      () {
+        final permissionHandlerPlatform = ExtendsPermissionHandlerPlatform();
+        expect(() {
+          permissionHandlerPlatform.shouldShowRequestPermissionRationale(
+            Permission.accessMediaLocation,
+          );
+        }, throwsUnimplementedError);
+      },
+    );
   });
 }
 

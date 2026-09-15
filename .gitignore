@@ -11,6 +11,8 @@
 .project
 .svn/
 bin/
+# ...except packages that ship an executable, which pub requires to live in bin/.
+!permission_handler_apple/bin/
 migrate_working_dir/
 
 # IntelliJ related

@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 import '../../permission_handler_platform_interface.dart';
 import 'utils/codec.dart';
 
-const MethodChannel _methodChannel =
-    MethodChannel('flutter.baseflow.com/permissions/methods');
+const MethodChannel _methodChannel = MethodChannel(
+  'flutter.baseflow.com/permissions/methods',
+);
 
 /// An implementation of [PermissionHandlerPlatform] that uses [MethodChannel]s.
 class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
@@ -15,7 +16,9 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   @override
   Future<PermissionStatus> checkPermissionStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
-        'checkPermissionStatus', permission.value);
+      'checkPermissionStatus',
+      permission.value,
+    );
 
     return decodePermissionStatus(status);
   }
@@ -52,7 +55,9 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   @override
   Future<ServiceStatus> checkServiceStatus(Permission permission) async {
     final status = await _methodChannel.invokeMethod(
-        'checkServiceStatus', permission.value);
+      'checkServiceStatus',
+      permission.value,
+    );
 
     return decodeServiceStatus(status);
   }
@@ -74,10 +79,13 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// Returns a [Map] containing the status per requested [Permission].
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) async {
+    List<Permission> permissions,
+  ) async {
     final data = encodePermissions(permissions);
-    final status =
-        await _methodChannel.invokeMethod('requestPermissions', data);
+    final status = await _methodChannel.invokeMethod(
+      'requestPermissions',
+      data,
+    );
 
     return decodePermissionRequestResult(Map<int, int>.from(status));
   }
@@ -88,13 +96,16 @@ class MethodChannelPermissionHandler extends PermissionHandlerPlatform {
   /// returns [false].
   @override
   Future<bool> shouldShowRequestPermissionRationale(
-      Permission permission) async {
+    Permission permission,
+  ) async {
     if (defaultTargetPlatform != TargetPlatform.android) {
       return false;
     }
 
     final shouldShowRationale = await _methodChannel.invokeMethod(
-        'shouldShowRequestPermissionRationale', permission.value);
+      'shouldShowRequestPermissionRationale',
+      permission.value,
+    );
 
     return shouldShowRationale ?? false;
   }

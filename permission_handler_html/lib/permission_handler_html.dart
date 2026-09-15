@@ -33,22 +33,18 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
   /// Registers the web plugin implementation.
   static void registerWith(Registrar registrar) {
     PermissionHandlerPlatform.instance = WebPermissionHandler(
-      webDelegate: WebDelegate(
-        _devices,
-        _geolocation,
-        _htmlPermissions,
-      ),
+      webDelegate: WebDelegate(_devices, _geolocation, _htmlPermissions),
     );
   }
 
   /// Constructs a WebPermissionHandler.
-  WebPermissionHandler({
-    required WebDelegate webDelegate,
-  }) : _webDelegate = webDelegate;
+  WebPermissionHandler({required WebDelegate webDelegate})
+      : _webDelegate = webDelegate;
 
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) async {
+    List<Permission> permissions,
+  ) async {
     return _webDelegate.requestPermissions(permissions);
   }
 
@@ -64,7 +60,8 @@ class WebPermissionHandler extends PermissionHandlerPlatform {
 
   @override
   Future<bool> shouldShowRequestPermissionRationale(
-      Permission permission) async {
+    Permission permission,
+  ) async {
     return SynchronousFuture(false);
   }
 

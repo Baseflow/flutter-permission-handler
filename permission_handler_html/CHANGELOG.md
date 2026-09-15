@@ -1,3 +1,11 @@
+## 0.1.4+1
+
+* Replaces runtime-unsafe .isA<web.DOMException>() calls with Dart is web.DOMException checks to fix web release build failures. 
+
+## 0.1.4+0
+
+* Adds support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
+
 ## 0.1.3+5
 
 - Updates the way how `window.navigator.mediaDevices` is accessed to keep supporting WASM.

@@ -1,0 +1,17 @@
+# Per-flavor permissions for Swift Package Manager builds.
+#
+# The two flavors deliberately differ by exactly one key: `debug`
+# (Info-Debug.plist) declares no NSContactsUsageDescription, `release`
+# (Info.plist) does. CI asserts on that difference to prove a flavor cannot
+# inherit another flavor's permissions.
+strict: true
+flavors:
+  debug:
+    info-plist: ios/Runner/Info-Debug.plist
+    configurations:
+      - Debug
+  release:
+    info-plist: ios/Runner/Info.plist
+    configurations:
+      - Release
+      - Profile

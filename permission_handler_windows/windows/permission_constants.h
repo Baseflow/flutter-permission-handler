@@ -50,7 +50,8 @@ public:
         CALENDAR_WRITE_ONLY = 36,
         CALENDAR_FULL_ACCESS = 37,
         ASSISTANT = 38,
-        BACKGROUND_REFRESH = 39
+        BACKGROUND_REFRESH = 39,
+        ACCESS_LOCAL_NETWORK = 40,
     };
 
     //PERMISSION_STATUS

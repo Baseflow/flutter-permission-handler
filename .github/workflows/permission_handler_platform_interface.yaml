@@ -6,15 +6,15 @@ name: permission_handler_platform_interface
 # events but only for the main branch
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-    - 'permission_handler_platform_interface/**'
-    - '.github/workflows/permission_handler_platform_interface.yaml'
+      - "permission_handler_platform_interface/**"
+      - ".github/workflows/permission_handler_platform_interface.yaml"
   pull_request:
-    branches: [ main ]
+    branches: [main]
     paths:
-    - 'permission_handler_platform_interface/**'
-    - '.github/workflows/permission_handler_platform_interface.yaml'
+      - "permission_handler_platform_interface/**"
+      - ".github/workflows/permission_handler_platform_interface.yaml"
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -25,17 +25,17 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      source-directory: ./permission_handler_platform_interface 
+      source-directory: ./permission_handler_platform_interface
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+
       # Make sure the stable version of Flutter is available
       - uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          channel: "stable"
 
       # Download all Flutter packages
       - name: Download dependencies
@@ -46,20 +46,21 @@ jobs:
       - name: Run Dart Format
         run: dart format --set-exit-if-changed .
         working-directory: ${{env.source-directory}}
-   
+
       # Run Flutter Analyzer
       - name: Run Flutter Analyzer
         run: flutter analyze
         working-directory: ${{env.source-directory}}
-      
+
       # Run all unit-tests with code coverage
       - name: Run unit tests
         run: flutter test --coverage
         working-directory: ${{env.source-directory}}
 
       # Upload code coverage information
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v3
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           file: ${{env.source-directory}}/coverage/lcov.info # optional
           name: permission_handler_platform_interface (Platform Interface Package) # optional
-          fail_ci_if_error: true
+          flags: unittests
