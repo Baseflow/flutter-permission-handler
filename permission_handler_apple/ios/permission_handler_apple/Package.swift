@@ -664,10 +664,6 @@ let permissionDefines: [CSetting] = [
             to: enabled("PERMISSION_PHOTOS",
                         plistKeys: "NSPhotoLibraryUsageDescription",
                                    "NSPhotoLibraryAddUsageDescription")),
-    // dart: PermissionGroup.photosAddOnly
-    .define("PERMISSION_PHOTOS_ADD_ONLY",
-            to: enabled("PERMISSION_PHOTOS_ADD_ONLY",
-                        plistKeys: "NSPhotoLibraryAddUsageDescription")),
     // dart: PermissionGroup.location / locationAlways / locationWhenInUse
     .define("PERMISSION_LOCATION",
             to: enabled("PERMISSION_LOCATION",
