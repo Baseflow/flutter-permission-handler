@@ -141,7 +141,7 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
 
     result->Success(requestResults);
   } else if (methodName.compare("shouldShowRequestPermissionRationale") == 0
-          || methodName.compare("openAppSettings")) {
+          || methodName.compare("openAppSettings") == 0) {
     result->Success(EncodableValue(false));
   } else {
     result->NotImplemented();

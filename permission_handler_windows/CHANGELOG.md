@@ -1,3 +1,7 @@
+## 0.2.3
+
+* Fixes `openAppSettings` throwing a `MissingPluginException`, and unknown methods returning `false` instead of `NotImplemented`.
+
 ## 0.2.2
 
 * Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
