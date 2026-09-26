@@ -21,8 +21,9 @@
   NSURL *telURL = [NSURL URLWithString:@"tel://"];
   if (![app canOpenURL:telURL]) {
       completionHandler(ServiceStatusNotApplicable);
+  } else {
+      completionHandler([self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled);
   }
-  completionHandler([self canDevicePlaceAPhoneCall] ? ServiceStatusEnabled : ServiceStatusDisabled);
 }
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler {
