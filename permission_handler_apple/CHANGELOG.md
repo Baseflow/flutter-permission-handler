@@ -1,3 +1,7 @@
+## 9.6.2
+
+- Fix SwiftPM compiles requestAlwaysAuthorization for locationWhenInUse when only exist foreground location propouse (NSLocationWhenInUseUsageDescription plistKey)
+
 ## 9.6.1
 
 - Fixes small mistakes in the README.md documentation.
