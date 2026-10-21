@@ -1,3 +1,9 @@
+## 9.6.3
+
+- Fixes `PERMISSION_HANDLER_INFO_PLIST` not replacing automatic discovery entirely: the Swift
+  Package Manager manifest still walked the filesystem looking for the app root before reading
+  the variable. When it is set the walk is now skipped, as documented (#1574).
+
 ## 9.6.2
 
 - Fix SwiftPM compiles requestAlwaysAuthorization for locationWhenInUse when only exist foreground location propouse (NSLocationWhenInUseUsageDescription plistKey)

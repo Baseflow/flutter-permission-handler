@@ -468,9 +468,10 @@ func resolveFlavor(appRoot: URL?) -> String? {
 /// Info.plist are merged, which errs towards enabling a permission.
 func findInfoPlist() -> [String: Any] {
     var candidates: [URL]
-    let appRoot = findAppRoot()
+    let explicit = infoPlistsFromEnvironment()
+    let appRoot = explicit == nil ? findAppRoot() : nil
 
-    if let explicit = infoPlistsFromEnvironment() {
+    if let explicit {
         candidates = explicit
     } else if let located = locateConfigYaml(appRoot: appRoot) {
         let configYaml = located.yaml
