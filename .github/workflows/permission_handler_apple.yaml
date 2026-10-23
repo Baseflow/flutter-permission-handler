@@ -160,6 +160,11 @@ jobs:
           expect_log stale 'modified after its generated translation' \
             'the staleness guard did not fire'
 
+          resolve explicit PERMISSION_HANDLER_INFO_PLIST="${PWD}/ios/Runner/Info.plist"
+          expect_log explicit 'Runner/Info.plist' \
+            'PERMISSION_HANDLER_INFO_PLIST was not used as the Info.plist'
+          expect explicit PERMISSION_CONTACTS=1 PERMISSION_CAMERA=1 PERMISSION_MICROPHONE=1
+
       # An app target whose INFOPLIST_FILE is built from a variable this manifest
       # does not expand, next to an extension carrying Xcode's stock
       # `GENERATE_INFOPLIST_FILE = YES`. Neither yields a usable path, so the
