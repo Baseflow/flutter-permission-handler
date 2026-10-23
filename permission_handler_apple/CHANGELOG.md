@@ -1,3 +1,8 @@
+## 9.6.4
+
+- Removes the unused `PERMISSION_PHOTOS_ADD_ONLY` macro. `PermissionGroup.photosAddOnly` is
+  enabled by `PERMISSION_PHOTOS` (#986).
+
 ## 9.6.3
 
 - Fixes `PERMISSION_HANDLER_INFO_PLIST` not replacing automatic discovery entirely: the Swift

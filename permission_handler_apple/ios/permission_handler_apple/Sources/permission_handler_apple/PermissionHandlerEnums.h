@@ -47,18 +47,11 @@
     #define PERMISSION_SPEECH_RECOGNIZER 0
 #endif
 
-// ios: PermissionGroupPhotos
-// Info.plist: NSPhotoLibraryUsageDescription
-// dart: PermissionGroup.photos
+// ios: [PermissionGroupPhotos, PermissionGroupPhotosAddOnly]
+// Info.plist: [NSPhotoLibraryUsageDescription, NSPhotoLibraryAddUsageDescription]
+// dart: [PermissionGroup.photos, PermissionGroup.photosAddOnly]
 #ifndef PERMISSION_PHOTOS
     #define PERMISSION_PHOTOS 0
-#endif
-
-// ios: PermissionGroupPhotosAddOnly
-// Info.plist: NSPhotoLibraryAddUsageDescription
-// dart: PermissionGroup.photosAddOnly
-#ifndef PERMISSION_PHOTOS_ADD_ONLY
-    #define PERMISSION_PHOTOS_ADD_ONLY 0
 #endif
 
 // ios: [PermissionGroupLocation, PermissionGroupLocationAlways, PermissionGroupLocationWhenInUse]
