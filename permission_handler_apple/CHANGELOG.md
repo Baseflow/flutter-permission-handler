@@ -1,3 +1,9 @@
+## 9.6.4
+
+- Fixes `Permission.locationAlways.status` returning `permanentlyDenied` when only "When In Use"
+  is granted and "Always" has not been requested yet. It now returns `denied`, so the app can still
+  request it (#1145).
+
 ## 9.6.3
 
 - Fixes `PERMISSION_HANDLER_INFO_PLIST` not replacing automatic discovery entirely: the Swift
