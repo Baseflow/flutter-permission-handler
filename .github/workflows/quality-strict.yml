@@ -1,0 +1,15 @@
+name: Linux x64 · shared quality (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    uses: Kataglyphis/ANTfrastructure/.github/workflows/lint-gates.yml@develop
+    with:
+      ratchets: true
+      code-dupes: true
+      code-dupes-report: false
