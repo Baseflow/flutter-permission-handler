@@ -19,19 +19,19 @@
 
 ## Running the example project
 
-* Change into the example directory: `cd example`
+* Change into the example directory: `cd permission_handler/example`
 * Run the App: `flutter run`
 
 ## Contribute
 
 We really appreciate contributions via GitHub pull requests. To contribute take the following steps:
 
-* Make sure you are up to date with the latest code on the master:
+* Make sure you are up to date with the latest code on `main`:
   * `git fetch upstream`
-  * `git checkout upstream/develop -b <name_of_your_branch>`
+  * `git checkout upstream/main -b <name_of_your_branch>`
 * Apply your changes
 * Verify your changes and fix potential warnings/ errors:
-  * Check formatting: `flutter format .`
+  * Check formatting: `dart format .`
   * Run static analyses: `flutter analyze`
   * Run unit-tests: `flutter test`
 * Commit your changes: `git commit -am "<your informative commit message>"`

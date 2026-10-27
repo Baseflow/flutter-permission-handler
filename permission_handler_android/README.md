@@ -1,6 +1,6 @@
 # permission_handler_android
 
-[![pub package](https://img.shields.io/pub/v/permission_handler_android.svg)](https://pub.dartlang.org/packages/permission_handler_android) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/permission_handler_android/badge.svg?branch=master) [![style: flutter lints](https://img.shields.io/badge/style-flutter_lints-40c4ff.svg)](https://pub.dev/packages/flutter_lints)
+[![pub package](https://img.shields.io/pub/v/permission_handler_android.svg)](https://pub.dartlang.org/packages/permission_handler_android) ![Build status](https://github.com/Baseflow/flutter-permission-handler/workflows/permission_handler_android/badge.svg?branch=main) [![style: flutter lints](https://img.shields.io/badge/style-flutter_lints-40c4ff.svg)](https://pub.dev/packages/flutter_lints)
 
 The official Android implementation of the [permission_handler](https://pub.dev/packages/permission_handler) plugin by [Baseflow](https://baseflow.com).
 
