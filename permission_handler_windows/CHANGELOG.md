@@ -1,3 +1,7 @@
+## 0.2.3
+
+* Stops subscribing to location updates when the plugin is registered. Windows no longer reports apps using `permission_handler` as accessing location. The `Geolocator` is now created only when checking the location service status.
+
 ## 0.2.2
 
 * Added support for the new Android 17 permission `ACCESS_LOCAL_NETWORK`
