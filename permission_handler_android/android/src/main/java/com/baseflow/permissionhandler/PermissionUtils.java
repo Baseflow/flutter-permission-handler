@@ -849,42 +849,15 @@ public class PermissionUtils {
         Context context,
         String permission
     ) {
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            hasPermissionInManifest(context, null, permission)
-        ) {
-            return permission;
-        } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            if (
-                hasPermissionInManifest(
-                    context,
-                    null,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            ) {
-                return Manifest.permission.ACCESS_FINE_LOCATION;
-            } else if (
-                hasPermissionInManifest(
-                    context,
-                    null,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
-                )
-            ) {
-                return Manifest.permission.ACCESS_COARSE_LOCATION;
-            }
-
+        if (context == null) {
             return null;
-        } else if (
-            hasPermissionInManifest(
-                context,
-                null,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-        ) {
-            return Manifest.permission.ACCESS_FINE_LOCATION;
         }
-
-        return null;
+        return BluetoothPermissionSelector.select(
+            Build.VERSION.SDK_INT,
+            context.getApplicationInfo().targetSdkVersion,
+            permission,
+            name -> hasPermissionInManifest(context, null, name)
+        );
     }
 
     // Suppress deprecation warnings since its purpose is to support to be backwards compatible with
