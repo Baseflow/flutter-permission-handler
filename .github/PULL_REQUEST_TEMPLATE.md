@@ -16,5 +16,5 @@
 - [ ] I ran `flutter analyze` and fixed any errors.
 
 <!-- References -->
-[Contributor Guide]: https://github.com/Baseflow/flutter-permission-handler/blob/master/CONTRIBUTING.md
+[Contributor Guide]: https://github.com/Baseflow/flutter-permission-handler/blob/main/CONTRIBUTING.md
 [pub versioning philosophy]: https://dart.dev/tools/pub/versioning
