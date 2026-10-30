@@ -73,5 +73,10 @@ kotlin {
 
 dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.mockito:mockito-core:5.0.0")
+    testImplementation("org.mockito:mockito-core:5.24.0")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.robolectric:robolectric:4.17") {
+        exclude(group = "org.robolectric", module = "nativeruntime-dist-compat")
+    }
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.1")
 }

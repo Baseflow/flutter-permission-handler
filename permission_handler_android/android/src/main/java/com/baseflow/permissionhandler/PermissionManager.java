@@ -127,9 +127,13 @@ final class PermissionManager implements PluginRegistry.ActivityResultListener, 
             }
         } else if (requestCode == PermissionConstants.PERMISSION_CODE_REQUEST_INSTALL_PACKAGES) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                status = activity.getPackageManager().canRequestPackageInstalls()
-                    ? PermissionConstants.PERMISSION_STATUS_GRANTED
-                    : PermissionConstants.PERMISSION_STATUS_DENIED;
+                try {
+                    status = activity.getPackageManager().canRequestPackageInstalls()
+                        ? PermissionConstants.PERMISSION_STATUS_GRANTED
+                        : PermissionConstants.PERMISSION_STATUS_DENIED;
+                } catch (SecurityException e) {
+                    return false;
+                }
                 permission = PermissionConstants.PERMISSION_GROUP_REQUEST_INSTALL_PACKAGES;
             } else {
                 return false;

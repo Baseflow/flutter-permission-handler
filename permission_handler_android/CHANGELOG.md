@@ -1,3 +1,7 @@
+## 14.1.2
+
+- Fixes a `SecurityException` crash in `onActivityResult` when another plugin's activity result arrives with request code 212 and the app does not declare `REQUEST_INSTALL_PACKAGES`. Such a result can never belong to an install-packages request, so it is now ignored and left for its owner. Plugins that pick random request codes, such as `geolocator_android`, can produce this code.
+
 ## 14.1.1
 
 - Fixes Bluetooth scan, connect, and advertise permissions falling back to location when their manifest declaration is missing on Android 12+ for apps targeting Android 12+. These permissions now report denied; legacy location fallback is preserved for older target SDKs.
