@@ -1,3 +1,7 @@
+## 14.1.1
+
+- Fixes Bluetooth scan, connect, and advertise permissions falling back to location when their manifest declaration is missing on Android 12+ for apps targeting Android 12+. These permissions now report denied; legacy location fallback is preserved for older target SDKs.
+
 ## 14.1.0
 
 - Fixes `Permission.status` reporting `permanentlyDenied` after the user reset a permanently denied permission to "Ask every time" in the Android app settings (Android 11+). See [#1206](https://github.com/Baseflow/flutter-permission-handler/issues/1206).

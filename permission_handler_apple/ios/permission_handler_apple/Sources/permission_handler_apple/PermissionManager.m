@@ -19,7 +19,24 @@
 }
 
 + (void)checkPermissionStatus:(enum PermissionGroup)permission result:(FlutterResult)result {
-    id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
+    __block id <PermissionStrategy> permissionStrategy = [PermissionManager createPermissionStrategy:permission];
+
+    if ([permissionStrategy respondsToSelector:@selector(checkPermissionStatus:completionHandler:)]) {
+        // The status is delivered by a system completion handler. Waiting for it
+        // here would park the platform thread, and when the handler is
+        // scheduled on the main queue (iOS 27) the wait never ends.
+        [permissionStrategy checkPermissionStatus:permission completionHandler:^(PermissionStatus permissionStatus) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                result([Codec encodePermissionStatus:permissionStatus]);
+
+                // Make sure `result` is called before cleaning up the reference
+                // (see `checkServiceStatus:result:`).
+                permissionStrategy = nil;
+            });
+        }];
+        return;
+    }
+
     PermissionStatus status = [permissionStrategy checkPermissionStatus:permission];
     
     result([Codec encodePermissionStatus:status]);

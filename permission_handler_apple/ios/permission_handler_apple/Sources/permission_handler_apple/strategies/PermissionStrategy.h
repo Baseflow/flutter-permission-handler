@@ -16,4 +16,12 @@ typedef void (^PermissionErrorHandler)(NSString* errorCode, NSString* errorDescr
 - (void)checkServiceStatus:(PermissionGroup)permission completionHandler:(ServiceStatusHandler)completionHandler;
 
 - (void)requestPermission:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler errorHandler:(PermissionErrorHandler)errorHandler;
+
+@optional
+/// Asynchronous status check, for strategies whose status is only available
+/// through a completion handler. When implemented, `PermissionManager` calls it
+/// instead of the blocking `checkPermissionStatus:`, so the platform (main)
+/// thread is never parked waiting for the system to answer. The handler may be
+/// called on any queue.
+- (void)checkPermissionStatus:(PermissionGroup)permission completionHandler:(PermissionStatusHandler)completionHandler;
 @end
