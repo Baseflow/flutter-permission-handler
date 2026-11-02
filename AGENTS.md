@@ -261,7 +261,9 @@ its example build where your platform allows it.
 | `permission_handler` | Dart unit tests, mocking `PermissionHandlerPlatform` with mockito |
 | `permission_handler_platform_interface` | Dart unit tests under `test/src/`, with a channel mock in `test/src/method_channel/` |
 | `permission_handler_html` | A placeholder test only. Verify through the example. |
-| `permission_handler_android`, `permission_handler_apple`, `permission_handler_windows` | No tests. Verify through the example build, on a device for anything behavioral. |
+| `permission_handler_android` | JUnit tests under `android/jvm-tests/`. From the package directory, run `ANDROID_JAR=/path/to/android.jar gradle -p android/jvm-tests test`. These tests are not run in CI. Also verify the example build and device behavior. |
+| `permission_handler_apple` | XCTest tests under `example/ios/RunnerTests/`; run the example's `RunnerTests` target in Xcode. These tests are not run in CI. Also verify the example build and device behavior. |
+| `permission_handler_windows` | No tests. Verify through the example build, on a device for anything behavioral. |
 
 Because the workspace resolves siblings from local sources, a test run here uses
 your local copy of every other package, not the published one. Before relying on
