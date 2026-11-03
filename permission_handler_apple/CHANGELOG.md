@@ -1,3 +1,9 @@
+## 9.6.5
+
+- Fixes a crash when checking `Permission.phone.serviceStatus` on devices that cannot open `tel://`
+  URLs (for example iPad): the result callback was called twice, first with `notApplicable` and
+  then with the enabled/disabled status. It is now called once (#1565).
+
 ## 9.6.4
 
 - Fixes `Permission.locationAlways.status` returning `permanentlyDenied` when only "When In Use"
