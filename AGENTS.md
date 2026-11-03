@@ -131,25 +131,40 @@ reference.
 - Web: `permission_handler_html/lib/`
 - Swift Package Manager manifest: `permission_handler_apple/ios/permission_handler_apple/Package.swift`
 - Example apps: `<package>/example/`, in every package except the platform interface
-- CI: `.github/workflows/<package>.yaml`
+- CI: `.github/workflows/permission_handler_ci.yaml`, which runs
+  `.github/workflows/permission_handler_package.yaml` once per package
 
 ### CI map
 
-Every workflow runs on pushes and pull requests to `main`, filtered to its own
-package directory and its own workflow file. A change to root files such as this
-one, the workspace `pubspec.yaml` or the root `analysis_options.yaml` starts no
-workflow.
+`permission_handler_ci.yaml` is the only workflow with triggers: pushes and pull
+requests to `main`. It filters the changed paths and runs a package's job when
+that package, a package it builds against, the workspace `pubspec.yaml`, the
+root `analysis_options.yaml` or one of the CI files changed. A change to the
+platform interface therefore runs every package, and a change to any
+implementation runs the app-facing package too. A docs-only change to a root
+file such as this one runs nothing. Starting it by hand from the Actions tab runs
+every package, whatever changed.
 
-| Workflow | Runner | Format, analyze | Example build | Unit tests |
-|---|---|---|---|---|
-| `permission_handler.yaml` | macOS | yes | apk, iOS | `flutter test --coverage` |
-| `permission_handler_platform_interface.yaml` | Ubuntu | yes | none | `flutter test --coverage` |
-| `permission_handler_android.yaml` | Ubuntu | yes | apk | none exist |
-| `permission_handler_apple.yaml` | macOS | yes | iOS, plus a Swift Package Manager check that the `PERMISSION_*` macros resolve as expected | none exist |
+Every package job calls the reusable `permission_handler_package.yaml`, which
+runs `flutter pub get`, `dart format --set-exit-if-changed .` and
+`flutter analyze` in the package. Its inputs, set per job in
+`permission_handler_ci.yaml`, add the rest:
 
-`permission_handler_html` and `permission_handler_windows` have **no workflow**.
-Nothing checks them on a pull request, so run format, analyze and the example
-build yourself. No workflow publishes.
+| Job | Runner | Example build | Unit tests |
+|---|---|---|---|
+| `app_facing` | macOS | apk, iOS | `flutter test --coverage` |
+| `platform_interface` | Ubuntu | none | `flutter test --coverage` |
+| `android` | Ubuntu | apk | none exist |
+| `apple` | macOS | iOS, then `.github/scripts/check_apple_example.sh`, which checks that Swift Package Manager resolves the `PERMISSION_*` macros as expected | none exist |
+| `windows` | Windows | Windows | none exist |
+
+The final job, `ci-result`, fails when any package job failed or was cancelled
+and passes when they all passed or were skipped. It is the one status check to
+require on pull requests.
+
+`permission_handler_html` has **no job**. A change to it only runs the
+app-facing job, which neither formats, analyzes nor builds the web package, so
+run format, analyze and the example build yourself. No workflow publishes.
 
 ## Where to make changes
 
@@ -350,8 +365,8 @@ And for this repo specifically:
 
 - [ ] This PR changes exactly one package
 - [ ] No permission integer was renumbered or reused, and the channel name is unchanged
-- [ ] For `permission_handler_html` or `permission_handler_windows`, format,
-      analyze and the example build were run locally, since no workflow runs them
+- [ ] For `permission_handler_html`, format, analyze and the example build were
+      run locally, since no workflow runs them
 
 ## Releases
 
