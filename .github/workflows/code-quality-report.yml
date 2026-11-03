@@ -1,0 +1,10 @@
+name: Linux x64 · code quality measurements
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    uses: Kataglyphis/ANTfrastructure/.github/workflows/code-quality-report.yml@develop

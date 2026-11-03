@@ -1,0 +1,19 @@
+name: Windows x64 · submodule pins
+
+on:
+  push:
+    paths:
+      - '.gitmodules'
+      - 'third_party/ANTfrastructure'
+  pull_request:
+    paths:
+      - '.gitmodules'
+      - 'third_party/ANTfrastructure'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pins:
+    uses: Kataglyphis/ANTfrastructure/.github/workflows/submodule-pins.yml@develop

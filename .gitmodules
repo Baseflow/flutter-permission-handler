@@ -1,0 +1,4 @@
+[submodule "third_party/ANTfrastructure"]
+	path = third_party/ANTfrastructure
+	url = https://github.com/Kataglyphis/ANTfrastructure.git
+	branch = develop
