@@ -1,0 +1,58 @@
+on: pull_request
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      android: ${{ steps.filter.outputs.android }}
+      apple: ${{ steps.filter.outputs.apple }}
+      platform_interface: ${{ steps.filter.outputs.platform_interface }}
+      app_facing: ${{ steps.filter.outputs.app_facing }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            android:
+              - 'permission_handler_android/**'
+              - '.github/workflows/permission_handler_android.yaml'
+            apple:
+              - 'permission_handler_apple/**'
+              - '.github/workflows/permission_handler_apple.yaml'
+            platform_interface:
+              - 'permission_handler_platform_interface/**'
+              - '.github/workflows/permission_handler_platform_interface.yaml'
+            app_facing:
+              - 'permission_handler/**'
+              - '.github/workflows/permission_handler_app_facing.yaml'
+
+  android:
+    needs: changes
+    if: needs.changes.outputs.android == 'true'
+    uses: ./.github/workflows/permission_handler_android.yaml
+
+  apple:
+    needs: changes
+    if: needs.changes.outputs.apple == 'true'
+    uses: ./.github/workflows/permission_handler_apple.yaml
+
+  platform_interface:
+    needs: changes
+    if: needs.changes.outputs.platform_interface == 'true'
+    uses: ./.github/workflows/permission_handler_platform_interface.yaml
+
+  app_facing:
+    needs: changes
+    if: needs.changes.outputs.app_facing == 'true'
+    uses: ./.github/workflows/permission_handler_app_facing.yaml
+
+  ci-result:            # ← the only required check
+    needs: [android, apple, app_facing, platform_interface]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            exit 1
+          fi

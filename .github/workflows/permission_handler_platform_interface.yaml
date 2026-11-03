@@ -1,26 +1,14 @@
 # This is a basic workflow to help you get started with Actions
-
-name: permission_handler_platform_interface
+name: Platform interface package - Continuous Integration
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
 on:
-  push:
-    branches: [main]
-    paths:
-      - "permission_handler_platform_interface/**"
-      - ".github/workflows/permission_handler_platform_interface.yaml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "permission_handler_platform_interface/**"
-      - ".github/workflows/permission_handler_platform_interface.yaml"
+  workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  build:
-    name: Platform interface package
-
+  platform_interface_package_ci:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 

@@ -1,32 +1,16 @@
 # This is a basic workflow to help you get started with Actions
 
-name: permission_handler
+name: App Facing Package - Continuous Integration
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the main branch
 on:
-  push:
-    branches: [main]
-    paths:
-      - "permission_handler/**"
-      - ".github/workflows/permission_handler.yaml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "permission_handler/**"
-      - ".github/workflows/permission_handler.yaml"
+  workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  format:
-    name: App facing package
-
-    # The type of runner that the job will run on
-    #
-    # TODO(mvanbeusekom): Manually set to macOS 15 to support Xcode 16 and iOS 18 SDKs.
-    # Currently `macos-latest` is based on macOS 14 and doesn't support iOS 18 SDK. This
-    # should be moved back to `macos-latest` when GitHub Actions images are updated.
-    runs-on: macos-15
+  app_facing_package_ci:
+    runs-on: macos-latest
 
     env:
       source-directory: ./permission_handler
