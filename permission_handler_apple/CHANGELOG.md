@@ -1,3 +1,30 @@
+## 9.6.5
+
+- Fixes a crash when checking `Permission.phone.serviceStatus` on devices that cannot open `tel://`
+  URLs (for example iPad): the result callback was called twice, first with `notApplicable` and
+  then with the enabled/disabled status. It is now called once (#1565).
+
+## 9.6.4
+
+- Fixes `Permission.locationAlways.status` returning `permanentlyDenied` when only "When In Use"
+  is granted and "Always" has not been requested yet. It now returns `denied`, so the app can still
+  request it (#1145).
+- Fixes a deadlock on iOS 27 where `Permission.notification.status` (and 
+  `Permission.criticalAlerts.status`) never returned and froze the app: the status is now read
+  asynchronously from `getNotificationSettingsWithCompletionHandler` instead of waiting for it with
+  a semaphore on the main thread. `request()` for both permissions uses the same asynchronous check.
+
+## 9.6.3
+
+- Fixes `PERMISSION_HANDLER_INFO_PLIST` not replacing automatic discovery entirely: the Swift
+  Package Manager manifest still walked the filesystem looking for the app root before reading
+  the variable. When it is set the walk is now skipped, as documented (#1574).
+
+## 9.6.2
+
+- Fix SwiftPM compiles requestAlwaysAuthorization for locationWhenInUse when only exist foreground 
+  location propouse (NSLocationWhenInUseUsageDescription plistKey)
+
 ## 9.6.1
 
 - Fixes small mistakes in the README.md documentation.

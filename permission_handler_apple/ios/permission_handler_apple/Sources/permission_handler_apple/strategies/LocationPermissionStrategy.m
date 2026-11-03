@@ -164,8 +164,15 @@ NSString *const UserDefaultPermissionRequestedKey = @"org.baseflow.permission_ha
 
 + (PermissionStatus)permissionStatus:(PermissionGroup)permission {
     CLAuthorizationStatus authorizationStatus = [CLLocationManager authorizationStatus];
-    
-    
+
+    // iOS shows the "Always" prompt once after "When In Use" is granted. Until this plugin has
+    // asked for it, it can still be requested.
+    if (permission == PermissionGroupLocationAlways &&
+        authorizationStatus == kCLAuthorizationStatusAuthorizedWhenInUse &&
+        ![[NSUserDefaults standardUserDefaults] boolForKey:UserDefaultPermissionRequestedKey]) {
+        return PermissionStatusDenied;
+    }
+
     PermissionStatus status = [LocationPermissionStrategy
                                determinePermissionStatus:permission authorizationStatus:authorizationStatus];
     

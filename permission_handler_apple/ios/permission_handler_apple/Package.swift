@@ -468,9 +468,10 @@ func resolveFlavor(appRoot: URL?) -> String? {
 /// Info.plist are merged, which errs towards enabling a permission.
 func findInfoPlist() -> [String: Any] {
     var candidates: [URL]
-    let appRoot = findAppRoot()
+    let explicit = infoPlistsFromEnvironment()
+    let appRoot = explicit == nil ? findAppRoot() : nil
 
-    if let explicit = infoPlistsFromEnvironment() {
+    if let explicit {
         candidates = explicit
     } else if let located = locateConfigYaml(appRoot: appRoot) {
         let configYaml = located.yaml
@@ -671,8 +672,7 @@ let permissionDefines: [CSetting] = [
     // dart: PermissionGroup.location / locationAlways / locationWhenInUse
     .define("PERMISSION_LOCATION",
             to: enabled("PERMISSION_LOCATION",
-                        plistKeys: "NSLocationWhenInUseUsageDescription",
-                                   "NSLocationAlwaysAndWhenInUseUsageDescription")),
+                        plistKeys: "NSLocationAlwaysAndWhenInUseUsageDescription")),
     // dart: PermissionGroup.locationWhenInUse (only when locationAlways is NOT needed)
     .define("PERMISSION_LOCATION_WHENINUSE",
             to: enabled("PERMISSION_LOCATION_WHENINUSE",
