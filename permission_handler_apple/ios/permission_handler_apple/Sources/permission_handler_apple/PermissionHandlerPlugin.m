@@ -21,6 +21,13 @@
                                      binaryMessenger:[registrar messenger]];
     PermissionManager *permissionManager = [[PermissionManager alloc] initWithStrategyInstances];
     PermissionHandlerPlugin *instance = [[PermissionHandlerPlugin alloc] initWithPermissionManager:permissionManager];
+
+    [[NSNotificationCenter defaultCenter] 
+        addObserver:instance
+        selector:@selector(handleApplicationDidEnterBackground:)
+        name:UIApplicationDidEnterBackgroundNotification
+        object:nil];
+
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
@@ -60,6 +67,25 @@
     } else {
         result(FlutterMethodNotImplemented);
     }
+}
+
+- (void)handleApplicationDidEnterBackground:(NSNotification *)notification {
+    if (_methodResult != nil) {
+        #ifdef DEBUG
+                NSLog(@"[PermissionHandler] App backgrounded with pending permission request. Cancelling request.");
+        #endif
+        
+        _methodResult([FlutterError 
+            errorWithCode:@"REQUEST_INTERRUPTED" 
+            message:@"Permission request was interrupted because the app entered background" 
+            details:nil]);
+        
+        _methodResult = nil;
+    }
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
