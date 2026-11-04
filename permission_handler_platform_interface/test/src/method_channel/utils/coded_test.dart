@@ -15,9 +15,7 @@ void main() {
     test(
         'decodePermissionRequestResult should convert a map<int, int>'
         'to map<Permission, PermissionStatus>', () {
-      var value = <int, int>{
-        1: 1,
-      };
+      var value = <int, int>{1: 1};
 
       var permissionMap = decodePermissionRequestResult(value);
 

@@ -2,7 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!--
+	Uncomment to test PERMISSION_ASSISTANT (requires a paid Apple Developer account):
 	<key>com.apple.developer.siri</key>
 	<true/>
+	-->
 </dict>
 </plist>

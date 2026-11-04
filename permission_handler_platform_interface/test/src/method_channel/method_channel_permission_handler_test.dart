@@ -15,129 +15,140 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('checkPermissionStatus: When checking for permission', () {
-    test('Should receive granted if user wants access to the requested feature',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkPermissionStatus',
-        result: PermissionStatus.denied.value,
-      );
+    test(
+      'Should receive granted if user wants access to the requested feature',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkPermissionStatus',
+          result: PermissionStatus.denied.value,
+        );
 
-      final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.contacts);
+        final permissionStatus = await MethodChannelPermissionHandler()
+            .checkPermissionStatus(Permission.contacts);
 
-      expect(permissionStatus, PermissionStatus.denied);
-    });
-
-    test('Should receive denied if user denied access to the requested feature',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkPermissionStatus',
-        result: PermissionStatus.denied.value,
-      );
-
-      final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.contacts);
-
-      expect(permissionStatus, PermissionStatus.denied);
-    });
+        expect(permissionStatus, PermissionStatus.denied);
+      },
+    );
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'Should receive restricted if OS denied rights for to the requested feature',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkPermissionStatus',
-        result: PermissionStatus.restricted.value,
-      );
+      'Should receive denied if user denied access to the requested feature',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkPermissionStatus',
+          result: PermissionStatus.denied.value,
+        );
 
-      final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.contacts);
+        final permissionStatus = await MethodChannelPermissionHandler()
+            .checkPermissionStatus(Permission.contacts);
 
-      expect(permissionStatus, PermissionStatus.restricted);
-    });
-
-    test(
-        // ignore: lines_longer_than_80_chars
-        'Should receive limited if user has authorized this application for limited access',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkPermissionStatus',
-        result: PermissionStatus.limited.value,
-      );
-
-      final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.contacts);
-
-      expect(permissionStatus, PermissionStatus.limited);
-    });
+        expect(permissionStatus, PermissionStatus.denied);
+      },
+    );
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'Should receive permanentlyDenied if user denied access and selected to never show a request for this permission again',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkPermissionStatus',
-        result: PermissionStatus.permanentlyDenied.value,
-      );
+      // ignore: lines_longer_than_80_chars
+      'Should receive restricted if OS denied rights for to the requested feature',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkPermissionStatus',
+          result: PermissionStatus.restricted.value,
+        );
 
-      final permissionStatus = await MethodChannelPermissionHandler()
-          .checkPermissionStatus(Permission.contacts);
+        final permissionStatus = await MethodChannelPermissionHandler()
+            .checkPermissionStatus(Permission.contacts);
 
-      expect(permissionStatus, PermissionStatus.permanentlyDenied);
-    });
+        expect(permissionStatus, PermissionStatus.restricted);
+      },
+    );
+
+    test(
+      // ignore: lines_longer_than_80_chars
+      'Should receive limited if user has authorized this application for limited access',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkPermissionStatus',
+          result: PermissionStatus.limited.value,
+        );
+
+        final permissionStatus = await MethodChannelPermissionHandler()
+            .checkPermissionStatus(Permission.contacts);
+
+        expect(permissionStatus, PermissionStatus.limited);
+      },
+    );
+
+    test(
+      // ignore: lines_longer_than_80_chars
+      'Should receive permanentlyDenied if user denied access and selected to never show a request for this permission again',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkPermissionStatus',
+          result: PermissionStatus.permanentlyDenied.value,
+        );
+
+        final permissionStatus = await MethodChannelPermissionHandler()
+            .checkPermissionStatus(Permission.contacts);
+
+        expect(permissionStatus, PermissionStatus.permanentlyDenied);
+      },
+    );
   });
 
   group('checkServiceStatus: When checking for service', () {
     // ignore: lines_longer_than_80_chars
     test(
-        'Should receive disabled if the service for the permission is disabled',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkServiceStatus',
-        result: ServiceStatus.disabled.value,
-      );
+      'Should receive disabled if the service for the permission is disabled',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkServiceStatus',
+          result: ServiceStatus.disabled.value,
+        );
 
-      final serviceStatus = await MethodChannelPermissionHandler()
-          .checkServiceStatus(Permission.contacts);
+        final serviceStatus = await MethodChannelPermissionHandler()
+            .checkServiceStatus(Permission.contacts);
 
-      expect(serviceStatus, ServiceStatus.disabled);
-    });
-
-    test('Should receive enabled if the service for the permission is enabled',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkServiceStatus',
-        result: ServiceStatus.enabled.value,
-      );
-
-      final serviceStatus = await MethodChannelPermissionHandler()
-          .checkServiceStatus(Permission.contacts);
-
-      expect(serviceStatus, ServiceStatus.enabled);
-    });
+        expect(serviceStatus, ServiceStatus.disabled);
+      },
+    );
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'Should receive notApplicable if the permission does not have an associated service on the current platform',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'checkServiceStatus',
-        result: ServiceStatus.notApplicable.value,
-      );
+      'Should receive enabled if the service for the permission is enabled',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkServiceStatus',
+          result: ServiceStatus.enabled.value,
+        );
 
-      final serviceStatus = await MethodChannelPermissionHandler()
-          .checkServiceStatus(Permission.contacts);
+        final serviceStatus = await MethodChannelPermissionHandler()
+            .checkServiceStatus(Permission.contacts);
 
-      expect(serviceStatus, ServiceStatus.notApplicable);
-    });
+        expect(serviceStatus, ServiceStatus.enabled);
+      },
+    );
+
+    test(
+      // ignore: lines_longer_than_80_chars
+      'Should receive notApplicable if the permission does not have an associated service on the current platform',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'checkServiceStatus',
+          result: ServiceStatus.notApplicable.value,
+        );
+
+        final serviceStatus = await MethodChannelPermissionHandler()
+            .checkServiceStatus(Permission.contacts);
+
+        expect(serviceStatus, ServiceStatus.notApplicable);
+      },
+    );
   });
 
   group('openAppSettings: When opening the App settings', () {
@@ -170,36 +181,39 @@ void main() {
 
   group('requestPermissions: When requesting for permission', () {
     // ignore: lines_longer_than_80_chars
-    test('returns a Map with all the PermissionStatus of the given permissions',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'requestPermissions',
-        result: mockPermissionMap,
-      );
+    test(
+      'returns a Map with all the PermissionStatus of the given permissions',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'requestPermissions',
+          result: mockPermissionMap,
+        );
 
-      final result = await MethodChannelPermissionHandler()
-          .requestPermissions(mockPermissions);
+        final result = await MethodChannelPermissionHandler()
+            .requestPermissions(mockPermissions);
 
-      expect(result, isA<Map<Permission, PermissionStatus>>());
-    });
+        expect(result, isA<Map<Permission, PermissionStatus>>());
+      },
+    );
   });
 
   group('shouldShowRequestPermissionRationale:', () {
     test(
-        // ignore: lines_longer_than_80_chars
-        'should return true when you should show a rationale for requesting permission.',
-        () async {
-      MethodChannelMock(
-        channelName: 'flutter.baseflow.com/permissions/methods',
-        method: 'shouldShowRequestPermissionRationale',
-        result: true,
-      );
+      // ignore: lines_longer_than_80_chars
+      'should return true when you should show a rationale for requesting permission.',
+      () async {
+        MethodChannelMock(
+          channelName: 'flutter.baseflow.com/permissions/methods',
+          method: 'shouldShowRequestPermissionRationale',
+          result: true,
+        );
 
-      final shouldShowRationale = await MethodChannelPermissionHandler()
-          .shouldShowRequestPermissionRationale(mockPermissions.first);
+        final shouldShowRationale = await MethodChannelPermissionHandler()
+            .shouldShowRequestPermissionRationale(mockPermissions.first);
 
-      expect(shouldShowRationale, true);
-    });
+        expect(shouldShowRationale, true);
+      },
+    );
   });
 }

@@ -19,8 +19,10 @@ class MethodChannelMock {
 
   Future _handler(MethodCall methodCall) async {
     if (methodCall.method != method) {
-      throw MissingPluginException('No implementation found for method '
-          '$method on channel ${methodChannel.name}');
+      throw MissingPluginException(
+        'No implementation found for method '
+        '$method on channel ${methodChannel.name}',
+      );
     }
 
     return Future.delayed(delay, () {

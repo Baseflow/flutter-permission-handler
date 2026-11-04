@@ -1,0 +1,21 @@
+name: permission_handler_monorepo
+publish_to: none
+environment:
+  sdk: ^3.6.0
+  flutter: ">=3.24.0"
+
+workspace:
+  - permission_handler
+  - permission_handler/example
+  - permission_handler_android
+  - permission_handler_android/example
+  - permission_handler_apple
+  - permission_handler_apple/example
+  - permission_handler_html
+  - permission_handler_html/example
+  - permission_handler_platform_interface
+  - permission_handler_windows
+  - permission_handler_windows/example
+
+dev_dependencies:
+  flutter_lints: ^5.0.0

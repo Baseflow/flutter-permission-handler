@@ -32,7 +32,8 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   /// Checks the current status of the given [Permission].
   Future<PermissionStatus> checkPermissionStatus(Permission permission) {
     throw UnimplementedError(
-        'checkPermissionStatus() has not been implemented.');
+      'checkPermissionStatus() has not been implemented.',
+    );
   }
 
   /// Checks the current status of the service associated with the given
@@ -73,7 +74,8 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   ///
   /// Returns a [Map] containing the status per requested [Permission].
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) {
+    List<Permission> permissions,
+  ) {
     throw UnimplementedError('requestPermissions() has not been implemented.');
   }
 
@@ -83,6 +85,7 @@ abstract class PermissionHandlerPlatform extends PlatformInterface {
   /// returns [false].
   Future<bool> shouldShowRequestPermissionRationale(Permission permission) {
     throw UnimplementedError(
-        'shouldShowRequestPermissionRationale() has not been implemented.');
+      'shouldShowRequestPermissionRationale() has not been implemented.',
+    );
   }
 }

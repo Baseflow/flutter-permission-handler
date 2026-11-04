@@ -23,21 +23,27 @@ void main() {
     });
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'PermissionActions on Permission: get shouldShowRequestRationale should return true when on android',
-        () async {
-      final mockPermissionHandlerPlatform = PermissionHandlerPlatform.instance;
+      // ignore: lines_longer_than_80_chars
+      'PermissionActions on Permission: get shouldShowRequestRationale should return true when on android',
+      () async {
+        final mockPermissionHandlerPlatform =
+            PermissionHandlerPlatform.instance;
 
-      when(mockPermissionHandlerPlatform
-              .shouldShowRequestPermissionRationale(Permission.contacts))
-          .thenAnswer((_) => Future.value(true));
+        when(
+          mockPermissionHandlerPlatform.shouldShowRequestPermissionRationale(
+            Permission.contacts,
+          ),
+        ).thenAnswer((_) => Future.value(true));
 
-      await Permission.contacts.shouldShowRequestRationale;
+        await Permission.contacts.shouldShowRequestRationale;
 
-      verify(mockPermissionHandlerPlatform
-              .shouldShowRequestPermissionRationale(Permission.contacts))
-          .called(1);
-    });
+        verify(
+          mockPermissionHandlerPlatform.shouldShowRequestPermissionRationale(
+            Permission.contacts,
+          ),
+        ).called(1);
+      },
+    );
 
     test('PermissionActions on Permission: request()', () async {
       final permissionRequest = Permission.contacts.request();
@@ -65,11 +71,14 @@ void main() {
       expect(isLimited, false);
     });
 
-    test('PermissionCheckShortcuts on Permission: get isPermanentlyDenied',
-        () async {
-      final isPermanentlyDenied = await Permission.contacts.isPermanentlyDenied;
-      expect(isPermanentlyDenied, false);
-    });
+    test(
+      'PermissionCheckShortcuts on Permission: get isPermanentlyDenied',
+      () async {
+        final isPermanentlyDenied =
+            await Permission.contacts.isPermanentlyDenied;
+        expect(isPermanentlyDenied, false);
+      },
+    );
 
     test('PermissionCheckShortcuts on Permission: get isProvisional', () async {
       final isProvisional = await Permission.contacts.isProvisional;
@@ -77,23 +86,25 @@ void main() {
     });
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'ServicePermissionActions on PermissionWithService: get ServiceStatus returns the right service status',
-        () async {
-      var serviceStatus = await Permission.phone.serviceStatus;
+      // ignore: lines_longer_than_80_chars
+      'ServicePermissionActions on PermissionWithService: get ServiceStatus returns the right service status',
+      () async {
+        var serviceStatus = await Permission.phone.serviceStatus;
 
-      expect(serviceStatus, ServiceStatus.enabled);
-    });
+        expect(serviceStatus, ServiceStatus.enabled);
+      },
+    );
 
     test(
-        // ignore: lines_longer_than_80_chars
-        'PermissionListActions on List<Permission>: request() on  a list returns a Map<Permission, PermissionStatus>',
-        () async {
-      var permissionList = <Permission>[];
-      final permissionMap = await permissionList.request();
+      // ignore: lines_longer_than_80_chars
+      'PermissionListActions on List<Permission>: request() on  a list returns a Map<Permission, PermissionStatus>',
+      () async {
+        var permissionList = <Permission>[];
+        final permissionMap = await permissionList.request();
 
-      expect(permissionMap, isA<Map<Permission, PermissionStatus>>());
-    });
+        expect(permissionMap, isA<Map<Permission, PermissionStatus>>());
+      },
+    );
 
     test('onDeniedCallback sets onDenied', () async {
       bool callbackCalled = false;
@@ -151,7 +162,8 @@ void main() {
           .onDeniedCallback(() => callbackCalled.add('Denied'))
           .onGrantedCallback(() => callbackCalled.add('Granted'))
           .onPermanentlyDeniedCallback(
-              () => callbackCalled.add('PermanentlyDenied'))
+            () => callbackCalled.add('PermanentlyDenied'),
+          )
           .onRestrictedCallback(() => callbackCalled.add('Restricted'))
           .onLimitedCallback(() => callbackCalled.add('Limited'))
           .onProvisionalCallback(() => callbackCalled.add('Provisional'))
@@ -181,7 +193,8 @@ class MockPermissionHandlerPlatform extends Mock
 
   @override
   Future<Map<Permission, PermissionStatus>> requestPermissions(
-      List<Permission> permissions) {
+    List<Permission> permissions,
+  ) {
     var permissionsMap = <Permission, PermissionStatus>{};
     return Future.value(permissionsMap);
   }
@@ -189,10 +202,7 @@ class MockPermissionHandlerPlatform extends Mock
   @override
   Future<bool> shouldShowRequestPermissionRationale(Permission? permission) {
     return super.noSuchMethod(
-      Invocation.method(
-        #shouldShowPermissionRationale,
-        [permission],
-      ),
+      Invocation.method(#shouldShowPermissionRationale, [permission]),
       returnValue: Future.value(true),
     );
   }

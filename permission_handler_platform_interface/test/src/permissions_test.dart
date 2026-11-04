@@ -5,7 +5,7 @@ void main() {
   test('Permission has the right amount of possible Permission values', () {
     const values = Permission.values;
 
-    expect(values.length, 40);
+    expect(values.length, 41);
   });
 
   test('check if byValue returns corresponding Permission value', () {
@@ -32,47 +32,42 @@ void main() {
   });
 
   test(
-      // ignore: lines_longer_than_80_chars
-      'equality operator should return true for two instances with the same values',
-      () {
-    // Arrange
-    final firstPermission = Permission.byValue(1);
-    final secondPermission = Permission.byValue(1);
+    // ignore: lines_longer_than_80_chars
+    'equality operator should return true for two instances with the same values',
+    () {
+      // Arrange
+      final firstPermission = Permission.byValue(1);
+      final secondPermission = Permission.byValue(1);
 
-    // Act & Assert
-    expect(
-      firstPermission == secondPermission,
-      true,
-    );
-  });
+      // Act & Assert
+      expect(firstPermission == secondPermission, true);
+    },
+  );
 
   test(
-      // ignore: lines_longer_than_80_chars
-      'equality operator should return false for two instances with different values',
-      () {
-    // Arrange
-    final firstPermission = Permission.byValue(1);
-    final secondPermission = Permission.byValue(2);
+    // ignore: lines_longer_than_80_chars
+    'equality operator should return false for two instances with different values',
+    () {
+      // Arrange
+      final firstPermission = Permission.byValue(1);
+      final secondPermission = Permission.byValue(2);
 
-    // Act & Assert
-    expect(
-      firstPermission == secondPermission,
-      false,
-    );
-  });
+      // Act & Assert
+      expect(firstPermission == secondPermission, false);
+    },
+  );
 
-  test('hashCode should be the same for two instances with the same values',
-      () {
-    // Arrange
-    final firstPermission = Permission.byValue(1);
-    final secondPermission = Permission.byValue(1);
+  test(
+    'hashCode should be the same for two instances with the same values',
+    () {
+      // Arrange
+      final firstPermission = Permission.byValue(1);
+      final secondPermission = Permission.byValue(1);
 
-    // Act & Assert
-    expect(
-      firstPermission.hashCode,
-      secondPermission.hashCode,
-    );
-  });
+      // Act & Assert
+      expect(firstPermission.hashCode, secondPermission.hashCode);
+    },
+  );
 
   test('hashCode should not match for two instances with different values', () {
     // Arrange
@@ -80,9 +75,6 @@ void main() {
     final secondPermission = Permission.byValue(2);
 
     // Act & Assert
-    expect(
-      firstPermission.hashCode == secondPermission.hashCode,
-      false,
-    );
+    expect(firstPermission.hashCode == secondPermission.hashCode, false);
   });
 }

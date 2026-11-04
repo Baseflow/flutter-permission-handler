@@ -27,10 +27,15 @@ enum PermissionStatus {
   /// still change the permission status in the settings.
   ///
   /// *On Android:*
-  /// Android 11+ (API 30+): whether the user denied the permission for a second
-  /// time.
-  /// Below Android 11 (API 30): whether the user denied access to the requested
-  /// feature and selected to never again show a request.
+  /// Only returned as the result of a request, never by a status check. Android
+  /// offers no API to tell a permanently denied permission apart from one that
+  /// was never requested or that the user reset to 'Ask every time' in the app
+  /// settings, so `status` reports `denied` for all of them. Requesting a
+  /// permanently denied permission resolves immediately, without showing a
+  /// dialog, to this status.
+  /// Android 11+ (API 30+): the user denied the permission for a second time.
+  /// Below Android 11 (API 30): the user denied access to the requested feature
+  /// and selected to never again show a request.
   ///
   /// *On iOS:*
   /// If the user has denied access to the requested feature.
@@ -96,11 +101,15 @@ extension PermissionStatusGetters on PermissionStatus {
   /// user may still change the permission status in the settings.
   ///
   /// *On Android:*
-  /// Android 11+ (API 30+): whether the user denied the permission for a second
-  /// time.
-  /// Below Android 11 (API 30): whether the user denied access to the requested
-  /// feature and selected to never again show a request.
-  /// The user may still change the permission status in the settings.
+  /// Only returned as the result of a request, never by a status check. Android
+  /// offers no API to tell a permanently denied permission apart from one that
+  /// was never requested or that the user reset to 'Ask every time' in the app
+  /// settings, so `status` reports `denied` for all of them. Requesting a
+  /// permanently denied permission resolves immediately, without showing a
+  /// dialog, to this status.
+  /// Android 11+ (API 30+): the user denied the permission for a second time.
+  /// Below Android 11 (API 30): the user denied access to the requested feature
+  /// and selected to never again show a request.
   ///
   /// *On iOS:*
   /// If the user has denied access to the requested feature.
@@ -139,10 +148,15 @@ extension FuturePermissionStatusGetters on Future<PermissionStatus> {
   /// user may still change the permission status in the settings.
   ///
   /// *On Android:*
-  /// Android 11+ (API 30+): whether the user denied the permission for a second
-  /// time.
-  /// Below Android 11 (API 30): whether the user denied access to the requested
-  /// feature and selected to never again show a request.
+  /// Only returned as the result of a request, never by a status check. Android
+  /// offers no API to tell a permanently denied permission apart from one that
+  /// was never requested or that the user reset to 'Ask every time' in the app
+  /// settings, so `status` reports `denied` for all of them. Requesting a
+  /// permanently denied permission resolves immediately, without showing a
+  /// dialog, to this status.
+  /// Android 11+ (API 30+): the user denied the permission for a second time.
+  /// Below Android 11 (API 30): the user denied access to the requested feature
+  /// and selected to never again show a request.
   ///
   /// *On iOS:*
   /// If the user has denied access to the requested feature.
