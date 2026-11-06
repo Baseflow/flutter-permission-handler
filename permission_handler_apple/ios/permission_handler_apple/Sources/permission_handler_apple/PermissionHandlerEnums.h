@@ -54,13 +54,6 @@
     #define PERMISSION_PHOTOS 0
 #endif
 
-// ios: PermissionGroupPhotosAddOnly
-// Info.plist: NSPhotoLibraryAddUsageDescription
-// dart: PermissionGroup.photosAddOnly
-#ifndef PERMISSION_PHOTOS_ADD_ONLY
-    #define PERMISSION_PHOTOS_ADD_ONLY 0
-#endif
-
 // ios: [PermissionGroupLocation, PermissionGroupLocationAlways, PermissionGroupLocationWhenInUse]
 // Info.plist: [NSLocationUsageDescription, NSLocationAlwaysAndWhenInUseUsageDescription, NSLocationWhenInUseUsageDescription]
 // dart: [PermissionGroup.location, PermissionGroup.locationAlways, PermissionGroup.locationWhenInUse]
