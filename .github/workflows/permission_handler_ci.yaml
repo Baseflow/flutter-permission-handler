@@ -49,6 +49,7 @@ jobs:
             shared: &shared
               - 'pubspec.yaml'
               - 'analysis_options.yaml'
+              - '.github/codecov.yml'
               - '.github/workflows/permission_handler_ci.yaml'
               - '.github/workflows/permission_handler_package.yaml'
             platform_interface: &platform_interface
