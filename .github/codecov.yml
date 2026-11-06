@@ -1,0 +1,13 @@
+# Each tested package has its own upload. Keep its last coverage report when
+# path-filtered CI skips that package. The workflow runs both suites whenever
+# this configuration changes, seeding all flags before partial runs use them.
+flag_management:
+  individual_flags:
+    - name: permission_handler
+      paths:
+        - permission_handler/**
+      carryforward: true
+    - name: permission_handler_platform_interface
+      paths:
+        - permission_handler_platform_interface/**
+      carryforward: true

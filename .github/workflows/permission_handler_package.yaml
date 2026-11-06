@@ -81,7 +81,8 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ${{ inputs.package }}/coverage/lcov.info
-          flags: unittests
+          disable_search: true
+          flags: ${{ inputs.package }}
           name: ${{ inputs.package }}
 
       # The commands come from permission_handler_ci.yaml, never from the event,
