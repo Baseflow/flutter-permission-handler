@@ -1,0 +1,149 @@
+name: Permission Handler - Continuous Integration
+
+# Single entry point for CI. Every package is checked by the reusable
+# permission_handler_package.yaml, and only when that package, or something it
+# builds against, changed. Make `ci-result` the only required status check: it
+# reports on every run, also when the package jobs are skipped.
+#
+# Starting it by hand runs every package, for example to check main against a
+# new Flutter stable release.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# A new push to a pull request cancels the run for the previous one. Every other
+# run gets a group of its own and is never cancelled, so every merged commit and
+# every manual run gets a result.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+# The called workflow inherits these and can only narrow them. paths-filter
+# reads the changed files of a pull request through the API.
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      android: ${{ steps.filter.outputs.android }}
+      apple: ${{ steps.filter.outputs.apple }}
+      platform_interface: ${{ steps.filter.outputs.platform_interface }}
+      app_facing: ${{ steps.filter.outputs.app_facing }}
+      windows: ${{ steps.filter.outputs.windows }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        if: github.event_name != 'workflow_dispatch'
+        with:
+          # The repository is a pub workspace, so every example builds against
+          # the local sources of its siblings. A package's filter therefore
+          # also lists the packages it depends on and the workspace root files.
+          filters: |
+            shared: &shared
+              - 'pubspec.yaml'
+              - 'analysis_options.yaml'
+              - '.github/workflows/permission_handler_ci.yaml'
+              - '.github/workflows/permission_handler_package.yaml'
+            platform_interface: &platform_interface
+              - *shared
+              - 'permission_handler_platform_interface/**'
+            android:
+              - *platform_interface
+              - 'permission_handler_android/**'
+            apple:
+              - *platform_interface
+              - 'permission_handler_apple/**'
+              - '.github/scripts/check_apple_example.sh'
+            windows:
+              - *platform_interface
+              - 'permission_handler_windows/**'
+            app_facing:
+              - *platform_interface
+              - 'permission_handler_android/**'
+              - 'permission_handler_apple/**'
+              - 'permission_handler_html/**'
+              - 'permission_handler_windows/**'
+              - 'permission_handler/**'
+
+  platform_interface:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.platform_interface == 'true'
+    uses: ./.github/workflows/permission_handler_package.yaml
+    with:
+      package: permission_handler_platform_interface
+      runs-on: ubuntu-latest
+      unit-tests: true
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  android:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.android == 'true'
+    uses: ./.github/workflows/permission_handler_package.yaml
+    with:
+      package: permission_handler_android
+      runs-on: ubuntu-latest
+      java: true
+      example-build: flutter build apk --release
+
+  # The example resolves the plugin as a Swift package, so the "Verify
+  # permission_handler flavor" build phase is active and `strict: true` demands
+  # a selection before a Release build can run. `select` also generates
+  # ios/Flutter/permission_handler.resolved.json from permission_handler.yaml.
+  # Neither is committed, so every run makes its own. The checks script then
+  # asserts on how Package.swift resolves the PERMISSION_* macros.
+  apple:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.apple == 'true'
+    uses: ./.github/workflows/permission_handler_package.yaml
+    with:
+      package: permission_handler_apple
+      runs-on: macos-latest
+      example-build: |
+        dart run permission_handler_apple:select release
+        flutter build ios --no-codesign --release
+      example-checks: ../../.github/scripts/check_apple_example.sh
+
+  # The plugin's CMakeLists.txt installs CppWinRT through NuGet and generates
+  # its headers at configure time, so the build also checks that this still
+  # works on the runner image.
+  windows:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.windows == 'true'
+    uses: ./.github/workflows/permission_handler_package.yaml
+    with:
+      package: permission_handler_windows
+      runs-on: windows-latest
+      example-build: flutter build windows --release
+
+  app_facing:
+    needs: changes
+    if: github.event_name == 'workflow_dispatch' || needs.changes.outputs.app_facing == 'true'
+    uses: ./.github/workflows/permission_handler_package.yaml
+    with:
+      package: permission_handler
+      runs-on: macos-latest
+      java: true
+      unit-tests: true
+      example-build: |
+        flutter build apk --release
+        flutter build ios --release --no-codesign
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+  ci-result:            # ← the only required check
+    needs: [changes, platform_interface, android, apple, windows, app_facing]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [[ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" == "true" ]]; then
+            exit 1
+          fi
