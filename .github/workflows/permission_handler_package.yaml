@@ -1,0 +1,97 @@
+name: Package - Continuous Integration
+
+# Called from permission_handler_ci.yaml, once for every package that needs
+# checking: format, analyze, the unit tests where the package has them, and the
+# example build.
+on:
+  workflow_call:
+    inputs:
+      package:
+        description: The package directory, relative to the repository root.
+        type: string
+        required: true
+      runs-on:
+        description: The runner to use.
+        type: string
+        required: true
+      java:
+        description: Install JDK 17, which an Android example build needs.
+        type: boolean
+        default: false
+      unit-tests:
+        description: Run `flutter test --coverage` and upload the coverage to Codecov.
+        type: boolean
+        default: false
+      example-build:
+        description: Commands that build the example, run in `<package>/example`.
+        type: string
+        default: ""
+      example-checks:
+        description: Commands run in `<package>/example` after the example build.
+        type: string
+        default: ""
+    secrets:
+      CODECOV_TOKEN:
+        required: false
+
+jobs:
+  ci:
+    name: ${{ inputs.package }}
+    runs-on: ${{ inputs.runs-on }}
+
+    # Bash on every runner, Windows included (Git Bash), so a multi-line
+    # example build stops at its first failing command everywhere. GitHub runs
+    # it as `bash -eo pipefail`.
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.package }}
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install JDK 17
+        if: inputs.java
+        uses: actions/setup-java@v6
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+
+      - name: Download dependencies
+        run: flutter pub get
+
+      - name: Run Dart Format
+        run: dart format --set-exit-if-changed .
+
+      - name: Run Flutter Analyzer
+        run: flutter analyze
+
+      - name: Run unit tests
+        if: inputs.unit-tests
+        run: flutter test --coverage
+
+      - name: Upload coverage
+        if: inputs.unit-tests
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ${{ inputs.package }}/coverage/lcov.info
+          flags: unittests
+          name: ${{ inputs.package }}
+
+      # The commands come from permission_handler_ci.yaml, never from the event,
+      # so expanding them into the script is safe.
+      - name: Build example
+        if: inputs.example-build != ''
+        working-directory: ${{ inputs.package }}/example
+        run: ${{ inputs.example-build }}
+
+      - name: Check example
+        if: inputs.example-checks != ''
+        working-directory: ${{ inputs.package }}/example
+        run: ${{ inputs.example-checks }}
