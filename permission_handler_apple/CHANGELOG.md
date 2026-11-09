@@ -1,3 +1,7 @@
+## 9.6.6
+
+* Fixed iOS permission request state not being reset when app enters background, causing subsequent requests to fail with `ERROR_ALREADY_REQUESTING_PERMISSIONS`.
+
 ## 9.6.5
 
 - Fixes a crash when checking `Permission.phone.serviceStatus` on devices that cannot open `tel://`
