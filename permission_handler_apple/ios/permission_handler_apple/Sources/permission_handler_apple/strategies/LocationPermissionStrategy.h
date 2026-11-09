@@ -13,6 +13,13 @@
 
 @interface LocationPermissionStrategy : NSObject <PermissionStrategy, CLLocationManagerDelegate>
 - (instancetype)initWithLocationManager;
+
+/// `promptTimeout` is how long a request waits for a prompt to make the app resign active before it
+/// returns the current status. The other initializer uses the default dependencies and 2 seconds.
+- (instancetype)initWithLocationManager:(CLLocationManager *)locationManager
+                     notificationCenter:(NSNotificationCenter *)notificationCenter
+                           userDefaults:(NSUserDefaults *)userDefaults
+                          promptTimeout:(NSTimeInterval)promptTimeout;
 @end
 
 #else

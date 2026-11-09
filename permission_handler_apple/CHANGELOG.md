@@ -1,3 +1,14 @@
+## 9.6.6
+
+- Fixes location requests returning before the user answers the prompt, or never returning.
+  Requesting `locationAlways` after "When In Use" now returns the option picked in the upgrade
+  prompt instead of `denied` right away (#1152, #1457), and a request whose prompt is dismissed by
+  locking the screen returns `denied` instead of never completing, which made the next request fail
+  with `ERROR_ALREADY_REQUESTING_PERMISSIONS` (#1035, #1261).
+- Requesting `locationAlways` after "Allow Once", when iOS shows no prompt, now returns `denied`
+  after 2 seconds instead of right away. It no longer marks Always as asked, so the app can still
+  request it once the temporary authorization ends.
+
 ## 9.6.5
 
 - Fixes a crash when checking `Permission.phone.serviceStatus` on devices that cannot open `tel://`
