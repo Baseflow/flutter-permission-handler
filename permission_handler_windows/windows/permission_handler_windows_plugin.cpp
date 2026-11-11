@@ -126,12 +126,13 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
     
     EncodableMap requestResults;
 
-    for (int i=0;i<permissions.size();i++) {
+    for (size_t i=0;i<permissions.size();i++) {
       auto permissionStatus = PermissionConstants::PermissionStatus::GRANTED;
       requestResults.insert({EncodableValue(permissions[i]), EncodableValue((int)permissionStatus)});
     }
 
-    result->Success(requestResults);
+    // clang-cl finds no Success() overload for the bare map; MSVC converts it implicitly.
+    result->Success(EncodableValue(requestResults));
   } else if (methodName.compare("shouldShowRequestPermissionRationale") == 0
           || methodName.compare("openAppSettings")) {
     result->Success(EncodableValue(false));

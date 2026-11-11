@@ -1,3 +1,8 @@
+## 0.2.5
+
+* Fixes compilation with `clang-cl` (LLVM) by explicitly wrapping the request results map in a `flutter::EncodableValue` before passing it to `result->Success()`.
+* Iterates the requested permissions with a `size_t` index, fixing the signed/unsigned comparison that `/W4 /WX` builds turn into an error under `clang-cl`.
+
 ## 0.2.4
 
 * Lazily creates the Windows `Geolocator` only when checking location service status.
