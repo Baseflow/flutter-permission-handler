@@ -1,3 +1,12 @@
+## 9.6.6
+
+- Fixes `requestPermissions` intermittently failing with `ERROR_ALREADY_REQUESTING_PERMISSIONS`
+  when it is called right after a previous request completed (for example requesting
+  `Permission.appTrackingTransparency` immediately after the user denied
+  `Permission.notification`). Some strategies complete on a background queue, and the pending
+  method result was cleared there while the next request was already checking it on the main
+  thread. The result is now delivered and cleared on the main queue.
+
 ## 9.6.5
 
 - Fixes a crash when checking `Permission.phone.serviceStatus` on devices that cannot open `tel://`

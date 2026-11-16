@@ -1,5 +1,12 @@
 #import "PermissionHandlerPlugin.h"
 
+static void runOnMainQueue(dispatch_block_t block) {
+    if ([NSThread isMainThread]) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), block);
+    }
+}
 
 @implementation PermissionHandlerPlugin {
     PermissionManager *_Nonnull _permissionManager;
@@ -40,16 +47,22 @@
         _methodResult = result;
         NSArray *permissions = [Codec decodePermissionGroupsFrom:call.arguments];
         
+        // Strategies may complete on a background queue (e.g. a denied notification request). Clearing
+        // _methodResult there races with the next requestPermissions call on the main thread.
         [_permissionManager
          requestPermissions:permissions completion:^(NSDictionary *permissionRequestResults) {
-             if (self->_methodResult != nil) {
-                 self->_methodResult(permissionRequestResults);
-             }
-             
-             self->_methodResult = nil;
+             runOnMainQueue(^{
+                 if (self->_methodResult != nil) {
+                     self->_methodResult(permissionRequestResults);
+                 }
+                 
+                 self->_methodResult = nil;
+             });
         } errorHandler:^(NSString *errorCode, NSString *errorDescription) {
-            self->_methodResult([FlutterError errorWithCode:errorCode message:errorDescription details:nil]);
-            self->_methodResult = nil;
+            runOnMainQueue(^{
+                self->_methodResult([FlutterError errorWithCode:errorCode message:errorDescription details:nil]);
+                self->_methodResult = nil;
+            });
         }
 ];
         
