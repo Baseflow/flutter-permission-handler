@@ -24,6 +24,16 @@ public class PermissionUtils {
     static final String SHARED_PREFERENCES_PERMISSION_WAS_DENIED_BEFORE_KEY =
         "sp_permission_handler_permission_was_denied_before";
 
+    // Manifest.permission.ACCESS_LOCAL_NETWORK was introduced in API level 37 (Android 17).
+    // Defined as a literal constant because compileSdk is set to 36.
+    private static final String PERMISSION_ACCESS_LOCAL_NETWORK =
+        "android.permission.ACCESS_LOCAL_NETWORK";
+
+    // Build.VERSION_CODES.CINNAMON_BUN is API level 37 (Android 17).
+    // Defined as a literal constant because compileSdk is set to 36 to avoid
+    // requiring consumers to install the unreleased/minor-versioned android-37 SDK platform.
+    private static final int BUILD_VERSION_CODES_CINNAMON_BUN = 37;
+
     @PermissionConstants.PermissionGroup
     static int parseManifestName(String permission) {
         switch (permission) {
@@ -94,7 +104,7 @@ public class PermissionUtils {
                 return PermissionConstants.PERMISSION_GROUP_AUDIO;
             case Manifest.permission.SCHEDULE_EXACT_ALARM:
                 return PermissionConstants.PERMISSION_GROUP_SCHEDULE_EXACT_ALARM;
-            case Manifest.permission.ACCESS_LOCAL_NETWORK:
+            case PERMISSION_ACCESS_LOCAL_NETWORK:
                 return PermissionConstants.PERMISSION_GROUP_ACCESS_LOCAL_NETWORK;
             default:
                 return PermissionConstants.PERMISSION_GROUP_UNKNOWN;
@@ -609,13 +619,13 @@ public class PermissionUtils {
                 // API 36 was allowed but only with e.g. NEARBY_WIFI_DEVICES, so we should not handle permissions on pre Android 37 devices.
                 // Prior to 36, this was always allowed.
                 if (
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.CINNAMON_BUN &&
+                    Build.VERSION.SDK_INT >= BUILD_VERSION_CODES_CINNAMON_BUN &&
                     hasPermissionInManifest(
                         context,
                         permissionNames,
-                        Manifest.permission.ACCESS_LOCAL_NETWORK
+                        PERMISSION_ACCESS_LOCAL_NETWORK
                     )
-                ) permissionNames.add(Manifest.permission.ACCESS_LOCAL_NETWORK);
+                ) permissionNames.add(PERMISSION_ACCESS_LOCAL_NETWORK);
                 break;
             case PermissionConstants.PERMISSION_GROUP_MEDIA_LIBRARY:
             case PermissionConstants.PERMISSION_GROUP_REMINDERS:

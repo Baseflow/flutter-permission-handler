@@ -44,13 +44,13 @@ dependencies:
   permission_handler: ^13.0.2
 ```
 
-`permission_handler_android` 14.x compiles against API 37, a requirement
-introduced in 14.0.0. If you are coming from 13.x, set `compileSdk` in
+`permission_handler_android` 14.x compiles against API 36 (previously 37
+in 14.0.0-14.1.1). If you are coming from 13.x, set `compileSdk` in
 `android/app/build.gradle(.kts)`:
 
 ```kotlin
 android {
-    compileSdk = 37
+    compileSdk = 36
 ```
 
 Then run `flutter pub get` and confirm the resolved version:

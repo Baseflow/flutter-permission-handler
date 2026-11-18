@@ -1,3 +1,7 @@
+## 14.1.2
+
+- Lowers the Android `compileSdkVersion` requirement back to 36 (from 37) by replacing API-37-only symbol references with literal values. Runtime support for the Android 17 `ACCESS_LOCAL_NETWORK` permission is completely unchanged.
+
 ## 14.1.1
 
 - Fixes Bluetooth scan, connect, and advertise permissions falling back to location when their manifest declaration is missing on Android 12+ for apps targeting Android 12+. These permissions now report denied; legacy location fallback is preserved for older target SDKs.

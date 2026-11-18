@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.baseflow.permissionhandler.example"
-    compileSdk = 37
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
