@@ -10,7 +10,7 @@ repositories {
 }
 
 val androidJar = providers.environmentVariable("ANDROID_JAR")
-    .getOrElse("${System.getenv("ANDROID_HOME")}/platforms/android-37.0/android.jar")
+    .getOrElse("${System.getenv("ANDROID_HOME")}/platforms/android-36/android.jar")
 check(file(androidJar).isFile) {
     "Set ANDROID_JAR to an installed Android SDK platform's android.jar."
 }
