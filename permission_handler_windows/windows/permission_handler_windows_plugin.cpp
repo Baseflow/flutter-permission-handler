@@ -20,6 +20,7 @@
 #include <winrt/Windows.Devices.Bluetooth.h>
 #include <winrt/Windows.Devices.Radios.h>
 #include <winrt/Windows.Foundation.Collections.h>
+#include <winrt/Windows.Security.Authorization.AppCapabilityAccess.h>
 
 #include "permission_constants.h"
 
@@ -30,6 +31,7 @@ using namespace winrt;
 using namespace winrt::Windows::Devices::Geolocation;
 using namespace winrt::Windows::Devices::Bluetooth;
 using namespace winrt::Windows::Devices::Radios;
+using namespace winrt::Windows::Security::Authorization::AppCapabilityAccess;
 
 template<typename T>
 T GetArgument(const std::string arg, const EncodableValue* args, T fallback) {
@@ -61,6 +63,9 @@ class PermissionHandlerWindowsPlugin : public Plugin {
                         std::unique_ptr<MethodResult<>>);
 
  private:
+  PermissionConstants::PermissionStatus CheckPermissionStatus(
+      PermissionConstants::PermissionGroup permission);
+  PermissionConstants::PermissionStatus CheckMicrophonePermissionStatus();
   void IsLocationServiceEnabled(std::unique_ptr<MethodResult<>> result);
   winrt::fire_and_forget IsBluetoothServiceEnabled(std::unique_ptr<MethodResult<>> result);
 };
@@ -113,7 +118,13 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
     result->Success(EncodableValue((int)PermissionConstants::ServiceStatus::NOT_APPLICABLE));
     
   } else if (methodName.compare("checkPermissionStatus") == 0) {
-    result->Success(EncodableValue((int)PermissionConstants::PermissionStatus::GRANTED));
+    const auto* rawPermission = std::get_if<int>(method_call.arguments());
+    if (!rawPermission) {
+      result->Error("INVALID_ARGUMENT", "Expected an integer permission group");
+      return;
+    }
+    auto permission = static_cast<PermissionConstants::PermissionGroup>(*rawPermission);
+    result->Success(EncodableValue(static_cast<int>(CheckPermissionStatus(permission))));
   } else if (methodName.compare("requestPermissions") == 0) {
     auto permissionsEncoded = std::get<EncodableList>(*method_call.arguments());
     std::vector<int> permissions;
@@ -126,9 +137,10 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
     
     EncodableMap requestResults;
 
-    for (int i=0;i<permissions.size();i++) {
-      auto permissionStatus = PermissionConstants::PermissionStatus::GRANTED;
-      requestResults.insert({EncodableValue(permissions[i]), EncodableValue((int)permissionStatus)});
+    for (size_t i = 0; i < permissions.size(); i++) {
+      auto permission = static_cast<PermissionConstants::PermissionGroup>(permissions[i]);
+      auto permissionStatus = CheckPermissionStatus(permission);
+      requestResults.insert({EncodableValue(permissions[i]), EncodableValue(static_cast<int>(permissionStatus))});
     }
 
     result->Success(requestResults);
@@ -137,6 +149,33 @@ void PermissionHandlerWindowsPlugin::HandleMethodCall(
     result->Success(EncodableValue(false));
   } else {
     result->NotImplemented();
+  }
+}
+
+PermissionConstants::PermissionStatus PermissionHandlerWindowsPlugin::CheckPermissionStatus(
+    PermissionConstants::PermissionGroup permission) {
+  if (permission == PermissionConstants::PermissionGroup::MICROPHONE) {
+    return CheckMicrophonePermissionStatus();
+  }
+  return PermissionConstants::PermissionStatus::GRANTED;
+}
+
+PermissionConstants::PermissionStatus PermissionHandlerWindowsPlugin::CheckMicrophonePermissionStatus() {
+  try {
+    auto capability = AppCapability::Create(L"microphone");
+    switch (capability.CheckAccess()) {
+      case AppCapabilityAccessStatus::Allowed:
+        return PermissionConstants::PermissionStatus::GRANTED;
+      case AppCapabilityAccessStatus::DeniedBySystem:
+        return PermissionConstants::PermissionStatus::RESTRICTED;
+      case AppCapabilityAccessStatus::DeniedByUser:
+      case AppCapabilityAccessStatus::UserPromptRequired:
+      case AppCapabilityAccessStatus::NotDeclaredByApp:
+      default:
+        return PermissionConstants::PermissionStatus::DENIED;
+    }
+  } catch (const winrt::hresult_error&) {
+    return PermissionConstants::PermissionStatus::DENIED;
   }
 }
 
